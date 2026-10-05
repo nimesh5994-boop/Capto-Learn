@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" width="758" height="757" viewBox="0 0 758 757" style="shape-rendering:geometricPrecision; fill-rule:evenodd; clip-rule:evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <defs>
+  <style type="text/css">
+   <![CDATA[
+    .fil0 {fill:#373435}
+    .fil1 {fill:url(#id0)}
+    .fil2 {fill:url(#id1)}
+   ]]>
+  </style>
+  <linearGradient id="id0" gradientUnits="userSpaceOnUse" x1="713.377" y1="565.96" x2="-25.6653" y2="565.96">
+   <stop offset="0" style="stop-opacity:1; stop-color:#EC268F"/>
+   <stop offset="1" style="stop-opacity:1; stop-color:#423678"/>
+  </linearGradient>
+  <linearGradient id="id1" gradientUnits="userSpaceOnUse" xlink:href="#id0" x1="623.357" y1="148.59" x2="273.2" y2="148.59">
+  </linearGradient>
+ </defs>
+ <g>
+  <path class="fil0" d="M160 318c9,-37 24,-72 44,-104 32,-51 77,-93 131,-123 54,-29 114,-43 174,-42 25,0 50,3 75,9 -59,-37 -129,-58 -203,-58 -187,0 -343,134 -378,311 1,15 3,31 6,47 15,52 43,99 80,137 37,38 83,66 136,82 15,4 30,7 45,10 -72,-40 -120,-115 -120,-203 0,-23 3,-45 10,-66z"/>
+  <path class="fil1" d="M61 522c-24,-25 -45,-53 -61,-84 57,406 690,455 758,-34 -140,269 -535,282 -697,118z"/>
+  <path class="fil2" d="M381 154c63,0 121,26 163,67l100 -100c-42,-22 -89,-33 -136,-34 -53,-1 -106,12 -155,38 -25,14 -48,30 -68,49 29,-13 62,-20 96,-20z"/>
+ </g>
+</svg>

@@ -1,0 +1,8 @@
+.logo { display: inline-flex; align-items: center; gap: 0.5rem; }
+.icon { height: 1.75rem; width: auto; flex-shrink: 0; }
+.logoLg .icon { height: 2.75rem; }
+.wordmark { position: relative; display: inline-flex; font-family: var(--font-heading); font-weight: 700; font-size: 1.15rem; line-height: 1; color: var(--text); padding-bottom: 0.55rem; }
+.logoLg .wordmark { font-size: 1.75rem; padding-bottom: 0.85rem; }
+/* Tucked below-right of "Capto", matching the Capto Sign / Capto Extract lockup. */
+.subWord { position: absolute; right: -0.1rem; bottom: 0; font-family: var(--font-sans); font-size: 0.55rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--primary); white-space: nowrap; }
+.logoLg .subWord { font-size: 0.85rem; }

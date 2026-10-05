@@ -1,0 +1,6 @@
+.wrap { min-height: 100vh; display: grid; place-items: center; padding: 24px 16px; background: radial-gradient(circle at 20% 0%, var(--primary-soft), transparent 55%), var(--bg); }
+.card { width: 100%; max-width: 400px; }
+.head { margin-bottom: 18px; }
+.head h1 { margin-top: 14px; }
+.logo { width: 40px; height: 40px; border-radius: 10px; background: var(--primary); color: var(--primary-fg); display: grid; place-items: center; font-weight: 750; font-size: 20px; }
+.foot { margin-top: 16px; text-align: center; font-size: 13px; color: var(--text-muted); }
