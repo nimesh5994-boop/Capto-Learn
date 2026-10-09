@@ -8,6 +8,26 @@ import "server-only";
 const BASE = "https://www.gov.uk";
 const UA = "CaptoLearn/1.0 (+https://learn.chitta.cloud)";
 
+/**
+ * GET with polite retries: GOV.UK rate-limits bursts (429) and occasionally returns 5xx. Honour Retry-After,
+ * otherwise back off exponentially. Returns the final Response, or null on repeated network failure.
+ */
+export async function govUkFetch(url: string, timeoutMs = 15_000, attempts = 4): Promise<Response | null> {
+  for (let i = 0; i < attempts; i++) {
+    try {
+      const res = await fetch(url, { headers: { "user-agent": UA, accept: "application/json" }, signal: AbortSignal.timeout(timeoutMs) });
+      if (res.status !== 429 && res.status < 500) return res;
+      if (i === attempts - 1) return res;
+      const retryAfter = Number(res.headers.get("retry-after"));
+      await new Promise((r) => setTimeout(r, Number.isFinite(retryAfter) && retryAfter > 0 ? Math.min(retryAfter, 60) * 1000 : 1000 * 2 ** i));
+    } catch {
+      if (i === attempts - 1) return null;
+      await new Promise((r) => setTimeout(r, 1000 * 2 ** i));
+    }
+  }
+  return null;
+}
+
 export interface SearchHit {
   path: string;
   title: string;
@@ -62,15 +82,24 @@ function publisherFor(item: ContentItem): string {
   return "GOV.UK guidance";
 }
 
-export async function fetchGovUkPage(path: string): Promise<FetchedPage | null> {
-  const res = await fetch(`${BASE}/api/content${path}`, { headers: { "user-agent": UA, accept: "application/json" }, signal: AbortSignal.timeout(12_000) });
-  if (!res.ok) return null;
-  const item = (await res.json()) as ContentItem;
+export type FetchResult = { status: "ok"; page: FetchedPage } | { status: "empty"; title: string; updatedAt: string | null } | { status: "error" };
+
+/** Fetches one GOV.UK page. "empty" = the page exists but has no body text of its own (e.g. a manual's contents page). */
+export async function fetchGovUkDocument(path: string): Promise<FetchResult> {
+  const res = await govUkFetch(`${BASE}/api/content${path}`);
+  if (!res || !res.ok) return { status: "error" };
+  const item = (await res.json().catch(() => null)) as ContentItem | null;
+  if (!item) return { status: "error" };
   const d = item.details ?? {};
   const html = [d.introductory_paragraph, d.body, ...(d.parts ?? []).map((p) => `<h2>${p.title ?? ""}</h2>${p.body ?? ""}`), d.more_information].filter(Boolean).join("\n");
   const text = htmlToText(html);
-  if (text.length < 80) return null;
-  return { url: `${BASE}${path}`, title: item.title ?? path, publisher: publisherFor(item), text, updatedAt: item.public_updated_at ?? null };
+  if (text.length < 80) return { status: "empty", title: item.title ?? path, updatedAt: item.public_updated_at ?? null };
+  return { status: "ok", page: { url: `${BASE}${path}`, title: item.title ?? path, publisher: publisherFor(item), text, updatedAt: item.public_updated_at ?? null } };
+}
+
+export async function fetchGovUkPage(path: string): Promise<FetchedPage | null> {
+  const r = await fetchGovUkDocument(path);
+  return r.status === "ok" ? r.page : null;
 }
 
 const ENTITIES: Record<string, string> = { amp: "&", lt: "<", gt: ">", quot: '"', apos: "'", nbsp: " ", pound: "£", ndash: "–", mdash: "—", lsquo: "‘", rsquo: "’", ldquo: "“", rdquo: "”", hellip: "…", euro: "€" };

@@ -1,4 +1,5 @@
-import { boolean, index, integer, jsonb, numeric, pgTable, primaryKey, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
+import { boolean, customType, index, integer, jsonb, numeric, pgTable, primaryKey, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
 import type { ResearchAnswer } from "@/lib/research/types";
 
 export type Role = "owner" | "admin" | "manager" | "staff" | "viewer";
@@ -282,6 +283,82 @@ export const answerLibrary = pgTable(
   },
   (t) => [index("answer_library_org_idx").on(t.organizationId, t.createdAt)]
 );
+
+/* ───────────────────── Capto Knowledge Base (mirrored official guidance) ───────────────────── */
+
+const tsvector = customType<{ data: string }>({ dataType: () => "tsvector" });
+
+export type KbKind = "manual_section" | "guidance";
+
+/**
+ * One official page mirrored from GOV.UK (HMRC manuals, HMRC/Companies House guidance). Crown copyright,
+ * reused under the Open Government Licence — always shown with its source link. Kept current by the sync bot,
+ * which compares GOV.UK's public timestamp and only re-downloads changed pages.
+ */
+export const kbDocuments = pgTable(
+  "kb_documents",
+  {
+    url: text("url").primaryKey(),
+    kind: text("kind").$type<KbKind>().notNull(),
+    /** Manual slug (e.g. "vat-input-tax") or publishing organisation (e.g. "hm-revenue-customs"). */
+    collection: text("collection").notNull(),
+    title: text("title").notNull(),
+    publisher: text("publisher").notNull(),
+    sourceUpdatedAt: timestamp("source_updated_at", { withTimezone: true }),
+    contentHash: text("content_hash").notNull(),
+    fetchedAt: timestamp("fetched_at", { withTimezone: true }).notNull().defaultNow(),
+    /** Set when the page disappears from GOV.UK; kept for audit but never searched. */
+    removedAt: timestamp("removed_at", { withTimezone: true }),
+  },
+  (t) => [index("kb_documents_collection_idx").on(t.collection)]
+);
+
+export const kbPassages = pgTable(
+  "kb_passages",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    documentUrl: text("document_url")
+      .notNull()
+      .references(() => kbDocuments.url, { onDelete: "cascade" }),
+    ord: integer("ord").notNull(),
+    heading: text("heading"),
+    body: text("body").notNull(),
+    /** Headings weigh more than body text in ranking. */
+    tsv: tsvector("tsv")
+      .notNull()
+      .generatedAlwaysAs(sql`setweight(to_tsvector('english', coalesce(heading, '')), 'A') || setweight(to_tsvector('english', body), 'B')`),
+  },
+  (t) => [index("kb_passages_doc_idx").on(t.documentUrl), index("kb_passages_tsv_idx").using("gin", t.tsv)]
+);
+
+/**
+ * How many passages each search term (Postgres lexeme) appears in — rebuilt after each sync that changes content.
+ * Lets search skip ultra-common terms ("tax", "vat") when gathering candidates, which keeps queries fast.
+ */
+export const kbTerms = pgTable("kb_terms", {
+  word: text("word").primaryKey(),
+  ndoc: integer("ndoc").notNull(),
+});
+
+export type KbSyncStatus = "running" | "done" | "partial" | "failed";
+
+/** Audit trail of the sync bot: what it checked, what changed, which lessons cite changed pages. */
+export const kbSyncRuns = pgTable("kb_sync_runs", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  trigger: text("trigger").notNull(),
+  status: text("status").$type<KbSyncStatus>().notNull().default("running"),
+  listed: integer("listed").notNull().default(0),
+  added: integer("added").notNull().default(0),
+  updated: integer("updated").notNull().default(0),
+  removed: integer("removed").notNull().default(0),
+  failed: integer("failed").notNull().default(0),
+  /** Lesson ids whose cited sources changed in this run (for the content reviewers). */
+  lessonsAffected: jsonb("lessons_affected").$type<string[]>().notNull().default([]),
+  libraryRetired: integer("library_retired").notNull().default(0),
+  note: text("note"),
+  startedAt: timestamp("started_at", { withTimezone: true }).notNull().defaultNow(),
+  finishedAt: timestamp("finished_at", { withTimezone: true }),
+});
 
 /** Shared cache of fetched official pages (public, OGL content — not firm data). */
 export const sourceCache = pgTable(

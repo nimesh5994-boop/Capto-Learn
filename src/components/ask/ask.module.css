@@ -30,3 +30,11 @@
 .history a { padding: 8px 10px; border-radius: 6px; color: var(--text); text-decoration: none; display: flex; flex-direction: column; gap: 2px; }
 .history a:hover { background: var(--surface-2); }
 .history .when { font-size: 12px; color: var(--text-faint); }
+
+.searchForm { display: flex; gap: 8px; padding: 14px; }
+.searchForm input { flex: 1; font-size: 15px; }
+.result { padding: 16px 18px; display: flex; flex-direction: column; gap: 6px; }
+.result h3 { margin: 0; font-size: 16px; }
+.resultMeta { font-size: 12.5px; color: var(--text-muted); }
+.snippet { font-size: 14px; line-height: 1.55; margin: 0; }
+.snippet mark { background: color-mix(in oklch, var(--primary) 18%, transparent); color: inherit; padding: 0 2px; border-radius: 3px; }

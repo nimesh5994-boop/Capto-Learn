@@ -22,18 +22,32 @@ With no `DATABASE_URL`, the app uses an embedded PGlite Postgres under `.data/`,
 - **Review:** everything in code is an **AI draft**. Platform content reviewers sign lessons off at `/platform/content`. The sign-off records a hash of the lesson content, so a lesson edited later shows as "edited since review" until it is reviewed again. Learners can report problems on any lesson, and those reports go to the same page.
 - **Answer security:** marking happens on the server. The browser never receives answers or explanations before the learner submits (see `lib/learning/marking.ts`).
 
+## Capto Knowledge Base (`src/lib/kb`)
+
+This is our own synced copy of the official guidance. It covers 43 core HMRC manuals plus every HMRC and Companies House guidance page on GOV.UK, about 38,000 pages in all. The content is Crown copyright, reused under the Open Government Licence v3.0. The tables are `kb_documents` and `kb_passages`, and passages are indexed with Postgres full-text search (`tsvector` + GIN).
+
+- **Sync bot (`sync.ts`):**
+  - Lists every page in each collection with GOV.UK's public timestamp, using the Search API (a few dozen calls).
+  - Downloads only new or changed pages, and retires pages that are no longer published.
+  - Retires answer-library entries built on a changed page, and records which lessons cite it so content reviewers can check them.
+  - Uses no AI, so it costs nothing to run.
+  - Is resumable: a run that hits its time budget stops as "partial", and the next run continues.
+- **Schedule:** Vercel Cron calls `/api/cron/kb-sync` daily (this needs `CRON_SECRET`). The job only does real work when the weekly check is due (`FULL_SYNC_EVERY_DAYS`) or a previous run paused.
+- **Manual sync:** platform admins can press "Sync now" at `/platform/knowledge`.
+- **Coverage:** to add more, add a manual slug to `collections.ts`.
+- **Guidance search (`/search`):** free, instant, no AI. Postgres finds the candidate passages, and `rerank` orders them by how many of the question's distinctive words they contain.
+
 ## Ask Capto (`src/lib/research`)
 
-The flow for each question:
+The flow for each question, cheapest step first:
 
-1. **Plan:** Claude plans GOV.UK searches in HMRC's own vocabulary.
-2. **Search:** the GOV.UK Search API runs those searches, filtered to HMRC manual sections and to guidance and regulation.
-3. **Fetch:** the GOV.UK Content API fetches the pages, which are cached for 7 days in `source_cache`.
-4. **Select:** BM25 ranking picks the relevant passages.
-5. **Answer:** Claude writes a structured, cited answer.
-6. **Verify:** `verifyQuote` checks every quote. Confidence can only go down when quotes fail, never up.
+1. **Plan:** Haiku plans the searches, restates the question in HMRC's vocabulary and grades its complexity.
+2. **Answer library:** the firm's earlier verified answers are checked first. A shortlist is made by word overlap, Haiku confirms it's genuinely the same question, and the cited pages must be unchanged in the knowledge base. A match is reused for about 0.3¢.
+3. **Retrieve:** passages come from the knowledge base. If it has fewer than 3 relevant pages, the GOV.UK Search and Content APIs are used live instead.
+4. **Answer:** Sonnet 5.5 answers simple questions and Opus 5.5 complex ones. A Sonnet answer whose quotes fail verification is redone on Opus.
+5. **Verify:** `verifyQuote` checks every quote against the full page text. Confidence can only go down when quotes fail, never up.
 
-Each answer is stored with its token usage in `research_queries`. Plans set a monthly question allowance per firm, and failed attempts don't count against it.
+Each answer is stored with its route and cache-aware cost (`pricing.ts`) in `research_queries`. Plans set a monthly question allowance per firm. Failed questions and library reuses don't count against it.
 
 ## SaaS, roles & plans
 
@@ -56,6 +70,7 @@ Vercel + Neon (London), matching the other Capto apps. Set these environment var
 - `APP_URL`
 - `PLATFORM_ADMIN_EMAILS`
 - `ANTHROPIC_API_KEY`
+- `CRON_SECRET` (for the weekly knowledge-base sync)
 - optionally `RESEND_API_KEY` and `EMAIL_FROM`
 
 `npm run build` applies the migrations.

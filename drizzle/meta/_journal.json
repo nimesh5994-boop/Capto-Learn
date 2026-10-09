@@ -15,6 +15,20 @@
       "when": 1791542818654,
       "tag": "0001_answer_library",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1791551116381,
+      "tag": "0002_knowledge_base",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1791555113380,
+      "tag": "0003_kb_terms",
+      "breakpoints": true
     }
   ]
 }

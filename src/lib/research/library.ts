@@ -6,6 +6,7 @@ import { getDb } from "@/lib/db/client";
 import { answerLibrary, type LibraryEntry } from "@/lib/db/schema";
 import { anthropic, type Meter } from "./ai";
 import { govUkUpdatedAt } from "./govuk";
+import { storedVersions } from "@/lib/kb/search";
 import { isLibraryWorthy, LIBRARY_MAX_AGE_DAYS, shortlist, sourceChanged } from "./libraryRules";
 import { MODELS } from "./pricing";
 import type { ResearchAnswer } from "./types";
@@ -62,9 +63,11 @@ export async function findLibraryAnswer(orgId: string, question: string, restate
   const entry = candidates[pick];
   if (!entry) return null;
 
-  // Live check: every cited official page must be unchanged since the answer was written.
+  // Every cited official page must be unchanged since the answer was written. Pages in the knowledge base are
+  // checked against its synced copy (no network); anything not mirrored is checked live on GOV.UK.
   const urls = Object.keys(entry.sourceVersions);
-  const current = await Promise.all(urls.map((u) => govUkUpdatedAt(u)));
+  const stored = await storedVersions(urls);
+  const current = await Promise.all(urls.map((u) => (stored.has(u) ? stored.get(u) : govUkUpdatedAt(u))));
   if (current.some((c) => c === undefined)) return null; // couldn't confirm — research fresh rather than risk it
   const changed = urls.filter((u, i) => sourceChanged(entry.sourceVersions[u], current[i] ?? null));
   if (changed.length) {

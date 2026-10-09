@@ -8,6 +8,7 @@ import { allLessons, lessonText } from "@/content";
 import { anthropic, FALLBACK, Meter } from "./ai";
 import { fetchGovUkPage, searchGovUk, type FetchedPage, type SearchHit } from "./govuk";
 import { findLibraryAnswer } from "./library";
+import { loadDocuments, rankDocuments } from "@/lib/kb/search";
 import { rankPassages, selectPassages, verifyQuote } from "./passages";
 import { MODELS } from "./pricing";
 import type { AnswerPoint, ProfessionalNote, ResearchAnswer, ResearchSource } from "./types";
@@ -204,6 +205,8 @@ const needsEscalation = (d: NonNullable<Drafted>) => d.unverifiedShare > 0.2 || 
 export async function* runResearch(question: string, opts: { professional: boolean; organizationId: string; fresh?: boolean }): AsyncGenerator<ResearchEvent> {
   const meter = new Meter();
   const today = new Date().toISOString().slice(0, 10);
+  const t0 = Date.now();
+  const lap = (label: string) => console.info(`[research] ${label} +${Date.now() - t0}ms`);
   try {
     // 1. Plan + route (cheap model). Runs first so the library check compares questions in HMRC's vocabulary.
     yield { type: "stage", message: "Working out where HMRC covers this…" };
@@ -215,6 +218,7 @@ export async function* runResearch(question: string, opts: { professional: boole
       messages: [{ role: "user", content: `Today is ${today}.\n\nQuestion: ${question}` }],
     });
     meter.add(MODELS.haiku, planRes);
+    lap("planned");
     const plan = planRes.parsed_output;
     if (planRes.stop_reason === "refusal" || !plan) {
       yield { type: "no_sources", message: "Ask Capto couldn't work on that question. Try rewording it as a UK accounting or tax question.", usage: meter.usage };
@@ -246,17 +250,33 @@ export async function* runResearch(question: string, opts: { professional: boole
 
     const professional = opts.professional ? professionalNote(plan.restated_question, meter).catch(() => null) : Promise.resolve(null);
 
-    yield { type: "stage", message: `Searching HMRC manuals and GOV.UK guidance (${plan.searches.length} searches)…` };
+    // Retrieval: our own synced copy of the official guidance first (no external calls); live GOV.UK only
+    // when the stored copy doesn't cover the topic well enough.
     const searches = plan.searches.slice(0, 5);
-    const results = await Promise.all(searches.map((s) => searchGovUk(s.query, s.filter, 5).catch(() => [])));
-    const paths = pickPaths(results);
-    if (!paths.length) {
+    yield { type: "stage", message: "Searching Capto's stored copy of HMRC and Companies House guidance…" };
+    const kbUrls = await rankDocuments(
+      [{ text: `${question} ${plan.restated_question}` }, ...searches.map((s) => ({ text: s.query, kind: s.filter === "manuals" ? ("manual_section" as const) : ("guidance" as const) }))],
+      MAX_PAGES
+    ).catch((err) => {
+      console.error("[research] knowledge base search failed", err);
+      return [] as string[];
+    });
+    lap(`knowledge base ranked ${kbUrls.length} docs`);
+    let pages: FetchedPage[] = await loadDocuments(kbUrls).catch(() => []);
+    lap(`loaded ${pages.length} docs`);
+    if (pages.length < 3) {
+      yield { type: "stage", message: `Searching GOV.UK live (${searches.length} searches)…` };
+      const results = await Promise.all(searches.map((s) => searchGovUk(s.query, s.filter, 5).catch(() => [])));
+      const have = new Set(pages.map((p) => p.url));
+      const paths = pickPaths(results).filter((p) => !have.has(`https://www.gov.uk${p}`));
+      const live = (await Promise.all(paths.slice(0, MAX_PAGES - pages.length).map((p) => cachedPage(p)))).filter((p): p is FetchedPage => !!p);
+      pages = [...pages, ...live];
+    }
+    if (!pages.length) {
       yield { type: "no_sources", message: "No official guidance turned up for that question. Try different wording, or check with a senior.", usage: meter.usage };
       return;
     }
-
-    yield { type: "stage", message: `Reading ${paths.length} official pages…` };
-    const pages = (await Promise.all(paths.map((p) => cachedPage(p)))).filter((p): p is FetchedPage => !!p);
+    yield { type: "stage", message: `Reading ${pages.length} official pages…` };
     const sources: ResearchSource[] = pages.map((p, i) => ({ id: `S${i + 1}`, kind: "official", url: p.url, title: p.title, publisher: p.publisher, updatedAt: p.updatedAt }));
     const textById = new Map(sources.map((s, i) => [s.id, pages[i].text]));
     const queryText = [question, plan.restated_question, ...searches.map((s) => s.query)].join(" ");
@@ -293,6 +313,7 @@ export async function* runResearch(question: string, opts: { professional: boole
       return;
     }
 
+    lap(`answered (${route})`);
     yield { type: "stage", message: "Checking every quote against the source…" };
     const { out, points, unverifiedShare } = draft;
     const cited = new Set(points.flatMap((p) => p.citations.map((c) => c.sourceId)));
