@@ -97,3 +97,20 @@ export function htmlToText(html: string): string {
     .filter((s) => s && s !== "•" && s !== "##")
     .join("\n\n");
 }
+
+/**
+ * Just the publisher's last-updated date for a GOV.UK page (Content API), used to decide whether a saved
+ * answer is still current. Returns undefined when the check itself fails (network, page removed).
+ */
+export async function govUkUpdatedAt(url: string): Promise<string | null | undefined> {
+  const path = url.replace(/^https:\/\/www\.gov\.uk/, "");
+  if (!path.startsWith("/")) return undefined;
+  try {
+    const res = await fetch(`${BASE}/api/content${path}`, { headers: { "user-agent": UA, accept: "application/json" }, signal: AbortSignal.timeout(8_000) });
+    if (!res.ok) return undefined;
+    const item = (await res.json()) as ContentItem;
+    return item.public_updated_at ?? null;
+  } catch {
+    return undefined;
+  }
+}

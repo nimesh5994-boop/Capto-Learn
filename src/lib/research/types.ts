@@ -46,6 +46,10 @@ export interface ResearchAnswer {
   /** Capto Learn lessons worth studying for this topic: `${track}/${lesson}`. */
   relatedLessons: { id: string; title: string; track: string }[];
   professional?: ProfessionalNote | null;
+  /** Set when this answer was reused from the firm's answer library rather than researched fresh. */
+  reuse?: { libraryId: string; originalDate: string; sourcesChecked: number } | null;
+  /** Which model wrote the answer and why (cost routing). */
+  route?: { complexity: "simple" | "complex"; model: string; escalated: boolean } | null;
   model: string;
   generatedAt: string;
 }

@@ -4,6 +4,7 @@ import { AccessError, authorize } from "@/lib/auth/dal";
 import { assertResearchQuota } from "@/lib/entitlements";
 import { orgHasFeature } from "@/lib/plans";
 import { runResearch, type ResearchEvent } from "@/lib/research/engine";
+import { saveToLibrary } from "@/lib/research/library";
 
 // Planning + searching + fetching + a cited answer comfortably fits, but give the model headroom.
 export const maxDuration = 300;
@@ -19,7 +20,7 @@ export async function POST(req: Request) {
     if (err instanceof AccessError) return Response.json({ error: err.message }, { status: 403 });
     throw err;
   }
-  const body = (await req.json().catch(() => ({}))) as { question?: unknown; professional?: unknown };
+  const body = (await req.json().catch(() => ({}))) as { question?: unknown; professional?: unknown; fresh?: unknown };
   const question = typeof body.question === "string" ? body.question.trim() : "";
   if (question.length < 8) return Response.json({ error: "Ask a full question (at least a few words)." }, { status: 400 });
   if (question.length > 2000) return Response.json({ error: "Keep the question under 2,000 characters — put the key facts first." }, { status: 400 });
@@ -32,12 +33,12 @@ export async function POST(req: Request) {
     async start(controller) {
       const send = (e: object) => controller.enqueue(encoder.encode(`${JSON.stringify(e)}\n`));
       let final: ResearchEvent | null = null;
-      for await (const e of runResearch(question, { professional })) {
+      for await (const e of runResearch(question, { professional, organizationId: org.id, fresh: body.fresh === true })) {
         if (e.type === "stage") send(e);
         else final = e;
       }
       const db = await getDb();
-      const usage = final && "usage" in final ? final.usage : { input: 0, output: 0 };
+      const usage = final && "usage" in final ? final.usage : { input: 0, output: 0, micros: 0 };
       const [row] = await db
         .insert(researchQueries)
         .values({
@@ -49,9 +50,13 @@ export async function POST(req: Request) {
           error: final?.type === "no_sources" || final?.type === "error" ? final.message : null,
           inputTokens: usage.input,
           outputTokens: usage.output,
+          costMicros: usage.micros,
+          route: final?.type === "done" ? final.route : null,
           durationMs: Date.now() - started,
         })
         .returning({ id: researchQueries.id });
+      if (final?.type === "done" && final.route !== "library")
+        await saveToLibrary(org.id, row.id, question, final.restated, final.answer).catch((err) => console.error("[research] library save failed", err));
       send({ type: "complete", id: row.id });
       controller.close();
     },

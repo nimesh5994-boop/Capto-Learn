@@ -243,6 +243,10 @@ export const researchQueries = pgTable(
     error: text("error"),
     inputTokens: integer("input_tokens").notNull().default(0),
     outputTokens: integer("output_tokens").notNull().default(0),
+    /** Estimated Anthropic API cost of this question in millionths of a US dollar (per-model, cache-aware). */
+    costMicros: integer("cost_micros").notNull().default(0),
+    /** How the answer was produced: "library" (reused), "sonnet", "opus", or "sonnet>opus" (escalated). */
+    route: text("route"),
     durationMs: integer("duration_ms"),
     /** Learner's rating of the answer: true = helpful, false = not. */
     helpful: boolean("helpful"),
@@ -251,6 +255,32 @@ export const researchQueries = pgTable(
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [index("research_queries_org_idx").on(t.organizationId, t.createdAt), index("research_queries_user_idx").on(t.userId, t.createdAt)]
+);
+
+/**
+ * Ask Capto answer library — verified answers a firm can reuse instead of paying for fresh research.
+ * Firm-scoped: questions can contain client facts, so answers are never shared across firms.
+ * `sourceVersions` pins each cited page's GOV.UK last-updated date; if any page has changed since, the entry
+ * is not reused (and is retired) — so a reused answer is never older than the guidance behind it.
+ */
+export const answerLibrary = pgTable(
+  "answer_library",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    organizationId: uuid("organization_id").notNull().references(() => organizations.id, { onDelete: "cascade" }),
+    question: text("question").notNull(),
+    restatedQuestion: text("restated_question").notNull(),
+    answer: jsonb("answer").$type<ResearchAnswer>().notNull(),
+    sourceVersions: jsonb("source_versions").$type<Record<string, string | null>>().notNull(),
+    originQueryId: uuid("origin_query_id").references(() => researchQueries.id, { onDelete: "set null" }),
+    hits: integer("hits").notNull().default(0),
+    lastHitAt: timestamp("last_hit_at", { withTimezone: true }),
+    /** Set when a cited source changed or a learner rated a (re)used answer unhelpful. */
+    retiredAt: timestamp("retired_at", { withTimezone: true }),
+    retiredReason: text("retired_reason"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index("answer_library_org_idx").on(t.organizationId, t.createdAt)]
 );
 
 /** Shared cache of fetched official pages (public, OGL content — not firm data). */
@@ -280,3 +310,4 @@ export type Assignment = typeof assignments.$inferSelect;
 export type ContentReview = typeof contentReviews.$inferSelect;
 export type LessonFeedback = typeof lessonFeedback.$inferSelect;
 export type ResearchQuery = typeof researchQueries.$inferSelect;
+export type LibraryEntry = typeof answerLibrary.$inferSelect;

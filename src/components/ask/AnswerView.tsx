@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { AlertTriangle, BookOpen, CheckCircle2, ExternalLink, ShieldCheck } from "lucide-react";
+import { AlertTriangle, BookOpen, CheckCircle2, ExternalLink, Library, RefreshCw, ShieldCheck } from "lucide-react";
 import type { ResearchAnswer } from "@/lib/research/types";
 import { renderMarkdown } from "@/lib/markdown";
 import { date } from "@/lib/format";
@@ -28,6 +28,18 @@ export function AnswerView({ question, answer }: { question: string; answer: Res
         {answer.taxYear && <span className="pill">Tax year {answer.taxYear}</span>}
         <span className="small faint">Answered {date(answer.generatedAt)}</span>
       </div>
+
+      {answer.reuse && (
+        <div className="alert alert-info row between" style={{ gap: 10, flexWrap: "wrap" }}>
+          <span>
+            <Library size={14} /> Reused from your firm&apos;s answer library (first researched {date(answer.reuse.originalDate)}). Today we re-checked all {answer.reuse.sourcesChecked} official source
+            {answer.reuse.sourcesChecked === 1 ? "" : "s"} — none has changed since.
+          </span>
+          <Link href={`/ask?fresh=1&q=${encodeURIComponent(question)}`} className="btn btn-sm">
+            <RefreshCw size={13} /> Research it fresh
+          </Link>
+        </div>
+      )}
 
       <div className={`${styles.short} prose`} dangerouslySetInnerHTML={{ __html: renderMarkdown(answer.shortAnswer) }} />
 

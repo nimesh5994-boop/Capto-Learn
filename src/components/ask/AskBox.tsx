@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { CheckCircle2, Loader2, Search } from "lucide-react";
 import styles from "./ask.module.css";
@@ -13,7 +13,8 @@ const EXAMPLES = [
   "What qualifies as R&D for tax purposes for a software company?",
 ];
 
-export function AskBox({ initial, canProfessional }: { initial?: string; canProfessional: boolean }) {
+/** `fresh` skips the answer library (used by "Research it fresh"); with `autoStart` the question runs on load. */
+export function AskBox({ initial, canProfessional, fresh = false, autoStart = false }: { initial?: string; canProfessional: boolean; fresh?: boolean; autoStart?: boolean }) {
   const router = useRouter();
   const [q, setQ] = useState(initial ?? "");
   const [professional, setProfessional] = useState(false);
@@ -27,7 +28,7 @@ export function AskBox({ initial, canProfessional }: { initial?: string; canProf
     setError(null);
     setStages([]);
     try {
-      const res = await fetch("/api/research", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ question: q, professional }) });
+      const res = await fetch("/api/research", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ question: q, professional, fresh }) });
       if (!res.ok || !res.body) {
         const j = (await res.json().catch(() => ({}))) as { error?: string };
         throw new Error(j.error ?? "Ask Capto is unavailable right now.");
@@ -59,6 +60,15 @@ export function AskBox({ initial, canProfessional }: { initial?: string; canProf
       setBusy(false);
     }
   }
+
+  const started = useRef(false);
+  useEffect(() => {
+    if (autoStart && !started.current && (initial ?? "").trim().length >= 8) {
+      started.current = true;
+      void ask();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="stack" style={{ gap: 14 }}>
