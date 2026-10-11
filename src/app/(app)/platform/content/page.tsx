@@ -5,7 +5,7 @@ import { getDb } from "@/lib/db/client";
 import { exerciseAttempts, lessonFeedback, organizations, researchQueries } from "@/lib/db/schema";
 import { allLessons, getLesson } from "@/content";
 import { LEVELS } from "@/content/types";
-import { effectiveReview, reviewRows, type EffectiveReview } from "@/lib/learning/review";
+import { effectiveReview, lessonSourceChanges, reviewRows, sourceChangedSinceReview, type EffectiveReview } from "@/lib/learning/review";
 import { date, dateTime } from "@/lib/format";
 import { ReviewPill } from "@/components/learn/bits";
 import { FeedbackControls, ReviewControls } from "./ReviewControls";
@@ -18,7 +18,7 @@ export default async function ContentReviewPage({ searchParams }: { searchParams
   const { show = "todo" } = await searchParams;
   await requirePlatform("platform.content.review");
   const db = await getDb();
-  const [reviews, feedback, accuracy, badAnswers] = await Promise.all([
+  const [reviews, feedback, accuracy, badAnswers, sourceChanges] = await Promise.all([
     reviewRows(),
     db
       .select({ f: lessonFeedback, firm: organizations.name })
@@ -38,6 +38,7 @@ export default async function ContentReviewPage({ searchParams }: { searchParams
       .where(eq(researchQueries.helpful, false))
       .orderBy(desc(researchQueries.createdAt))
       .limit(20),
+    lessonSourceChanges(),
   ]);
   const acc = new Map(accuracy.map((a) => [a.lessonId, a]));
   const openByLesson = new Map<string, number>();
@@ -45,7 +46,10 @@ export default async function ContentReviewPage({ searchParams }: { searchParams
 
   const lessons = allLessons().map((r) => ({ r, status: effectiveReview(r.lesson, reviews.get(r.id)) }));
   const counts = lessons.reduce<Record<EffectiveReview, number>>((m, l) => ((m[l.status] = (m[l.status] ?? 0) + 1), m), { draft: 0, reviewed: 0, changed: 0, needs_changes: 0 });
-  const shown = lessons.filter((l) => (show === "all" ? true : show === "reviewed" ? l.status === "reviewed" : l.status !== "reviewed"));
+  const staleReviewed = lessons.filter((l) => sourceChangedSinceReview(reviews.get(l.r.id), sourceChanges.get(l.r.id)));
+  const shown = lessons.filter((l) =>
+    show === "all" ? true : show === "reviewed" ? l.status === "reviewed" : show === "changed" ? sourceChanges.has(l.r.id) : l.status !== "reviewed" || staleReviewed.includes(l)
+  );
 
   return (
     <>
@@ -64,6 +68,11 @@ export default async function ContentReviewPage({ searchParams }: { searchParams
         <span className="pill pill-viewed">{counts.changed} edited since review</span>
         <span className="pill pill-declined">{counts.needs_changes} needs changes</span>
         <span className="pill pill-sent">{feedback.length} open learner reports</span>
+        {sourceChanges.size > 0 && (
+          <Link href="?show=changed" className="pill pill-viewed">
+            {sourceChanges.size} lessons cite guidance HMRC has changed{staleReviewed.length ? ` (${staleReviewed.length} already signed off)` : ""}
+          </Link>
+        )}
       </div>
 
       {feedback.length > 0 && (
@@ -103,6 +112,7 @@ export default async function ContentReviewPage({ searchParams }: { searchParams
           <span className="row small" style={{ gap: 10 }}>
             <Link href="?show=todo">To review</Link>
             <Link href="?show=reviewed">Reviewed</Link>
+            <Link href="?show=changed">Sources changed</Link>
             <Link href="?show=all">All</Link>
           </span>
         </div>
@@ -137,6 +147,12 @@ export default async function ContentReviewPage({ searchParams }: { searchParams
                       </div>
                     )}
                     {row?.notes && <div className="small faint">{row.notes}</div>}
+                    {sourceChanges.has(r.id) && (
+                      <div className="small" style={{ color: "var(--warning)" }}>
+                        Cited guidance changed {date(sourceChanges.get(r.id))}
+                        {sourceChangedSinceReview(row, sourceChanges.get(r.id)) ? " — after sign-off, re-check" : ""}
+                      </div>
+                    )}
                   </td>
                   <td className="right small num" style={{ color: a && a.n >= 10 && a.pct < 40 ? "var(--danger)" : undefined }} title={a && a.pct < 40 ? "Unusually low — check the answer key" : undefined}>
                     {a ? `${a.pct}% of ${a.n}` : "—"}

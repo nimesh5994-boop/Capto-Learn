@@ -54,7 +54,7 @@ export const PLANS: Record<PlanKey, PlanDef> = {
     monthlyPrice: 229,
     tagline: "Multi-office practices needing controls, audit and unlimited seats.",
     maxUsers: null,
-    maxResearchPerMonth: 2500,
+    maxResearchPerMonth: 2000,
     features: ["research", "professionalSources", "assignments", "teamProgress", "customRoles", "auditLog", "customBranding"],
   },
 };

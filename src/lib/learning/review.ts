@@ -29,3 +29,22 @@ export const REVIEW_LABELS: Record<EffectiveReview, string> = {
   changed: "Edited since review",
   needs_changes: "Under correction",
 };
+
+/**
+ * Latest date on which a page cited by each lesson changed (from the knowledge-base sync log). Used to flag lessons
+ * whose official sources moved on — especially ones already signed off.
+ */
+export async function lessonSourceChanges(): Promise<Map<string, Date>> {
+  const { kbSyncRuns } = await import("@/lib/db/schema");
+  const { desc } = await import("drizzle-orm");
+  const db = await getDb();
+  const runs = await db.select({ at: kbSyncRuns.startedAt, lessons: kbSyncRuns.lessonsAffected }).from(kbSyncRuns).orderBy(desc(kbSyncRuns.startedAt)).limit(200);
+  const out = new Map<string, Date>();
+  for (const r of runs) for (const id of r.lessons) if (!out.has(id)) out.set(id, r.at);
+  return out;
+}
+
+/** A signed-off lesson whose cited guidance changed after the sign-off. */
+export function sourceChangedSinceReview(row: ContentReview | undefined, changedAt: Date | undefined): boolean {
+  return !!row && row.status === "reviewed" && !!row.reviewedAt && !!changedAt && changedAt > row.reviewedAt;
+}

@@ -6,7 +6,7 @@ import { getLesson, moduleLessons, neighbours } from "@/content";
 import { LEVELS } from "@/content/types";
 import { markLessonStarted } from "@/app/actions/learning";
 import { myProgress } from "@/lib/learning/progress";
-import { effectiveReview, reviewRows } from "@/lib/learning/review";
+import { effectiveReview, lessonSourceChanges, reviewRows, sourceChangedSinceReview } from "@/lib/learning/review";
 import { publicExercise, QUIZ_PASS_MARK } from "@/lib/learning/marking";
 import { renderInline, renderMarkdown } from "@/lib/markdown";
 import { date } from "@/lib/format";
@@ -25,10 +25,12 @@ export default async function LessonPage({ params }: { params: Promise<{ track: 
   if (!ref) notFound();
   const { track, module, lesson } = ref;
   await markLessonStarted(id);
-  const [progress, reviews] = await Promise.all([myProgress(ctx.user.id), reviewRows()]);
+  const [progress, reviews, sourceChanges] = await Promise.all([myProgress(ctx.user.id), reviewRows(), lessonSourceChanges()]);
   const mine = progress.get(id);
   const review = reviews.get(id);
   const status = effectiveReview(lesson, review);
+  const guidanceChangedAt = sourceChanges.get(id);
+  const guidanceChangedSinceReview = sourceChangedSinceReview(review, guidanceChangedAt);
   const { prev, next } = neighbours(id);
   const siblings = moduleLessons(trackSlug, module.slug);
 
@@ -71,6 +73,11 @@ export default async function LessonPage({ params }: { params: Promise<{ track: 
 
       <div className={styles.lessonLayout}>
         <div className={styles.lessonMain}>
+          {guidanceChangedSinceReview && (
+            <div className="alert alert-warning">
+              Official guidance this lesson cites was updated on {date(guidanceChangedAt)}, after the lesson was reviewed. Check the linked sources while our reviewers re-check it.
+            </div>
+          )}
           {status === "reviewed" ? (
             <div className={styles.reviewedBanner}>
               <CheckCircle2 size={16} color="var(--success)" />

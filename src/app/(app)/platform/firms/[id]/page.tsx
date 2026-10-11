@@ -52,6 +52,8 @@ export default async function PracticePage({ params, searchParams }: { params: P
         started: sql<number>`count(*)::int`,
         learners: sql<number>`count(distinct ${lessonProgress.userId})::int`,
         research: sql<number>`(select count(*)::int from research_queries r where r.organization_id = ${id})`,
+        aiCostMonth: sql<number>`(select coalesce(sum(r.cost_micros), 0)::bigint from research_queries r where r.organization_id = ${id} and r.created_at >= date_trunc('month', now()))`,
+        libraryShare: sql<number>`(select coalesce(round(100.0 * count(*) filter (where r.route = 'library') / nullif(count(*) filter (where r.status = 'answered'), 0)), 0)::int from research_queries r where r.organization_id = ${id} and r.created_at >= date_trunc('month', now()))`,
       })
       .from(lessonProgress)
       .where(eq(lessonProgress.organizationId, id)),
@@ -102,6 +104,7 @@ export default async function PracticePage({ params, searchParams }: { params: P
             <Stat label="Lessons completed" value={stats.completed} sub={`${stats.started} started`} />
             <Stat label="Active learners" value={stats.learners} />
             <Stat label="Ask Capto (all time)" value={stats.research} />
+            <Stat label="AI cost this month" value={`$${(Number(stats.aiCostMonth) / 1_000_000).toFixed(2)}`} sub={`${stats.libraryShare}% answered from the library`} />
             <Stat label="Price" value={internal ? "—" : effectivePrice === null ? "Trial" : `${money(effectivePrice)}/mo`} sub={org.customMonthlyPrice !== null ? `agreed · list ${money(listPrice)}` : undefined} />
             <Stat label="Last sign-in" value={lastLogin ? dateTime(lastLogin) : "Never"} />
           </div>
