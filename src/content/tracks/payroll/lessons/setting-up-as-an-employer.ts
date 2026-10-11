@@ -132,7 +132,7 @@ Callum is 26. The company isn't connected to any other company, does no public-s
       kind: "numeric",
       id: "annual-cost-of-hire",
       prompt:
-        "A client with no Employment Allowance available (it's a single-director company and this will be... wait, no — the new hire means it can claim). Ignore Employment Allowance for this question. They plan to hire a 30-year-old administrator on £28,000 a year. Calculate the annual cost of salary + employer NIC + minimum employer pension (3% of qualifying earnings) for 2026/27.",
+        "Ignore Employment Allowance for this question. A client plans to hire a 30-year-old administrator on £28,000 a year. Calculate the annual cost of salary + employer NIC + minimum employer pension (3% of qualifying earnings) for 2026/27.",
       answer: 31892.8,
       unit: "£",
       explain:
