@@ -42,7 +42,7 @@ export type ResearchEvent =
   | { type: "error"; message: string; usage: Usage };
 
 const PlanSchema = z.object({
-  in_scope: z.boolean().describe("True if this is a UK accounting, tax, payroll, pensions, company law or practice-management question."),
+  in_scope: z.boolean().describe("True if this is a UK accounting, tax, payroll, pensions, company law, Companies House filing / company secretarial, AML or practice-management question."),
   out_of_scope_reason: z.string().describe("If not in scope, one sentence saying why; otherwise empty."),
   restated_question: z.string().describe("The question restated precisely and self-contained, in UK technical terms, without client names."),
   tax_year: z.string().describe('Tax year the question is about, e.g. "2026/27", or "" if not year-specific.'),
@@ -58,6 +58,7 @@ const PlanSchema = z.object({
 
 const PLAN_SYSTEM = `You plan searches for a UK accountancy research assistant used by staff in accountancy practices.
 Given a question, decide if it's in scope, grade its complexity, and write GOV.UK search queries that will find the authoritative pages.
+In scope means anything a UK accountancy practice handles: accounting, all UK taxes, payroll, pensions, AML and practice compliance, AND company law and Companies House matters (confirmation statements, filing accounts and late filing penalties, PSCs, officers, identity verification, strike-off, share capital). Only mark a question out of scope if it is clearly unrelated to accountancy practice work.
 Use HMRC's own vocabulary (e.g. "loans to participators" not "director loan tax"; "input tax" not "claiming VAT back";
 "off-payroll working" for IR35). Always include at least one 'manuals' search and one 'guidance' search. For questions
 about current rates or thresholds include a guidance search naming the tax year (e.g. "rates and thresholds for employers 2026 to 2027").
@@ -306,7 +307,7 @@ export async function* runResearch(question: string, opts: { professional: boole
       return;
     }
     if (!plan.in_scope) {
-      yield { type: "no_sources", message: plan.out_of_scope_reason || "Ask Capto covers UK accounting, tax, payroll, pensions, company law and practice compliance.", usage: meter.usage };
+      yield { type: "no_sources", message: plan.out_of_scope_reason || "Ask Capto covers UK accounting, tax, payroll, pensions, company law, Companies House and practice compliance.", usage: meter.usage };
       return;
     }
 

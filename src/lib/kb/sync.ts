@@ -26,6 +26,7 @@ interface Collection {
   kind: KbKind;
   slug: string;
   label: string;
+  query?: string;
 }
 
 const COLLECTIONS: Collection[] = [...MANUALS.map((m) => ({ kind: "manual_section" as const, ...m })), ...GUIDANCE_ORGS.map((g) => ({ kind: "guidance" as const, ...g }))];
@@ -38,7 +39,8 @@ async function searchPage(params: string, start: number): Promise<{ total: numbe
 
 /** Every page in a collection with its last-updated time. `complete` is false if the listing was cut short. */
 async function listCollection(c: Collection): Promise<{ listed: Listed[]; complete: boolean }> {
-  const params = c.kind === "manual_section" ? `filter_manual=/hmrc-internal-manuals/${c.slug}` : `filter_organisations=${c.slug}&filter_content_purpose_supergroup=guidance_and_regulation`;
+  const params =
+    c.kind === "manual_section" ? `filter_manual=/hmrc-internal-manuals/${c.slug}` : (c.query ?? `filter_organisations=${c.slug}&filter_content_purpose_supergroup=guidance_and_regulation`);
   const out = new Map<string, Listed>();
   let total = Infinity;
   for (let start = 0; start < total && start < 20_000; start += 1000) {

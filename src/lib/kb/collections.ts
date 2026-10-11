@@ -7,6 +7,8 @@
 export interface ManualDef {
   slug: string;
   label: string;
+  /** GOV.UK Search API filter for guidance collections (defaults to the organisation's guidance & regulation). */
+  query?: string;
 }
 
 export const MANUALS: ManualDef[] = [
@@ -64,6 +66,10 @@ export const MANUALS: ManualDef[] = [
 export const GUIDANCE_ORGS: ManualDef[] = [
   { slug: "hm-revenue-customs", label: "HMRC guidance" },
   { slug: "companies-house", label: "Companies House guidance" },
+  // GOV.UK "mainstream" guides and answers (e.g. /vat-registration, /self-assessment-tax-returns) sit outside the
+  // guidance category, but hold the plain-English thresholds, rates and deadlines practitioners look up most.
+  { slug: "hmrc-mainstream", label: "HMRC GOV.UK guides and answers", query: "filter_organisations=hm-revenue-customs&filter_format=guide&filter_format=answer" },
+  { slug: "companies-house-mainstream", label: "Companies House GOV.UK guides and answers", query: "filter_organisations=companies-house&filter_format=guide&filter_format=answer" },
 ];
 
 /** A full re-check of every collection happens at most this often (the "weekly sync"). */

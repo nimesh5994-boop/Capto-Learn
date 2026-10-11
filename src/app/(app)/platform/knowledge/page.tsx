@@ -46,7 +46,7 @@ export default async function KnowledgePage() {
   const running = runs.some((r) => r.status === "running" && r.startedAt > staleBefore);
   const collections = [
     ...MANUALS.map((m) => ({ ...m, type: "HMRC manual", href: `https://www.gov.uk/hmrc-internal-manuals/${m.slug}` })),
-    ...GUIDANCE_ORGS.map((g) => ({ ...g, type: "Guidance", href: `https://www.gov.uk/government/organisations/${g.slug}` })),
+    ...GUIDANCE_ORGS.map((g) => ({ ...g, type: "Guidance", href: `https://www.gov.uk/government/organisations/${g.slug.replace(/-mainstream$/, "").replace(/^hmrc$/, "hm-revenue-customs")}` })),
     ...LEGISLATION.map((a) => ({ slug: a.id, label: a.label, type: "Legislation", href: `https://www.legislation.gov.uk/${a.id}` })),
   ];
   const legislationStored = LEGISLATION.reduce((n, a) => n + (byCollection.get(a.id)?.docs ?? 0), 0);
