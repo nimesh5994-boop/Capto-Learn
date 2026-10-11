@@ -68,3 +68,40 @@ export const GUIDANCE_ORGS: ManualDef[] = [
 
 /** A full re-check of every collection happens at most this often (the "weekly sync"). */
 export const FULL_SYNC_EVERY_DAYS = 7;
+
+export interface ActDef {
+  /** legislation.gov.uk type/year/number, e.g. "ukpga/1994/23". */
+  id: string;
+  label: string;
+  /** Limit to these provisions (e.g. one schedule of a Finance Act); omit for the whole instrument. */
+  only?: string[];
+}
+
+/**
+ * Core tax and company legislation mirrored from legislation.gov.uk (Open Government Licence v3.0).
+ * Synced automatically once legislation.gov.uk accepts our requests — see lib/kb/legislation.ts.
+ */
+export const LEGISLATION: ActDef[] = [
+  { id: "ukpga/1994/23", label: "Value Added Tax Act 1994" },
+  { id: "uksi/1995/2518", label: "Value Added Tax Regulations 1995" },
+  { id: "uksi/1992/3222", label: "Value Added Tax (Input Tax) Order 1992" },
+  { id: "ukpga/2003/1", label: "Income Tax (Earnings and Pensions) Act 2003" },
+  { id: "uksi/2003/2682", label: "Income Tax (PAYE) Regulations 2003" },
+  { id: "ukpga/2005/5", label: "Income Tax (Trading and Other Income) Act 2005" },
+  { id: "ukpga/2007/3", label: "Income Tax Act 2007" },
+  { id: "ukpga/2009/4", label: "Corporation Tax Act 2009" },
+  { id: "ukpga/2010/4", label: "Corporation Tax Act 2010" },
+  { id: "ukpga/2001/2", label: "Capital Allowances Act 2001" },
+  { id: "ukpga/1992/12", label: "Taxation of Chargeable Gains Act 1992" },
+  { id: "ukpga/1984/51", label: "Inheritance Tax Act 1984" },
+  { id: "ukpga/1970/9", label: "Taxes Management Act 1970" },
+  { id: "ukpga/1992/4", label: "Social Security Contributions and Benefits Act 1992" },
+  { id: "ukpga/2004/12", label: "Finance Act 2004 (pensions)", only: ["section/149-284", "schedule/28", "schedule/29", "schedule/36"] },
+  { id: "ukpga/2007/11", label: "Finance Act 2007 Sch 24 (inaccuracy penalties)", only: ["schedule/24"] },
+  { id: "ukpga/2008/9", label: "Finance Act 2008 Sch 36 (information powers)", only: ["schedule/36"] },
+  { id: "ukpga/2009/10", label: "Finance Act 2009 Schs 55–56 (late filing and payment penalties)", only: ["schedule/55", "schedule/56"] },
+  { id: "ukpga/2006/46", label: "Companies Act 2006" },
+  { id: "ukpga/2008/30", label: "Pensions Act 2008 (auto-enrolment)" },
+  { id: "uksi/2017/692", label: "Money Laundering Regulations 2017" },
+  { id: "ukpga/2023/56", label: "Economic Crime and Corporate Transparency Act 2023" },
+];

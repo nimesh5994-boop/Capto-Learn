@@ -7,6 +7,7 @@ import { allLessons } from "@/content";
 import { fetchGovUkDocument, govUkFetch } from "@/lib/research/govuk";
 import { FULL_SYNC_EVERY_DAYS, GUIDANCE_ORGS, MANUALS } from "./collections";
 import { planSync, toPassages, type Listed } from "./rules";
+import { syncLegislation, type LegislationResult } from "./legislation";
 
 /*
  * The sync bot. Mirrors the core set of HMRC manuals and HMRC / Companies House guidance into our own database
@@ -170,6 +171,24 @@ export async function runSync(opts: SyncOptions): Promise<string> {
       await db.update(kbSyncRuns).set(stats).where(eq(kbSyncRuns.id, run.id));
     }
 
+    // Legislation (legislation.gov.uk). Skipped cleanly while that site refuses automated requests.
+    let legislation: LegislationResult | null = null;
+    if (process.env.LEGISLATION_SYNC !== "off" && !opts.only && !stoppedEarly && Date.now() < deadline) {
+      legislation = await syncLegislation(deadline).catch((err) => {
+        console.error("[kb-sync] legislation", err);
+        return null;
+      });
+      if (legislation) {
+        stats.listed += legislation.listed;
+        stats.added += legislation.added;
+        stats.updated += legislation.updated;
+        stats.removed += legislation.removed;
+        stats.failed += legislation.failed;
+        changedUrls.push(...legislation.changedUrls);
+        if (legislation.status === "partial") stoppedEarly = true;
+      }
+    }
+
     // Refresh term statistics used by search to skip ultra-common words (only when content changed).
     const [termCount] = await db.select({ n: sql<number>`count(*)::int` }).from(kbTerms);
     if (stats.added || stats.updated || stats.removed || !termCount?.n) await refreshTermStats();
@@ -196,6 +215,7 @@ export async function runSync(opts: SyncOptions): Promise<string> {
       stoppedEarly && "Time budget reached.",
       listingFailures.length && `Couldn't list: ${listingFailures.slice(0, 5).join(", ")}${listingFailures.length > 5 ? ` +${listingFailures.length - 5} more` : ""}.`,
       stats.failed && `${stats.failed} page(s) couldn't be downloaded.`,
+      legislation?.note,
       incomplete && "The next run continues where this one stopped.",
     ].filter(Boolean);
     const status = incomplete ? "partial" : "done";

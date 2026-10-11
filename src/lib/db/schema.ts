@@ -288,7 +288,7 @@ export const answerLibrary = pgTable(
 
 const tsvector = customType<{ data: string }>({ dataType: () => "tsvector" });
 
-export type KbKind = "manual_section" | "guidance";
+export type KbKind = "manual_section" | "guidance" | "legislation";
 
 /**
  * One official page mirrored from GOV.UK (HMRC manuals, HMRC/Companies House guidance). Crown copyright,

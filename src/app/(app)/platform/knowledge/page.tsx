@@ -3,7 +3,7 @@ import { desc, isNull, sql } from "drizzle-orm";
 import { requirePlatform } from "@/lib/auth/dal";
 import { getDb } from "@/lib/db/client";
 import { kbDocuments, kbSyncRuns } from "@/lib/db/schema";
-import { GUIDANCE_ORGS, MANUALS, FULL_SYNC_EVERY_DAYS } from "@/lib/kb/collections";
+import { GUIDANCE_ORGS, LEGISLATION, MANUALS, FULL_SYNC_EVERY_DAYS } from "@/lib/kb/collections";
 import { kbStats } from "@/lib/kb/search";
 import { getLesson } from "@/content";
 import { dateTime } from "@/lib/format";
@@ -29,7 +29,13 @@ export default async function KnowledgePage() {
   const byCollection = new Map(perCollection.map((c) => [c.collection, c]));
   const staleBefore = daysAgo(1 / 48); // a "running" row older than 30 minutes is a crashed run
   const running = runs.some((r) => r.status === "running" && r.startedAt > staleBefore);
-  const collections = [...MANUALS.map((m) => ({ ...m, type: "HMRC manual" })), ...GUIDANCE_ORGS.map((g) => ({ ...g, type: "Guidance" }))];
+  const collections = [
+    ...MANUALS.map((m) => ({ ...m, type: "HMRC manual", href: `https://www.gov.uk/hmrc-internal-manuals/${m.slug}` })),
+    ...GUIDANCE_ORGS.map((g) => ({ ...g, type: "Guidance", href: `https://www.gov.uk/government/organisations/${g.slug}` })),
+    ...LEGISLATION.map((a) => ({ slug: a.id, label: a.label, type: "Legislation", href: `https://www.legislation.gov.uk/${a.id}` })),
+  ];
+  const legislationStored = LEGISLATION.reduce((n, a) => n + (byCollection.get(a.id)?.docs ?? 0), 0);
+  const awaitingAccess = !legislationStored && runs.some((r) => r.note?.includes("legislation.gov.uk is not yet accepting"));
 
   return (
     <>
@@ -52,6 +58,13 @@ export default async function KnowledgePage() {
         </span>
         {stats.newest && <span className="pill">Last download {dateTime(stats.newest)}</span>}
       </div>
+
+      {awaitingAccess && (
+        <div className="alert alert-warning" style={{ marginBottom: 18 }}>
+          <strong>Legislation is waiting for access.</strong> legislation.gov.uk currently refuses automated requests (bot protection), and Capto does not try to get round that. Each sync checks once; legislation starts downloading
+          automatically as soon as access is granted. In the meantime HMRC&apos;s manuals, which quote the key statutory text, are fully available.
+        </div>
+      )}
 
       <section className="card" style={{ marginBottom: 18 }}>
         <div className="card-pad" style={{ paddingBottom: 6 }}>
@@ -123,7 +136,7 @@ export default async function KnowledgePage() {
           <tbody>
             {collections.map((c) => {
               const s = byCollection.get(c.slug);
-              const href = c.type === "HMRC manual" ? `https://www.gov.uk/hmrc-internal-manuals/${c.slug}` : `https://www.gov.uk/government/organisations/${c.slug}`;
+              const href = c.href;
               return (
                 <tr key={c.slug}>
                   <td>
