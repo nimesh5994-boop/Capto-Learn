@@ -29,6 +29,13 @@
       "when": 1791555113380,
       "tag": "0003_kb_terms",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1791742193995,
+      "tag": "0004_topic_briefs",
+      "breakpoints": true
     }
   ]
 }

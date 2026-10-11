@@ -48,6 +48,8 @@ export interface ResearchAnswer {
   professional?: ProfessionalNote | null;
   /** Set when this answer was reused from the firm's answer library rather than researched fresh. */
   reuse?: { libraryId: string; originalDate: string; sourcesChecked: number } | null;
+  /** Set when this answer is a Capto topic brief (written overnight, shared across firms). */
+  brief?: { id: string; area: string; writtenAt: string; sourcesChecked: number } | null;
   /** Which model wrote the answer and why (cost routing). */
   route?: { complexity: "simple" | "complex"; model: string; escalated: boolean } | null;
   model: string;

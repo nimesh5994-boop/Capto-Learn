@@ -27,6 +27,45 @@ the type of entity (company, sole trader, partnership, individual, charity), the
 amounts that cross a threshold, who is involved (employees vs clients vs directors, UK vs overseas), or if the new question asks for something extra.
 Different wording of the same question IS a match. When unsure, answer -1.`;
 
+/** Haiku decides which (if any) earlier question's answer fully answers the new one. Returns the index, or -1. */
+export async function judgeSameQuestion(
+  question: string,
+  candidates: { question: string; answeredOn: Date; taxYear: string | null; shortAnswer: string }[],
+  meter: Meter
+): Promise<number> {
+  if (!candidates.length) return -1;
+  const res = await anthropic().beta.messages.parse({
+    model: MODELS.haiku,
+    max_tokens: 400,
+    output_config: { format: betaZodOutputFormat(JudgeSchema) },
+    system: JUDGE_SYSTEM,
+    messages: [
+      {
+        role: "user",
+        content: `Today is ${new Date().toISOString().slice(0, 10)}.\n\nNEW QUESTION:\n${question}\n\nEARLIER QUESTIONS (each has a saved answer):\n${candidates
+          .map((c, i) => `[${i}] (answered ${c.answeredOn.toISOString().slice(0, 10)}${c.taxYear ? `, tax year ${c.taxYear}` : ""}) ${c.question}\n    Short answer given: ${c.shortAnswer.slice(0, 400)}`)
+          .join("\n\n")}`,
+      },
+    ],
+  });
+  meter.add(MODELS.haiku, res);
+  return res.parsed_output?.match ?? -1;
+}
+
+/**
+ * Whether every pinned source page is still at the version an answer was written from. Pages in the knowledge base
+ * are checked against its synced copy (no network); anything not mirrored is checked live on GOV.UK.
+ * Returns "unchanged", "unknown" (couldn't check), or the URL of the first changed page.
+ */
+export async function sourcesUnchanged(sourceVersions: Record<string, string | null>): Promise<"unchanged" | "unknown" | string> {
+  const urls = Object.keys(sourceVersions);
+  const stored = await storedVersions(urls);
+  const current = await Promise.all(urls.map((u) => (stored.has(u) ? stored.get(u) : govUkUpdatedAt(u))));
+  if (current.some((c) => c === undefined)) return "unknown";
+  const changed = urls.find((u, i) => sourceChanged(sourceVersions[u], current[i] ?? null));
+  return changed ?? "unchanged";
+}
+
 export interface LibraryHit {
   entry: LibraryEntry;
   sourcesChecked: number;
@@ -44,36 +83,22 @@ export async function findLibraryAnswer(orgId: string, question: string, restate
   const candidates = shortlist(question, restated, entries);
   if (!candidates.length) return null;
 
-  const res = await anthropic().beta.messages.parse({
-    model: MODELS.haiku,
-    max_tokens: 400,
-    output_config: { format: betaZodOutputFormat(JudgeSchema) },
-    system: JUDGE_SYSTEM,
-    messages: [
-      {
-        role: "user",
-        content: `Today is ${new Date().toISOString().slice(0, 10)}.\n\nNEW QUESTION:\n${question}\n\nEARLIER QUESTIONS (each has a saved answer):\n${candidates
-          .map((c, i) => `[${i}] (answered ${c.createdAt.toISOString().slice(0, 10)}${c.answer.taxYear ? `, tax year ${c.answer.taxYear}` : ""}) ${c.question}\n    Short answer given: ${c.answer.shortAnswer.slice(0, 400)}`)
-          .join("\n\n")}`,
-      },
-    ],
-  });
-  meter.add(MODELS.haiku, res);
-  const pick = res.parsed_output?.match ?? -1;
+  const pick = await judgeSameQuestion(
+    question,
+    candidates.map((c) => ({ question: c.question, answeredOn: c.createdAt, taxYear: c.answer.taxYear, shortAnswer: c.answer.shortAnswer })),
+    meter
+  );
   const entry = candidates[pick];
   if (!entry) return null;
 
-  // Every cited official page must be unchanged since the answer was written. Pages in the knowledge base are
-  // checked against its synced copy (no network); anything not mirrored is checked live on GOV.UK.
-  const urls = Object.keys(entry.sourceVersions);
-  const stored = await storedVersions(urls);
-  const current = await Promise.all(urls.map((u) => (stored.has(u) ? stored.get(u) : govUkUpdatedAt(u))));
-  if (current.some((c) => c === undefined)) return null; // couldn't confirm — research fresh rather than risk it
-  const changed = urls.filter((u, i) => sourceChanged(entry.sourceVersions[u], current[i] ?? null));
-  if (changed.length) {
-    await db.update(answerLibrary).set({ retiredAt: new Date(), retiredReason: `Source updated: ${changed[0]}` }).where(eq(answerLibrary.id, entry.id));
+  // Every cited official page must be unchanged since the answer was written.
+  const check = await sourcesUnchanged(entry.sourceVersions);
+  if (check === "unknown") return null; // couldn't confirm — research fresh rather than risk it
+  if (check !== "unchanged") {
+    await db.update(answerLibrary).set({ retiredAt: new Date(), retiredReason: `Source updated: ${check}` }).where(eq(answerLibrary.id, entry.id));
     return null;
   }
+  const urls = Object.keys(entry.sourceVersions);
   await db.update(answerLibrary).set({ hits: sql`${answerLibrary.hits} + 1`, lastHitAt: new Date() }).where(eq(answerLibrary.id, entry.id));
   return { entry, sourcesChecked: urls.length };
 }

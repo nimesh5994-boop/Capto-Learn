@@ -2,7 +2,7 @@ import "server-only";
 import { createHash } from "node:crypto";
 import { and, desc, eq, gt, inArray, isNull, sql } from "drizzle-orm";
 import { getDb } from "@/lib/db/client";
-import { answerLibrary, kbDocuments, kbPassages, kbSyncRuns, kbTerms, type KbKind } from "@/lib/db/schema";
+import { answerLibrary, kbDocuments, kbPassages, kbSyncRuns, kbTerms, topicBriefs, type KbKind } from "@/lib/db/schema";
 import { allLessons } from "@/content";
 import { fetchGovUkDocument, govUkFetch } from "@/lib/research/govuk";
 import { FULL_SYNC_EVERY_DAYS, GUIDANCE_ORGS, MANUALS } from "./collections";
@@ -202,6 +202,12 @@ export async function runSync(opts: SyncOptions): Promise<string> {
         .where(and(isNull(answerLibrary.retiredAt), sql`jsonb_exists(${answerLibrary.sourceVersions}, ${url})`))
         .returning({ id: answerLibrary.id });
       libraryRetired += r.length;
+      const b = await db
+        .update(topicBriefs)
+        .set({ status: "retired", retiredReason: `Source updated: ${url}` })
+        .where(and(eq(topicBriefs.status, "published"), sql`jsonb_exists(${topicBriefs.sourceVersions}, ${url})`))
+        .returning({ id: topicBriefs.id });
+      libraryRetired += b.length;
     }
     const changed = new Set(changedUrls.map(norm));
     const lessonsAffected = allLessons()

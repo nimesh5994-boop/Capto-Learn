@@ -6,6 +6,10 @@ import { searchKb, kbStats, type KbHit } from "@/lib/kb/search";
 import { allLessons, lessonText } from "@/content";
 import { rankPassages } from "@/lib/research/passages";
 import { date } from "@/lib/format";
+import { getDb } from "@/lib/db/client";
+import { topicBriefs } from "@/lib/db/schema";
+import { and, eq, isNotNull } from "drizzle-orm";
+import { termOverlap } from "@/lib/research/libraryRules";
 import styles from "@/components/ask/ask.module.css";
 
 export const metadata = { title: "Guidance search" };
@@ -32,6 +36,15 @@ export default async function GuidanceSearchPage({ searchParams }: { searchParam
   for (const h of hits) byDoc.set(h.url, [...(byDoc.get(h.url) ?? []), h]);
   const docs = [...byDoc.values()].slice(0, 15);
   const lessons = query ? relatedLessons(query) : [];
+  // Capto topic briefs matching the search (keyword overlap only — free, no AI).
+  const briefs = query
+    ? (await (await getDb()).select().from(topicBriefs).where(and(eq(topicBriefs.status, "published"), isNotNull(topicBriefs.answer))))
+        .map((b) => ({ b, score: Math.max(termOverlap(query, b.question), termOverlap(query, b.restatedQuestion)) }))
+        .filter((x) => x.score >= 0.5)
+        .sort((x, y) => y.score - x.score)
+        .slice(0, 3)
+        .map((x) => x.b)
+    : [];
   const canAsk = ctx.can("research.use") && orgHasFeature(ctx.org, "research");
 
   return (
@@ -62,6 +75,15 @@ export default async function GuidanceSearchPage({ searchParams }: { searchParam
       {query && (
         <div className={styles.layout} style={{ marginTop: 16 }}>
           <div className="stack" style={{ gap: 12 }}>
+            {briefs.map((b) => (
+              <article key={b.id} className={`card ${styles.result}`} style={{ borderLeft: "4px solid var(--primary)" }}>
+                <div className={styles.resultMeta}>Capto topic brief · {b.area} · quote-checked</div>
+                <h3>
+                  <Link href={`/briefs/${b.id}`}>{b.question}</Link>
+                </h3>
+                <p className={styles.snippet}>{b.answer?.shortAnswer}</p>
+              </article>
+            ))}
             {docs.length === 0 ? (
               <div className="card card-pad muted">No official guidance matched. Try HMRC&apos;s own terms (e.g. &ldquo;input tax&rdquo; rather than &ldquo;claim VAT back&rdquo;).</div>
             ) : (

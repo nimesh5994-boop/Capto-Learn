@@ -9,6 +9,9 @@ import { getLesson } from "@/content";
 import { dateTime } from "@/lib/format";
 import { daysAgo } from "@/lib/time";
 import { SyncButton } from "./SyncButton";
+import { LibrarianButtons } from "./LibrarianButtons";
+import { topicBriefs } from "@/lib/db/schema";
+import { BRIEF_TOPICS } from "@/lib/research/briefTopics";
 
 export const metadata = { title: "Knowledge base" };
 
@@ -17,7 +20,7 @@ const STATUS_PILL: Record<string, string> = { done: "pill-accepted", running: "p
 export default async function KnowledgePage() {
   await requirePlatform("platform.content.review");
   const db = await getDb();
-  const [stats, runs, perCollection] = await Promise.all([
+  const [stats, runs, perCollection, briefs] = await Promise.all([
     kbStats(),
     db.select().from(kbSyncRuns).orderBy(desc(kbSyncRuns.startedAt)).limit(12),
     db
@@ -25,7 +28,19 @@ export default async function KnowledgePage() {
       .from(kbDocuments)
       .where(isNull(kbDocuments.removedAt))
       .groupBy(kbDocuments.collection),
+    db.select().from(topicBriefs).orderBy(desc(topicBriefs.createdAt)),
   ]);
+  // Latest brief per topic decides its status.
+  const latestBrief = new Map<string, (typeof briefs)[number]>();
+  for (const b of briefs) if (!latestBrief.has(b.topicKey)) latestBrief.set(b.topicKey, b);
+  const briefCounts = { published: 0, pending: 0, failed: 0, retired: 0, missing: 0 };
+  for (const t of BRIEF_TOPICS) {
+    const b = latestBrief.get(t.key);
+    if (!b) briefCounts.missing++;
+    else briefCounts[b.status]++;
+  }
+  const briefSpend = briefs.reduce((n, b) => n + b.costMicros, 0);
+  const briefHits = briefs.reduce((n, b) => n + b.hits, 0);
   const byCollection = new Map(perCollection.map((c) => [c.collection, c]));
   const staleBefore = daysAgo(1 / 48); // a "running" row older than 30 minutes is a crashed run
   const running = runs.some((r) => r.status === "running" && r.startedAt > staleBefore);
@@ -118,6 +133,51 @@ export default async function KnowledgePage() {
             </tbody>
           </table>
         )}
+      </section>
+
+      <section className="card" style={{ marginBottom: 18 }}>
+        <div className="card-pad row between" style={{ paddingBottom: 6, alignItems: "flex-start", gap: 12, flexWrap: "wrap" }}>
+          <div>
+            <h2 style={{ margin: 0 }}>Topic briefs (the Librarian)</h2>
+            <p className="small muted" style={{ margin: "4px 0 0", maxWidth: 640 }}>
+              Verified answers to common practice questions, written overnight at half price and served free to every firm until a cited source changes.
+            </p>
+          </div>
+          <LibrarianButtons missing={briefCounts.missing + briefCounts.failed + briefCounts.retired} pending={briefCounts.pending} />
+        </div>
+        <div className="card-pad row" style={{ gap: 8, paddingTop: 0, flexWrap: "wrap" }}>
+          <span className="pill pill-accepted">{briefCounts.published} published</span>
+          <span className="pill pill-sent">{briefCounts.pending} being written</span>
+          <span className="pill">{briefCounts.missing} not written yet</span>
+          {briefCounts.retired > 0 && <span className="pill pill-viewed">{briefCounts.retired} retired (source changed)</span>}
+          {briefCounts.failed > 0 && <span className="pill pill-declined">{briefCounts.failed} didn&apos;t pass checks</span>}
+          <span className="pill">
+            Served {briefHits} times · cost to write ${(briefSpend / 1e6).toFixed(2)}
+          </span>
+        </div>
+        <table className="table">
+          <tbody>
+            {BRIEF_TOPICS.map((t) => {
+              const b = latestBrief.get(t.key);
+              return (
+                <tr key={t.key}>
+                  <td className="small muted" style={{ width: 130 }}>
+                    {t.area}
+                  </td>
+                  <td>
+                    {b?.status === "published" ? <Link href={`/briefs/${b.id}`}>{t.question}</Link> : t.question}
+                    {b?.failureReason && <div className="small faint">{b.failureReason}</div>}
+                    {b?.retiredReason && <div className="small faint">{b.retiredReason}</div>}
+                  </td>
+                  <td className="small" style={{ whiteSpace: "nowrap" }}>
+                    {b ? <span className={`pill ${b.status === "published" ? "pill-accepted" : b.status === "pending" ? "pill-sent" : b.status === "failed" ? "pill-declined" : "pill-viewed"}`}>{b.status}</span> : <span className="pill">not written</span>}
+                    {b?.hits ? <div className="faint">served {b.hits}×</div> : null}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
       </section>
 
       <section className="card">

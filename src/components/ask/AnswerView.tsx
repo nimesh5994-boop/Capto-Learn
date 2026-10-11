@@ -29,6 +29,18 @@ export function AnswerView({ question, answer }: { question: string; answer: Res
         <span className="small faint">Answered {date(answer.generatedAt)}</span>
       </div>
 
+      {answer.brief && (
+        <div className="alert alert-info row between" style={{ gap: 10, flexWrap: "wrap" }}>
+          <span>
+            <Library size={14} /> Capto topic brief ({answer.brief.area}), written {date(answer.brief.writtenAt)} and quote-checked. Its {answer.brief.sourcesChecked} official source
+            {answer.brief.sourcesChecked === 1 ? " hasn't" : "s haven't"} changed since.
+          </span>
+          <Link href={`/ask?fresh=1&q=${encodeURIComponent(question)}`} className="btn btn-sm">
+            <RefreshCw size={13} /> Research my exact situation
+          </Link>
+        </div>
+      )}
+
       {answer.reuse && (
         <div className="alert alert-info row between" style={{ gap: 10, flexWrap: "wrap" }}>
           <span>

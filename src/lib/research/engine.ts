@@ -8,6 +8,7 @@ import { allLessons, lessonText } from "@/content";
 import { anthropic, FALLBACK, Meter } from "./ai";
 import { fetchGovUkPage, searchGovUk, type FetchedPage, type SearchHit } from "./govuk";
 import { findLibraryAnswer } from "./library";
+import { findTopicBrief } from "./briefs";
 import { loadDocuments, rankDocuments } from "@/lib/kb/search";
 import { rankPassages, selectPassages, verifyQuote } from "./passages";
 import { MODELS } from "./pricing";
@@ -62,7 +63,7 @@ Use HMRC's own vocabulary (e.g. "loans to participators" not "director loan tax"
 about current rates or thresholds include a guidance search naming the tax year (e.g. "rates and thresholds for employers 2026 to 2027").
 If answering needs a tax charge, penalty or relief to be calculated, include a search for the rate itself (e.g. "rate of tax section 455 loans to participators", "fuel scale charge rates").`;
 
-const AnswerSchema = z.object({
+export const AnswerSchema = z.object({
   short_answer: z.string().describe("2–4 sentence direct answer a practitioner can act on. If the sources don't answer it, say so plainly."),
   points: z
     .array(
@@ -82,7 +83,7 @@ const AnswerSchema = z.object({
 });
 
 // Kept stable and above the 512-token minimum so it is served from the prompt cache on every question.
-const ANSWER_SYSTEM = `You are Ask Capto, the research assistant inside Capto Learn, used by staff at UK accountancy practices — from trainees to tax managers.
+export const ANSWER_SYSTEM = `You are Ask Capto, the research assistant inside Capto Learn, used by staff at UK accountancy practices — from trainees to tax managers.
 
 You answer ONLY from the numbered official source passages supplied with each question (HMRC internal manuals and GOV.UK guidance).
 
@@ -171,7 +172,21 @@ async function professionalNote(question: string, meter: Meter): Promise<Profess
   return { summary, links: [...links.values()] };
 }
 
-type Drafted = { out: z.infer<typeof AnswerSchema>; points: AnswerPoint[]; unverifiedShare: number; model: string } | null;
+export type Drafted = { out: z.infer<typeof AnswerSchema>; points: AnswerPoint[]; unverifiedShare: number; model: string } | null;
+export type Plan = z.infer<typeof PlanSchema>;
+
+/** Checks every quote in a drafted answer against the full text of its source. */
+export function verifyDraft(out: z.infer<typeof AnswerSchema>, textById: Map<string, string>, model: string): NonNullable<Drafted> {
+  const points: AnswerPoint[] = out.points.map((p) => {
+    const citations = p.citations.map((c) => {
+      const text = textById.get(c.source_id);
+      return { sourceId: c.source_id, quote: c.quote, verified: !!text && verifyQuote(c.quote, text) };
+    });
+    return { heading: p.heading, text: p.text, citations, verified: citations.some((c) => c.verified) };
+  });
+  const unverifiedShare = points.length ? points.filter((p) => !p.verified).length / points.length : 1;
+  return { out, points, unverifiedShare, model };
+}
 
 /** One cited answer from `model`, with every quote verified against the full page text. */
 async function draftAnswer(model: string, userContent: string, textById: Map<string, string>, meter: Meter): Promise<Drafted> {
@@ -186,41 +201,107 @@ async function draftAnswer(model: string, userContent: string, textById: Map<str
   meter.add(res.model, res);
   const out = res.parsed_output;
   if (res.stop_reason === "refusal" || !out) return null;
-  const points: AnswerPoint[] = out.points.map((p) => {
-    const citations = p.citations.map((c) => {
-      const text = textById.get(c.source_id);
-      return { sourceId: c.source_id, quote: c.quote, verified: !!text && verifyQuote(c.quote, text) };
-    });
-    return { heading: p.heading, text: p.text, citations, verified: citations.some((c) => c.verified) };
-  });
-  const unverifiedShare = points.length ? points.filter((p) => !p.verified).length / points.length : 1;
-  return { out, points, unverifiedShare, model: res.model };
+  return verifyDraft(out, textById, res.model);
 }
 
-/** A cheaper model's answer is only kept if it holds up as well as we'd expect from the top model. */
 // Escalate only when the cheaper model's quotes don't check out. Low confidence on its own means the
 // sources found don't cover the point — a stronger model can't fix that, so it isn't worth paying for twice.
 const needsEscalation = (d: NonNullable<Drafted>) => d.unverifiedShare > 0.2 || d.points.length < 2;
 
+/** Step 1: the cheap planner (searches, restatement, complexity). */
+export async function planQuestion(question: string, meter: Meter): Promise<Plan | null> {
+  const today = new Date().toISOString().slice(0, 10);
+  const planRes = await anthropic().beta.messages.parse({
+    model: MODELS.haiku,
+    max_tokens: 2000,
+    output_config: { format: betaZodOutputFormat(PlanSchema) },
+    system: PLAN_SYSTEM,
+    messages: [{ role: "user", content: `Today is ${today}.\n\nQuestion: ${question}` }],
+  });
+  meter.add(MODELS.haiku, planRes);
+  return planRes.stop_reason === "refusal" ? null : (planRes.parsed_output ?? null);
+}
+
+export interface Gathered {
+  sources: ResearchSource[];
+  textById: Map<string, string>;
+  /** The full user message for the answering model (sources + question). */
+  userContent: string;
+}
+
+/** Step 2: official sources for a planned question — knowledge base first, live GOV.UK only as a fallback. */
+export async function gatherSources(question: string, plan: Plan, onStage: (m: string) => void = () => {}): Promise<Gathered | "no_pages" | "no_passages"> {
+  const today = new Date().toISOString().slice(0, 10);
+  const searches = plan.searches.slice(0, 5);
+  onStage("Searching Capto's stored copy of HMRC and Companies House guidance…");
+  const kbUrls = await rankDocuments(
+    [{ text: `${question} ${plan.restated_question}` }, ...searches.map((s) => ({ text: s.query, kind: s.filter === "manuals" ? ("manual_section" as const) : ("guidance" as const) }))],
+    MAX_PAGES
+  ).catch((err) => {
+    console.error("[research] knowledge base search failed", err);
+    return [] as string[];
+  });
+  let pages: FetchedPage[] = await loadDocuments(kbUrls).catch(() => []);
+  if (pages.length < 3) {
+    onStage(`Searching GOV.UK live (${searches.length} searches)…`);
+    const results = await Promise.all(searches.map((s) => searchGovUk(s.query, s.filter, 5).catch(() => [])));
+    const have = new Set(pages.map((p) => p.url));
+    const paths = pickPaths(results).filter((p) => !have.has(`https://www.gov.uk${p}`));
+    const live = (await Promise.all(paths.slice(0, MAX_PAGES - pages.length).map((p) => cachedPage(p)))).filter((p): p is FetchedPage => !!p);
+    pages = [...pages, ...live];
+  }
+  if (!pages.length) return "no_pages";
+  onStage(`Reading ${pages.length} official pages…`);
+  const sources: ResearchSource[] = pages.map((p, i) => ({ id: `S${i + 1}`, kind: "official", url: p.url, title: p.title, publisher: p.publisher, updatedAt: p.updatedAt }));
+  const textById = new Map(sources.map((s, i) => [s.id, pages[i].text]));
+  const queryText = [question, plan.restated_question, ...searches.map((s) => s.query)].join(" ");
+  const passages = selectPassages(rankPassages([...textById].map(([sourceId, text]) => ({ sourceId, text })), queryText));
+  if (!passages.length) return "no_passages";
+  const sourceBlock = sources
+    .filter((s) => passages.some((p) => p.sourceId === s.id))
+    .map((s) => {
+      const body = passages
+        .filter((p) => p.sourceId === s.id)
+        .map((p) => p.text)
+        .join("\n\n[…]\n\n");
+      return `<source id="${s.id}" title="${s.title.replace(/"/g, "'")}" publisher="${s.publisher}" updated="${s.updatedAt?.slice(0, 10) ?? "unknown"}">\n${body}\n</source>`;
+    })
+    .join("\n\n");
+  const userContent = `Today is ${today}.${plan.tax_year ? ` The question appears to concern tax year ${plan.tax_year}.` : ""}\n\n<sources>\n${sourceBlock}\n</sources>\n\nQuestion: ${question}`;
+  return { sources, textById, userContent };
+}
+
+/** Step 3 (final): turns a verified draft into the stored answer. Confidence can only be lowered by verification. */
+export function buildAnswer(question: string, plan: Plan, sources: ResearchSource[], draft: NonNullable<Drafted>, extra: { professional?: ProfessionalNote | null; escalated?: boolean } = {}): ResearchAnswer {
+  const { out, points, unverifiedShare } = draft;
+  const cited = new Set(points.flatMap((p) => p.citations.map((c) => c.sourceId)));
+  const confidence = unverifiedShare > 0.34 ? "low" : unverifiedShare > 0 && out.confidence === "high" ? "medium" : out.confidence;
+  return {
+    shortAnswer: out.short_answer,
+    points,
+    caveats: out.caveats,
+    followUps: out.follow_ups,
+    confidence,
+    taxYear: out.tax_year || plan.tax_year || null,
+    sources: sources.filter((s) => cited.has(s.id)),
+    relatedLessons: relatedLessons(`${question} ${plan.restated_question}`),
+    professional: extra.professional ?? null,
+    route: { complexity: plan.complexity, model: draft.model, escalated: !!extra.escalated },
+    model: draft.model,
+    generatedAt: new Date().toISOString(),
+  };
+}
+
 export async function* runResearch(question: string, opts: { professional: boolean; organizationId: string; fresh?: boolean }): AsyncGenerator<ResearchEvent> {
   const meter = new Meter();
-  const today = new Date().toISOString().slice(0, 10);
   const t0 = Date.now();
   const lap = (label: string) => console.info(`[research] ${label} +${Date.now() - t0}ms`);
   try {
     // 1. Plan + route (cheap model). Runs first so the library check compares questions in HMRC's vocabulary.
     yield { type: "stage", message: "Working out where HMRC covers this…" };
-    const planRes = await anthropic().beta.messages.parse({
-      model: MODELS.haiku,
-      max_tokens: 2000,
-      output_config: { format: betaZodOutputFormat(PlanSchema) },
-      system: PLAN_SYSTEM,
-      messages: [{ role: "user", content: `Today is ${today}.\n\nQuestion: ${question}` }],
-    });
-    meter.add(MODELS.haiku, planRes);
+    const plan = await planQuestion(question, meter);
     lap("planned");
-    const plan = planRes.parsed_output;
-    if (planRes.stop_reason === "refusal" || !plan) {
+    if (!plan) {
       yield { type: "no_sources", message: "Ask Capto couldn't work on that question. Try rewording it as a UK accounting or tax question.", usage: meter.usage };
       return;
     }
@@ -229,9 +310,18 @@ export async function* runResearch(question: string, opts: { professional: boole
       return;
     }
 
-    // 2. Answer Library
+    // 2. Topic briefs (platform-wide, pre-written overnight) and the firm's answer library — both nearly free to serve.
     if (!opts.fresh) {
-      yield { type: "stage", message: "Checking your firm's answer library…" };
+      yield { type: "stage", message: "Checking Capto's topic briefs and your firm's answer library…" };
+      const brief = await findTopicBrief(question, plan.restated_question, meter).catch((err) => {
+        console.error("[research] brief check failed", err);
+        return null;
+      });
+      if (brief) {
+        yield { type: "stage", message: `Found a Capto topic brief — its ${brief.sourcesChecked} official source${brief.sourcesChecked === 1 ? " is" : "s are"} unchanged…` };
+        yield { type: "done", answer: { ...brief.answer, relatedLessons: relatedLessons(question) }, usage: meter.usage, route: "library", restated: plan.restated_question };
+        return;
+      }
       const hit = await findLibraryAnswer(opts.organizationId, question, plan.restated_question, meter).catch((err) => {
         console.error("[research] library check failed", err);
         return null;
@@ -250,61 +340,26 @@ export async function* runResearch(question: string, opts: { professional: boole
 
     const professional = opts.professional ? professionalNote(plan.restated_question, meter).catch(() => null) : Promise.resolve(null);
 
-    // Retrieval: our own synced copy of the official guidance first (no external calls); live GOV.UK only
-    // when the stored copy doesn't cover the topic well enough.
-    const searches = plan.searches.slice(0, 5);
-    yield { type: "stage", message: "Searching Capto's stored copy of HMRC and Companies House guidance…" };
-    const kbUrls = await rankDocuments(
-      [{ text: `${question} ${plan.restated_question}` }, ...searches.map((s) => ({ text: s.query, kind: s.filter === "manuals" ? ("manual_section" as const) : ("guidance" as const) }))],
-      MAX_PAGES
-    ).catch((err) => {
-      console.error("[research] knowledge base search failed", err);
-      return [] as string[];
-    });
-    lap(`knowledge base ranked ${kbUrls.length} docs`);
-    let pages: FetchedPage[] = await loadDocuments(kbUrls).catch(() => []);
-    lap(`loaded ${pages.length} docs`);
-    if (pages.length < 3) {
-      yield { type: "stage", message: `Searching GOV.UK live (${searches.length} searches)…` };
-      const results = await Promise.all(searches.map((s) => searchGovUk(s.query, s.filter, 5).catch(() => [])));
-      const have = new Set(pages.map((p) => p.url));
-      const paths = pickPaths(results).filter((p) => !have.has(`https://www.gov.uk${p}`));
-      const live = (await Promise.all(paths.slice(0, MAX_PAGES - pages.length).map((p) => cachedPage(p)))).filter((p): p is FetchedPage => !!p);
-      pages = [...pages, ...live];
-    }
-    if (!pages.length) {
+    const stages: string[] = [];
+    const gathered = await gatherSources(question, plan, (m) => stages.push(m));
+    for (const m of stages) yield { type: "stage", message: m };
+    lap("gathered sources");
+    if (gathered === "no_pages") {
       yield { type: "no_sources", message: "No official guidance turned up for that question. Try different wording, or check with a senior.", usage: meter.usage };
       return;
     }
-    yield { type: "stage", message: `Reading ${pages.length} official pages…` };
-    const sources: ResearchSource[] = pages.map((p, i) => ({ id: `S${i + 1}`, kind: "official", url: p.url, title: p.title, publisher: p.publisher, updatedAt: p.updatedAt }));
-    const textById = new Map(sources.map((s, i) => [s.id, pages[i].text]));
-    const queryText = [question, plan.restated_question, ...searches.map((s) => s.query)].join(" ");
-    const passages = selectPassages(rankPassages([...textById].map(([sourceId, text]) => ({ sourceId, text })), queryText));
-    if (!passages.length) {
+    if (gathered === "no_passages") {
       yield { type: "no_sources", message: "The official pages found don't address this question directly. Try rewording it, or check with a senior.", usage: meter.usage };
       return;
     }
 
-    const sourceBlock = sources
-      .filter((s) => passages.some((p) => p.sourceId === s.id))
-      .map((s) => {
-        const body = passages
-          .filter((p) => p.sourceId === s.id)
-          .map((p) => p.text)
-          .join("\n\n[…]\n\n");
-        return `<source id="${s.id}" title="${s.title.replace(/"/g, "'")}" publisher="${s.publisher}" updated="${s.updatedAt?.slice(0, 10) ?? "unknown"}">\n${body}\n</source>`;
-      })
-      .join("\n\n");
-    const userContent = `Today is ${today}.${plan.tax_year ? ` The question appears to concern tax year ${plan.tax_year}.` : ""}\n\n<sources>\n${sourceBlock}\n</sources>\n\nQuestion: ${question}`;
-
     // 3. Answer on the routed model; escalate a weak Sonnet answer to Opus.
     let route: Route = plan.complexity === "simple" ? "sonnet" : "opus";
     yield { type: "stage", message: route === "sonnet" ? "Writing a cited answer…" : "Writing a cited answer (complex question — using our most thorough model)…" };
-    let draft = await draftAnswer(route === "sonnet" ? MODELS.sonnet : MODELS.opus, userContent, textById, meter);
+    let draft = await draftAnswer(route === "sonnet" ? MODELS.sonnet : MODELS.opus, gathered.userContent, gathered.textById, meter);
     if (route === "sonnet" && (!draft || needsEscalation(draft))) {
       yield { type: "stage", message: "Double-checking with our most thorough model…" };
-      const second = await draftAnswer(MODELS.opus, userContent, textById, meter);
+      const second = await draftAnswer(MODELS.opus, gathered.userContent, gathered.textById, meter);
       if (second && (!draft || second.unverifiedShare <= draft.unverifiedShare)) draft = second;
       route = "sonnet>opus";
     }
@@ -312,28 +367,9 @@ export async function* runResearch(question: string, opts: { professional: boole
       yield { type: "error", message: "Ask Capto couldn't produce an answer for that question. Try rewording it.", usage: meter.usage };
       return;
     }
-
     lap(`answered (${route})`);
     yield { type: "stage", message: "Checking every quote against the source…" };
-    const { out, points, unverifiedShare } = draft;
-    const cited = new Set(points.flatMap((p) => p.citations.map((c) => c.sourceId)));
-    // The model's confidence can only be lowered by the verification result, never raised.
-    const confidence = unverifiedShare > 0.34 ? "low" : unverifiedShare > 0 && out.confidence === "high" ? "medium" : out.confidence;
-
-    const answer: ResearchAnswer = {
-      shortAnswer: out.short_answer,
-      points,
-      caveats: out.caveats,
-      followUps: out.follow_ups,
-      confidence,
-      taxYear: out.tax_year || plan.tax_year || null,
-      sources: sources.filter((s) => cited.has(s.id)),
-      relatedLessons: relatedLessons(`${question} ${plan.restated_question}`),
-      professional: await professional,
-      route: { complexity: plan.complexity, model: draft.model, escalated: route === "sonnet>opus" },
-      model: draft.model,
-      generatedAt: new Date().toISOString(),
-    };
+    const answer = buildAnswer(question, plan, gathered.sources, draft, { professional: await professional, escalated: route === "sonnet>opus" });
     yield { type: "done", answer, usage: meter.usage, route, restated: plan.restated_question };
   } catch (err) {
     console.error("[research]", err);

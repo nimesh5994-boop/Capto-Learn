@@ -284,6 +284,37 @@ export const answerLibrary = pgTable(
   (t) => [index("answer_library_org_idx").on(t.organizationId, t.createdAt)]
 );
 
+export type BriefStatus = "pending" | "published" | "failed" | "retired";
+
+/**
+ * Capto topic briefs — written overnight by the Librarian bot (Anthropic Message Batches, half price) for common,
+ * fact-free practice questions, quote-verified like any answer, then served to every firm for free until one of
+ * their official sources changes. Platform-wide: briefs contain only official guidance, never client data.
+ */
+export const topicBriefs = pgTable(
+  "topic_briefs",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    topicKey: text("topic_key").notNull(),
+    area: text("area").notNull(),
+    question: text("question").notNull(),
+    restatedQuestion: text("restated_question").notNull().default(""),
+    status: text("status").$type<BriefStatus>().notNull().default("pending"),
+    answer: jsonb("answer").$type<ResearchAnswer>(),
+    sourceVersions: jsonb("source_versions").$type<Record<string, string | null>>().notNull().default({}),
+    /** Sources + full texts kept while the batch is running, for quote verification; cleared afterwards. */
+    prepared: jsonb("prepared").$type<{ plan: unknown; sources: unknown[]; texts: Record<string, string> } | null>(),
+    batchId: text("batch_id"),
+    costMicros: integer("cost_micros").notNull().default(0),
+    hits: integer("hits").notNull().default(0),
+    failureReason: text("failure_reason"),
+    retiredReason: text("retired_reason"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    publishedAt: timestamp("published_at", { withTimezone: true }),
+  },
+  (t) => [index("topic_briefs_topic_idx").on(t.topicKey), index("topic_briefs_status_idx").on(t.status)]
+);
+
 /* ───────────────────── Capto Knowledge Base (mirrored official guidance) ───────────────────── */
 
 const tsvector = customType<{ data: string }>({ dataType: () => "tsvector" });
@@ -388,3 +419,4 @@ export type ContentReview = typeof contentReviews.$inferSelect;
 export type LessonFeedback = typeof lessonFeedback.$inferSelect;
 export type ResearchQuery = typeof researchQueries.$inferSelect;
 export type LibraryEntry = typeof answerLibrary.$inferSelect;
+export type TopicBrief = typeof topicBriefs.$inferSelect;
