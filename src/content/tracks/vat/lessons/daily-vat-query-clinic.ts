@@ -264,7 +264,7 @@ A marketplace order may be supplied by Amazon itself or by a third-party seller.
     { label: "VAT guide (VAT Notice 700)", url: "https://www.gov.uk/guidance/vat-guide-notice-700" },
     { label: "Place of supply of services (VAT Notice 741A)", url: "https://www.gov.uk/guidance/vat-place-of-supply-of-services-notice-741a" },
     { label: "Business entertainment and VAT (Notice 700/65)", url: "https://www.gov.uk/guidance/business-entertainment-and-vat-notice-70065" },
-    { label: "Gifts of goods and services (VAT Notice 700/35)", url: "https://www.gov.uk/guidance/vat-on-business-gifts-and-promotional-items-notice-70035" },
+    { label: "Business promotions, including business gifts (VAT Notice 700/7)", url: "https://www.gov.uk/guidance/business-promotions-and-vat-notice-7007" },
     { label: "How to fill in and submit your VAT Return (VAT Notice 700/12)", url: "https://www.gov.uk/guidance/how-to-fill-in-and-submit-your-vat-return-vat-notice-70012" },
   ],
 };

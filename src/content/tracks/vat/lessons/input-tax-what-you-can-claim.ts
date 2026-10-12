@@ -267,6 +267,6 @@ In both cases the goods or services must be for the business that is now registe
     { label: "VAT on motoring expenses (Notice 700/64)", url: "https://www.gov.uk/guidance/vat-on-motoring-expenses-notice-70064" },
     { label: "HMRC VAT Input Tax manual", url: "https://www.gov.uk/hmrc-internal-manuals/vat-input-tax" },
     { label: "VAT Act 1994 s24 – input tax and output tax", url: "https://www.legislation.gov.uk/ukpga/1994/23/section/24" },
-    { label: "VAT Flat Rate Scheme (Notice 733)", url: "https://www.gov.uk/guidance/vat-flat-rate-scheme-notice-733" },
+    { label: "VAT Flat Rate Scheme (Notice 733)", url: "https://www.gov.uk/guidance/flat-rate-scheme-for-small-businesses-vat-notice-733--2" },
   ],
 };
