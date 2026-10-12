@@ -60,7 +60,7 @@ ECCTA makes it an offence for a person to act as a director without having their
 
 Firms that want to carry out identity verification for clients must register with Companies House as an **Authorised Corporate Service Provider**. Registration opened on **18 March 2025**, and an ACSP must be supervised for anti-money laundering purposes.
 
-The next phase is for **people who file** (presenters). The plan is that third-party agents will have to be registered ACSPs, and individual filers verified, before they can file for clients. Companies House has postponed that requirement from spring 2026 to **no earlier than November 2026**. Check the latest Companies House guidance before advising a client on this.`,
+The next phase is for **people who file** (presenters). The plan is that third-party agents will have to be registered ACSPs, and individual filers verified, before they can file for clients. Companies House first postponed that requirement from spring 2026 to no earlier than November 2026, and its outline transition plan (updated August 2026) now says **no earlier than November 2027**, with at least 6 months' notice. Check the latest Companies House guidance before advising a client on this.`,
     },
     {
       kind: "callout",
@@ -117,7 +117,7 @@ It is now early October 2026. None of them has verified. Graham says, "We've got
         { text: "A new director being appointed to an existing company in October 2026", answer: 0 },
         { text: "A director who has been in office since 2015", answer: 1 },
         { text: "A 40% shareholder who is not a director, appointed PSC in 2019", answer: 2, why: "Their window is the first 14 days of their birth month." },
-        { text: "A bookkeeper at your firm who files forms for clients", answer: 3, why: "Identity verification for filers is still to come — no earlier than November 2026." },
+        { text: "A bookkeeper at your firm who files forms for clients", answer: 3, why: "Identity verification for filers is still to come — no earlier than November 2027 per the latest transition plan." },
         { text: "The directors of a corporate director", answer: 3, why: "Corporate directors and officers of corporate PSCs are part of a later phase." },
       ],
       explain:
@@ -154,7 +154,7 @@ It is now early October 2026. None of them has verified. Graham says, "We've got
       ],
       answers: [0, 1, 3],
       explain:
-        "ACSPs must be AML-supervised; registration opened 18 March 2025; and an ACSP can verify clients. The requirement for all third-party filers to be ACSPs was postponed to no earlier than November 2026. Either route produces the same kind of personal code, usable for any role.",
+        "ACSPs must be AML-supervised; registration opened 18 March 2025; and an ACSP can verify clients. The requirement for all third-party filers to be ACSPs has been postponed (the August 2026 transition plan says no earlier than November 2027). Either route produces the same kind of personal code, usable for any role.",
     },
   ],
   quiz: [
@@ -194,11 +194,11 @@ It is now early October 2026. None of them has verified. Graham says, "We've got
       options: [
         "In force since 18 November 2025",
         "In force since spring 2026",
-        "Postponed to no earlier than November 2026",
+        "Postponed: now planned for no earlier than November 2027",
         "Abandoned",
       ],
       answer: 2,
-      explain: "Companies House postponed the presenter measures to no earlier than November 2026 to finish the director and PSC transition first.",
+      explain: "Companies House postponed the presenter measures to finish the director and PSC transition first; its August 2026 transition plan puts them at no earlier than November 2027, with at least 6 months' notice.",
     },
     {
       kind: "mcq",
