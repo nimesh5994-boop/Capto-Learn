@@ -67,7 +67,9 @@ export default async function BillingPage() {
               <ul className={styles.features}>
                 <li>{p.maxUsers === null ? "Unlimited users" : `Up to ${p.maxUsers} users`}</li>
                 <li>{p.maxResearchPerMonth === null ? "Unlimited Ask Capto questions" : `${p.maxResearchPerMonth.toLocaleString("en-GB")} Ask Capto questions / month`}</li>
+                <li>{p.maxInterviewsPerMonth === null ? "Unlimited interview tests for applicants" : `${p.maxInterviewsPerMonth} interview tests for applicants / month`}</li>
                 <li>Full course library: foundation to advanced, all tracks</li>
+                <li>Firm join link &amp; bulk invites</li>
                 {ALL_FEATURES.map((f) => (
                   <li key={f} className={p.features.includes(f) ? "" : styles.missing}>
                     {FEATURE_LABELS[f]}
