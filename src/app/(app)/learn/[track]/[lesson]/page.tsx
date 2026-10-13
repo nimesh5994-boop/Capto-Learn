@@ -16,9 +16,13 @@ import { Quiz } from "@/components/learn/Quiz";
 import { ReportProblem } from "@/components/learn/ReportProblem";
 import { ReviewPill, StatusDot } from "@/components/learn/bits";
 import styles from "@/components/learn/learn.module.css";
+import playerStyles from "@/components/learn/player.module.css";
+import { LessonPlayer } from "@/components/learn/LessonPlayer";
+import { lessonSteps, stepLabel } from "@/lib/learning/steps";
 
-export default async function LessonPage({ params }: { params: Promise<{ track: string; lesson: string }> }) {
+export default async function LessonPage({ params, searchParams }: { params: Promise<{ track: string; lesson: string }>; searchParams: Promise<{ view?: string }> }) {
   const { track: trackSlug, lesson: lessonSlug } = await params;
+  const full = (await searchParams).view === "full";
   const ctx = await requirePermission("learning.view");
   const id = `${trackSlug}/${lessonSlug}`;
   const ref = getLesson(id);
@@ -46,6 +50,78 @@ export default async function LessonPage({ params }: { params: Promise<{ track: 
   const quiz = lesson.quiz.map((q) => ({ id: q.id, promptHtml: renderMarkdown(q.prompt), optionsHtml: q.options.map((o) => renderInline(o)) }));
   const solved = new Set(mine?.exercisesCorrect ?? []);
 
+  // Step-by-step mode: every step rendered here on the server; the client player shows one at a time.
+  const steps = lessonSteps(lesson);
+  const quizNode = <Quiz lessonId={id} questions={quiz} best={mine?.bestQuizScore ?? null} passMark={QUIZ_PASS_MARK} nextHref={next ? `/learn/${next.id}` : undefined} />;
+  const panels = steps.map((st, n) => {
+    if (st.kind === "overview")
+      return (
+        <div key={n} className={`card ${playerStyles.panel}`}>
+          <div className={playerStyles.panelKicker}>Overview</div>
+          <h2 className={playerStyles.panelTitle}>{lesson.title}</h2>
+          <p className="muted" style={{ margin: 0 }}>
+            {lesson.summary}
+          </p>
+          <div className={playerStyles.overviewMeta}>
+            <span>{lesson.minutes} min</span>
+            <span>{steps.length} short steps</span>
+            <span>
+              {lesson.exercises.length} practice questions + {lesson.quiz.length}-question quiz
+            </span>
+          </div>
+          <div>
+            <strong className="small">By the end you can:</strong>
+            <ul className={playerStyles.objectives}>
+              {lesson.objectives.map((o, k) => (
+                <li key={k} dangerouslySetInnerHTML={{ __html: renderInline(o) }} />
+              ))}
+            </ul>
+          </div>
+          <p className="small faint" style={{ margin: 0 }}>
+            Already know this? Jump straight to the quiz from the step list above. Passing it completes the lesson.
+          </p>
+        </div>
+      );
+    if (st.kind === "theory" || st.kind === "walkthrough")
+      return (
+        <div key={n} className={`card ${playerStyles.panel}`}>
+          <div className={playerStyles.panelKicker}>{st.kind === "theory" ? "The rules" : "Worked example"}</div>
+          <h2 className={playerStyles.panelTitle}>{st.title.replace(/^#+\s*/, "")}</h2>
+          <Blocks blocks={st.blocks} />
+        </div>
+      );
+    if (st.kind === "scenario")
+      return (
+        <div key={n} className={`card ${playerStyles.panel}`}>
+          <div className={playerStyles.panelKicker}>Real-life scenario</div>
+          <h2 className={playerStyles.panelTitle}>{lesson.scenario!.title}</h2>
+          <div className="prose" dangerouslySetInnerHTML={{ __html: renderMarkdown(lesson.scenario!.narrative) }} />
+          <p className="small faint" style={{ margin: 0 }}>
+            Think about how you&apos;d handle it — the next step works through it.
+          </p>
+        </div>
+      );
+    if (st.kind === "exercise") {
+      const e = exercises[st.index];
+      return (
+        <div key={n} className={`card ${playerStyles.panel}`}>
+          <div className={playerStyles.panelKicker}>{stepLabel(st, exercises.length)}</div>
+          <Exercise lessonId={id} ex={e} number={st.index + 1} solvedBefore={solved.has(e.id)} />
+        </div>
+      );
+    }
+    return (
+      <div className={`card ${playerStyles.panel}`} key={n}>
+        <div className={playerStyles.panelKicker}>Check your understanding</div>
+        <h2 className={playerStyles.panelTitle}>Lesson quiz</h2>
+        <p className="small muted" style={{ margin: 0 }}>
+          Score {QUIZ_PASS_MARK}% or more to complete the lesson.
+        </p>
+        {quizNode}
+      </div>
+    );
+  });
+
   return (
     <>
       <p className="small" style={{ margin: "0 0 8px" }}>
@@ -69,6 +145,17 @@ export default async function LessonPage({ params }: { params: Promise<{ track: 
             {lesson.summary}
           </p>
         </div>
+      </div>
+
+      <div className="row" style={{ marginBottom: 14 }}>
+        <nav className={playerStyles.viewSwitch} aria-label="Lesson view">
+          <Link href={`/learn/${id}`} aria-current={full ? undefined : "page"}>
+            Step by step
+          </Link>
+          <Link href={`/learn/${id}?view=full`} aria-current={full ? "page" : undefined}>
+            Full page
+          </Link>
+        </nav>
       </div>
 
       <div className={styles.lessonLayout}>
@@ -95,6 +182,10 @@ export default async function LessonPage({ params }: { params: Promise<{ track: 
             </div>
           )}
 
+          {!full && <LessonPlayer lessonId={id} steps={steps.map((st) => ({ label: stepLabel(st, exercises.length), kind: st.kind }))} panels={panels} />}
+
+          {full && (
+            <>
           <section className={`card ${styles.section}`}>
             <h2 className={styles.sectionTitle}>
               <Target size={18} /> By the end of this lesson you can
@@ -146,8 +237,10 @@ export default async function LessonPage({ params }: { params: Promise<{ track: 
             <p className="small muted" style={{ marginTop: -4 }}>
               Score {QUIZ_PASS_MARK}% or more to complete the lesson.
             </p>
-            <Quiz lessonId={id} questions={quiz} best={mine?.bestQuizScore ?? null} passMark={QUIZ_PASS_MARK} nextHref={next ? `/learn/${next.id}` : undefined} />
+            {quizNode}
           </section>
+            </>
+          )}
 
           <section className={`card ${styles.section}`}>
             <h2 className={styles.sectionTitle} style={{ fontSize: 18 }}>
