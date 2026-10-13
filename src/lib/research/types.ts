@@ -65,6 +65,8 @@ export interface ResearchAnswer {
   reuse?: { libraryId: string; originalDate: string; sourcesChecked: number } | null;
   /** Set when this answer is a Capto topic brief (written overnight, shared across firms). */
   brief?: { id: string; area: string; writtenAt: string; sourcesChecked: number } | null;
+  /** Set when the question bot served this from what it has learned (Level 1, no AI). */
+  learned?: { id: string; learnedAt: string } | null;
   /** Which bot level answered: 1 Instant (local, no AI), 2 Standard (cited AI answer), 3 Expert research. */
   tier?: { level: 1 | 2 | 3; label: string; reason: string } | null;
   /** Which model wrote the answer and why (cost routing). */

@@ -1,5 +1,7 @@
 "use server";
 
+import { retireLearned, retireLearnedFrom } from "@/lib/search/knowledge";
+
 import { and, eq } from "drizzle-orm";
 import { getDb } from "@/lib/db/client";
 import { researchQueries } from "@/lib/db/schema";
@@ -17,6 +19,11 @@ export async function rateAnswer(id: string, helpful: boolean, note?: string): P
     .returning({ answer: researchQueries.answer });
   // An unhelpful answer must never be served again from the answer library.
   if (row && !helpful) await retireForBadRating(ctx.org.id, id, row.answer?.reuse?.libraryId);
+  // …and the question bot forgets anything it learned from (or served as) this answer.
+  if (row && !helpful) {
+    if (row.answer?.learned?.id) await retireLearned(row.answer.learned.id, "Rated unhelpful");
+    await retireLearnedFrom(id);
+  }
 }
 
 /** Shares an answer with everyone in the firm (it then appears in the firm's library). */

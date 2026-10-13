@@ -5,6 +5,8 @@ import { assertResearchQuota } from "@/lib/entitlements";
 import { orgHasFeature } from "@/lib/plans";
 import { runResearch, type ResearchEvent } from "@/lib/research/engine";
 import { saveToLibrary } from "@/lib/research/library";
+import { learnFromAnswer } from "@/lib/search/knowledge";
+import { readQuestion } from "@/lib/search/localBot";
 
 // Planning + searching + fetching + a cited answer comfortably fits, but give the model headroom.
 export const maxDuration = 300;
@@ -56,8 +58,11 @@ export async function POST(req: Request) {
           durationMs: Date.now() - started,
         })
         .returning({ id: researchQueries.id });
-      if (final?.type === "done" && final.route !== "library" && final.route !== "instant")
+      if (final?.type === "done" && final.route !== "library" && final.route !== "instant") {
         await saveToLibrary(org.id, row.id, question, final.restated, final.answer).catch((err) => console.error("[research] library save failed", err));
+        // The question bot learns verified, general answers so the next person gets them free at Level 1.
+        await learnFromAnswer(question, await readQuestion(question), final.answer, row.id);
+      }
       send({ type: "complete", id: row.id });
       controller.close();
     },

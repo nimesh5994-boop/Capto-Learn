@@ -1,4 +1,8 @@
+import { randomUUID } from "node:crypto";
 import Link from "next/link";
+import { after } from "next/server";
+import { logBotEvent } from "@/lib/search/botLog";
+import { BotFeedback } from "@/components/ask/BotFeedback";
 import { BookOpen, ExternalLink, GraduationCap, Layers, MessageSquareQuote, Search, Sparkles, Wand2 } from "lucide-react";
 import { requirePermission } from "@/lib/auth/dal";
 import { orgHasFeature } from "@/lib/plans";
@@ -51,8 +55,11 @@ export default async function GuidanceSearchPage({ searchParams }: { searchParam
   const { q = "" } = await searchParams;
   const ctx = await requirePermission("learning.view");
   const query = q.trim().slice(0, 300);
-  const local = query ? localAnswer(query) : null;
+  const local = query ? await localAnswer(query) : null;
   const u = local?.u;
+  // Learning loop: record what the bot made of this search (after the response, so it never slows the page).
+  const eventId = local ? randomUUID() : null;
+  if (local && eventId) after(() => logBotEvent({ id: eventId, organizationId: ctx.org.id, userId: ctx.user.id, question: query, u: local.u, instant: local.instant }));
   // General accounting ideas (what is a balance sheet, how to post a journal) aren't in tax guidance: lessons only.
   const generalOnly = !!u && u.concepts.length > 0 && u.concepts.every((c) => c.general);
   const [hits, stats] = await Promise.all([u && !generalOnly ? searchKb(u.officialQuery || u.text, { limit: 60 }) : Promise.resolve([] as KbHit[]), kbStats()]);
@@ -138,7 +145,14 @@ export default async function GuidanceSearchPage({ searchParams }: { searchParam
                     </span>
                   )}
                 </div>
+                {eventId && <BotFeedback eventId={eventId} question="Did this answer your question?" />}
               </article>
+            )}
+
+            {!instant && eventId && (
+              <div className="card card-pad">
+                <BotFeedback eventId={eventId} question={u?.concepts.length ? "Did we understand what you were asking?" : "We didn't recognise this one — tell us what you were looking for?"} />
+              </div>
             )}
 
             {!instant && canAsk && u && u.concepts.length > 0 && (

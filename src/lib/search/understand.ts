@@ -100,14 +100,21 @@ function hasPhrase(textWords: string[], alias: string): boolean {
   return false;
 }
 
-export function understand(question: string, extraVocab?: Set<string>): Understanding {
+/** Wording a reviewer has taught the bot in the Review centre: `alias` means the glossary concept `concept`. */
+export interface TaughtAlias {
+  alias: string;
+  concept: string;
+}
+
+export function understand(question: string, extraVocab?: Set<string>, taught: TaughtAlias[] = []): Understanding {
   const { text, corrections } = correctTypos(question.trim(), extraVocab);
+  const taughtFor = (name: string) => taught.filter((t) => t.concept === name).map((t) => t.alias.toLowerCase());
   const lower = text.toLowerCase();
   const tw = words(lower);
 
   // Concepts: score by the longest alias matched, so "directors loan" beats "loan"; ties go to the longer phrase.
   const found = GLOSSARY.map((c) => {
-    const hits = [...new Set([c.name.toLowerCase(), ...c.aliases])].filter((a) => hasPhrase(tw, a)).sort((a, b) => words(b).length - words(a).length || b.length - a.length);
+    const hits = [...new Set([c.name.toLowerCase(), ...c.aliases, ...taughtFor(c.name)])].filter((a) => hasPhrase(tw, a)).sort((a, b) => words(b).length - words(a).length || b.length - a.length);
     return { c, hits, len: hits.length ? words(hits[0]).length : 0, chars: hits[0]?.length ?? 0 };
   })
     .filter((m) => m.len > 0)
@@ -122,7 +129,9 @@ export function understand(question: string, extraVocab?: Set<string>): Understa
   for (const a of matched) rest = rest.replace(new RegExp(`\\b${a.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/\s+/g, "\\s+")}s?\\b`, "g"), " ");
   let intent: Intent = INTENTS.find(([, re]) => re.test(rest.trim()))?.[0] ?? "general";
   // The concept's own words still decide when nothing else does: "late filing penalty", "corporation tax rate".
-  if (intent === "general") {
+  // Only for a near-bare phrase — a fuller question ("is the AIA available on a car?") is about something else.
+  const restWords = words(rest).filter((x) => !QUESTION_WORDS.has(x));
+  if (intent === "general" && restWords.length <= 2) {
     // Only when the rate word ends the phrase ("corporation tax rate"), not when it's part of a name ("flat rate scheme").
     const own = bestMatch.filter((m) => /\b(rates?|threshold|limit|allowance|penalt\w*|deadline)$/.test(m)).join(" ");
     intent = (["penalty", "deadline", "rate"] as Intent[]).find((k) => INTENTS.find(([i]) => i === k)![1].test(own)) ?? "general";

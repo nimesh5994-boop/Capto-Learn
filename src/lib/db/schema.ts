@@ -273,6 +273,69 @@ export const contentReviewEvents = pgTable(
 );
 export type ContentReviewEvent = typeof contentReviewEvents.$inferSelect;
 
+/** What the Level 1 question bot made of each free search, and how people rated it — the learning loop. */
+export const botEvents = pgTable(
+  "bot_events",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    organizationId: uuid("organization_id").notNull().references(() => organizations.id, { onDelete: "cascade" }),
+    userId: uuid("user_id").references(() => users.id, { onDelete: "set null" }),
+    question: text("question").notNull(),
+    /** Concept, intent and course the bot understood (null concept = not recognised). */
+    concept: text("concept"),
+    intent: text("intent").notNull(),
+    topic: text("topic"),
+    /** The instant answer shown, if any. */
+    answer: text("answer"),
+    lessonId: text("lesson_id"),
+    helpful: boolean("helpful"),
+    note: text("note"),
+    /** Set by a reviewer once dealt with (taught, added to the exam, or not needed). */
+    resolvedAt: timestamp("resolved_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index("bot_events_created_idx").on(t.createdAt)]
+);
+export type BotEvent = typeof botEvents.$inferSelect;
+
+/** Wording reviewers have taught the bot: "when people say X, they mean concept Y". Used on top of the glossary. */
+export const botAliases = pgTable(
+  "bot_aliases",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    alias: text("alias").notNull(),
+    concept: text("concept").notNull(),
+    createdByName: text("created_by_name"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [uniqueIndex("bot_aliases_alias_uq").on(t.alias)]
+);
+export type BotAlias = typeof botAliases.$inferSelect;
+
+/**
+ * Answers the question bot has learned: verified, high-confidence Ask Capto answers it can serve again at
+ * Level 1 for free (after re-checking that the official sources are unchanged). Retired on a 👎 or a source change.
+ */
+export const botKnowledge = pgTable(
+  "bot_knowledge",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    concept: text("concept").notNull(),
+    intent: text("intent").notNull(),
+    question: text("question").notNull(),
+    answer: jsonb("answer").$type<import("@/lib/research/types").ResearchAnswer>().notNull(),
+    /** Official source URL → last-updated date when answered. */
+    sourceVersions: jsonb("source_versions").$type<Record<string, string | null>>().notNull().default({}),
+    researchQueryId: uuid("research_query_id"),
+    uses: integer("uses").notNull().default(0),
+    retiredAt: timestamp("retired_at", { withTimezone: true }),
+    retiredReason: text("retired_reason"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index("bot_knowledge_concept_idx").on(t.concept, t.intent)]
+);
+export type BotKnowledge = typeof botKnowledge.$inferSelect;
+
 export type FeedbackKind = "error" | "out_of_date" | "unclear" | "suggestion";
 export type FeedbackStatus = "open" | "fixed" | "dismissed";
 

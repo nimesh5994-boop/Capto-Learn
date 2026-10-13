@@ -64,6 +64,20 @@
       "when": 1791906787855,
       "tag": "0008_skill_check_config",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1791919099693,
+      "tag": "0009_bot_learning",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1791919270512,
+      "tag": "0010_bot_knowledge",
+      "breakpoints": true
     }
   ]
 }

@@ -36,3 +36,11 @@ describe("understand", () => {
     expect(u.keywords).toEqual(["something", "unusual", "widgets"]);
   });
 });
+
+describe("taught wording", () => {
+  it("recognises a phrase a reviewer has taught", () => {
+    expect(understand("what is a mystery balance").concepts).toEqual([]);
+    const u = understand("what is a mystery balance", undefined, [{ alias: "mystery balance", concept: "suspense account" }]);
+    expect(u.concepts[0]?.name).toBe("suspense account");
+  });
+});

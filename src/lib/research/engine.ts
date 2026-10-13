@@ -12,6 +12,7 @@ import { fetchGovUkPage, searchGovUk, type FetchedPage, type SearchHit } from ".
 import { findLibraryAnswer } from "./library";
 import { findTopicBrief } from "./briefs";
 import { instantToResearch, localAnswer } from "@/lib/search/localBot";
+import { recallLearned } from "@/lib/search/knowledge";
 import { loadDocuments, rankDocuments } from "@/lib/kb/search";
 import { rankPassages, selectPassages, splitPassages, verifyQuote } from "./passages";
 import { MODELS } from "./pricing";
@@ -360,12 +361,25 @@ export async function* runResearch(question: string, opts: { professional: boole
     // Level 1 — the local question bot. No AI: answers from Capto's checked fact cards and lessons when it's sure.
     if (tier === "auto" && !opts.fresh) {
       yield { type: "stage", message: "Level 1 · reading your question and checking Capto's own material…" };
-      const local = localAnswer(question);
+      const local = await localAnswer(question);
       // In Ask Capto, Level 1 only settles plain fact questions from checked fact cards; how-to questions and
       // anything with the client's own figures get a full answer.
       const factOnly = local.instant?.kind === "flashcard" && question.length <= 140 && !/£\s?\d|\d{3,}/.test(question);
       if (local.instant && factOnly) {
         yield { type: "done", answer: instantToResearch(local.instant, local.u), usage: meter.usage, route: "instant", restated: local.u.text };
+        return;
+      }
+      // Something the bot has learned from an earlier verified answer — reused only if its sources haven't changed.
+      const learned = await recallLearned(question, local.u);
+      if (learned) {
+        yield { type: "stage", message: "Level 1 · answered this before — official sources re-checked and unchanged…" };
+        const answer: ResearchAnswer = {
+          ...learned.answer,
+          learned: { id: learned.id, learnedAt: learned.learnedAt.toISOString() },
+          tier: { level: 1, label: "Learned", reason: `Verified answer the bot learned on ${learned.learnedAt.toISOString().slice(0, 10)} — sources unchanged, no AI used` },
+          relatedLessons: learned.answer.relatedLessons,
+        };
+        yield { type: "done", answer, usage: meter.usage, route: "instant", restated: local.u.text };
         return;
       }
       yield { type: "stage", message: "Needs a fuller answer — moving up to Level 2…" };

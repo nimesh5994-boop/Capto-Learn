@@ -4,8 +4,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const TABS = [
-  { href: "/reviewer", label: "Overview", match: (p: string) => p === "/reviewer" || (/^\/reviewer\/[^/]+$/.test(p) && p !== "/reviewer/register") || p.startsWith("/reviewer/lesson/") },
+  { href: "/reviewer", label: "Overview", match: (p: string) => p === "/reviewer" || (/^\/reviewer\/[^/]+$/.test(p) && p !== "/reviewer/register" && p !== "/reviewer/bot") || p.startsWith("/reviewer/lesson/") },
   { href: "/reviewer/register", label: "Approvals register", match: (p: string) => p.startsWith("/reviewer/register") },
+  { href: "/reviewer/bot", label: "Bot training", match: (p: string) => p.startsWith("/reviewer/bot") },
   { href: "/platform/content", label: "Learner reports", match: () => false },
 ];
 

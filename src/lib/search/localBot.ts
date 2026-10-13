@@ -5,6 +5,7 @@ import { lessonPlainText } from "@/lib/learning/flashcards";
 import type { ResearchAnswer } from "@/lib/research/types";
 import { instantAnswer, type InstantAnswer, type InstantLesson } from "./instant";
 import { understand, type Understanding } from "./understand";
+import { taughtAliases } from "./botLog";
 
 /* Level 1 wiring: the lesson library and fact cards, prepared once per server instance. */
 
@@ -16,13 +17,14 @@ function library() {
   return (cache = { lessons, vocab });
 }
 
-export function readQuestion(question: string): Understanding {
-  return understand(question, library().vocab);
+/** Reads a question with the glossary plus any wording reviewers have taught the bot. */
+export async function readQuestion(question: string): Promise<Understanding> {
+  return understand(question, library().vocab, await taughtAliases());
 }
 
-export function localAnswer(question: string): { u: Understanding; instant: InstantAnswer | null } {
+export async function localAnswer(question: string): Promise<{ u: Understanding; instant: InstantAnswer | null }> {
   const { lessons } = library();
-  const u = readQuestion(question);
+  const u = await readQuestion(question);
   const cards = lessons.flatMap((l) => lessonFlashcards(l.id));
   return { u, instant: instantAnswer(u, lessons, cards) };
 }
