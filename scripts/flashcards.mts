@@ -117,7 +117,73 @@ async function collect() {
   console.log(`Kept ${kept} cards. Rejected: ${JSON.stringify(rejected)}. Failed lessons: ${failedLessons.length ? failedLessons.join(", ") : "none"}. Cost $${(micros / 1e6).toFixed(2)}.`);
 }
 
+/** Writes the cards file (lessons sorted, so diffs stay readable). */
+function save(file: CardFile) {
+  file.generatedAt = new Date().toISOString();
+  const sorted = Object.fromEntries(Object.entries(file.lessons).sort(([a], [b]) => a.localeCompare(b)));
+  fs.mkdirSync(path.dirname(OUT), { recursive: true });
+  fs.writeFileSync(OUT, JSON.stringify({ generatedAt: file.generatedAt, lessons: sorted }, null, 1) + "\n");
+}
+
+/**
+ * Direct mode: full price (about twice the batch cost) but done in minutes. Cancels any waiting batch first.
+ * Saves as it goes, so it can be stopped and re-run; lessons with up-to-date cards are skipped.
+ */
+async function now(all: boolean) {
+  if (fs.existsSync(STATE)) {
+    const { batchId } = JSON.parse(fs.readFileSync(STATE, "utf8")) as { batchId: string };
+    await client().messages.batches.cancel(batchId).catch(() => {});
+    fs.rmSync(STATE);
+    console.log(`Cancelled waiting batch ${batchId}.`);
+  }
+  const file = load();
+  const todo = allLessons().filter((r) => all || file.lessons[r.id]?.hash !== lessonTextHash(r.lesson));
+  let kept = 0;
+  let micros = 0;
+  let done = 0;
+  const rejected: Record<string, number> = {};
+  const failed: string[] = [];
+  const queue = [...todo];
+  const worker = async () => {
+    for (let r = queue.shift(); r; r = queue.shift()) {
+      const plain = lessonPlainText(r.lesson);
+      try {
+        const msg = await client().messages.create({
+          model: MODELS.sonnet,
+          max_tokens: 4000,
+          output_config: { effort: "low", format: zodOutputFormat(Schema) },
+          system: SYSTEM,
+          messages: [{ role: "user", content: `Course: ${r.track.title}\nLesson: ${r.lesson.title}${r.lesson.taxYear ? ` (tax year ${r.lesson.taxYear})` : ""}\n\n<lesson>\n${plain}\n</lesson>` }],
+        } as never);
+        micros += costMicros(msg.model, msg.usage);
+        const parsed = Schema.parse(JSON.parse(msg.content.map((b) => (b.type === "text" ? b.text : "")).join("")));
+        const cards: Flashcard[] = [];
+        for (const c of parsed.cards) {
+          const why = rejectCard(c, plain);
+          if (why) {
+            rejected[why] = (rejected[why] ?? 0) + 1;
+            continue;
+          }
+          cards.push({ id: `${r.id}#f${cards.length + 1}`, lessonId: r.id, front: c.front.trim(), back: c.back.trim(), evidence: c.evidence.trim(), ...(r.lesson.taxYear ? { taxYear: r.lesson.taxYear } : {}) });
+        }
+        kept += cards.length;
+        file.lessons[r.id] = { hash: lessonTextHash(r.lesson), cards };
+      } catch (err) {
+        failed.push(`${r.id} (${err instanceof Error ? err.message.slice(0, 60) : "error"})`);
+      }
+      if (++done % 10 === 0) {
+        save(file);
+        console.log(`${done}/${todo.length} lessons · ${kept} cards kept · $${(micros / 1e6).toFixed(2)}`);
+      }
+    }
+  };
+  await Promise.all(Array.from({ length: 4 }, worker));
+  save(file);
+  console.log(`Done: ${todo.length} lessons, kept ${kept} cards. Rejected: ${JSON.stringify(rejected)}. Failed: ${failed.length ? failed.join("; ") : "none"}. Cost $${(micros / 1e6).toFixed(2)}.`);
+}
+
 const [cmd, flag] = process.argv.slice(2);
 if (cmd === "submit") await submit(flag === "--all");
 else if (cmd === "collect") await collect();
-else console.log('Usage: flashcards.mts submit [--all] | collect');
+else if (cmd === "now") await now(flag === "--all");
+else console.log("Usage: flashcards.mts submit [--all] | collect | now [--all]");
