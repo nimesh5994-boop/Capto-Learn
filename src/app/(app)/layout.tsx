@@ -28,13 +28,14 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   const platform: NavKey[] = [];
   if (ctx.platformCan("platform.firms.view")) platform.push("platform.firms");
   if (ctx.platformCan("platform.firms.invite")) platform.push("platform.invitations");
-  if (ctx.platformCan("platform.content.review")) platform.push("platform.content", "platform.knowledge");
+  if (ctx.platformCan("platform.content.review")) platform.push("platform.knowledge");
   if (ctx.isPlatformAdmin) platform.push("platform.team", "platform.roles");
 
   const groups: NavGroup[] = [
     { label: "Learn", items: learn },
     { label: "Research", items: research },
     { label: "Manage", items: manage },
+    { label: "Review", items: ctx.platformCan("platform.content.review") ? ["platform.content"] : [] },
     { label: ctx.isInternal ? "Workspace admin" : "Practice admin", items: practice },
     { label: "Platform admin", items: platform },
   ];

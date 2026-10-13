@@ -9,6 +9,7 @@ import { myProgress, openAssignments, overallStats, trackStats, viewAssignment }
 import { orgHasFeature } from "@/lib/plans";
 import { dueCount } from "@/lib/learning/daily";
 import { latestSkillChecks } from "@/lib/learning/skillCheck";
+import { reviewState } from "@/lib/learning/reviewQueue";
 import { date, dateTime } from "@/lib/format";
 import { ProgressBar, TrackIcon } from "@/components/learn/bits";
 import styles from "./dashboard.module.css";
@@ -21,7 +22,7 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
   const { user, org, can } = ctx;
   const db = await getDb();
   const canAsk = can("research.use") && orgHasFeature(org, "research");
-  const [progress, myAssignments, recent, reviewDue, checks] = await Promise.all([
+  const [progress, myAssignments, recent, reviewDue, checks, toReview] = await Promise.all([
     myProgress(user.id),
     openAssignments(org.id, [user.id]),
     canAsk
@@ -34,6 +35,7 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
       : Promise.resolve([]),
     dueCount(user.id),
     latestSkillChecks([user.id]),
+    ctx.platformCan("platform.content.review") ? reviewState().then((s) => s.filter((i) => i.todo).length) : Promise.resolve(0),
   ]);
 
   const overall = overallStats(progress);
@@ -84,6 +86,16 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
         <div className="alert alert-warning" style={{ marginBottom: 18 }}>
           You don&apos;t have access to that page. Ask an admin in your firm if you need it.
         </div>
+      )}
+
+      {toReview > 0 && (
+        <Link href="/reviewer" className="card card-pad row between" style={{ marginBottom: 18, textDecoration: "none", color: "inherit", borderLeft: "4px solid var(--primary)" }}>
+          <span>
+            <strong>Review centre</strong>
+            <span className="small muted"> · {toReview} lesson{toReview === 1 ? "" : "s"} waiting for review or re-check.</span>
+          </span>
+          <span className="btn btn-primary btn-sm">Open</span>
+        </Link>
       )}
 
       {can("learning.view") && !checks.has(user.id) && overall.done < 3 && (

@@ -50,6 +50,13 @@
       "when": 1791903804858,
       "tag": "0006_skill_checks",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1791904076545,
+      "tag": "0007_review_events",
+      "breakpoints": true
     }
   ]
 }

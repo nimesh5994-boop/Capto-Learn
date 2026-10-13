@@ -243,6 +243,25 @@ export const contentReviews = pgTable("content_reviews", {
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
+/** Every review decision ever made (content_reviews keeps only the latest) — the approvals register. */
+export const contentReviewEvents = pgTable(
+  "content_review_events",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    lessonId: text("lesson_id").notNull(),
+    status: text("status").$type<ReviewStatus>().notNull(),
+    contentHash: text("content_hash").notNull(),
+    reviewerUserId: uuid("reviewer_user_id").references(() => users.id, { onDelete: "set null" }),
+    reviewerName: text("reviewer_name"),
+    notes: text("notes"),
+    /** Checklist items the reviewer confirmed (see REVIEW_CHECKLIST). */
+    checklist: jsonb("checklist").$type<string[]>().notNull().default([]),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index("content_review_events_lesson_idx").on(t.lessonId, t.createdAt), index("content_review_events_created_idx").on(t.createdAt)]
+);
+export type ContentReviewEvent = typeof contentReviewEvents.$inferSelect;
+
 export type FeedbackKind = "error" | "out_of_date" | "unclear" | "suggestion";
 export type FeedbackStatus = "open" | "fixed" | "dismissed";
 

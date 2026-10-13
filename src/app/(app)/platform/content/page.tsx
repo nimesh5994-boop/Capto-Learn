@@ -8,7 +8,7 @@ import { LEVELS } from "@/content/types";
 import { effectiveReview, lessonSourceChanges, reviewRows, sourceChangedSinceReview, type EffectiveReview } from "@/lib/learning/review";
 import { date, dateTime } from "@/lib/format";
 import { ReviewPill } from "@/components/learn/bits";
-import { FeedbackControls, ReviewControls } from "./ReviewControls";
+import { FeedbackControls } from "./ReviewControls";
 
 export const metadata = { title: "Content review" };
 
@@ -158,7 +158,9 @@ export default async function ContentReviewPage({ searchParams }: { searchParams
                     {a ? `${a.pct}% of ${a.n}` : "—"}
                   </td>
                   <td>
-                    <ReviewControls lessonId={r.id} current={status} />
+                    <Link href={`/reviewer/lesson/${r.id}`} className="btn btn-sm">
+                      Open review
+                    </Link>
                   </td>
                 </tr>
               );

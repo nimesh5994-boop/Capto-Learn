@@ -71,7 +71,7 @@ const ITEMS: Record<NavKey, { href: string; label: string; icon: LucideIcon; exa
   "admin.activity": { href: "/admin/activity", label: "Activity log", icon: Activity },
   "platform.firms": { href: "/platform", label: "Firms", icon: Building2, exact: true },
   "platform.invitations": { href: "/platform/invitations", label: "Firm invitations", icon: Mail },
-  "platform.content": { href: "/platform/content", label: "Content review", icon: BookOpenCheck },
+  "platform.content": { href: "/reviewer", label: "Review centre", icon: BookOpenCheck },
   "platform.knowledge": { href: "/platform/knowledge", label: "Knowledge base", icon: Database },
   "platform.team": { href: "/platform/team", label: "Platform team", icon: ShieldCheck },
   "platform.roles": { href: "/platform/roles", label: "Platform roles", icon: UserCog },

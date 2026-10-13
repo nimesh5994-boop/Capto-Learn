@@ -4,11 +4,12 @@ import { revalidatePath } from "next/cache";
 import { and, eq, inArray, isNull } from "drizzle-orm";
 import * as z from "zod";
 import { getDb } from "@/lib/db/client";
-import { assignments, contentReviews, lessonFeedback, users } from "@/lib/db/schema";
+import { assignments, contentReviewEvents, contentReviews, lessonFeedback, users } from "@/lib/db/schema";
 import { AccessError, authorize, authorizePlatform } from "@/lib/auth/dal";
 import { actorOf, audit } from "@/lib/audit";
 import { getLesson, lessonsForTarget, targetTitle } from "@/content";
 import { lessonHash } from "@/lib/learning/review";
+import { CHECKLIST_KEYS, type ChecklistKey } from "@/lib/learning/reviewChecklist";
 
 export type ActionResult = { ok: true; message: string } | { ok: false; error: string };
 
@@ -69,15 +70,19 @@ export async function cancelAssignment(id: string): Promise<ActionResult> {
 
 /* ───────────── Platform: technical review of lessons ───────────── */
 
-const ReviewSchema = z.object({ status: z.enum(["draft", "reviewed", "needs_changes"]), notes: z.string().trim().max(3000).optional() });
+const ReviewSchema = z.object({ status: z.enum(["draft", "reviewed", "needs_changes"]), notes: z.string().trim().max(3000).optional(), checklist: z.array(z.enum(CHECKLIST_KEYS as [ChecklistKey, ...ChecklistKey[]])).max(20).optional() });
 
-export async function setLessonReview(lessonId: string, input: { status: string; notes?: string }): Promise<ActionResult> {
+export async function setLessonReview(lessonId: string, input: { status: string; notes?: string; checklist?: string[] }): Promise<ActionResult> {
   return guard(async () => {
     const ctx = await authorizePlatform("platform.content.review");
     const ref = getLesson(lessonId);
     if (!ref) throw new AccessError("Unknown lesson.");
     const parsed = ReviewSchema.safeParse(input);
     if (!parsed.success) throw new AccessError("Choose a review status.");
+    const checklist = [...new Set(parsed.data.checklist ?? [])];
+    if (parsed.data.status === "reviewed" && checklist.length < CHECKLIST_KEYS.length)
+      throw new AccessError("Tick every item on the checklist before signing off.");
+    if (parsed.data.status === "needs_changes" && !parsed.data.notes) throw new AccessError("Say what needs changing in the notes.");
     const db = await getDb();
     const row = {
       lessonId,
@@ -90,7 +95,9 @@ export async function setLessonReview(lessonId: string, input: { status: string;
       updatedAt: new Date(),
     };
     await db.insert(contentReviews).values(row).onConflictDoUpdate({ target: contentReviews.lessonId, set: row });
+    await db.insert(contentReviewEvents).values({ lessonId, status: row.status, contentHash: row.contentHash, reviewerUserId: ctx.user.id, reviewerName: ctx.user.name, notes: row.notes, checklist });
     revalidatePath("/platform/content");
+    revalidatePath("/reviewer", "layout");
     revalidatePath("/learn", "layout");
     return parsed.data.status === "reviewed" ? `Signed off "${ref.lesson.title}".` : `Marked "${ref.lesson.title}" as ${parsed.data.status.replace("_", " ")}.`;
   });
