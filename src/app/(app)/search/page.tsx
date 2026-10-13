@@ -178,7 +178,7 @@ export default async function GuidanceSearchPage({ searchParams }: { searchParam
 
             {generalOnly ? (
               <div className="card card-pad small muted">
-                {u!.concepts[0].name.charAt(0).toUpperCase() + u!.concepts[0].name.slice(1)} is a general accounting topic rather than a tax rule, so HMRC and Companies House guidance doesn&apos;t cover it — Capto&apos;s lessons do (right-hand column).
+                {u!.concepts[0].name.charAt(0).toUpperCase() + u!.concepts[0].name.slice(1)}{" "}is a general accounting topic rather than a tax rule, so HMRC and Companies House guidance doesn&apos;t cover it — Capto&apos;s lessons do (right-hand column).
               </div>
             ) : (
               <h2 className={styles.groupHead}>Official guidance{docs.length ? ` (${docs.length})` : ""}</h2>

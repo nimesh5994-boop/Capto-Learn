@@ -2,7 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { decrypt, SESSION_COOKIE_NAME } from "@/lib/auth/session";
 
 // /p/* is the client-facing proposal page — token-gated, never a session.
-const PUBLIC_PREFIXES = ["/login", "/signup", "/p/", "/api/", "/invite/", "/forgot-password", "/reset-password"];
+const PUBLIC_PREFIXES = ["/login", "/signup", "/p/", "/api/", "/invite/", "/forgot-password", "/reset-password", "/interview"];
 
 // Optimistic cookie check only; the DAL (requireUser) is the real gate next to the data.
 export default async function proxy(request: NextRequest) {

@@ -22,6 +22,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   if (can("research.use") && orgHasFeature(org, "research")) research.push("ask");
   const manage: NavKey[] = [];
   if ((can("progress.view_team") || can("assignments.manage")) && orgHasFeature(org, "teamProgress")) manage.push("team");
+  if (can("interviews.manage")) manage.push("interviews");
 
   const practice: NavKey[] = [];
   if (can("team.manage")) practice.push("admin.users");
@@ -46,7 +47,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   ];
 
   // Quick-jump index: every page this person can open, every course and every lesson.
-  const SHORTCUT: Partial<Record<NavKey, string>> = { dashboard: "d", learn: "c", review: "r", flashcards: "f", progress: "p", coach: "o", search: "s", ask: "a", team: "t", "platform.content": "v" };
+  const SHORTCUT: Partial<Record<NavKey, string>> = { dashboard: "d", learn: "c", review: "r", flashcards: "f", progress: "p", coach: "o", search: "s", ask: "a", team: "t", interviews: "i", "platform.content": "v" };
   const canLearn = can("learning.view");
   const palette: PaletteItem[] = [
     ...groups.flatMap((g) => g.items.map((k) => ({ href: NAV_ITEMS[k].href, label: NAV_ITEMS[k].label, group: "Pages" as const, hint: g.label, key: SHORTCUT[k] }))),

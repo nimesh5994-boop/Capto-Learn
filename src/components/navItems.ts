@@ -18,6 +18,7 @@ import {
   Database,
   Palette,
   ShieldCheck,
+  UserCheck,
   UserCog,
   UsersRound,
   type LucideIcon,
@@ -34,6 +35,7 @@ export type NavKey =
   | "search"
   | "ask"
   | "team"
+  | "interviews"
   | "admin.users"
   | "admin.roles"
   | "admin.practice"
@@ -57,7 +59,8 @@ export const NAV_ITEMS: Record<NavKey, { href: string; label: string; icon: Luci
   coach: { href: "/coach", label: "My coach", icon: MessageCircleHeart },
   search: { href: "/search", label: "Guidance search", icon: Search },
   ask: { href: "/ask", label: "Ask Capto", icon: MessageSquareQuote },
-  team: { href: "/team", label: "Team training", icon: ClipboardCheck },
+  team: { href: "/team", label: "Team training", icon: ClipboardCheck, exact: true },
+  interviews: { href: "/team/interviews", label: "Interview tests", icon: UserCheck },
   "admin.users": { href: "/admin/users", label: "Users", icon: UsersRound },
   "admin.roles": { href: "/admin/roles", label: "Roles", icon: UserCog },
   "admin.practice": { href: "/admin/practice", label: "Practice details", icon: Building2 },

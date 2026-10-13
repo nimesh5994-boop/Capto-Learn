@@ -51,7 +51,7 @@ export default async function FlashcardsPage({ searchParams }: { searchParams: P
         <div>
           <h1>Flashcards</h1>
           <p className="muted">
-            {total.toLocaleString("en-GB")} quick-fire cards on the figures and terms you need at your fingertips. Pick the right answer from four — anything you miss comes round again. Every answer is
+            {total.toLocaleString("en-GB")}{" "}quick-fire cards on the figures and terms you need at your fingertips. Pick the right answer from four — anything you miss comes round again. Every answer is
             quoted from its lesson.
           </p>
         </div>

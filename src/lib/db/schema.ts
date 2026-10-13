@@ -336,6 +336,47 @@ export const botKnowledge = pgTable(
 );
 export type BotKnowledge = typeof botKnowledge.$inferSelect;
 
+export type InterviewStatus = "ready" | "started" | "completed" | "revoked";
+
+/**
+ * A knowledge test for a job applicant. No account: the candidate opens a single-use link (or enters a short
+ * code), signs a no-AI declaration, and sits a timed test. The browser is locked to the first device that starts
+ * it; leaving the page, exiting full screen and paste attempts are logged for the integrity report.
+ */
+export const interviewTests = pgTable(
+  "interview_tests",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    organizationId: uuid("organization_id").notNull().references(() => organizations.id, { onDelete: "cascade" }),
+    createdById: uuid("created_by_id").references(() => users.id, { onDelete: "set null" }),
+    createdByName: text("created_by_name"),
+    candidateName: text("candidate_name").notNull(),
+    candidateEmail: text("candidate_email"),
+    role: text("role"),
+    tracks: jsonb("tracks").$type<string[]>().notNull(),
+    difficulty: text("difficulty").$type<"trainee" | "experienced" | "senior">().notNull().default("experienced"),
+    questionCount: integer("question_count").notNull(),
+    minutes: integer("minutes").notNull(),
+    tokenHash: text("token_hash").notNull(),
+    code: text("code").notNull(),
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+    status: text("status").$type<InterviewStatus>().notNull().default("ready"),
+    /** Hash of the cookie set on the device that started the test — only that device can continue it. */
+    sessionHash: text("session_hash"),
+    declaration: jsonb("declaration").$type<{ name: string; at: string; ip: string | null; userAgent: string | null; statements: string[] }>(),
+    questions: jsonb("questions").$type<{ lessonId: string; questionId: string; track: string; level: "foundation" | "practitioner" | "advanced" }[]>().notNull().default([]),
+    answers: jsonb("answers").$type<Record<string, { choice: number; at: string }>>().notNull().default({}),
+    events: jsonb("events").$type<{ t: string; type: string; ms?: number }[]>().notNull().default([]),
+    score: integer("score"),
+    startedAt: timestamp("started_at", { withTimezone: true }),
+    deadlineAt: timestamp("deadline_at", { withTimezone: true }),
+    completedAt: timestamp("completed_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index("interview_tests_org_idx").on(t.organizationId, t.createdAt), uniqueIndex("interview_tests_token_uq").on(t.tokenHash), index("interview_tests_code_idx").on(t.code)]
+);
+export type InterviewTest = typeof interviewTests.$inferSelect;
+
 export type FeedbackKind = "error" | "out_of_date" | "unclear" | "suggestion";
 export type FeedbackStatus = "open" | "fixed" | "dismissed";
 

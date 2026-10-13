@@ -15,6 +15,8 @@ export interface PlanDef {
   maxUsers: number | null;
   /** Ask Capto questions per firm per calendar month; null = unlimited (fair use). */
   maxResearchPerMonth: number | null;
+  /** Interview tests for job applicants per calendar month; null = unlimited, 0 = not included. */
+  maxInterviewsPerMonth: number | null;
   features: readonly Feature[];
 }
 
@@ -28,6 +30,7 @@ export const PLANS: Record<PlanKey, PlanDef> = {
     tagline: `Everything in Professional for ${TRIAL_DAYS} days.`,
     maxUsers: 5,
     maxResearchPerMonth: 40,
+    maxInterviewsPerMonth: 3,
     features: ["research", "professionalSources", "assignments", "teamProgress", "customRoles", "auditLog", "customBranding"],
   },
   starter: {
@@ -37,6 +40,7 @@ export const PLANS: Record<PlanKey, PlanDef> = {
     tagline: "Sole practitioners and small teams: the full course library plus Ask Capto.",
     maxUsers: 3,
     maxResearchPerMonth: 100,
+    maxInterviewsPerMonth: 5,
     features: ["research"],
   },
   professional: {
@@ -46,6 +50,7 @@ export const PLANS: Record<PlanKey, PlanDef> = {
     tagline: "Growing firms: assign training, track the team, professional-body search.",
     maxUsers: 15,
     maxResearchPerMonth: 600,
+    maxInterviewsPerMonth: 25,
     features: ["research", "professionalSources", "assignments", "teamProgress", "customRoles", "customBranding"],
   },
   practice: {
@@ -55,6 +60,7 @@ export const PLANS: Record<PlanKey, PlanDef> = {
     tagline: "Multi-office practices needing controls, audit and unlimited seats.",
     maxUsers: null,
     maxResearchPerMonth: 2000,
+    maxInterviewsPerMonth: null,
     features: ["research", "professionalSources", "assignments", "teamProgress", "customRoles", "auditLog", "customBranding"],
   },
 };
@@ -92,6 +98,12 @@ export function orgHasFeature(org: EntitlementSource, feature: Feature): boolean
   if (org.kind === "internal") return true;
   const override = org.featureOverrides?.[feature];
   return typeof override === "boolean" ? override : hasFeature(org.plan, feature);
+}
+
+/** Interview tests allowed per month for this firm (null = unlimited). The internal workspace is unlimited. */
+export function interviewLimit(org: EntitlementSource): number | null {
+  if (org.kind === "internal") return null;
+  return planOf(org.plan).maxInterviewsPerMonth;
 }
 
 /** Effective seat / research limits (null = unlimited), honouring platform overrides. */
