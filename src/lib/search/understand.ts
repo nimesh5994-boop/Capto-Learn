@@ -16,6 +16,8 @@ export interface Understanding {
   topics: string[];
   /** Meaningful words left after removing question words. */
   keywords: string[];
+  /** The aliases the question actually used, longest first (e.g. "s455" rather than the concept name). */
+  matched: string[];
   /** Words we corrected, e.g. { from: "joournal", to: "journal" }. */
   corrections: { from: string; to: string }[];
   /** Query for the official guidance: HMRC wording for the concepts, plus the keywords. */
@@ -36,24 +38,25 @@ const INTENTS: [Intent, RegExp][] = [
   ["rate", /\b(rates?|threshold|limit|allowance|how much|percentage|band|amount of)\b/],
   ["how_to", /\b(how (do|to|should|can|would)|steps?|process|procedure|what do i do|set up|record|post|enter|book)\b/],
   ["treatment", /\b(treat|treatment|allowable|deductible|claim|recover|account for|taxable|vat on|liable)\b/],
-  ["definition", /^(what (is|are|does)|define|meaning of|explain|difference between)\b/],
+  ["definition", /^(what('s| is| are| does| do you mean by)|whats|define|meaning of|explain|describe|difference between|what (goes|should go|is included|are included|should be included|should be) in|tell me (about|what)|(can|could) you (explain|tell me)|please explain|i want to know (about|what)|info(rmation)? (on|about)|what do (we|you|i) mean by)\b|\b(meaning|definition|defined)\b/],
 ];
 
-/** Damerau-free edit distance, capped (we only care about 0–2). */
+/** Edit distance where swapping two neighbouring letters counts as one slip ("baalnce" → "balance"). Capped. */
 function editDistance(a: string, b: string, cap = 3): number {
   if (Math.abs(a.length - b.length) > cap) return cap;
-  let prev = Array.from({ length: b.length + 1 }, (_, j) => j);
+  const d: number[][] = Array.from({ length: a.length + 1 }, (_, i) => [i, ...Array(b.length).fill(0)]);
+  for (let j = 0; j <= b.length; j++) d[0][j] = j;
   for (let i = 1; i <= a.length; i++) {
-    const cur = [i];
-    let rowMin = i;
+    let rowMin = Infinity;
     for (let j = 1; j <= b.length; j++) {
-      cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
-      rowMin = Math.min(rowMin, cur[j]);
+      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+      d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + cost);
+      if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) d[i][j] = Math.min(d[i][j], d[i - 2][j - 2] + 1);
+      rowMin = Math.min(rowMin, d[i][j]);
     }
     if (rowMin >= cap) return cap;
-    prev = cur;
   }
-  return prev[b.length];
+  return d[a.length][b.length];
 }
 
 const words = (s: string) => s.toLowerCase().replace(/[’']/g, "").match(/[a-z0-9&]+/g) ?? [];
@@ -78,7 +81,8 @@ export function correctTypos(question: string, extraVocab: Set<string> = new Set
         bestD = d;
       }
     }
-    if (!best) return w;
+    // An inflection of a known word ("partially" vs "partial") is not a typo.
+    if (!best || lw.startsWith(best) || best.startsWith(lw)) return w;
     corrections.push({ from: lw, to: best });
     return best;
   });
@@ -100,21 +104,41 @@ export function understand(question: string, extraVocab?: Set<string>): Understa
   const { text, corrections } = correctTypos(question.trim(), extraVocab);
   const lower = text.toLowerCase();
   const tw = words(lower);
-  const intent = INTENTS.find(([, re]) => re.test(lower))?.[0] ?? "general";
 
-  // Concepts: score by the longest alias matched, so "directors loan" beats "loan".
-  const matched = GLOSSARY.map((c) => ({ c, len: Math.max(0, ...c.aliases.filter((a) => hasPhrase(tw, a)).map((a) => words(a).length)) }))
+  // Concepts: score by the longest alias matched, so "directors loan" beats "loan"; ties go to the longer phrase.
+  const found = GLOSSARY.map((c) => {
+    const hits = [...new Set([c.name.toLowerCase(), ...c.aliases])].filter((a) => hasPhrase(tw, a)).sort((a, b) => words(b).length - words(a).length || b.length - a.length);
+    return { c, hits, len: hits.length ? words(hits[0]).length : 0, chars: hits[0]?.length ?? 0 };
+  })
     .filter((m) => m.len > 0)
-    .sort((a, b) => b.len - a.len);
-  const concepts = matched.map((m) => m.c);
+    .sort((a, b) => b.len - a.len || b.chars - a.chars);
+  const concepts = found.map((m) => m.c);
+  const matched = found.flatMap((m) => m.hits);
+  const bestMatch = found.map((m) => m.hits[0]);
+
+  // Intent is read with the concept's own words taken out, so "flat RATE scheme" or "nil RATE band" isn't
+  // mistaken for a question about a rate. A bare phrase like "corporation tax rate" still counts as one.
+  let rest = ` ${lower.replace(/[’']/g, "")} `;
+  for (const a of matched) rest = rest.replace(new RegExp(`\\b${a.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/\s+/g, "\\s+")}s?\\b`, "g"), " ");
+  let intent: Intent = INTENTS.find(([, re]) => re.test(rest.trim()))?.[0] ?? "general";
+  // The concept's own words still decide when nothing else does: "late filing penalty", "corporation tax rate".
+  if (intent === "general") {
+    // Only when the rate word ends the phrase ("corporation tax rate"), not when it's part of a name ("flat rate scheme").
+    const own = bestMatch.filter((m) => /\b(rates?|threshold|limit|allowance|penalt\w*|deadline)$/.test(m)).join(" ");
+    intent = (["penalty", "deadline", "rate"] as Intent[]).find((k) => INTENTS.find(([i]) => i === k)![1].test(own)) ?? "general";
+  }
+  if (intent === "general" && /^(what('s| is| are)|whats)\b/.test(lower)) intent = "definition";
+  // Just the term on its own ("trial balance", "IR35?") is asking what it is.
+  const aliasWords = new Set(matched.flatMap(words).map(singular));
+  if (intent === "general" && matched.length && tw.filter((x) => !QUESTION_WORDS.has(x)).every((x) => aliasWords.has(singular(x)))) intent = "definition";
   const topicScore = new Map<string, number>();
   concepts.forEach((c, i) => c.topics.forEach((t, k) => topicScore.set(t, (topicScore.get(t) ?? 0) + (concepts.length - i) * (c.topics.length - k))));
   const topics = [...topicScore.entries()].sort((a, b) => b[1] - a[1]).map(([t]) => t);
 
   const keywords = [...new Set(tw.filter((w) => w.length > 1 && !QUESTION_WORDS.has(w)))];
-  const officialQuery = [...new Set([...concepts.flatMap((c) => c.official ?? [c.name]), ...keywords])].join(" ");
+  const officialQuery = [...new Set([...concepts.slice(0, 2).flatMap((c) => c.official ?? [c.name]), ...keywords])].join(" ");
   const lessonQuery = [...new Set([...concepts.flatMap((c) => [c.name, ...c.aliases.slice(0, 2)]), ...keywords])].join(" ");
-  return { text, intent, concepts, topics, keywords, corrections, officialQuery, lessonQuery };
+  return { text, intent, concepts, topics, keywords, matched, corrections, officialQuery, lessonQuery };
 }
 
 export const INTENT_LABEL: Record<Intent, string> = {

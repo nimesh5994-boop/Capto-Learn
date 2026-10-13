@@ -1,10 +1,11 @@
 /*
- * Level 1 — the instant answer. Uses only Capto's own checked material (flashcards and lesson text), no AI.
+ * Level 1 — the instant answer. Uses only Capto's own checked material (fact cards and lesson text), no AI.
  * It answers only when it is confident; otherwise it returns null and the question goes up to Level 2.
- * Pure: the caller passes in the lessons and cards. Unit-tested.
+ * Every sentence it shows is verbatim from a lesson. Pure: the caller passes in the lessons and cards.
+ * Measured by the bot exam (botExam.test.ts / scripts/bot-report.mts).
  */
 import type { Flashcard } from "@/lib/learning/flashcards";
-import { rankPassages, splitPassages, tokenize } from "@/lib/research/passages";
+import { tokenize } from "@/lib/research/passages";
 import type { Understanding } from "./understand";
 
 export interface InstantLesson {
@@ -13,6 +14,7 @@ export interface InstantLesson {
   track: string;
   trackTitle: string;
   plain: string;
+  level?: "foundation" | "practitioner" | "advanced";
 }
 
 export interface InstantAnswer {
@@ -26,18 +28,44 @@ export interface InstantAnswer {
   basis: string;
 }
 
-/** Sentences of a passage. Heading lines (short, no full stop) are dropped rather than glued to the next sentence. */
-const sentences = (s: string) =>
-  s
+/** Sentences of a lesson, line by line — never joined across lines, so every sentence is verbatim. Headings are dropped. */
+export function sentences(s: string): string[] {
+  return s
     .split(/\n+/)
-    .filter((line) => /[.!?:]\s*$/.test(line.trim()) || line.trim().length > 80)
-    .join(" ")
-    .replace(/\s+/g, " ")
-    .split(/(?<=[.!?])\s+(?=[A-Z£0-9"“(])/)
-    .map((x) => x.trim())
+    .map((line) => line.replace(/\s+/g, " ").trim())
+    .filter((line) => /[.!?:]$/.test(line) || line.length > 80)
+    .flatMap((line) => line.split(/(?<=[.!?])\s+(?=[A-Z£0-9"“(])/))
+    .map((x) => x.replace(/^[-*•]\s+|^\d+\.\s+/, "").trim())
     .filter((x) => x.length > 25 && x.length < 400);
+}
 
-const stem = (w: string) => (w.length > 4 && w.endsWith("ies") ? w.slice(0, -3) + "y" : w.length > 3 && w.endsWith("s") && !w.endsWith("ss") ? w.slice(0, -1) : w);
+// Hyphens and spaces are interchangeable: "strike off" matches "Strike-off", "auto enrolment" matches "auto-enrolment".
+const esc = (t: string) => t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/[\s-]+/g, "[\\s-]+");
+const hasAny = (text: string, list: string[]) => list.some((t) => new RegExp(`(^|[^a-z0-9])${esc(t)}`, "i").test(text));
+const countOf = (text: string, list: string[]) => list.reduce((n, t) => n + (text.match(new RegExp(`(^|[^a-z0-9])${esc(t)}`, "gi"))?.length ?? 0), 0);
+
+const DEFINING = /\b(is|are|means|refers? to|is called|are called|shows?|records?|turns?|covers?|measures?|represents?)\b/i;
+const PROCEDURAL = /\b(first|then|next|finally|start|check|compare|tick|match|post|record|enter|list|identify|agree|reconcile|clear|correct|file|submit|complete|send|apply|close|investigate|prepare|calculate|work out|debit|credit)\b/i;
+const STOP_ROOT = new Set(["the", "and", "for", "account", "accounts", "scheme", "relief", "rates", "return"]);
+
+/** A lesson sentence (or, failing that, a whole line) starting with `prefix` — always verbatim. */
+export function findLine(plain: string, prefix: string): string | null {
+  return sentences(plain).find((x) => x.startsWith(prefix)) ?? plain.split("\n").map((x) => x.replace(/\s+/g, " ").trim()).find((x) => x.startsWith(prefix)) ?? null;
+}
+
+/** The checked answer pinned to a concept (see Concept.pin), from whichever lesson holds it. */
+export function pinnedAnswer(u: Understanding, lessons: InstantLesson[]): InstantAnswer | null {
+  const pin = u.concepts[0]?.pin;
+  if (!pin) return null;
+  const order = [...lessons].sort((a, b) => Number(u.topics.includes(b.track)) - Number(u.topics.includes(a.track)));
+  for (const l of order) {
+    const lead = findLine(l.plain, pin.lead);
+    if (!lead) continue;
+    const also = (pin.also ?? []).map((p) => findLine(l.plain, p)).filter((x): x is string => !!x && x !== lead);
+    return { kind: "lesson", answer: lead, excerpt: also, lesson: { id: l.id, title: l.title, trackTitle: l.trackTitle }, basis: `Checked definition from the lesson “${l.title}”` };
+  }
+  return null;
+}
 
 /** Share of the card's meaningful words that the question also uses. */
 function cardMatch(questionTerms: Set<string>, front: string): number {
@@ -45,62 +73,122 @@ function cardMatch(questionTerms: Set<string>, front: string): number {
   return t.length ? t.filter((w) => questionTerms.has(w)).length / t.length : 0;
 }
 
+/**
+ * The lesson that best explains (definition) or walks through (how-to) the concept, and the best sentences in it.
+ * Lesson choice rewards lessons that *explain* the concept, in the question's own words, in its main course,
+ * at the most basic level — not lessons that merely mention it.
+ */
+function fromLessons(u: Understanding, lessons: InstantLesson[], mode: "define" | "how_to"): InstantAnswer | null {
+  const c = u.concepts[0];
+  const used = u.matched.filter((m) => c.aliases.includes(m));
+  const terms = [...new Set([c.name, ...c.aliases].map((t) => t.toLowerCase()))];
+  const roots = c.name
+    .toLowerCase()
+    .split(/[^a-z]+/)
+    .filter((w) => w.length > 3 && !STOP_ROOT.has(w))
+    .map((w) => w.slice(0, Math.max(5, w.length - 3)));
+  const cue = mode === "define" ? DEFINING : PROCEDURAL;
+  const pinHome = c.pin ? lessons.find((l) => findLine(l.plain, c.pin!.lead)) : undefined;
+  const inCourse = mode === "how_to" && pinHome ? [pinHome] : lessons.filter((l) => u.topics.slice(0, 2).includes(l.track));
+  const saying = used.length ? inCourse.filter((l) => hasAny(l.plain, used)) : [];
+  const pool = saying.length ? saying : inCourse;
+
+  const best = pool
+    .map((l) => {
+      const ss = sentences(l.plain);
+      const explaining = ss.filter((x) => hasAny(x, terms) && cue.test(x)).length;
+      const score =
+        (hasAny(l.title, used) ? 5 : hasAny(l.title, terms) ? 3 : hasAny(l.title, roots) ? 1 : 0) +
+        Math.min(6, countOf(l.plain, used)) +
+        Math.min(4, countOf(l.plain, terms)) +
+        2 * Math.min(3, explaining) +
+        (l.track === u.topics[0] ? 3 : 0) +
+        (mode === "define" ? (l.level === "foundation" ? 2 : l.level === "practitioner" ? 1 : 0) : 0);
+      return { l, ss, score };
+    })
+    .sort((a, b) => b.score - a.score)[0];
+  if (!best || best.score < 5) return null;
+
+  const titleIsConcept = hasAny(best.l.title, terms);
+  const scored = best.ss.map((x, i) => {
+    const said = hasAny(x, used);
+    const term = said || hasAny(x, terms);
+    const root = term || hasAny(x, roots);
+    const score =
+      (said ? 6 : term ? 4 : root ? 2 : 0) +
+      (cue.test(x) ? 2 : 0) +
+      (i < 6 ? 1.5 : i < 15 ? 0.5 : 0) +
+      // The lesson summary (sentence 0–1) is a fair definition when the lesson is about the concept.
+      (mode === "define" && titleIsConcept && i <= 1 ? 2 : 0) -
+      (x.length > 260 ? 1 : 0) -
+      (/^[a-z]/.test(x) ? 1 : 0);
+    return { x, i, root, score };
+  });
+  const relevant = scored.filter((s) => s.root || (mode === "how_to" && cue.test(s.x)));
+  // In a lesson that is itself about the task ("Strike-off, liquidation…"), any real step can open the answer.
+  const lessonIsTask = mode === "how_to" && hasAny(best.l.title, used.length ? used : terms);
+  const opener = (s: { x: string; root: boolean }) => !/:$/.test(s.x) && (s.root || (lessonIsTask && cue.test(s.x)));
+  const inWords = relevant.filter((s) => opener(s) && (!used.length || !saying.length || lessonIsTask || hasAny(s.x, used)));
+  const leads = inWords.length ? inWords : relevant.filter(opener);
+  const preferred = mode === "how_to" ? leads.filter((s) => cue.test(s.x) && !/;\s*\w[^;]*:/.test(s.x)) : leads;
+  // A how-to on a concept with a checked definition opens with that definition, then the steps.
+  const pinnedLead = mode === "how_to" && pinHome && c.pin ? relevant.find((s) => s.x === findLine(pinHome.plain, c.pin!.lead)) : undefined;
+  const lead = pinnedLead ?? [...(preferred.length ? preferred : leads)].sort((a, b) => b.score - a.score || a.i - b.i)[0];
+  if (!lead || lead.score < 5) return null;
+  const rest = relevant
+    .filter((s) => s !== lead && s.score >= 3)
+    .sort((a, b) => b.score - a.score || a.i - b.i)
+    .slice(0, mode === "how_to" ? 4 : 3)
+    .sort((a, b) => a.i - b.i)
+    .map((s) => s.x);
+  if (mode === "how_to" && rest.length < 2) return null;
+  if (mode === "how_to" && !pinHome && used.length && !hasAny(lead.x, used) && !hasAny(best.l.title, used)) return null;
+  // Technical (non-bookkeeping) how-tos: open with a real step or the lesson's own summary, or let Level 2 write cited steps.
+  if (mode === "how_to" && !c.general && !pinnedLead && lead.i > 1 && !/^(File|Check|Send|Submit|Complete|Register|Apply|Calculate|Work out|Prepare|Record|Enter|Post|Tell|Notify|Pay|Claim|Report|Verify|Confirm|Keep|Start|Make)\b/.test(lead.x)) return null;
+  return {
+    kind: "lesson",
+    answer: lead.x,
+    excerpt: rest,
+    lesson: { id: best.l.id, title: best.l.title, trackTitle: best.l.trackTitle },
+    basis: mode === "define" ? `Explained in the lesson “${best.l.title}”` : `Steps from the lesson “${best.l.title}”`,
+  };
+}
+
 export function instantAnswer(u: Understanding, lessons: InstantLesson[], cards: Flashcard[]): InstantAnswer | null {
   if (!u.concepts.length) return null; // the bot only answers what it recognises
-  const aliases = u.concepts[0].aliases.map((a) => a.toLowerCase());
+  const c = u.concepts[0];
+  const aliases = c.aliases.map((a) => a.toLowerCase());
   const mentions = (s: string) => aliases.some((a) => s.toLowerCase().includes(a));
   const byId = new Map(lessons.map((l) => [l.id, l]));
   const inTopic = (id: string) => u.topics.slice(0, 2).includes(id.split("/")[0]);
+  // Questions carrying the client's own facts (figures, "my client", long scenarios) need the rule applied: pass up.
+  const scenario = /£\s?\d|\b\d+(\.\d+)?k\b|\b\d{1,3}(,\d{3})+\b|\b\d{4,}\b(?! to \d)|\b(my|our|a|the) client\b|\bcan (we|i|they)\b|\bshould (we|i)\b|\bdo i have to\b/i.test(u.text) || u.text.length > 110;
 
   // 1. Facts (rates, deadlines, definitions): a checked flashcard whose question matches closely.
-  if (u.intent !== "how_to" && u.intent !== "treatment") {
-    const qTerms = new Set(tokenize(`${u.text} ${u.concepts.map((c) => c.name).join(" ")}`));
+  if (!scenario && (u.intent === "rate" || u.intent === "deadline" || u.intent === "definition")) {
+    const qTerms = new Set(tokenize(`${u.text} ${c.name}`));
     const best = cards
-      .filter((c) => inTopic(c.lessonId) && mentions(`${c.front} ${c.back} ${c.evidence}`))
-      .map((c) => ({ c, score: cardMatch(qTerms, c.front) }))
+      .filter((card) => inTopic(card.lessonId) && mentions(`${card.front} ${card.back} ${card.evidence}`))
+      .map((card) => ({ card, score: cardMatch(qTerms, card.front) }))
       .sort((a, b) => b.score - a.score)[0];
     if (best && best.score >= 0.6) {
-      const l = byId.get(best.c.lessonId);
-      if (l)
-        return {
-          kind: "flashcard",
-          answer: best.c.back,
-          excerpt: [best.c.evidence],
-          lesson: { id: l.id, title: l.title, trackTitle: l.trackTitle },
-          basis: `Matched a checked fact card: “${best.c.front}”`,
-        };
+      const l = byId.get(best.card.lessonId);
+      if (l) return { kind: "flashcard", answer: best.card.back, excerpt: [best.card.evidence], lesson: { id: l.id, title: l.title, trackTitle: l.trackTitle }, basis: `Matched a checked fact card: “${best.card.front}”` };
     }
   }
+  if (scenario) return null;
 
-  // 2. How-to and definitions: the lesson section that best covers the concept.
-  if (u.intent === "how_to" || u.intent === "definition" || u.intent === "general") {
-    const pool = lessons.filter((l) => inTopic(l.id));
-    const passages = pool.flatMap((l) => splitPassages(l.plain, 900).map((text) => ({ sourceId: l.id, text })));
-    const ranked = rankPassages(passages, u.lessonQuery).filter((p) => mentions(p.text));
-    const top = ranked[0];
-    // Gate on coverage of the question's own words (BM25 scores aren't comparable across corpus sizes).
-    const kw = u.keywords.map(stem);
-    const covered = top ? new Set(tokenize(top.text).map(stem)) : new Set<string>();
-    if (!top || kw.filter((k) => covered.has(k)).length / Math.max(1, kw.length) < 0.6) return null;
-    const qTerms = new Set(tokenize(u.lessonQuery));
-    const scored = sentences(top.text).map((s, i) => ({ s, i, hits: tokenize(s).filter((w) => qTerms.has(w)).length + (mentions(s) ? 2 : 0) }));
-    const good = scored.filter((x) => x.hits >= 3 || (x.hits >= 2 && mentions(x.s))).sort((a, b) => b.hits - a.hits || a.i - b.i);
-    // Lead with the sentence that best states the concept itself; the rest follow in the lesson's own order.
-    const lead = good.find((x) => mentions(x.s));
-    if (!lead || good.length < 2) return null;
-    const rest = good
-      .filter((x) => x !== lead)
-      .slice(0, 3)
-      .sort((a, b) => a.i - b.i)
-      .map((x) => x.s);
-    const l = byId.get(top.sourceId)!;
-    return {
-      kind: "lesson",
-      answer: lead.s,
-      excerpt: rest,
-      lesson: { id: l.id, title: l.title, trackTitle: l.trackTitle },
-      basis: `Best-matching section of the lesson “${l.title}”`,
-    };
+  // 2. "What is …?" — the lesson that explains it. A bare general term ("trial balance") is read the same way.
+  if (u.intent === "definition" && /\b(difference|differ|vs\.?|versus|compare|or)\b/i.test(u.text) && u.concepts.length >= 2 && u.concepts[1].pin) {
+    const first = pinnedAnswer(u, lessons);
+    const second = pinnedAnswer({ ...u, concepts: [u.concepts[1]] }, lessons);
+    if (first && second && first.answer !== second.answer) return { ...first, excerpt: [second.answer, ...first.excerpt].slice(0, 3), basis: `Checked definitions of ${c.name} and ${u.concepts[1].name}` };
   }
+  if (u.intent === "definition" || (u.intent === "general" && c.general && u.keywords.length <= 3)) return pinnedAnswer(u, lessons) ?? fromLessons(u, lessons, "define");
+
+  // 3. "How do I …?" — process sentences from the lesson that walks through it.
+  if (u.intent === "how_to") return fromLessons(u, lessons, "how_to");
+
+  // Rates, deadlines, treatment, penalties and broad questions need the rule applied properly: Level 2.
   return null;
 }

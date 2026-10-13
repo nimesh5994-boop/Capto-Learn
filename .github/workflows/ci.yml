@@ -1,0 +1,33 @@
+name: Checks
+
+# Runs on every push and pull request, and every night, so a regression in the content, the question bot
+# or the app can't slip through unnoticed. The bot exam includes the "basics from every angle" set, which
+# must stay at 100%.
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: "0 3 * * *"
+  workflow_dispatch:
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Typecheck
+        run: npx tsc --noEmit -p .
+      - name: Lint
+        run: npx eslint src
+      - name: Content validator
+        run: npx tsx scripts/validate-content.mts
+      - name: Tests, including the bot exam
+        run: npm test
+      - name: Bot report (what the bot answers, for the run log)
+        run: npm run bot:report -- --fails

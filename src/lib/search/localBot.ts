@@ -11,7 +11,7 @@ import { understand, type Understanding } from "./understand";
 let cache: { lessons: InstantLesson[]; vocab: Set<string> } | null = null;
 function library() {
   if (cache) return cache;
-  const lessons = allLessons().map((r) => ({ id: r.id, title: r.lesson.title, track: r.track.slug, trackTitle: r.track.title, plain: lessonPlainText(r.lesson) }));
+  const lessons = allLessons().map((r) => ({ id: r.id, title: r.lesson.title, track: r.track.slug, trackTitle: r.track.title, plain: lessonPlainText(r.lesson), level: r.lesson.level }));
   const vocab = new Set(lessons.flatMap((l) => l.plain.toLowerCase().match(/[a-z]{5,}/g) ?? []));
   return (cache = { lessons, vocab });
 }

@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev -p 3700",
-    "build": "node scripts/migrate.mjs && next build",
+    "build": "npm run bot:exam && node scripts/migrate.mjs && next build",
+    "bot:exam": "vitest run src/lib/search",
+    "bot:report": "tsx scripts/bot-report.mts",
     "start": "next start",
     "lint": "eslint",
     "test": "vitest run",

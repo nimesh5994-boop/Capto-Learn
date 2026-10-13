@@ -53,7 +53,9 @@ export default async function GuidanceSearchPage({ searchParams }: { searchParam
   const query = q.trim().slice(0, 300);
   const local = query ? localAnswer(query) : null;
   const u = local?.u;
-  const [hits, stats] = await Promise.all([u ? searchKb(u.officialQuery || u.text, { limit: 60 }) : Promise.resolve([] as KbHit[]), kbStats()]);
+  // General accounting ideas (what is a balance sheet, how to post a journal) aren't in tax guidance: lessons only.
+  const generalOnly = !!u && u.concepts.length > 0 && u.concepts.every((c) => c.general);
+  const [hits, stats] = await Promise.all([u && !generalOnly ? searchKb(u.officialQuery || u.text, { limit: 60 }) : Promise.resolve([] as KbHit[]), kbStats()]);
 
   const byDoc = new Map<string, KbHit[]>();
   for (const h of hits) byDoc.set(h.url, [...(byDoc.get(h.url) ?? []), h]);
@@ -62,7 +64,7 @@ export default async function GuidanceSearchPage({ searchParams }: { searchParam
   const lessons = u ? lessonsFor(u) : [];
   const instant = local?.instant ?? null;
   const briefs =
-    query && u
+    query && u && u.keywords.length >= 2 && !generalOnly
       ? (await (await getDb()).select().from(topicBriefs).where(and(eq(topicBriefs.status, "published"), isNotNull(topicBriefs.answer))))
           .map((b) => ({ b, score: Math.max(termOverlap(u.text, b.question), termOverlap(u.text, b.restatedQuestion)) }))
           .filter((x) => x.score >= 0.5)
@@ -160,8 +162,14 @@ export default async function GuidanceSearchPage({ searchParams }: { searchParam
               </article>
             ))}
 
-            <h2 className={styles.groupHead}>Official guidance{docs.length ? ` (${docs.length})` : ""}</h2>
-            {docs.length === 0 ? (
+            {generalOnly ? (
+              <div className="card card-pad small muted">
+                {u!.concepts[0].name.charAt(0).toUpperCase() + u!.concepts[0].name.slice(1)} is a general accounting topic rather than a tax rule, so HMRC and Companies House guidance doesn&apos;t cover it — Capto&apos;s lessons do (right-hand column).
+              </div>
+            ) : (
+              <h2 className={styles.groupHead}>Official guidance{docs.length ? ` (${docs.length})` : ""}</h2>
+            )}
+            {generalOnly ? null : docs.length === 0 ? (
               <div className="card card-pad muted small">
                 {u?.concepts.length ? `No HMRC or Companies House page is specifically about ${u.concepts[0].name}. ` : "No official guidance matched. "}
                 {lessons.length ? "Capto's lessons cover it — see the right-hand column." : "Try HMRC's own terms (e.g. “input tax” rather than “claim VAT back”)."}
