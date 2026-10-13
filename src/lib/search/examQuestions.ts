@@ -8,13 +8,14 @@
  * expect.instant   — "lesson" | "none": whether Level 1 should answer from a lesson, or pass up to Ask Capto
  * expect.from      — course the instant answer must come from
  * expect.lead      — the instant answer's first sentence must mention one of these
+ * expect.entry     — the answer must show a Dr and a Cr line (journal questions); entryMentions: about what
  */
 import type { Intent } from "./understand";
 
 export interface ExamCase {
   q: string;
   level: "simple" | "medium" | "hard";
-  expect: { concept?: string; topic?: string; intent?: Intent; instant?: "lesson" | "none"; from?: string; lead?: string[] };
+  expect: { concept?: string; topic?: string; intent?: Intent; instant?: "lesson" | "none"; from?: string; lead?: string[]; entry?: boolean; entryMentions?: string[] };
 }
 
 const simple = (q: string, e: ExamCase["expect"]): ExamCase => ({ q, level: "simple", expect: e });
@@ -43,6 +44,15 @@ export const EXAM_QUESTIONS: ExamCase[] = [
   medium("what is the difference between a balance sheet and a profit and loss", { topic: "foundations", instant: "lesson", lead: ["balance sheet", "income statement"] }),
   medium("how do I prepare a trial balance", { concept: "trial balance", intent: "how_to", instant: "lesson", lead: ["trial balance"] }),
   medium("how to correct an error using a suspense account", { concept: "suspense account", intent: "how_to", instant: "lesson", from: "foundations", lead: ["suspense"] }),
+
+  // ── Journals for specific things ("what's the journal for X?") — must show X's Dr/Cr entry
+  simple("what is jpurnal entry for depreciation", { instant: "lesson", from: "foundations", entry: true, entryMentions: ["depreciation"] }),
+  simple("depreciation journal", { instant: "lesson", from: "foundations", entry: true, entryMentions: ["depreciation"] }),
+  simple("double entry for depreciation", { instant: "lesson", from: "foundations", entry: true, entryMentions: ["depreciation"] }),
+  simple("dr cr for depreciation", { instant: "lesson", from: "foundations", entry: true, entryMentions: ["depreciation"] }),
+  simple("how do I post the depreciation journal", { instant: "lesson", from: "foundations", entry: true, entryMentions: ["depreciation"] }),
+  simple("journal for an accrual", { instant: "lesson", from: "foundations", entry: true, entryMentions: ["accru"] }),
+  simple("what is the journal entry for a prepayment", { instant: "lesson", from: "foundations", entry: true, entryMentions: ["prepa", "prepaid"] }),
 
   // ── Bookkeeping
   simple("how to post joournal entry?", { concept: "journal entry", intent: "how_to", instant: "lesson", from: "foundations", lead: ["journal"] }),

@@ -154,6 +154,38 @@ function fromLessons(u: Understanding, lessons: InstantLesson[], mode: "define" 
   };
 }
 
+/**
+ * "What's the journal for X?" / "double entry for X" / "Dr Cr for X" — the worked Dr/Cr entry for X, taken
+ * from X's own lesson (a worked journal titled for X, or failing that a line that gives X's Dr and Cr).
+ */
+export function journalFor(u: Understanding, lessons: InstantLesson[]): InstantAnswer | null {
+  const isJournal = (name: string) => name === "journal entry" || name === "double entry";
+  const asksForEntry = u.concepts.some((c) => isJournal(c.name)) || /\b(dr|cr|debits?|credits?)\b/i.test(u.text);
+  const topic = u.concepts.find((c) => !isJournal(c.name));
+  if (!asksForEntry || !topic) return null;
+  const terms = [...new Set([topic.name, ...topic.aliases])];
+  const home = topic.pin ? lessons.find((l) => findLine(l.plain, topic.pin!.lead)) : undefined;
+  const pool = [...(home ? [home] : []), ...lessons.filter((l) => topic.topics.includes(l.track) && l !== home)];
+  const linesOf = (l: InstantLesson) => l.plain.split("\n").map((x) => x.replace(/\s+/g, " ").trim()).filter(Boolean);
+  // Lesson by lesson (X's own lesson first): 1. a worked journal — a title line ("The annual depreciation
+  // journal:") followed by its Dr/Cr lines; 2. otherwise a line that states X's double entry.
+  for (const l of pool) {
+    const lines = linesOf(l);
+    for (let i = 0; i < lines.length; i++) {
+      if (!/:$/.test(lines[i]) || !hasAny(lines[i], terms)) continue;
+      const entry: string[] = [];
+      let j = i + 1;
+      while (j < lines.length && /^(Dr|Cr) /.test(lines[j])) entry.push(lines[j++]);
+      if (entry.length < 2) continue;
+      const note = lines[j] && !/:$/.test(lines[j]) && lines[j].length > 25 ? [lines[j]] : [];
+      return { kind: "lesson", answer: lines[i], excerpt: [...entry, ...note], lesson: { id: l.id, title: l.title, trackTitle: l.trackTitle }, basis: `Worked journal from the lesson “${l.title}”` };
+    }
+    const line = lines.find((x) => hasAny(x, terms) && /\bDr\b/.test(x) && /\bCr\b/.test(x) && x.length < 400);
+    if (line) return { kind: "lesson", answer: line, excerpt: [], lesson: { id: l.id, title: l.title, trackTitle: l.trackTitle }, basis: `Double entry from the lesson “${l.title}”` };
+  }
+  return null;
+}
+
 export function instantAnswer(u: Understanding, lessons: InstantLesson[], cards: Flashcard[]): InstantAnswer | null {
   if (!u.concepts.length) return null; // the bot only answers what it recognises
   const c = u.concepts[0];
@@ -177,6 +209,10 @@ export function instantAnswer(u: Understanding, lessons: InstantLesson[], cards:
     }
   }
   if (scenario) return null;
+
+  // "Journal for X": the Dr/Cr entry, whatever the question type.
+  const entry = journalFor(u, lessons);
+  if (entry) return entry;
 
   // 2. "What is …?" — the lesson that explains it. A bare general term ("trial balance") is read the same way.
   if (u.intent === "definition" && /\b(difference|differ|vs\.?|versus|compare|or)\b/i.test(u.text) && u.concepts.length >= 2 && u.concepts[1].pin) {

@@ -11,8 +11,8 @@ import { mark, quizScore, QUIZ_PASS_MARK, type ExerciseResponse, type MarkResult
 import { seedReviewItems } from "@/lib/learning/daily";
 import { dueDate, nextBox } from "@/lib/learning/schedule";
 import { reviewItems, skillChecks } from "@/lib/db/schema";
-import { checkQuestions } from "@/lib/learning/skillCheck";
-import { placeSubject } from "@/lib/learning/placement";
+import { replay, subjectsFor, type QuestionView } from "@/lib/learning/skillCheck";
+import { placeAdaptive, type AskedAnswer } from "@/lib/learning/placement";
 import { renderMarkdown } from "@/lib/markdown";
 
 type Result<T> = { ok: true; data: T } | { ok: false; error: string };
@@ -176,23 +176,59 @@ export async function reportLessonProblem(lessonId: string, input: { kind: strin
   });
 }
 
-/** Marks a skills check (starting assessment) and saves the suggested starting level per subject. Answers are -1 for "Not sure". */
-export async function submitSkillCheck(slugs: string[], answers: Record<string, number>): Promise<Result<{ id: string }>> {
+const CheckSchema = z.object({
+  area: z.string().max(40).nullable(),
+  subjects: z.array(z.string().max(60)).max(30),
+  answers: z.array(z.object({ key: z.string().max(200), choice: z.number().int() })).max(120),
+});
+
+export interface SkillCheckStep {
+  next: QuestionView | null;
+  answered: number;
+  subjects: number;
+}
+
+/** The next question in an adaptive skills check, given the answers so far (marked on the server, never sent back). */
+export async function skillCheckStep(input: z.input<typeof CheckSchema>): Promise<Result<SkillCheckStep>> {
   return guard(async () => {
     const ctx = await authorize("learning.view", { write: true });
-    const parsed = z.object({ slugs: z.array(z.string().max(60)).min(1).max(30), answers: z.record(z.string().max(200), z.number().int()) }).safeParse({ slugs, answers });
+    const parsed = CheckSchema.safeParse(input);
     if (!parsed.success) throw new AccessError("Couldn't read your answers.");
-    const questions = await checkQuestions(ctx.user.id, parsed.data.slugs);
-    if (!questions.length) throw new AccessError("Choose at least one subject.");
-    const bySubject = new Map<string, { level: (typeof questions)[number]["level"]; correct: boolean }[]>();
-    for (const q of questions) {
-      const list = bySubject.get(q.track) ?? [];
-      list.push({ level: q.level, correct: parsed.data.answers[`${q.lessonId}#${q.questionId}`] === q.answer });
-      bySubject.set(q.track, list);
-    }
-    const results = Object.fromEntries([...bySubject].map(([slug, a]) => [slug, placeSubject(a)]));
+    const slugs = subjectsFor(parsed.data.area, parsed.data.subjects);
+    if (!slugs.length) throw new AccessError("Choose an area or at least one subject.");
+    const r = await replay(ctx.user.id, slugs, parsed.data.answers);
+    if (r.outOfStep) throw new AccessError("This skills check got out of step — please start it again.");
+    return { next: r.next, answered: r.answered.length, subjects: slugs.length };
+  });
+}
+
+/** Finishes a skills check (all subjects settled, or the time limit reached) and saves the starting points. */
+export async function finishSkillCheck(input: z.input<typeof CheckSchema> & { seconds: number; timedOut: boolean }): Promise<Result<{ id: string }>> {
+  return guard(async () => {
+    const ctx = await authorize("learning.view", { write: true });
+    const parsed = CheckSchema.safeParse(input);
+    if (!parsed.success) throw new AccessError("Couldn't read your answers.");
+    const slugs = subjectsFor(parsed.data.area, parsed.data.subjects);
+    const r = await replay(ctx.user.id, slugs, parsed.data.answers);
+    if (r.outOfStep) throw new AccessError("This skills check got out of step — please start it again.");
+    if (!r.answered.length) throw new AccessError("Answer at least one question first.");
+    const bySubject = new Map<string, AskedAnswer[]>();
+    for (const a of r.answered) bySubject.set(a.track, [...(bySubject.get(a.track) ?? []), a]);
+    const results = Object.fromEntries([...bySubject].map(([slug, a]) => [slug, placeAdaptive(a)]));
     const db = await getDb();
-    const [row] = await db.insert(skillChecks).values({ organizationId: ctx.org.id, userId: ctx.user.id, results }).returning({ id: skillChecks.id });
+    const [row] = await db
+      .insert(skillChecks)
+      .values({
+        organizationId: ctx.org.id,
+        userId: ctx.user.id,
+        results,
+        area: parsed.data.area,
+        asked: r.answered.map((a) => a.key),
+        notReached: slugs.filter((s) => !bySubject.has(s)),
+        timedOut: input.timedOut === true,
+        durationSeconds: Math.max(0, Math.min(24 * 3600, Math.round(Number(input.seconds) || 0))),
+      })
+      .returning({ id: skillChecks.id });
     revalidatePath("/");
     return { id: row.id };
   });

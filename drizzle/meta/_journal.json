@@ -57,6 +57,13 @@
       "when": 1791904076545,
       "tag": "0007_review_events",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1791906787855,
+      "tag": "0008_skill_check_config",
+      "breakpoints": true
     }
   ]
 }

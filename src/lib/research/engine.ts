@@ -459,6 +459,15 @@ export async function* runResearch(question: string, opts: { professional: boole
     yield { type: "done", answer, usage: meter.usage, route, restated: plan.restated_question };
   } catch (err) {
     console.error("[research]", err);
-    yield { type: "error", message: err instanceof Error && err.message.startsWith("Ask Capto") ? err.message : "Something went wrong while researching. Please try again.", usage: meter.usage };
+    const status = (err as { status?: number })?.status;
+    const message =
+      err instanceof Error && err.message.startsWith("Ask Capto")
+        ? err.message
+        : status === 401 || status === 403
+          ? "Ask Capto can't reach its AI service right now (the service key was rejected). A platform admin needs to update it — instant answers and Guidance search still work."
+          : status === 429 || status === 529
+            ? "Ask Capto's AI service is busy right now. Please try again in a minute."
+            : "Something went wrong while researching. Please try again.";
+    yield { type: "error", message, usage: meter.usage };
   }
 }

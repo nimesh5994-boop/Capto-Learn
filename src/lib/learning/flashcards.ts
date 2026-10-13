@@ -29,7 +29,10 @@ export function lessonPlainText(l: Lesson): string {
     if (b.kind === "md") return b.md;
     if (b.kind === "callout") return [b.title, b.md].filter(Boolean).join(": ");
     if (b.kind === "table") return [b.caption, ...b.rows.map((r) => r.map((c, i) => (b.head[i] ? `${b.head[i]}: ${c}` : c)).join("; ") + ".")].filter(Boolean).join("\n");
-    return [b.title, b.narrative].filter(Boolean).join(": ");
+    // Worked journals keep their Dr/Cr lines, one per line, so "what's the journal for X?" can be answered.
+    const money = (n: number) => `£${n.toLocaleString("en-GB", { minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2 })}`;
+    const lines = b.lines.map((l) => (l.dr ? `Dr ${l.account} ${money(l.dr)}` : `Cr ${l.account} ${money(l.cr ?? 0)}`));
+    return [b.title ? `${b.title}:` : "", ...lines, b.narrative ?? ""].filter(Boolean).join("\n");
   });
   return stripMd([l.title, l.summary, ...blocks].join("\n\n"));
 }

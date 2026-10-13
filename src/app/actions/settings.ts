@@ -76,3 +76,23 @@ export async function saveBranding(_: FormState, formData: FormData): Promise<Fo
     return { success: "Branding saved." };
   });
 }
+
+const SkillCheckSettingsSchema = z.object({
+  minutes: z.coerce.number().int({ error: "Use whole minutes." }).min(1, { error: "At least 1 minute per subject." }).max(15, { error: "At most 15 minutes per subject." }),
+  retakeMonths: z.coerce.number().int({ error: "Use whole months." }).min(1, { error: "At least every month." }).max(24, { error: "At most every 24 months." }),
+});
+
+export async function saveSkillCheckSettings(_: FormState, formData: FormData): Promise<FormState> {
+  return guarded("settings.firm", async (ctx) => {
+    const parsed = SkillCheckSettingsSchema.safeParse(Object.fromEntries(formData));
+    if (!parsed.success) return { error: parsed.error.issues[0]?.message };
+    const db = await getDb();
+    await db
+      .update(organizations)
+      .set({ skillCheckMinutesPerSubject: parsed.data.minutes, skillCheckRetakeMonths: parsed.data.retakeMonths })
+      .where(eq(organizations.id, ctx.org.id));
+    await audit(actorOf(ctx), "settings.skill_check", `Skills check: ${parsed.data.minutes} min per subject, retake every ${parsed.data.retakeMonths} months`);
+    revalidatePath("/", "layout");
+    return { success: "Skills check settings saved." };
+  });
+}

@@ -27,6 +27,9 @@ export const organizations = pgTable("organizations", {
   suspendedReason: text("suspended_reason"),
   /** Platform-set per-firm overrides (see orgHasFeature / orgLimits in lib/plans.ts). */
   featureOverrides: jsonb("feature_overrides").$type<Partial<Record<string, boolean>>>().notNull().default({}),
+  /** Skills check: time allowed per subject, and how often staff are prompted to take a fresh check. */
+  skillCheckMinutesPerSubject: integer("skill_check_minutes_per_subject").notNull().default(2),
+  skillCheckRetakeMonths: integer("skill_check_retake_months").notNull().default(6),
   limitOverrides: jsonb("limit_overrides").$type<{ maxUsers?: number | null; maxResearchPerMonth?: number | null }>().notNull().default({}),
   /** Negotiated monthly price (ex VAT) replacing the plan's list price; null = list price. */
   customMonthlyPrice: numeric("custom_monthly_price", { mode: "number" }),
@@ -199,6 +202,14 @@ export const skillChecks = pgTable(
     organizationId: uuid("organization_id").notNull().references(() => organizations.id, { onDelete: "cascade" }),
     userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
     results: jsonb("results").$type<Record<string, { right: number; total: number; start: "foundation" | "practitioner" | "advanced"; strong: boolean }>>().notNull(),
+    /** Area chosen (see AREAS), or null for a custom set of subjects. */
+    area: text("area"),
+    /** Question keys asked, so the next check rotates to fresh ones. */
+    asked: jsonb("asked").$type<string[]>().notNull().default([]),
+    /** Subjects chosen but not reached before the time limit. */
+    notReached: jsonb("not_reached").$type<string[]>().notNull().default([]),
+    timedOut: boolean("timed_out").notNull().default(false),
+    durationSeconds: integer("duration_seconds"),
     completedAt: timestamp("completed_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [index("skill_checks_user_idx").on(t.userId, t.completedAt)]

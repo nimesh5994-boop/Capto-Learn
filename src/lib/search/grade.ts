@@ -15,5 +15,10 @@ export function gradeCase(c: ExamCase, lessons: InstantLesson[], vocab: Set<stri
   if (e.instant === "lesson" && !a) miss.push("no instant answer");
   if (a && e.from && a.lesson.id.split("/")[0] !== e.from) miss.push(`answered from ${a.lesson.id.split("/")[0]} ≠ ${e.from}`);
   if (a && e.lead && !e.lead.some((m) => a.answer.toLowerCase().includes(m))) miss.push(`lead doesn't mention ${e.lead.join("/")}`);
+  if (e.entry) {
+    const shown = [a?.answer ?? "", ...(a?.excerpt ?? [])].join(" ");
+    if (!/\bDr\b/.test(shown) || !/\bCr\b/.test(shown)) miss.push("no Dr/Cr entry shown");
+    if (a && e.entryMentions && !e.entryMentions.some((m) => shown.toLowerCase().includes(m))) miss.push(`entry isn't about ${e.entryMentions.join("/")}`);
+  }
   return { u, a, miss };
 }

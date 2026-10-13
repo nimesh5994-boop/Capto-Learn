@@ -108,8 +108,17 @@ export default async function SkillsCheckResultPage({ searchParams }: { searchPa
           </tbody>
         </table>
       </section>
+      {check.notReached.length > 0 && (
+        <div className="alert alert-warning" style={{ marginTop: 12 }}>
+          {check.timedOut ? "Time ran out before " : "The check was finished before "}
+          {check.notReached.map((s) => getTrack(s)?.title ?? s).join(", ")} {check.notReached.length === 1 ? "was" : "were"} reached.{" "}
+          {own && (
+            <Link href={`/skills-check?go=1&${check.notReached.map((s) => `subjects=${s}`).join("&")}`}>Check {check.notReached.length === 1 ? "it" : "them"} now</Link>
+          )}
+        </div>
+      )}
       <p className="small faint" style={{ marginTop: 12 }}>
-        The check uses one question per level, so treat it as a guide. If a lesson feels too easy, use the step list to move on quickly.
+        {check.durationSeconds ? `Took ${Math.max(1, Math.round(check.durationSeconds / 60))} min. ` : ""}The check adapts with 2–3 questions per subject, so treat it as a guide. If a lesson feels too easy, use the step list to move on quickly.
       </p>
     </>
   );
