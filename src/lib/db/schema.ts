@@ -30,6 +30,11 @@ export const organizations = pgTable("organizations", {
   /** Skills check: time allowed per subject, and how often staff are prompted to take a fresh check. */
   skillCheckMinutesPerSubject: integer("skill_check_minutes_per_subject").notNull().default(2),
   skillCheckRetakeMonths: integer("skill_check_retake_months").notNull().default(6),
+  /** Firm join link (/join/<code>): on/off, the role new joiners get, and email domains let straight in. */
+  joinCode: text("join_code").unique(),
+  joinEnabled: boolean("join_enabled").notNull().default(false),
+  joinRole: text("join_role").notNull().default("staff"),
+  joinDomains: jsonb("join_domains").$type<string[]>().notNull().default([]),
   limitOverrides: jsonb("limit_overrides").$type<{ maxUsers?: number | null; maxResearchPerMonth?: number | null }>().notNull().default({}),
   /** Negotiated monthly price (ex VAT) replacing the plan's list price; null = list price. */
   customMonthlyPrice: numeric("custom_monthly_price", { mode: "number" }),
@@ -335,6 +340,24 @@ export const botKnowledge = pgTable(
   (t) => [index("bot_knowledge_concept_idx").on(t.concept, t.intent)]
 );
 export type BotKnowledge = typeof botKnowledge.$inferSelect;
+
+/** Someone who used the firm's join link with an email outside its auto-approved domains: waits for an admin. */
+export const joinRequests = pgTable(
+  "join_requests",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    organizationId: uuid("organization_id").notNull().references(() => organizations.id, { onDelete: "cascade" }),
+    name: text("name").notNull(),
+    email: text("email").notNull(),
+    passwordHash: text("password_hash").notNull(),
+    status: text("status").$type<"pending" | "approved" | "declined">().notNull().default("pending"),
+    decidedByName: text("decided_by_name"),
+    decidedAt: timestamp("decided_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index("join_requests_org_idx").on(t.organizationId, t.status)]
+);
+export type JoinRequest = typeof joinRequests.$inferSelect;
 
 export type InterviewStatus = "ready" | "started" | "completed" | "revoked";
 

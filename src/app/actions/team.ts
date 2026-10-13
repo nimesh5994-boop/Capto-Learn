@@ -4,7 +4,8 @@ import { revalidatePath } from "next/cache";
 import { and, eq, ne, sql } from "drizzle-orm";
 import * as z from "zod";
 import { getDb } from "@/lib/db/client";
-import { customRoles, invitations, passwordResets, users, type Role } from "@/lib/db/schema";
+import { customRoles, invitations, joinRequests, organizations, passwordResets, users, type Role } from "@/lib/db/schema";
+import { JOIN_ROLES, newJoinCode, parseDomains, parsePeople } from "@/lib/teamRules";
 import { AccessError, authorize, type AuthContext } from "@/lib/auth/dal";
 import { assertSeatAvailable } from "@/lib/entitlements";
 import { actorOf, audit } from "@/lib/audit";
@@ -259,4 +260,101 @@ export async function changeMyPassword(_: FormState, formData: FormData): Promis
     if (err instanceof AccessError) return { error: err.message };
     throw err;
   }
+}
+
+/* ───────────── Adding several people at once ───────────── */
+
+export interface BulkInviteResult {
+  email: string;
+  name: string | null;
+  ok: boolean;
+  message: string;
+  link?: string;
+}
+
+/** Invites everyone in a pasted list (one per line), each exactly as a single invite would. */
+export async function inviteMany(input: { text: string; role: string }): Promise<{ ok: true; results: BulkInviteResult[]; problems: string[] } | { ok: false; error: string }> {
+  try {
+    await authorize("team.manage", { write: true });
+  } catch (err) {
+    if (err instanceof AccessError) return { ok: false, error: err.message };
+    throw err;
+  }
+  const { people, problems } = parsePeople(input.text.slice(0, 20_000));
+  if (!people.length) return { ok: false, error: "No email addresses found. Put one person per line, e.g. “Jo Bloggs, jo@yourfirm.co.uk”." };
+  if (people.length > 100) return { ok: false, error: "Up to 100 people at a time, please." };
+  const results: BulkInviteResult[] = [];
+  for (const p of people) {
+    const r = await inviteMember({ email: p.email, role: input.role });
+    results.push(r.ok ? { email: p.email, name: p.name, ok: true, message: r.message ?? "Invited", link: r.link } : { email: p.email, name: p.name, ok: false, message: r.error });
+  }
+  revalidatePath("/admin/users");
+  return { ok: true, results, problems };
+}
+
+/* ───────────── Firm join link ───────────── */
+
+const JoinSettingsSchema = z.object({
+  enabled: z.boolean(),
+  role: z.enum(JOIN_ROLES),
+  domains: z.string().max(500),
+});
+
+export async function saveJoinSettings(input: z.input<typeof JoinSettingsSchema>): Promise<TeamResult> {
+  return run(async () => {
+    const ctx = await authorize("team.manage", { write: true });
+    const parsed = JoinSettingsSchema.safeParse(input);
+    if (!parsed.success) return { ok: false, error: "Check the join link settings." };
+    await resolveRole(ctx, parsed.data.role); // can't hand out more than you hold
+    const db = await getDb();
+    const domains = parseDomains(parsed.data.domains);
+    const set: Partial<typeof organizations.$inferInsert> = { joinEnabled: parsed.data.enabled, joinRole: parsed.data.role, joinDomains: domains };
+    if (parsed.data.enabled && !ctx.org.joinCode) set.joinCode = await freeJoinCode();
+    await db.update(organizations).set(set).where(eq(organizations.id, ctx.org.id));
+    await audit(actorOf(ctx), "team.join_link", parsed.data.enabled ? `Turned the join link on (${parsed.data.role}${domains.length ? `, auto-approve ${domains.join(", ")}` : ", approval required"})` : "Turned the join link off");
+    return { ok: true, message: parsed.data.enabled ? "Join link is on." : "Join link is off — it no longer works." };
+  });
+}
+
+/** A new code, so the old link stops working (e.g. it was shared too widely). */
+export async function resetJoinCode(): Promise<TeamResult> {
+  return run(async () => {
+    const ctx = await authorize("team.manage", { write: true });
+    const db = await getDb();
+    await db.update(organizations).set({ joinCode: await freeJoinCode() }).where(eq(organizations.id, ctx.org.id));
+    await audit(actorOf(ctx), "team.join_link", "Replaced the join link (the old one no longer works)");
+    return { ok: true, message: "New join link created. The old one no longer works." };
+  });
+}
+
+async function freeJoinCode(): Promise<string> {
+  const db = await getDb();
+  for (let i = 0; i < 10; i++) {
+    const code = newJoinCode();
+    const [taken] = await db.select({ id: organizations.id }).from(organizations).where(eq(organizations.joinCode, code));
+    if (!taken) return code;
+  }
+  throw new AccessError("Couldn't create a join code — please try again.");
+}
+
+export async function decideJoinRequest(id: string, approve: boolean): Promise<TeamResult> {
+  return run(async () => {
+    const ctx = await authorize("team.manage", { write: true });
+    const db = await getDb();
+    const [req] = await db.select().from(joinRequests).where(and(eq(joinRequests.id, id), eq(joinRequests.organizationId, ctx.org.id), eq(joinRequests.status, "pending")));
+    if (!req) return { ok: false, error: "That request has already been dealt with." };
+    if (!approve) {
+      await db.update(joinRequests).set({ status: "declined", decidedByName: ctx.user.name, decidedAt: new Date() }).where(eq(joinRequests.id, id));
+      await audit(actorOf(ctx), "team.join_declined", `Declined ${req.name} <${req.email}>`);
+      return { ok: true, message: `Declined ${req.name}.` };
+    }
+    const [taken] = await db.select({ id: users.id }).from(users).where(eq(users.email, req.email));
+    if (taken) return { ok: false, error: "Someone with that email already has an account." };
+    await assertSeatAvailable(db, ctx.org);
+    const role = (JOIN_ROLES as readonly string[]).includes(ctx.org.joinRole) ? (ctx.org.joinRole as Role) : "staff";
+    await db.insert(users).values({ organizationId: ctx.org.id, email: req.email, name: req.name, passwordHash: req.passwordHash, role });
+    await db.update(joinRequests).set({ status: "approved", decidedByName: ctx.user.name, decidedAt: new Date() }).where(eq(joinRequests.id, id));
+    await audit(actorOf(ctx), "team.join_approved", `Approved ${req.name} <${req.email}> via the join link`);
+    return { ok: true, message: `${req.name} can now sign in.` };
+  });
 }

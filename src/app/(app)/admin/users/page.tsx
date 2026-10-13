@@ -1,13 +1,16 @@
 import Link from "next/link";
 import { and, asc, desc, eq, gt, isNull } from "drizzle-orm";
 import { getDb } from "@/lib/db/client";
-import { customRoles, invitations, users } from "@/lib/db/schema";
+import { customRoles, invitations, joinRequests, users } from "@/lib/db/schema";
 import { requireUser } from "@/lib/auth/dal";
 import { redirect } from "next/navigation";
 import { usage } from "@/lib/entitlements";
 import { orgHasFeature, orgLimits, planOf } from "@/lib/plans";
 import { BUILT_IN_ROLES, BUILT_IN_ROLE_KEYS, isBuiltInRole } from "@/lib/rbac";
 import { dateTime } from "@/lib/format";
+import { emailConfigured } from "@/lib/email";
+import { appUrl } from "@/lib/url";
+import { StaffAccess } from "./StaffAccess";
 import { TeamTable } from "./TeamTable";
 
 export const metadata = { title: "Team" };
@@ -17,7 +20,7 @@ export default async function TeamPage() {
   if (!ctx.can("team.manage") && !ctx.can("roles.manage")) redirect("/?denied=1");
   const { org } = ctx;
   const db = await getDb();
-  const [members, invites, roles, use] = await Promise.all([
+  const [members, invites, roles, use, requests] = await Promise.all([
     db.select().from(users).where(eq(users.organizationId, org.id)).orderBy(asc(users.name)),
     db
       .select()
@@ -26,6 +29,11 @@ export default async function TeamPage() {
       .orderBy(desc(invitations.createdAt)),
     db.select().from(customRoles).where(eq(customRoles.organizationId, org.id)).orderBy(asc(customRoles.name)),
     usage(db, org),
+    db
+      .select()
+      .from(joinRequests)
+      .where(and(eq(joinRequests.organizationId, org.id), eq(joinRequests.status, "pending")))
+      .orderBy(asc(joinRequests.createdAt)),
   ]);
   const plan = planOf(org.plan);
   const customEnabled = orgHasFeature(org, "customRoles");
@@ -52,6 +60,15 @@ export default async function TeamPage() {
           </Link>
         )}
       </div>
+      {ctx.can("team.manage") && (
+        <StaffAccess
+          roleOptions={roleOptions.map(({ value, label }) => ({ value, label }))}
+          emailReady={emailConfigured()}
+          baseUrl={appUrl()}
+          join={{ enabled: org.joinEnabled, code: org.joinCode, role: org.joinRole, domains: org.joinDomains }}
+          requests={requests.map((q) => ({ id: q.id, name: q.name, email: q.email, when: dateTime(q.createdAt) }))}
+        />
+      )}
       {ctx.can("team.manage") ? (
         <TeamTable
           meId={ctx.user.id}

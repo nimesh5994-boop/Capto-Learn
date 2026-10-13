@@ -4,7 +4,9 @@ import { redirect } from "next/navigation";
 import { and, eq, gt, isNull } from "drizzle-orm";
 import * as z from "zod";
 import { getDb } from "@/lib/db/client";
-import { firmInvitations, invitations, organizations, passwordResets, users } from "@/lib/db/schema";
+import { firmInvitations, invitations, joinRequests, organizations, passwordResets, users } from "@/lib/db/schema";
+import { assertSeatAvailable } from "@/lib/entitlements";
+import { domainAllowed, JOIN_ROLES } from "@/lib/teamRules";
 import { hashPassword, verifyPassword } from "@/lib/auth/password";
 import { createSession, deleteSession } from "@/lib/auth/session";
 import { TRIAL_DAYS, planOf } from "@/lib/plans";
@@ -187,4 +189,47 @@ export async function resetPassword(_: FormState, formData: FormData): Promise<F
   await audit({ organizationId: reset.u.organizationId, userId: reset.u.id, name: reset.u.name }, "user.password_reset", `${reset.u.name} reset their password`);
   await createSession({ userId: reset.u.id, organizationId: reset.u.organizationId });
   redirect("/");
+}
+
+const JoinSchema = z.object({
+  code: z.string().max(20),
+  name: z.string().trim().min(2, { error: "Enter your name." }).max(120),
+  email: z.email({ error: "Enter a valid email." }).transform((e) => e.toLowerCase()),
+  password: PasswordSchema,
+});
+
+/**
+ * Joining through a firm's join link. Emails on the firm's auto-approved domains get an account straight away;
+ * anyone else's request waits for an admin to approve it (the password is kept, hashed, until then).
+ */
+export async function joinFirm(_: FormState, formData: FormData): Promise<FormState> {
+  const parsed = JoinSchema.safeParse(Object.fromEntries(formData));
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message };
+  const db = await getDb();
+  const [org] = await db.select().from(organizations).where(and(eq(organizations.joinCode, parsed.data.code.toUpperCase()), eq(organizations.joinEnabled, true)));
+  if (!org || org.status !== "active") return { error: "This join link isn't active. Ask your firm for a new one." };
+  const [taken] = await db.select({ id: users.id }).from(users).where(eq(users.email, parsed.data.email));
+  if (taken) return { error: "An account with this email already exists — sign in instead." };
+  const passwordHash = await hashPassword(parsed.data.password);
+
+  if (domainAllowed(parsed.data.email, org.joinDomains)) {
+    try {
+      await assertSeatAvailable(db, org);
+    } catch {
+      return { error: `${org.name} has no free seats at the moment. Ask an admin there to free one up.` };
+    }
+    const role = (JOIN_ROLES as readonly string[]).includes(org.joinRole) ? (org.joinRole as (typeof JOIN_ROLES)[number]) : "staff";
+    const [u] = await db.insert(users).values({ organizationId: org.id, email: parsed.data.email, name: parsed.data.name, passwordHash, role, lastLoginAt: new Date() }).returning({ id: users.id });
+    await audit({ organizationId: org.id, userId: u.id, name: parsed.data.name }, "team.joined", `${parsed.data.name} <${parsed.data.email}> joined via the join link`);
+    await createSession({ userId: u.id, organizationId: org.id });
+    redirect("/");
+  }
+
+  // Not on an approved domain: one pending request per email, refreshed if they try again.
+  await db
+    .update(joinRequests)
+    .set({ status: "declined", decidedByName: "Replaced by a newer request", decidedAt: new Date() })
+    .where(and(eq(joinRequests.organizationId, org.id), eq(joinRequests.email, parsed.data.email), eq(joinRequests.status, "pending")));
+  await db.insert(joinRequests).values({ organizationId: org.id, name: parsed.data.name, email: parsed.data.email, passwordHash });
+  return { success: `Thanks, ${parsed.data.name.split(" ")[0]} — your request has gone to ${org.name}. You'll be able to sign in with this email and password once an admin approves it.` };
 }

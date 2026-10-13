@@ -85,6 +85,13 @@
       "when": 1791921809201,
       "tag": "0011_interview_tests",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1791922485353,
+      "tag": "0012_join_link",
+      "breakpoints": true
     }
   ]
 }
