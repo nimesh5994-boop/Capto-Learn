@@ -54,7 +54,6 @@ export function SkillCheck({ area, subjects, trackTitles, seconds }: { area: str
 
   // First question.
   useEffect(() => {
-    started.current = Date.now();
     start(async () => {
       const r = await skillCheckStep({ ...input, answers: [] });
       if (!r.ok) return setError(r.error);
@@ -64,11 +63,14 @@ export function SkillCheck({ area, subjects, trackTitles, seconds }: { area: str
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Countdown.
+  // Countdown — starts once the first question is on screen.
+  const ready = q !== null || answers.length > 0;
   useEffect(() => {
+    if (!ready) return;
+    started.current = Date.now();
     const t = setInterval(() => setLeft((s) => Math.max(0, s - 1)), 1000);
     return () => clearInterval(t);
-  }, []);
+  }, [ready]);
   useEffect(() => {
     if (left === 0) finish(answers, true);
   }, [left, answers, finish]);
@@ -131,7 +133,7 @@ export function SkillCheck({ area, subjects, trackTitles, seconds }: { area: str
           </div>
         </div>
       ) : (
-        !error && <div className="card card-pad muted">{pending ? "Preparing your questions…" : "Working out your results…"}</div>
+        !error && <div className="card card-pad muted">{answers.length ? "Working out your results…" : "Preparing your questions…"}</div>
       )}
       <p className="small faint" style={{ margin: 0 }}>
         Questions get harder after a right answer and easier after a wrong one, so you won&apos;t see everything. &ldquo;Not sure&rdquo; is better than guessing.

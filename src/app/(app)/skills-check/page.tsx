@@ -36,7 +36,7 @@ export default async function SkillsCheckPage({ searchParams }: { searchParams: 
           </Link>
         </div>
         <div style={{ maxWidth: 820 }}>
-          <SkillCheck area={area} subjects={area ? [] : slugs} trackTitles={titles} seconds={minutes * slugs.length * 60} />
+          <SkillCheck area={area} subjects={slugs} trackTitles={titles} seconds={minutes * slugs.length * 60} />
         </div>
       </>
     );
@@ -71,7 +71,7 @@ export default async function SkillsCheckPage({ searchParams }: { searchParams: 
         <div className="card card-pad row" style={{ gap: 12 }}>
           <Clock size={20} color="var(--primary)" />
           <span className="small">
-            {minutes} minute{minutes === 1 ? "" : "s"} per subject, with a countdown. Time&apos;s up submits what you&apos;ve answered.
+            {`${minutes} minute${minutes === 1 ? "" : "s"} per subject`}, with a countdown. Time&apos;s up submits what you&apos;ve answered.
           </span>
         </div>
         <div className="card card-pad row" style={{ gap: 12 }}>
