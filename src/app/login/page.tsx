@@ -1,3 +1,4 @@
+import { AuthShell } from "@/components/AuthShell";
 import Link from "next/link";
 import { login } from "@/app/actions/auth";
 import { AuthForm } from "@/components/AuthForm";
@@ -8,12 +9,12 @@ export const metadata = { title: "Sign in" };
 
 export default function LoginPage() {
   return (
-    <div className={styles.wrap}>
+    <AuthShell>
       <div className={`card card-pad ${styles.card}`}>
         <div className={styles.head}>
           <CaptoLogo size="lg" />
           <h1>Sign in to Capto Learn</h1>
-          <p className="muted">Training and cited research for UK practice teams.</p>
+          <p className="muted">Welcome back — sign in to continue.</p>
         </div>
         <AuthForm
           action={login}
@@ -30,6 +31,6 @@ export default function LoginPage() {
           Capto Learn is invitation-only. Got an invitation? Use the link in your email.
         </p>
       </div>
-    </div>
+    </AuthShell>
   );
 }

@@ -12,6 +12,7 @@ import {
   NotebookPen,
   PiggyBank,
   Receipt,
+  ScrollText,
   ShieldCheck,
   Sparkles,
   User,
@@ -21,12 +22,37 @@ import {
 import type { EffectiveReview } from "@/lib/learning/review";
 import styles from "./learn.module.css";
 
-const ICONS: Record<string, LucideIcon> = { BookOpen, Briefcase, Building2, FileCheck, FileSpreadsheet, FlaskConical, HardHat, Landmark, NotebookPen, PiggyBank, Receipt, ShieldCheck, User, Wallet };
+const ICONS: Record<string, LucideIcon> = { BookOpen, Briefcase, Building2, FileCheck, FileSpreadsheet, FlaskConical, HardHat, Landmark, NotebookPen, PiggyBank, Receipt, ScrollText, ShieldCheck, User, Wallet };
+
+/** Each course's icon belongs to one subject area, which sets its colours (see lib/learning/catalogue.ts). */
+const ICON_AREA: Record<string, "accounts" | "tax" | "people" | "compliance"> = {
+  BookOpen: "accounts",
+  NotebookPen: "accounts",
+  FileSpreadsheet: "accounts",
+  Receipt: "tax",
+  Building2: "tax",
+  User: "tax",
+  Landmark: "tax",
+  Briefcase: "tax",
+  FlaskConical: "tax",
+  FileCheck: "tax",
+  HardHat: "tax",
+  Wallet: "people",
+  PiggyBank: "people",
+  ScrollText: "compliance",
+  ShieldCheck: "compliance",
+};
+
+/** The course's icon on its own (for covers), without the tinted tile. */
+export function CourseGlyph({ name, size = 28, strokeWidth = 1.6 }: { name: string; size?: number; strokeWidth?: number }) {
+  const Icon = ICONS[name] ?? GraduationCap;
+  return <Icon size={size} strokeWidth={strokeWidth} />;
+}
 
 export function TrackIcon({ name, size = 20 }: { name: string; size?: number }) {
   const Icon = ICONS[name] ?? GraduationCap;
   return (
-    <span className={styles.trackIcon}>
+    <span className={`${styles.trackIcon} ${styles[`area_${ICON_AREA[name] ?? "accounts"}`]}`}>
       <Icon size={size} />
     </span>
   );

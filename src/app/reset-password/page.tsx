@@ -1,3 +1,4 @@
+import { AuthShell } from "@/components/AuthShell";
 import Link from "next/link";
 import { resetPassword } from "@/app/actions/auth";
 import { AuthForm } from "@/components/AuthForm";
@@ -9,7 +10,7 @@ export const metadata = { title: "Choose a new password", robots: { index: false
 export default async function ResetPasswordPage({ searchParams }: { searchParams: Promise<{ token?: string }> }) {
   const { token } = await searchParams;
   return (
-    <div className={styles.wrap}>
+    <AuthShell>
       <div className={`card card-pad ${styles.card}`}>
         <div className={styles.head}>
           <CaptoLogo size="lg" />
@@ -26,6 +27,6 @@ export default async function ResetPasswordPage({ searchParams }: { searchParams
           <Link href="/login">Back to sign in</Link>
         </p>
       </div>
-    </div>
+    </AuthShell>
   );
 }

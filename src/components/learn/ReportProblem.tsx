@@ -23,7 +23,7 @@ export function ReportProblem({ lessonId }: { lessonId: string }) {
   if (done) return <p className="small muted">Thanks — our reviewers will check it.</p>;
   if (!open)
     return (
-      <button className="btn btn-ghost btn-sm" onClick={() => setOpen(true)}>
+      <button className="btn btn-sm" onClick={() => setOpen(true)}>
         <Flag size={14} /> Report a problem
       </button>
     );

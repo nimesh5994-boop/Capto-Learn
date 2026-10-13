@@ -1,4 +1,5 @@
-import Link from "next/link";
+import { CheckCircle2, Repeat } from "lucide-react";
+import { EmptyState } from "@/components/EmptyState";
 import { requirePermission } from "@/lib/auth/dal";
 import { dailyCards } from "@/lib/learning/daily";
 import { renderInline, renderMarkdown } from "@/lib/markdown";
@@ -37,15 +38,12 @@ export default async function DailyFivePage() {
             <DailyFive cards={view} />
           </>
         ) : (
-          <div className="card card-pad stack" style={{ gap: 8 }}>
-            <strong>{deckSize ? "All caught up for today." : "Nothing to review yet."}</strong>
-            <span className="muted small">
-              {deckSize ? "Come back tomorrow, or take another lesson." : "Finish a lesson's quiz and its questions join your review deck, starting tomorrow."}
-            </span>
-            <Link href="/learn" className="btn btn-sm" style={{ width: "fit-content" }}>
-              Go to courses
-            </Link>
-          </div>
+          <EmptyState
+            icon={deckSize ? CheckCircle2 : Repeat}
+            title={deckSize ? "All caught up for today" : "Nothing to review yet"}
+            text={deckSize ? `Your review deck has ${deckSize} questions; none are due today. Come back tomorrow, or take another lesson.` : "Finish a lesson's quiz and its questions join your review deck, starting tomorrow."}
+            action={{ href: "/learn", label: deckSize ? "Take another lesson" : "Go to courses" }}
+          />
         )}
       </div>
     </>

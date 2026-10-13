@@ -1,3 +1,4 @@
+import { AuthShell } from "@/components/AuthShell";
 import Link from "next/link";
 import { and, eq, gt, isNull } from "drizzle-orm";
 import { getDb } from "@/lib/db/client";
@@ -88,7 +89,7 @@ export default async function SignupPage({ searchParams }: { searchParams: Promi
 
 function Shell({ title, subtitle, children }: { title: string; subtitle: string; children: React.ReactNode }) {
   return (
-    <div className={styles.wrap}>
+    <AuthShell>
       <div className={`card card-pad ${styles.card}`}>
         <div className={styles.head}>
           <CaptoLogo size="lg" />
@@ -97,6 +98,6 @@ function Shell({ title, subtitle, children }: { title: string; subtitle: string;
         </div>
         {children}
       </div>
-    </div>
+    </AuthShell>
   );
 }

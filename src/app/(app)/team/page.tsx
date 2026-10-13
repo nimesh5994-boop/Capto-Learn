@@ -78,8 +78,10 @@ export default async function TeamTrainingPage() {
           <table className="table">
             <thead>
               <tr>
-                <th>Person</th>
-                <th style={{ minWidth: 120 }}>Overall</th>
+                <th className="sticky-col" style={{ minWidth: 230 }}>
+                  Person
+                </th>
+                <th style={{ minWidth: 140 }}>Overall</th>
                 {all.map((t) => (
                   <th key={t.slug} className="small" title={t.title} style={{ minWidth: 90 }}>
                     {t.title.split(/[ ,]/)[0]}
@@ -93,17 +95,13 @@ export default async function TeamTrainingPage() {
                 const o = overallStats(p);
                 return (
                   <tr key={m.id}>
-                    <td>
+                    <td className="sticky-col">
                       <strong>{m.name}</strong>
                       <div className="small faint">{m.jobTitle ?? (m.lastLoginAt ? `Last in ${date(m.lastLoginAt)}` : "Never signed in")}</div>
-                      <a href={`/coach?user=${m.id}`} className="small" style={{ marginRight: 8 }}>
-                        Coach report
-                      </a>
-                      {checks.get(m.id) && (
-                        <a href={`/skills-check/result?user=${m.id}`} className="small">
-                          Skills check {date(checks.get(m.id)!.completedAt)}
-                        </a>
-                      )}
+                      <div className="small" style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 2 }}>
+                        <a href={`/coach?user=${m.id}`}>Coach report</a>
+                        {checks.get(m.id) && <a href={`/skills-check/result?user=${m.id}`}>Skills check</a>}
+                      </div>
                     </td>
                     <td>
                       <ProgressBar pct={o.pct} />

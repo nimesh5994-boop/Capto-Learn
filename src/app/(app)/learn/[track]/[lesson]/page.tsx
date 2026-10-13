@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { CheckCircle2, ClipboardList, ExternalLink, GraduationCap, Landmark, Sparkles, Target } from "lucide-react";
+import { BadgeCheck, CheckCircle2, ChevronRight, ClipboardList, Clock, ExternalLink, GraduationCap, Landmark, Layers, MessageSquareQuote, Sparkles, Target } from "lucide-react";
 import { requirePermission } from "@/lib/auth/dal";
-import { getLesson, moduleLessons, neighbours } from "@/content";
+import { getLesson, moduleLessons, neighbours, trackLessons } from "@/content";
 import { LEVELS } from "@/content/types";
 import { markLessonStarted } from "@/app/actions/learning";
 import { myProgress } from "@/lib/learning/progress";
@@ -14,7 +14,7 @@ import { Blocks } from "@/components/learn/Blocks";
 import { Exercise, type RenderedExercise } from "@/components/learn/Exercise";
 import { Quiz } from "@/components/learn/Quiz";
 import { ReportProblem } from "@/components/learn/ReportProblem";
-import { ReviewPill, StatusDot } from "@/components/learn/bits";
+import { StatusDot } from "@/components/learn/bits";
 import styles from "@/components/learn/learn.module.css";
 import playerStyles from "@/components/learn/player.module.css";
 import { LessonPlayer } from "@/components/learn/LessonPlayer";
@@ -36,7 +36,8 @@ export default async function LessonPage({ params, searchParams }: { params: Pro
   const guidanceChangedAt = sourceChanges.get(id);
   const guidanceChangedSinceReview = sourceChangedSinceReview(review, guidanceChangedAt);
   const { prev, next } = neighbours(id);
-  const siblings = moduleLessons(trackSlug, module.slug);
+  const courseLessons = trackLessons(trackSlug);
+  const courseDone = courseLessons.filter((l) => progress.get(l.id)?.status === "completed").length;
 
   const exercises: RenderedExercise[] = lesson.exercises.map((e) => {
     const pub = publicExercise(e);
@@ -124,30 +125,33 @@ export default async function LessonPage({ params, searchParams }: { params: Pro
 
   return (
     <>
-      <p className="small" style={{ margin: "0 0 8px" }}>
-        <Link href="/learn">Courses</Link> / <Link href={`/learn/${track.slug}`}>{track.title}</Link> / {module.title}
-      </p>
+      <nav className={styles.crumbs} aria-label="Breadcrumb">
+        <Link href="/learn">Courses</Link>
+        <ChevronRight size={13} />
+        <Link href={`/learn/${track.slug}`}>{track.title}</Link>
+        <ChevronRight size={13} />
+        <span>{module.title}</span>
+      </nav>
       <div className="page-head">
         <div>
-          <div className="row" style={{ gap: 8, marginBottom: 6, flexWrap: "wrap" }}>
-            <span className="pill">{LEVELS[lesson.level].label}</span>
-            <span className="small faint">{lesson.minutes} min</span>
-            {lesson.taxYear && <span className="pill">Figures: {lesson.taxYear}</span>}
-            <ReviewPill status={status} />
+          <h1>{lesson.title}</h1>
+          <p className="muted">{lesson.summary}</p>
+          <div className={styles.lessonFacts}>
+            <span>{LEVELS[lesson.level].label}</span>
+            <span>
+              <Clock size={13} /> {lesson.minutes} min
+            </span>
+            {lesson.taxYear && <span>Figures for {lesson.taxYear}</span>}
             {mine?.status === "completed" && (
-              <span className="pill pill-accepted">
-                <CheckCircle2 size={11} /> Completed
+              <span className={styles.factDone}>
+                <CheckCircle2 size={13} /> Completed{mine.bestQuizScore != null ? ` · quiz ${mine.bestQuizScore}%` : ""}
               </span>
             )}
           </div>
-          <h1>{lesson.title}</h1>
-          <p className="muted" style={{ maxWidth: 760 }}>
-            {lesson.summary}
-          </p>
         </div>
       </div>
 
-      <div className="row" style={{ marginBottom: 14 }}>
+      <div className="row" style={{ marginBottom: 14, flexWrap: "wrap" }}>
         <nav className={playerStyles.viewSwitch} aria-label="Lesson view">
           <Link href={`/learn/${id}`} aria-current={full ? undefined : "page"}>
             Step by step
@@ -167,19 +171,24 @@ export default async function LessonPage({ params, searchParams }: { params: Pro
           )}
           {status === "reviewed" ? (
             <div className={styles.reviewedBanner}>
-              <CheckCircle2 size={16} color="var(--success)" />
+              <BadgeCheck size={16} color="var(--success)" />
               <span>
-                Technically reviewed by {review?.reviewerName ?? "a qualified reviewer"} on {date(review?.reviewedAt)}.
+                Reviewed by {review?.reviewerName ?? "a qualified reviewer"} on {date(review?.reviewedAt)}.
               </span>
             </div>
           ) : (
-            <div className={styles.draftBanner}>
-              <Sparkles size={18} style={{ flexShrink: 0, marginTop: 1 }} />
-              <span>
-                <strong>{status === "needs_changes" ? "This lesson is being corrected." : status === "changed" ? "This lesson has changed since it was reviewed." : "AI-drafted lesson — not yet reviewed by a qualified accountant."}</strong>{" "}
-                It was written from HMRC and GOV.UK guidance, but check figures against the linked sources before relying on them for client work, and use “Report a problem” if anything looks wrong.
-              </span>
-            </div>
+            <details className={styles.draftBanner}>
+              <summary>
+                <Sparkles size={15} />
+                <strong>{status === "needs_changes" ? "Being corrected" : status === "changed" ? "Changed since review" : "AI-drafted"}</strong>
+                <span>— not yet reviewed by a qualified accountant. Check figures against the sources.</span>
+                <span className={styles.draftMore}>Details</span>
+              </summary>
+              <p>
+                This lesson was written from HMRC and GOV.UK guidance. Until a qualified reviewer signs it off, check figures against the official sources listed at the end before relying on them for
+                client work, and use &ldquo;Report a problem&rdquo; if anything looks wrong.
+              </p>
+            </details>
           )}
 
           {!full && <LessonPlayer lessonId={id} steps={steps.map((st) => ({ label: stepLabel(st, exercises.length), kind: st.kind }))} panels={panels} />}
@@ -276,31 +285,54 @@ export default async function LessonPage({ params, searchParams }: { params: Pro
         </div>
 
         <aside className={styles.lessonAside}>
-          <div className="card card-pad">
-            <div className="small muted" style={{ marginBottom: 6 }}>
-              {module.title}
-            </div>
-            <nav className={styles.asideList}>
-              {siblings.map((s) => {
-                const p = progress.get(s.id);
-                return (
-                  <Link key={s.id} href={`/learn/${s.id}`} className={s.id === id ? styles.current : undefined}>
-                    <StatusDot status={p?.status === "completed" ? "completed" : p ? "started" : "none"} />
-                    {s.lesson.title}
-                  </Link>
-                );
-              })}
-            </nav>
-          </div>
-          <div className="card card-pad stack" style={{ gap: 8 }}>
-            <div className="small muted">Spotted something wrong or out of date?</div>
-            <ReportProblem lessonId={id} />
-          </div>
-          {ctx.can("research.use") && (
-            <Link href={`/ask?q=${encodeURIComponent(lesson.title)}`} className="btn btn-sm">
-              Ask Capto about this topic
+          <section className={styles.outline}>
+            <Link href={`/learn/${track.slug}`} className={styles.outlineHead}>
+              <span className={styles.outlineCourse}>{track.title}</span>
+              <span className={styles.outlineCount}>
+                {courseDone}/{courseLessons.length} lessons done
+              </span>
+              <span className={styles.outlineBar}>
+                <span style={{ width: `${Math.round((courseDone / courseLessons.length) * 100)}%` }} />
+              </span>
             </Link>
-          )}
+            {track.modules.map((m) => {
+              const lessons = moduleLessons(trackSlug, m.slug);
+              const here = m.slug === module.slug;
+              return (
+                <details key={m.slug} className={styles.outlineModule} open={here}>
+                  <summary>
+                    {m.title}
+                    <span>
+                      {lessons.filter((l) => progress.get(l.id)?.status === "completed").length}/{lessons.length}
+                    </span>
+                  </summary>
+                  <nav className={styles.asideList}>
+                    {lessons.map((s) => {
+                      const p = progress.get(s.id);
+                      return (
+                        <Link key={s.id} href={`/learn/${s.id}`} className={s.id === id ? styles.current : undefined} aria-current={s.id === id ? "page" : undefined}>
+                          <StatusDot status={p?.status === "completed" ? "completed" : p ? "started" : "none"} />
+                          <span>{s.lesson.title}</span>
+                        </Link>
+                      );
+                    })}
+                  </nav>
+                </details>
+              );
+            })}
+          </section>
+          <section className={styles.help}>
+            <h3>Need help?</h3>
+            {ctx.can("research.use") && (
+              <Link href={`/ask?q=${encodeURIComponent(lesson.title)}`} className="btn btn-sm">
+                <MessageSquareQuote size={14} /> Ask Capto about this topic
+              </Link>
+            )}
+            <Link href={`/flashcards?course=${track.slug}`} className="btn btn-sm">
+              <Layers size={14} /> Flashcards for this course
+            </Link>
+            <ReportProblem lessonId={id} />
+          </section>
         </aside>
       </div>
     </>

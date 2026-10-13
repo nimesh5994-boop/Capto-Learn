@@ -30,7 +30,7 @@
 @media (max-width: 860px) {
   .sidebar { position: sticky; top: 0; z-index: 50; height: auto; padding: 8px 12px; border-right: none; border-bottom: 1px solid var(--border); }
   .brand { flex-direction: row; align-items: center; justify-content: space-between; padding: 0; gap: 10px; }
-  .firm { flex: 1; max-width: none; }
+  .firm { flex: 1; max-width: none; min-width: 0; }
   .mobileActions { display: flex; gap: 2px; }
   .jump, .continue, .nav, .foot { display: none; }
   .open { max-height: 100vh; overflow-y: auto; box-shadow: 0 12px 30px rgb(0 0 0 / 0.15); }

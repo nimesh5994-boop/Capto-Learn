@@ -18,7 +18,7 @@ import { lesson as l14 } from "./lessons/llp-compliance";
 const track: Track = {
   slug: "cosec",
   title: "Company secretarial & Companies House",
-  icon: "Landmark",
+  icon: "ScrollText",
   summary:
     "Incorporation, officers, identity verification, PSCs, confirmation statements, share changes, dividends, filing deadlines and penalties, dormant companies, buy-backs, strike-off and restoration, Companies House's ECCTA powers and LLPs.",
   order: 14,

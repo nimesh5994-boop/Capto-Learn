@@ -1,3 +1,4 @@
+import { AuthShell } from "@/components/AuthShell";
 import Link from "next/link";
 import { requestPasswordReset } from "@/app/actions/auth";
 import { AuthForm } from "@/components/AuthForm";
@@ -8,7 +9,7 @@ export const metadata = { title: "Forgot password" };
 
 export default function ForgotPasswordPage() {
   return (
-    <div className={styles.wrap}>
+    <AuthShell>
       <div className={`card card-pad ${styles.card}`}>
         <div className={styles.head}>
           <CaptoLogo size="lg" />
@@ -20,6 +21,6 @@ export default function ForgotPasswordPage() {
           <Link href="/login">Back to sign in</Link>
         </p>
       </div>
-    </div>
+    </AuthShell>
   );
 }

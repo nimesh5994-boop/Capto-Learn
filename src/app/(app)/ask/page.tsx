@@ -40,7 +40,8 @@ export default async function AskPage({ searchParams }: { searchParams: Promise<
         <div>
           <h1>Ask Capto</h1>
           <p className="muted" style={{ maxWidth: 760 }}>
-            Practice questions answered only from HMRC internal manuals and GOV.UK guidance, fetched live for your question. Every point quotes its source, and each quote is checked word for word before you see it.
+            Ask in your own words. Simple questions are answered instantly from Capto&apos;s checked material; anything that needs the rule applied gets a cited answer from HMRC and GOV.UK guidance and
+            Capto&apos;s lessons, with every quote checked word for word. Choose Expert research for judgement-heavy questions.
           </p>
         </div>
       </div>

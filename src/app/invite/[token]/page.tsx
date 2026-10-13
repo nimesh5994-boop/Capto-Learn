@@ -1,3 +1,4 @@
+import { AuthShell } from "@/components/AuthShell";
 import Link from "next/link";
 import { and, eq, gt, isNull } from "drizzle-orm";
 import { getDb } from "@/lib/db/client";
@@ -21,7 +22,7 @@ export default async function InvitePage({ params }: { params: Promise<{ token: 
     .where(and(eq(invitations.tokenHash, hashToken(token)), isNull(invitations.acceptedAt), isNull(invitations.revokedAt), gt(invitations.expiresAt, new Date())));
 
   return (
-    <div className={styles.wrap}>
+    <AuthShell>
       <div className={`card card-pad ${styles.card}`}>
         <div className={styles.head}>
           <CaptoLogo size="lg" />
@@ -55,6 +56,6 @@ export default async function InvitePage({ params }: { params: Promise<{ token: 
           </Link>
         )}
       </div>
-    </div>
+    </AuthShell>
   );
 }

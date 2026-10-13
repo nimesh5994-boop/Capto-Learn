@@ -19,9 +19,9 @@
 .statusStarted { border-color: var(--primary); }
 .statusDone { border-color: var(--success); background: var(--success); color: #fff; }
 
-.lessonLayout { display: grid; grid-template-columns: minmax(0, 1fr) 260px; gap: 28px; align-items: start; }
+.lessonLayout { display: grid; grid-template-columns: minmax(0, 1fr) 290px; gap: 28px; align-items: start; }
 .lessonAside { position: sticky; top: 18px; display: flex; flex-direction: column; gap: 12px; }
-@media (max-width: 1100px) { .lessonLayout { grid-template-columns: 1fr; } .lessonAside { position: static; } }
+@media (max-width: 1100px) { .lessonLayout { grid-template-columns: minmax(0, 1fr); } .lessonAside { position: static; } }
 .lessonMain { display: flex; flex-direction: column; gap: 22px; min-width: 0; }
 .section { padding: 22px 26px; }
 .sectionTitle { font-family: var(--font-heading); font-size: 22px; margin: 0 0 12px; display: flex; align-items: center; gap: 10px; }
@@ -90,7 +90,7 @@
 
 .sources { margin: 0; padding-left: 18px; display: grid; gap: 6px; font-size: 14px; }
 .navRow { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
-.navLink { display: flex; flex-direction: column; gap: 2px; padding: 12px 16px; border: 1px solid var(--border); border-radius: var(--radius-sm); text-decoration: none; color: inherit; max-width: 48%; background: var(--surface); }
+.navLink { display: flex; flex-direction: column; gap: 2px; padding: 14px 18px; border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow); text-decoration: none; color: inherit; max-width: 48%; background: var(--surface); }
 .navLink:hover { border-color: var(--border-strong); }
 .navLink span:first-child { font-size: 12px; color: var(--text-muted); }
 
@@ -98,3 +98,44 @@
 .asideList a { color: var(--text-muted); text-decoration: none; padding: 4px 8px; border-radius: 6px; display: flex; gap: 6px; align-items: center; }
 .asideList a:hover { background: var(--surface-2); color: var(--text); }
 .asideList .current { background: var(--primary-soft); color: var(--primary); font-weight: 600; }
+
+/* ── Lesson page: header, notice, outline (2026-10 refresh) ───── */
+.crumbs { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; font-size: 13px; color: var(--text-muted); margin-bottom: 10px; }
+.crumbs a { color: var(--text-muted); }
+.crumbs a:hover { color: var(--primary); }
+.crumbs span { color: var(--text); }
+.lessonFacts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.lessonFacts span { display: inline-flex; gap: 5px; align-items: center; font-size: 12.5px; color: var(--text-muted); background: var(--surface); border: 1px solid var(--border); border-radius: 999px; padding: 3px 11px; }
+.lessonFacts .factDone { color: var(--success); background: var(--success-soft); border-color: transparent; font-weight: 600; }
+.draftBanner { display: block; padding: 0; background: color-mix(in oklch, var(--warning-soft) 70%, var(--surface)); border: 1px solid color-mix(in oklch, var(--warning) 22%, transparent); }
+.draftBanner summary { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; padding: 9px 14px; cursor: pointer; list-style: none; font-size: 13px; color: var(--text-muted); }
+.draftBanner summary::-webkit-details-marker { display: none; }
+.draftBanner summary svg { color: var(--warning); }
+.draftBanner summary strong { color: var(--text); }
+.draftMore { margin-left: auto; font-weight: 600; color: var(--warning); }
+.draftBanner[open] .draftMore { display: none; }
+.draftBanner p { margin: 0; padding: 0 14px 12px 35px; font-size: 13.5px; }
+.outline { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow); overflow: hidden; }
+.outlineHead { display: flex; flex-direction: column; gap: 4px; padding: 14px 16px; color: inherit; text-decoration: none; border-bottom: 1px solid var(--border); background: color-mix(in oklch, var(--surface-2) 55%, var(--surface)); }
+.outlineHead:hover { text-decoration: none; }
+.outlineCourse { font-family: var(--font-heading); font-size: 16px; font-weight: 600; }
+.outlineCount { font-size: 12px; color: var(--text-muted); }
+.outlineBar { height: 5px; border-radius: 999px; background: var(--surface-2); overflow: hidden; margin-top: 2px; }
+.outlineBar span { display: block; height: 100%; background: var(--primary); border-radius: 999px; }
+.outlineModule { border-top: 1px solid var(--border); }
+.outlineModule:first-of-type { border-top: 0; }
+.outlineModule summary { display: flex; justify-content: space-between; gap: 8px; padding: 10px 16px; cursor: pointer; font-size: 13px; font-weight: 700; list-style: none; }
+.outlineModule summary::-webkit-details-marker { display: none; }
+.outlineModule summary span { font-weight: 500; color: var(--text-faint); }
+.outlineModule .asideList { padding: 0 8px 10px; }
+.asideList a span { line-height: 1.35; }
+.help { display: flex; flex-direction: column; gap: 8px; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 14px 16px; box-shadow: var(--shadow); }
+.help h3 { font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); margin: 0 0 2px; }
+.help :global(.btn) { justify-content: flex-start; }
+
+/* Course icon tiles take their subject area's colours everywhere (matches the catalogue covers). */
+.trackIcon { border-radius: 11px; color: #fff; flex-shrink: 0; }
+.area_accounts { background: linear-gradient(135deg, #b02a70, #7a1749); }
+.area_tax { background: linear-gradient(135deg, #5a1d4c, #2c0f28); color: #e8c25a; }
+.area_people { background: linear-gradient(135deg, #c4922f, #8a5d12); }
+.area_compliance { background: linear-gradient(135deg, #45395c, #221b31); color: #e8c25a; }

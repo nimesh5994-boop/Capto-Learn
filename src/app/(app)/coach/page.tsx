@@ -11,6 +11,7 @@ import { coachMessage, coachReport, MISTAKE_ADVICE, type QuestionInfo } from "@/
 import { renderMarkdown } from "@/lib/markdown";
 import { daysAgo } from "@/lib/time";
 import { ProgressBar } from "@/components/learn/bits";
+import { EmptyState } from "@/components/EmptyState";
 import styles from "./coach.module.css";
 
 export const metadata = { title: "My coach" };
@@ -65,6 +66,12 @@ export default async function CoachPage({ searchParams }: { searchParams: Promis
           <div className="small faint">— Your Capto coach{!own ? ` (as ${first} sees it)` : ""}</div>
         </div>
       </section>
+
+      {r.attempts === 0 && own && (
+        <div style={{ marginTop: 16 }}>
+          <EmptyState icon={Target} title="Your report builds as you learn" text="Every exercise, quiz and Daily 5 answer feeds it. Do a lesson or two and come back — you'll see your strengths, the questions to crack and the patterns in any mistakes." action={{ href: "/learn", label: "Start a lesson" }} />
+        </div>
+      )}
 
       {r.suggestions.length > 0 && (
         <section className="card card-pad stack" style={{ gap: 10, marginTop: 16 }}>

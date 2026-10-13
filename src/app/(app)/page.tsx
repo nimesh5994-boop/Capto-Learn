@@ -1,17 +1,19 @@
 import Link from "next/link";
 import { desc, eq, and } from "drizzle-orm";
-import { ArrowRight, CalendarClock, MessageSquareQuote } from "lucide-react";
+import { ArrowRight, BookOpenCheck, CalendarClock, ChevronRight, Compass, GraduationCap, MessageSquareQuote, PlayCircle, Repeat } from "lucide-react";
 import { requireUser } from "@/lib/auth/dal";
 import { getDb } from "@/lib/db/client";
 import { researchQueries } from "@/lib/db/schema";
-import { getLesson, tracks } from "@/content";
+import { getLesson, tracks, trackLessons } from "@/content";
+import { LEVELS } from "@/content/types";
 import { myProgress, openAssignments, overallStats, trackStats, viewAssignment } from "@/lib/learning/progress";
 import { orgHasFeature } from "@/lib/plans";
 import { dueCount } from "@/lib/learning/daily";
 import { latestSkillChecks, retakeDue } from "@/lib/learning/skillCheck";
 import { reviewState } from "@/lib/learning/reviewQueue";
+import { categoryOf } from "@/lib/learning/catalogue";
 import { date, dateTime } from "@/lib/format";
-import { ProgressBar, TrackIcon } from "@/components/learn/bits";
+import { CourseGlyph } from "@/components/learn/bits";
 import styles from "./dashboard.module.css";
 
 export const metadata = { title: "Dashboard" };
@@ -21,6 +23,7 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
   const ctx = await requireUser();
   const { user, org, can } = ctx;
   const db = await getDb();
+  const canLearn = can("learning.view");
   const canAsk = can("research.use") && orgHasFeature(org, "research");
   const [progress, myAssignments, recent, reviewDue, checks, toReview] = await Promise.all([
     myProgress(user.id),
@@ -39,21 +42,52 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
   ]);
 
   const overall = overallStats(progress);
-  const inProgress = [...progress.values()]
-    .filter((p) => p.status === "started" && getLesson(p.lessonId))
-    .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
-  const continueRef = inProgress[0] ? getLesson(inProgress[0].lessonId) : undefined;
+  const last = [...progress.values()].filter((p) => getLesson(p.lessonId)).sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime())[0];
+  const lastRef = last ? getLesson(last.lessonId) : undefined;
+  const resume = lastRef ? (last.status !== "completed" ? lastRef : trackLessons(lastRef.track.slug).find((r) => progress.get(r.id)?.status !== "completed")) : undefined;
+  const resumeCourse = resume ? trackStats(resume.track.slug, progress) : null;
   const assignmentViews = myAssignments.map((a) => viewAssignment(a, progress)).filter((v) => !v.complete);
-  const passedQuizzes = [...progress.values()].filter((p) => p.bestQuizScore !== null);
-  const avgQuiz = passedQuizzes.length ? Math.round(passedQuizzes.reduce((s, p) => s + (p.bestQuizScore ?? 0), 0) / passedQuizzes.length) : null;
-  const myTracks = tracks().filter((t) => trackStats(t.slug, progress).started > 0);
+  const quizzes = [...progress.values()].filter((p) => p.bestQuizScore !== null);
+  const avgQuiz = quizzes.length ? Math.round(quizzes.reduce((s, p) => s + (p.bestQuizScore ?? 0), 0) / quizzes.length) : null;
+  const minutesDone = [...progress.values()].filter((p) => p.status === "completed").reduce((n, p) => n + (getLesson(p.lessonId)?.lesson.minutes ?? 0), 0);
+  const myTracks = tracks()
+    .map((t) => ({ t, s: trackStats(t.slug, progress) }))
+    .filter(({ s }) => s.started > 0);
+  const lastCheck = checks.get(user.id);
+  const checkDue = canLearn && ((!lastCheck && overall.done < 3) || (!!lastCheck && retakeDue(lastCheck, org.skillCheckRetakeMonths)));
 
-  const stats = [
-    { label: "Lessons completed", value: String(overall.done), sub: `of ${overall.total} available` },
-    { label: "In progress", value: String(inProgress.length), sub: "lessons started" },
-    { label: "Average quiz score", value: avgQuiz === null ? "—" : `${avgQuiz}%`, sub: "best attempt per lesson" },
-    { label: "Assigned to you", value: String(assignmentViews.length), sub: assignmentViews.some((a) => a.overdue) ? "some overdue" : "open" },
-  ];
+  // Today: the things worth doing now, each one line.
+  const today = [
+    canLearn && {
+      href: "/review",
+      icon: Repeat,
+      title: "Daily 5",
+      text: reviewDue ? `${reviewDue} question${reviewDue === 1 ? "" : "s"} due — two minutes keeps them fresh` : "All caught up — come back tomorrow",
+      cta: reviewDue ? "Start" : null,
+    },
+    checkDue && {
+      href: "/skills-check",
+      icon: Compass,
+      title: lastCheck ? "Fresh skills check due" : "Find your level",
+      text: lastCheck ? `Last one ${date(lastCheck.completedAt)} — new questions this time` : "A few adaptive questions suggest where to start in each course",
+      cta: "Start",
+    },
+    ...assignmentViews.slice(0, 3).map((v) => ({
+      href: v.a.targetType === "lesson" ? `/learn/${v.a.targetId}` : `/learn/${v.a.targetId.split("/")[0]}`,
+      icon: CalendarClock,
+      title: v.title,
+      text: `Assigned · ${v.done}/${v.total} lessons${v.a.dueDate ? ` · ${v.overdue ? "overdue since" : "due"} ${date(v.a.dueDate)}` : ""}`,
+      cta: "Open",
+      warn: v.overdue,
+    })),
+    toReview > 0 && {
+      href: "/reviewer",
+      icon: BookOpenCheck,
+      title: "Review centre",
+      text: `${toReview} lesson${toReview === 1 ? "" : "s"} waiting for review or re-check`,
+      cta: "Open",
+    },
+  ].filter(Boolean) as { href: string; icon: typeof Repeat; title: string; text: string; cta: string | null; warn?: boolean }[];
 
   return (
     <>
@@ -62,7 +96,7 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
           <h1>
             Good {greeting()}, {user.name.split(" ")[0]}
           </h1>
-          <p className="muted">Pick up where you left off, or ask Capto a question.</p>
+          <p className="muted">{new Date().toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", timeZone: "Europe/London" })}</p>
         </div>
         <div className="row">
           {canAsk && (
@@ -70,13 +104,9 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
               <MessageSquareQuote size={16} /> Ask Capto
             </Link>
           )}
-          {continueRef ? (
-            <Link href={`/learn/${continueRef.id}`} className="btn btn-primary">
-              Continue: {continueRef.lesson.title} <ArrowRight size={15} />
-            </Link>
-          ) : (
-            <Link href="/learn" className="btn btn-primary">
-              Browse courses <ArrowRight size={15} />
+          {canLearn && (
+            <Link href="/learn" className="btn">
+              <GraduationCap size={16} /> All courses
             </Link>
           )}
         </div>
@@ -88,139 +118,161 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
         </div>
       )}
 
-      {toReview > 0 && (
-        <Link href="/reviewer" className="card card-pad row between" style={{ marginBottom: 18, textDecoration: "none", color: "inherit", borderLeft: "4px solid var(--primary)" }}>
-          <span>
-            <strong>Review centre</strong>
-            <span className="small muted"> · {toReview} lesson{toReview === 1 ? "" : "s"} waiting for review or re-check.</span>
-          </span>
-          <span className="btn btn-primary btn-sm">Open</span>
-        </Link>
-      )}
+      <div className={styles.top}>
+        {canLearn &&
+          (resume ? (
+            <Link href={`/learn/${resume.id}`} className={`${styles.resume} ${styles[`resume_${categoryOf(resume.track.slug)}`]}`}>
+              <span className={styles.resumeKicker}>{last?.status === "completed" ? "Up next" : "Continue learning"}</span>
+              <span className={styles.resumeGlyph}>
+                <CourseGlyph name={resume.track.icon} size={26} />
+              </span>
+              <strong className={styles.resumeTitle}>{resume.lesson.title}</strong>
+              <span className={styles.resumeMeta}>
+                {resume.track.title} · {LEVELS[resume.lesson.level].label} · {resume.lesson.minutes} min
+              </span>
+              {resumeCourse && (
+                <span className={styles.resumeBar} aria-label={`${resumeCourse.done} of ${resumeCourse.total} lessons done in this course`}>
+                  <span style={{ width: `${resumeCourse.pct}%` }} />
+                </span>
+              )}
+              <span className={styles.resumeFoot}>
+                {resumeCourse ? `${resumeCourse.done} of ${resumeCourse.total} lessons done` : ""}
+                <span className={styles.resumeCta}>
+                  <PlayCircle size={16} /> {last?.status === "completed" ? "Start lesson" : "Continue"}
+                </span>
+              </span>
+            </Link>
+          ) : (
+            <Link href="/learn/foundations" className={`${styles.resume} ${styles.resume_accounts}`}>
+              <span className={styles.resumeKicker}>Start here</span>
+              <span className={styles.resumeGlyph}>
+                <GraduationCap size={26} />
+              </span>
+              <strong className={styles.resumeTitle}>Accounting fundamentals</strong>
+              <span className={styles.resumeMeta}>Double entry from first principles to a full set of accounts — the base for everything else.</span>
+              <span className={styles.resumeFoot}>
+                16 short lessons
+                <span className={styles.resumeCta}>
+                  <PlayCircle size={16} /> Start the course
+                </span>
+              </span>
+            </Link>
+          ))}
 
-      {can("learning.view") && ((!checks.has(user.id) && overall.done < 3) || (checks.has(user.id) && retakeDue(checks.get(user.id), org.skillCheckRetakeMonths))) && (
-        <Link href="/skills-check" className="card card-pad row between" style={{ marginBottom: 18, textDecoration: "none", color: "inherit", borderLeft: "4px solid var(--accent, var(--primary))" }}>
-          <span>
-            <strong>{checks.has(user.id) ? "Time for a fresh skills check" : "New here? Take the skills check"}</strong>
-            <span className="small muted">
-              {checks.has(user.id)
-                ? ` · your last one was ${date(checks.get(user.id)!.completedAt)}. New questions, and it updates where to start in each course.`
-                : " · pick an area, answer a few adaptive questions, and we'll suggest where to start in each course."}
-            </span>
-          </span>
-          <span className="btn btn-primary btn-sm">Start</span>
-        </Link>
-      )}
-
-      {reviewDue > 0 && (
-        <Link href="/review" className="card card-pad row between" style={{ marginBottom: 18, textDecoration: "none", color: "inherit", borderLeft: "4px solid var(--primary)" }}>
-          <span>
-            <strong>Daily 5 is ready</strong>
-            <span className="small muted"> · {reviewDue} question{reviewDue === 1 ? "" : "s"} due from lessons you&apos;ve taken. Two minutes keeps them fresh.</span>
-          </span>
-          <span className="btn btn-primary btn-sm">Start</span>
-        </Link>
-      )}
-
-      <div className={styles.stats}>
-        {stats.map((s) => (
-          <div key={s.label} className="card card-pad">
-            <div className="small muted">{s.label}</div>
-            <div className={`${styles.statValue} num`}>{s.value}</div>
-            <div className="small faint">{s.sub}</div>
-          </div>
-        ))}
+        <section className={`card ${styles.today}`}>
+          <h2 className={styles.h2}>Today</h2>
+          {today.length === 0 ? (
+            <p className="small muted" style={{ margin: 0 }}>
+              Nothing waiting. Pick a course and keep going.
+            </p>
+          ) : (
+            <ul className={styles.todayList}>
+              {today.map((t) => (
+                <li key={t.href + t.title}>
+                  <Link href={t.href} className={styles.todayItem}>
+                    <span className={`${styles.todayIcon} ${t.warn ? styles.todayWarn : ""}`}>
+                      <t.icon size={17} />
+                    </span>
+                    <span className={styles.todayText}>
+                      <strong>{t.title}</strong>
+                      <span>{t.text}</span>
+                    </span>
+                    {t.cta ? <span className={styles.todayCta}>{t.cta}</span> : <ChevronRight size={16} className={styles.todayChevron} />}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
       </div>
 
-      <div className="grid-2" style={{ alignItems: "start" }}>
-        <div className="stack" style={{ gap: 18 }}>
-          {assignmentViews.length > 0 && (
-            <section className="card">
-              <div className="card-pad" style={{ paddingBottom: 6 }}>
-                <h2>Assigned to you</h2>
-              </div>
-              <table className="table">
-                <tbody>
-                  {assignmentViews.map((v) => (
-                    <tr key={v.a.id}>
-                      <td>
-                        <Link href={v.a.targetType === "lesson" ? `/learn/${v.a.targetId}` : `/learn/${v.a.targetId.split("/")[0]}`}>{v.title}</Link>
-                        {v.a.note && <div className="small faint">{v.a.note}</div>}
-                      </td>
-                      <td style={{ width: 140 }}>
-                        <ProgressBar pct={v.total ? (v.done / v.total) * 100 : 0} />
-                        <span className="small faint">
-                          {v.done}/{v.total} lessons
-                        </span>
-                      </td>
-                      <td className="small" style={{ whiteSpace: "nowrap", color: v.overdue ? "var(--danger)" : undefined }}>
-                        {v.a.dueDate ? (
-                          <>
-                            <CalendarClock size={13} /> {v.overdue ? "Overdue · " : "Due "}
-                            {date(v.a.dueDate)}
-                          </>
-                        ) : (
-                          "No due date"
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </section>
-          )}
+      {canLearn && (
+        <dl className={styles.stats}>
+          <div>
+            <dt>Lessons completed</dt>
+            <dd>
+              {overall.done}
+              <small> / {overall.total}</small>
+            </dd>
+          </div>
+          <div>
+            <dt>Hours learned</dt>
+            <dd>{(minutesDone / 60).toFixed(1)}</dd>
+          </div>
+          <div>
+            <dt>Average quiz score</dt>
+            <dd>{avgQuiz === null ? "—" : `${avgQuiz}%`}</dd>
+          </div>
+          <div>
+            <dt>Courses in progress</dt>
+            <dd>{myTracks.filter(({ s }) => s.done < s.total).length}</dd>
+          </div>
+        </dl>
+      )}
 
-          <section className="card card-pad stack" style={{ gap: 12 }}>
-            <div className="row between">
-              <h2 style={{ margin: 0 }}>Your courses</h2>
+      <div className={styles.columns}>
+        {canLearn && (
+          <section className="card card-pad">
+            <div className="row between" style={{ marginBottom: 12 }}>
+              <h2 className={styles.h2} style={{ margin: 0 }}>
+                Your courses
+              </h2>
               <Link href="/learn" className="small">
-                All courses
+                All courses <ArrowRight size={12} />
               </Link>
             </div>
             {myTracks.length === 0 ? (
               <p className="muted small" style={{ margin: 0 }}>
-                You haven&apos;t started a course yet. New to practice? Start with <Link href="/learn/foundations">Accounting fundamentals</Link>.
+                You haven&apos;t started a course yet. New to practice? <Link href="/learn/foundations">Start with Accounting fundamentals</Link>, or{" "}
+                <Link href="/skills-check">find your level</Link> first.
               </p>
             ) : (
-              myTracks.map((t) => {
-                const s = trackStats(t.slug, progress);
-                return (
-                  <Link key={t.slug} href={`/learn/${t.slug}`} className="row" style={{ gap: 12, color: "inherit", textDecoration: "none" }}>
-                    <TrackIcon name={t.icon} size={17} />
-                    <div style={{ flex: 1 }}>
-                      <div className="row between small" style={{ marginBottom: 4 }}>
+              <ul className={styles.courseList}>
+                {myTracks.map(({ t, s }) => (
+                  <li key={t.slug}>
+                    <Link href={`/learn/${t.slug}`} className={styles.course}>
+                      <span className={`${styles.courseGlyph} ${styles[`glyph_${categoryOf(t.slug)}`]}`}>
+                        <CourseGlyph name={t.icon} size={17} strokeWidth={2} />
+                      </span>
+                      <span className={styles.courseText}>
                         <strong>{t.title}</strong>
-                        <span className="faint">
-                          {s.done}/{s.total}
+                        <span className={styles.courseBar}>
+                          <span style={{ width: `${s.pct}%` }} />
                         </span>
-                      </div>
-                      <ProgressBar pct={s.pct} />
-                    </div>
-                  </Link>
-                );
-              })
+                      </span>
+                      <span className={styles.coursePct}>
+                        {s.done}/{s.total}
+                      </span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             )}
           </section>
-        </div>
+        )}
 
         {canAsk && (
-          <section className="card card-pad stack" style={{ gap: 10 }}>
-            <div className="row between">
-              <h2 style={{ margin: 0 }}>Ask Capto</h2>
+          <section className="card card-pad">
+            <div className="row between" style={{ marginBottom: 6 }}>
+              <h2 className={styles.h2} style={{ margin: 0 }}>
+                Ask Capto
+              </h2>
               <Link href="/ask" className="small">
-                New question
+                New question <ArrowRight size={12} />
               </Link>
             </div>
-            <p className="small muted" style={{ margin: 0 }}>
-              Cited answers from HMRC manuals and GOV.UK, with every quote checked against the source.
+            <p className="small muted" style={{ margin: "0 0 10px" }}>
+              Cited answers from HMRC and GOV.UK guidance and Capto&apos;s lessons, with every quote checked.
             </p>
             {recent.length ? (
-              recent.map((r) => (
-                <Link key={r.id} href={`/ask/${r.id}`} className="small" style={{ display: "block" }}>
-                  {r.question.length > 110 ? `${r.question.slice(0, 110)}…` : r.question}
-                  <span className="faint"> · {dateTime(r.createdAt)}</span>
-                </Link>
-              ))
+              <ul className={styles.recent}>
+                {recent.map((r) => (
+                  <li key={r.id}>
+                    <Link href={`/ask/${r.id}`}>{r.question.length > 110 ? `${r.question.slice(0, 110)}…` : r.question}</Link>
+                    <span>{dateTime(r.createdAt)}</span>
+                  </li>
+                ))}
+              </ul>
             ) : (
               <Link href="/ask" className="btn btn-sm" style={{ width: "fit-content" }}>
                 Ask your first question
