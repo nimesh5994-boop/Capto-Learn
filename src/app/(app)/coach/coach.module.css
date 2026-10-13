@@ -1,0 +1,74 @@
+.note {
+  display: flex;
+  gap: 16px;
+  padding: 20px 22px;
+  border-left: 4px solid var(--primary);
+  background: linear-gradient(135deg, var(--primary-soft), var(--surface) 65%);
+  font-size: 15.5px;
+  line-height: 1.6;
+}
+
+.avatar {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--primary);
+  color: #fff;
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 17px;
+}
+
+.steps {
+  margin: 0;
+  padding-left: 22px;
+  display: grid;
+  gap: 8px;
+}
+
+.steps li::marker {
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.pattern {
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  display: grid;
+  gap: 4px;
+}
+
+.stuck {
+  border-top: 1px solid var(--border);
+  padding: 12px 20px;
+  display: grid;
+  gap: 10px;
+}
+
+.stuck summary {
+  cursor: pointer;
+}
+
+.stuck[open] {
+  background: var(--surface-2);
+}
+
+.why {
+  border-left: 3px solid var(--success);
+  padding-left: 12px;
+}
+
+@media (max-width: 600px) {
+  .note {
+    flex-direction: column;
+  }
+}

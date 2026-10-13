@@ -96,6 +96,9 @@ export default async function TeamTrainingPage() {
                     <td>
                       <strong>{m.name}</strong>
                       <div className="small faint">{m.jobTitle ?? (m.lastLoginAt ? `Last in ${date(m.lastLoginAt)}` : "Never signed in")}</div>
+                      <a href={`/coach?user=${m.id}`} className="small" style={{ marginRight: 8 }}>
+                        Coach report
+                      </a>
                       {checks.get(m.id) && (
                         <a href={`/skills-check/result?user=${m.id}`} className="small">
                           Skills check {date(checks.get(m.id)!.completedAt)}

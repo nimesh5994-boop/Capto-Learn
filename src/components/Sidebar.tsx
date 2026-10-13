@@ -15,6 +15,7 @@ import {
   LogOut,
   Mail,
   MessageSquareQuote,
+  MessageCircleHeart,
   Repeat,
   TrendingUp,
   Search,
@@ -35,6 +36,7 @@ export type NavKey =
   | "learn"
   | "review"
   | "progress"
+  | "coach"
   | "flashcards"
   | "skillsCheck"
   | "search"
@@ -60,6 +62,7 @@ const ITEMS: Record<NavKey, { href: string; label: string; icon: LucideIcon; exa
   flashcards: { href: "/flashcards", label: "Flashcards", icon: Layers },
   skillsCheck: { href: "/skills-check", label: "Skills check", icon: Compass },
   progress: { href: "/progress", label: "My progress", icon: TrendingUp },
+  coach: { href: "/coach", label: "My coach", icon: MessageCircleHeart },
   search: { href: "/search", label: "Guidance search", icon: Search },
   ask: { href: "/ask", label: "Ask Capto", icon: MessageSquareQuote },
   team: { href: "/team", label: "Team training", icon: ClipboardCheck },
