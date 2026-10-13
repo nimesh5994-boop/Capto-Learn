@@ -1,6 +1,11 @@
 import Link from "next/link";
 import { requireUser } from "@/lib/auth/dal";
-import { Sidebar, type NavGroup, type NavKey } from "@/components/Sidebar";
+import { Sidebar } from "@/components/Sidebar";
+import { NAV_ITEMS, type NavGroup, type NavKey } from "@/components/navItems";
+import { CommandPalette, type PaletteItem } from "@/components/CommandPalette";
+import { allLessons, getLesson, tracks } from "@/content";
+import { LEVELS } from "@/content/types";
+import { myProgress } from "@/lib/learning/progress";
 import { orgHasFeature, planOf, trialDaysLeft } from "@/lib/plans";
 import styles from "./shell.module.css";
 
@@ -40,6 +45,28 @@ export default async function AppLayout({ children }: { children: React.ReactNod
     { label: "Platform admin", items: platform },
   ];
 
+  // Quick-jump index: every page this person can open, every course and every lesson.
+  const SHORTCUT: Partial<Record<NavKey, string>> = { dashboard: "d", learn: "c", review: "r", flashcards: "f", progress: "p", coach: "o", search: "s", ask: "a", team: "t", "platform.content": "v" };
+  const canLearn = can("learning.view");
+  const palette: PaletteItem[] = [
+    ...groups.flatMap((g) => g.items.map((k) => ({ href: NAV_ITEMS[k].href, label: NAV_ITEMS[k].label, group: "Pages" as const, hint: g.label, key: SHORTCUT[k] }))),
+    { href: "/account", label: "My account", group: "Pages" as const },
+    ...(canLearn
+      ? [
+          ...tracks().map((t) => ({ href: `/learn/${t.slug}`, label: t.title, group: "Courses" as const, hint: t.summary })),
+          ...allLessons().map((r) => ({ href: `/learn/${r.id}`, label: r.lesson.title, group: "Lessons" as const, hint: `${r.track.title} · ${LEVELS[r.lesson.level].label}` })),
+        ]
+      : []),
+  ];
+
+  // The lesson most recently worked on and not yet finished.
+  let continueLesson: { href: string; title: string; course: string } | null = null;
+  if (canLearn) {
+    const last = [...(await myProgress(user.id)).values()].filter((p) => p.status === "started" && getLesson(p.lessonId)).sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime())[0];
+    const ref = last && getLesson(last.lessonId);
+    if (ref) continueLesson = { href: `/learn/${ref.id}`, title: ref.lesson.title, course: ref.track.title };
+  }
+
   const days = trialDaysLeft(org.trialEndsAt);
   const billingLink = can("billing.manage") ? (
     <Link href="/admin/billing">Choose a plan</Link>
@@ -49,7 +76,8 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   return (
     <div className={styles.shell}>
-      <Sidebar firmName={ctx.isInternal ? `${org.name} · Capto internal` : org.name} userName={user.name} roleLabel={ctx.roleLabel} groups={groups} />
+      <Sidebar firmName={ctx.isInternal ? `${org.name} · Capto internal` : org.name} userName={user.name} roleLabel={ctx.roleLabel} groups={groups} continueLesson={continueLesson} />
+      <CommandPalette items={palette} canAsk={can("research.use") && orgHasFeature(org, "research")} />
       <main className={styles.main}>
         {state === "suspended" && (
           <div className="alert alert-error" style={{ marginBottom: 18 }}>

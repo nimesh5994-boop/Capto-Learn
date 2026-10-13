@@ -1,100 +1,78 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  Activity,
-  BookOpenCheck,
-  Building2,
-  Compass,
-  Layers,
-  ClipboardCheck,
-  CreditCard,
-  GraduationCap,
-  LayoutDashboard,
-  LogOut,
-  Mail,
-  MessageSquareQuote,
-  MessageCircleHeart,
-  Repeat,
-  TrendingUp,
-  Search,
-  Database,
-  Palette,
-  ShieldCheck,
-  UserCog,
-  UsersRound,
-  type LucideIcon,
-} from "lucide-react";
+import { LogOut, Menu, PlayCircle, Search, X } from "lucide-react";
+import { NAV_ITEMS, type NavGroup } from "./navItems";
+
+export type { NavGroup, NavKey } from "./navItems";
 import { logout } from "@/app/actions/auth";
 import { CaptoLogo } from "./CaptoLogo";
 import { ThemeToggle } from "./ThemeToggle";
+import { openPalette } from "./CommandPalette";
 import styles from "./Sidebar.module.css";
 
-export type NavKey =
-  | "dashboard"
-  | "learn"
-  | "review"
-  | "progress"
-  | "coach"
-  | "flashcards"
-  | "skillsCheck"
-  | "search"
-  | "ask"
-  | "team"
-  | "admin.users"
-  | "admin.roles"
-  | "admin.practice"
-  | "admin.branding"
-  | "admin.billing"
-  | "admin.activity"
-  | "platform.firms"
-  | "platform.invitations"
-  | "platform.content"
-  | "platform.knowledge"
-  | "platform.team"
-  | "platform.roles";
 
-const ITEMS: Record<NavKey, { href: string; label: string; icon: LucideIcon; exact?: boolean }> = {
-  dashboard: { href: "/", label: "Dashboard", icon: LayoutDashboard, exact: true },
-  learn: { href: "/learn", label: "Courses", icon: GraduationCap },
-  review: { href: "/review", label: "Daily 5", icon: Repeat },
-  flashcards: { href: "/flashcards", label: "Flashcards", icon: Layers },
-  skillsCheck: { href: "/skills-check", label: "Skills check", icon: Compass },
-  progress: { href: "/progress", label: "My progress", icon: TrendingUp },
-  coach: { href: "/coach", label: "My coach", icon: MessageCircleHeart },
-  search: { href: "/search", label: "Guidance search", icon: Search },
-  ask: { href: "/ask", label: "Ask Capto", icon: MessageSquareQuote },
-  team: { href: "/team", label: "Team training", icon: ClipboardCheck },
-  "admin.users": { href: "/admin/users", label: "Users", icon: UsersRound },
-  "admin.roles": { href: "/admin/roles", label: "Roles", icon: UserCog },
-  "admin.practice": { href: "/admin/practice", label: "Practice details", icon: Building2 },
-  "admin.branding": { href: "/admin/branding", label: "Branding", icon: Palette },
-  "admin.billing": { href: "/admin/billing", label: "Plan & billing", icon: CreditCard },
-  "admin.activity": { href: "/admin/activity", label: "Activity log", icon: Activity },
-  "platform.firms": { href: "/platform", label: "Firms", icon: Building2, exact: true },
-  "platform.invitations": { href: "/platform/invitations", label: "Firm invitations", icon: Mail },
-  "platform.content": { href: "/reviewer", label: "Review centre", icon: BookOpenCheck },
-  "platform.knowledge": { href: "/platform/knowledge", label: "Knowledge base", icon: Database },
-  "platform.team": { href: "/platform/team", label: "Platform team", icon: ShieldCheck },
-  "platform.roles": { href: "/platform/roles", label: "Platform roles", icon: UserCog },
-};
 
-export type NavGroup = { label: string; items: NavKey[] };
-
-export function Sidebar({ firmName, userName, roleLabel, groups }: { firmName: string; userName: string; roleLabel: string; groups: NavGroup[] }) {
+export function Sidebar({
+  firmName,
+  userName,
+  roleLabel,
+  groups,
+  continueLesson,
+}: {
+  firmName: string;
+  userName: string;
+  roleLabel: string;
+  groups: NavGroup[];
+  continueLesson?: { href: string; title: string; course: string } | null;
+}) {
   const pathname = usePathname();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [mac, setMac] = useState(false);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- platform check needs the browser
+    setMac(/Mac|iPhone|iPad/.test(navigator.platform));
+  }, []);
+  // Close the mobile menu whenever the page changes.
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- reacting to navigation
+    setMenuOpen(false);
+  }, [pathname]);
   const isActive = (href: string, exact?: boolean) =>
     exact ? pathname === href || (href === "/platform" && pathname.startsWith("/platform/firms")) : pathname === href || pathname.startsWith(`${href}/`);
 
   return (
-    <aside className={styles.sidebar}>
+    <aside className={`${styles.sidebar} ${menuOpen ? styles.open : ""}`}>
       <div className={styles.brand}>
         <Link href="/" aria-label="Capto Learn — dashboard" style={{ textDecoration: "none" }}>
           <CaptoLogo />
         </Link>
         <div className={styles.firm}>{firmName}</div>
+        <div className={styles.mobileActions}>
+          <button type="button" className="btn btn-ghost btn-sm" aria-label="Search or jump to" onClick={openPalette}>
+            <Search size={17} />
+          </button>
+          <button type="button" className="btn btn-ghost btn-sm" aria-label={menuOpen ? "Close menu" : "Open menu"} aria-expanded={menuOpen} onClick={() => setMenuOpen((o) => !o)}>
+            {menuOpen ? <X size={18} /> : <Menu size={18} />}
+          </button>
+        </div>
       </div>
+      <button type="button" className={styles.jump} onClick={openPalette}>
+        <Search size={14} />
+        <span>Jump to…</span>
+        <kbd>{mac ? "⌘" : "Ctrl"} K</kbd>
+      </button>
+      {continueLesson && !pathname.startsWith(continueLesson.href) && (
+        <Link href={continueLesson.href} className={styles.continue} title={continueLesson.title}>
+          <span className={styles.continueKicker}>
+            <PlayCircle size={12} /> Continue learning
+          </span>
+          <span className={styles.continueTitle}>{continueLesson.title}</span>
+          <span className={styles.continueCourse}>{continueLesson.course}</span>
+        </Link>
+      )}
       <nav className={styles.nav}>
         {groups
           .filter((g) => g.items.length > 0)
@@ -103,9 +81,10 @@ export function Sidebar({ firmName, userName, roleLabel, groups }: { firmName: s
               {i > 0 && <div className={styles.divider} />}
               <div className={styles.groupLabel}>{g.label}</div>
               {g.items.map((key) => {
-                const { href, label, icon: Icon, exact } = ITEMS[key];
+                const { href, label, icon: Icon, exact } = NAV_ITEMS[key];
+                const on = isActive(href, exact);
                 return (
-                  <Link key={key} href={href} className={`${styles.link} ${isActive(href, exact) ? styles.active : ""}`}>
+                  <Link key={key} href={href} aria-current={on ? "page" : undefined} className={`${styles.link} ${on ? styles.active : ""}`}>
                     <Icon size={16} strokeWidth={2} />
                     {label}
                   </Link>
