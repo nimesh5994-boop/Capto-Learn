@@ -5,7 +5,9 @@ import { getDb } from "@/lib/db/client";
 import { exerciseAttempts, users } from "@/lib/db/schema";
 import { getLesson, tracks } from "@/content";
 import { LEVELS } from "@/content/types";
-import { openAssignments, overallStats, progressFor, trackStats, viewAssignment } from "@/lib/learning/progress";
+import { openAssignments, overallStats, viewAssignment } from "@/lib/learning/progress";
+import { skillsFor } from "@/lib/learning/skillData";
+import { skillBand } from "@/lib/learning/skills";
 import { orgHasFeature } from "@/lib/plans";
 import { date } from "@/lib/format";
 import { daysAgo } from "@/lib/time";
@@ -27,8 +29,8 @@ export default async function TeamTrainingPage() {
     .where(and(eq(users.organizationId, ctx.org.id), eq(users.status, "active")))
     .orderBy(asc(users.name));
   const ids = members.map((m) => m.id);
-  const [progress, assigned, struggles] = await Promise.all([
-    progressFor(ids),
+  const [{ progress, skills }, assigned, struggles] = await Promise.all([
+    skillsFor(ids),
     openAssignments(ctx.org.id),
     // Questions the team most often gets wrong in the last 90 days — where to focus coaching.
     db
@@ -41,6 +43,13 @@ export default async function TeamTrainingPage() {
   ]);
   const all = tracks();
   const nameOf = new Map(members.map((m) => [m.id, m.name]));
+  // Team average skill per subject, weakest first — where the firm's gaps are.
+  const gaps = all
+    .map((t) => {
+      const scores = ids.map((id) => skills.get(id)!.find((s) => s.slug === t.slug)!.score);
+      return { slug: t.slug, title: t.title, avg: scores.length ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : 0, none: scores.filter((x) => x === 0).length };
+    })
+    .sort((a, b) => a.avg - b.avg || a.title.localeCompare(b.title));
 
   const options: AssignOption[] = all.flatMap((t) => [
     { type: "track" as const, id: t.slug, label: `${t.title} — whole track` },
@@ -59,7 +68,10 @@ export default async function TeamTrainingPage() {
       {canView && (
         <section className="card" style={{ marginBottom: 18, overflowX: "auto" }}>
           <div className="card-pad" style={{ paddingBottom: 6 }}>
-            <h2>Progress by person</h2>
+            <h2>Skills by person</h2>
+            <p className="small muted" style={{ margin: 0 }}>
+              Skill score per subject (0–100): 60% lessons completed, 40% quiz and Daily 5 accuracy. Hover a score for the band.
+            </p>
           </div>
           <table className="table">
             <thead>
@@ -89,17 +101,63 @@ export default async function TeamTrainingPage() {
                         {o.done} lesson{o.done === 1 ? "" : "s"} · {o.pct}%
                       </span>
                     </td>
-                    {all.map((t) => {
-                      const s = trackStats(t.slug, p);
-                      return (
-                        <td key={t.slug} className="small num" style={{ color: s.done ? undefined : "var(--text-faint)" }}>
-                          {s.done ? `${s.done}/${s.total}` : s.started ? "started" : "—"}
-                        </td>
-                      );
-                    })}
+                    {skills.get(m.id)!.map((s) => (
+                      <td
+                        key={s.slug}
+                        className="small num"
+                        title={`${s.title}: ${skillBand(s.score)} · ${s.done}/${s.total} lessons`}
+                        style={{ color: s.score ? undefined : "var(--text-faint)", fontWeight: s.score >= 85 ? 700 : undefined }}
+                      >
+                        {s.score ? (
+                          <>
+                            {s.score}
+                            {s.completedAt && (
+                              <a href={`/certificates/${s.slug}?user=${m.id}`} title="Certificate" style={{ marginLeft: 3, textDecoration: "none" }}>
+                                🏅
+                              </a>
+                            )}
+                          </>
+                        ) : (
+                          "—"
+                        )}
+                      </td>
+                    ))}
                   </tr>
                 );
               })}
+            </tbody>
+          </table>
+        </section>
+      )}
+
+      {canView && members.length > 0 && (
+        <section className="card" style={{ marginBottom: 18 }}>
+          <div className="card-pad" style={{ paddingBottom: 6 }}>
+            <h2>Team skills gaps</h2>
+            <p className="small muted" style={{ margin: 0 }}>
+              Average skill score by subject, weakest first. Assign the course to close a gap.
+            </p>
+          </div>
+          <table className="table">
+            <tbody>
+              {gaps.slice(0, 6).map((g) => (
+                <tr key={g.slug}>
+                  <td>
+                    <a href={`/learn/${g.slug}`}>
+                      <strong>{g.title}</strong>
+                    </a>
+                    <div className="small faint">
+                      {g.none ? `${g.none} of ${members.length} not started` : "Everyone has started"}
+                    </div>
+                  </td>
+                  <td style={{ width: "35%" }}>
+                    <ProgressBar pct={g.avg} label={`${g.title} team average`} />
+                  </td>
+                  <td className="small" style={{ whiteSpace: "nowrap" }}>
+                    <strong>{g.avg}</strong> · {skillBand(g.avg)}
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </section>

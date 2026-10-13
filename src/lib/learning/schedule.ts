@@ -26,7 +26,11 @@ export function pickDaily<T extends { lessonId: string; dueAt: Date }>(due: T[],
   const sorted = [...due].sort((a, b) => a.dueAt.getTime() - b.dueAt.getTime());
   const picked: T[] = [];
   const lessons = new Set<string>();
-  for (const it of sorted) if (picked.length < count && !lessons.has(it.lessonId)) (picked.push(it), lessons.add(it.lessonId));
+  for (const it of sorted)
+    if (picked.length < count && !lessons.has(it.lessonId)) {
+      picked.push(it);
+      lessons.add(it.lessonId);
+    }
   for (const it of sorted) if (picked.length < count && !picked.includes(it)) picked.push(it);
   return picked;
 }

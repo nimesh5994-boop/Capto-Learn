@@ -14,6 +14,7 @@ import {
   Mail,
   MessageSquareQuote,
   Repeat,
+  TrendingUp,
   Search,
   Database,
   Palette,
@@ -31,6 +32,7 @@ export type NavKey =
   | "dashboard"
   | "learn"
   | "review"
+  | "progress"
   | "search"
   | "ask"
   | "team"
@@ -51,6 +53,7 @@ const ITEMS: Record<NavKey, { href: string; label: string; icon: LucideIcon; exa
   dashboard: { href: "/", label: "Dashboard", icon: LayoutDashboard, exact: true },
   learn: { href: "/learn", label: "Courses", icon: GraduationCap },
   review: { href: "/review", label: "Daily 5", icon: Repeat },
+  progress: { href: "/progress", label: "My progress", icon: TrendingUp },
   search: { href: "/search", label: "Guidance search", icon: Search },
   ask: { href: "/ask", label: "Ask Capto", icon: MessageSquareQuote },
   team: { href: "/team", label: "Team training", icon: ClipboardCheck },

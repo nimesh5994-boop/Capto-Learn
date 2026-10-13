@@ -11,7 +11,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   // Three groups, matching Capto Sign: the day-to-day workspace, the practice's own administration, and
   // (Capto staff only) the platform. Each item appears only when the person holds the permission behind it.
   const workspace: NavKey[] = ["dashboard"];
-  if (can("learning.view")) workspace.push("learn", "review", "search");
+  if (can("learning.view")) workspace.push("learn", "review", "progress", "search");
   if (can("research.use") && orgHasFeature(org, "research")) workspace.push("ask");
   if ((can("progress.view_team") || can("assignments.manage")) && orgHasFeature(org, "teamProgress")) workspace.push("team");
 
