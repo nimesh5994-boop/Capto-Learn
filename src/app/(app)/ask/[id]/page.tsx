@@ -43,18 +43,8 @@ export default async function AnswerPage({ params }: { params: Promise<{ id: str
         <aside className="stack" style={{ gap: 14 }}>
           {row.answer && isMine && <RateAnswer id={row.id} initial={row.helpful} />}
           {row.answer && isMine && <ShareToggle id={row.id} initial={row.shared} />}
-          {row.answer?.followUps.length ? (
-            <div className="card card-pad stack" style={{ gap: 6 }}>
-              <div className="small muted">Follow-up questions</div>
-              {row.answer.followUps.map((f) => (
-                <Link key={f} href={`/ask?q=${encodeURIComponent(f)}`} className="small">
-                  {f}
-                </Link>
-              ))}
-            </div>
-          ) : null}
           <div className="card card-pad small faint">
-            Ask Capto is a research aid, not advice. It answers from official guidance only; apply professional judgement and your firm&apos;s review process before advising a client.
+            Ask Capto is a research aid, not advice. It answers from official HMRC and GOV.UK guidance and Capto&apos;s own lessons, with every quote checked; apply professional judgement and your firm&apos;s review process before advising a client.
           </div>
         </aside>
       </div>

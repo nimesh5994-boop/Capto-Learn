@@ -160,7 +160,7 @@ export async function collectBriefBatches(): Promise<string> {
         await fail(`Didn't meet the quality bar (${draft.points.filter((p) => p.verified).length}/${draft.points.length} points verified, confidence ${answer.confidence})`);
         continue;
       }
-      const sourceVersions = Object.fromEntries(answer.sources.map((s) => [s.url, s.updatedAt ?? null]));
+      const sourceVersions = Object.fromEntries(answer.sources.filter((s) => s.kind === "official").map((s) => [s.url, s.updatedAt ?? null]));
       await db.update(topicBriefs).set({ status: "published", answer, sourceVersions, prepared: null, costMicros: micros, publishedAt: new Date() }).where(eq(topicBriefs.id, row.id));
       published++;
     }

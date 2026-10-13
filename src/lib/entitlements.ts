@@ -13,11 +13,11 @@ export async function usage(db: DB, org: Organization) {
       .select({ n: sql<number>`count(*)::int` })
       .from(invitations)
       .where(and(eq(invitations.organizationId, org.id), isNull(invitations.acceptedAt), isNull(invitations.revokedAt), gte(invitations.expiresAt, new Date()))),
-    // Failed attempts (outages, missing key) and answers reused from the firm's library don't use up the allowance.
+    // Failed attempts (outages, missing key) answers reused from the firm's library and free Level 1 instant answers don't use up the allowance.
     db
       .select({ n: sql<number>`count(*)::int` })
       .from(researchQueries)
-      .where(and(eq(researchQueries.organizationId, org.id), gte(researchQueries.createdAt, monthStart), ne(researchQueries.status, "failed"), sql`${researchQueries.route} is distinct from 'library'`)),
+      .where(and(eq(researchQueries.organizationId, org.id), gte(researchQueries.createdAt, monthStart), ne(researchQueries.status, "failed"), sql`coalesce(${researchQueries.route}, '') not in ('library', 'instant')`)),
   ]);
   return { activeUsers: u.n, pendingInvites: inv.n, researchThisMonth: p.n };
 }

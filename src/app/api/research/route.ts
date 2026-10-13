@@ -20,7 +20,8 @@ export async function POST(req: Request) {
     if (err instanceof AccessError) return Response.json({ error: err.message }, { status: 403 });
     throw err;
   }
-  const body = (await req.json().catch(() => ({}))) as { question?: unknown; professional?: unknown; fresh?: unknown };
+  const body = (await req.json().catch(() => ({}))) as { question?: unknown; professional?: unknown; fresh?: unknown; tier?: unknown };
+  const tier = body.tier === "standard" || body.tier === "expert" ? body.tier : "auto";
   const question = typeof body.question === "string" ? body.question.trim() : "";
   if (question.length < 8) return Response.json({ error: "Ask a full question (at least a few words)." }, { status: 400 });
   if (question.length > 2000) return Response.json({ error: "Keep the question under 2,000 characters — put the key facts first." }, { status: 400 });
@@ -33,7 +34,7 @@ export async function POST(req: Request) {
     async start(controller) {
       const send = (e: object) => controller.enqueue(encoder.encode(`${JSON.stringify(e)}\n`));
       let final: ResearchEvent | null = null;
-      for await (const e of runResearch(question, { professional, organizationId: org.id, fresh: body.fresh === true })) {
+      for await (const e of runResearch(question, { professional, organizationId: org.id, fresh: body.fresh === true, tier })) {
         if (e.type === "stage") send(e);
         else final = e;
       }
@@ -55,7 +56,7 @@ export async function POST(req: Request) {
           durationMs: Date.now() - started,
         })
         .returning({ id: researchQueries.id });
-      if (final?.type === "done" && final.route !== "library")
+      if (final?.type === "done" && final.route !== "library" && final.route !== "instant")
         await saveToLibrary(org.id, row.id, question, final.restated, final.answer).catch((err) => console.error("[research] library save failed", err));
       send({ type: "complete", id: row.id });
       controller.close();

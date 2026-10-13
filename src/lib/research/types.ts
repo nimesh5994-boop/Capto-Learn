@@ -21,7 +21,18 @@ export interface Citation {
   verified: boolean;
 }
 
+export type AnswerLevel = "essentials" | "practitioner" | "expert";
+
+export interface AnswerStep {
+  /** Markdown. */
+  text: string;
+  citations: Citation[];
+  verified: boolean;
+}
+
 export interface AnswerPoint {
+  /** How deep this point goes; answers written before levels existed have none (shown at practitioner level). */
+  level?: AnswerLevel;
   heading: string;
   /** Markdown. */
   text: string;
@@ -37,6 +48,10 @@ export interface ProfessionalNote {
 
 export interface ResearchAnswer {
   shortAnswer: string;
+  /** Numbered practical steps, for "how do I…" questions. */
+  steps?: AnswerStep[];
+  /** A worked illustration (e.g. a journal as Dr/Cr). Not quote-checked: it applies the cited points. */
+  example?: { title: string; body: string } | null;
   points: AnswerPoint[];
   caveats: string[];
   followUps: string[];
@@ -50,6 +65,8 @@ export interface ResearchAnswer {
   reuse?: { libraryId: string; originalDate: string; sourcesChecked: number } | null;
   /** Set when this answer is a Capto topic brief (written overnight, shared across firms). */
   brief?: { id: string; area: string; writtenAt: string; sourcesChecked: number } | null;
+  /** Which bot level answered: 1 Instant (local, no AI), 2 Standard (cited AI answer), 3 Expert research. */
+  tier?: { level: 1 | 2 | 3; label: string; reason: string } | null;
   /** Which model wrote the answer and why (cost routing). */
   route?: { complexity: "simple" | "complex"; model: string; escalated: boolean } | null;
   model: string;

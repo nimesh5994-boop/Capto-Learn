@@ -14,7 +14,7 @@
 
 .answer { display: flex; flex-direction: column; gap: 16px; }
 .question { font-family: var(--font-heading); font-size: 24px; line-height: 1.3; margin: 0; }
-.short { padding: 18px 20px; border-left: 4px solid var(--primary); background: var(--primary-soft); border-radius: 0 var(--radius) var(--radius) 0; font-size: 15.5px; line-height: 1.6; }
+.short { padding: 16px 20px; border-left: 4px solid var(--primary); background: var(--primary-soft); border-radius: 0 var(--radius) var(--radius) 0; font-size: 15.5px; line-height: 1.6; }
 .metaRow { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
 .point { padding: 18px 20px; display: flex; flex-direction: column; gap: 10px; }
 .pointHead { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
@@ -38,3 +38,42 @@
 .resultMeta { font-size: 12.5px; color: var(--text-muted); }
 .snippet { font-size: 14px; line-height: 1.55; margin: 0; }
 .snippet mark { background: color-mix(in oklch, var(--primary) 18%, transparent); color: inherit; padding: 0 2px; border-radius: 3px; }
+
+/* Layered answers */
+.kicker { display: flex; align-items: center; gap: 6px; font-size: 11.5px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--primary); margin-bottom: 6px; }
+.short :global(.prose) { font-size: 16px; }
+.steps { margin: 0; padding-left: 22px; display: grid; gap: 10px; }
+.steps li::marker { font-weight: 700; color: var(--primary); }
+.stepUnverified { opacity: 0.85; }
+.example { border-left: 4px solid var(--accent, var(--primary)); }
+.evidence { font-size: 12.5px; color: var(--text-muted); }
+.evidence summary { cursor: pointer; display: inline-flex; align-items: center; gap: 5px; list-style: none; user-select: none; }
+.evidence summary::-webkit-details-marker { display: none; }
+.evidence summary:hover { color: var(--text); }
+.evidence[open] summary { margin-bottom: 6px; }
+.evidence .quote { margin-top: 6px; }
+.levelTag { font-size: 11px; font-weight: 600; color: var(--text-muted); border: 1px solid var(--border); border-radius: 999px; padding: 1px 8px; }
+.depth { display: flex; flex-direction: column; gap: 12px; }
+.depthBar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.depthSeg { display: inline-flex; border: 1px solid var(--border); border-radius: 999px; padding: 2px; background: var(--surface); }
+.depthSeg button { font: inherit; font-size: 13px; border: 0; background: none; color: var(--text-muted); padding: 5px 12px; border-radius: 999px; cursor: pointer; display: inline-flex; gap: 6px; align-items: center; }
+.depthSeg button:hover { color: var(--text); }
+.depthSeg .depthOn { background: var(--primary); color: #fff; }
+.depthCount { font-size: 11px; opacity: 0.75; }
+.depth[data-depth="essentials"] [data-level="practitioner"], .depth[data-depth="essentials"] [data-level="expert"], .depth[data-depth="practitioner"] [data-level="expert"] { display: none; }
+.more { font: inherit; font-size: 13.5px; font-weight: 600; color: var(--primary); background: none; border: 1px dashed var(--border-strong); border-radius: var(--radius); padding: 10px; cursor: pointer; }
+.more:hover { background: var(--primary-soft); }
+
+/* Answer level */
+.tierBar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 10px 14px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); }
+.tierSteps { display: inline-flex; gap: 3px; }
+.tierSteps span { width: 18px; height: 6px; border-radius: 3px; background: var(--surface-2); border: 1px solid var(--border); }
+.tierSteps .tierOn { background: var(--primary); border-color: var(--primary); }
+
+/* Guidance search: the question bot */
+.understood { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 10px; font-size: 13.5px; color: var(--text-muted); }
+.understood strong { color: var(--text); }
+.instant { padding: 18px 20px; display: flex; flex-direction: column; gap: 10px; border-left: 4px solid var(--primary); background: linear-gradient(180deg, var(--primary-soft), var(--surface) 60%); }
+.instantAnswer { margin: 0; font-size: 16.5px; line-height: 1.55; font-weight: 500; }
+.instantList { margin: 0; padding-left: 20px; display: grid; gap: 4px; font-size: 14px; color: var(--text-muted); }
+.groupHead { font-size: 12px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-muted); margin: 8px 0 0; }

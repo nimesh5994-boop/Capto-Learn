@@ -4,15 +4,18 @@ import { z } from "zod";
 import { eq } from "drizzle-orm";
 import { getDb } from "@/lib/db/client";
 import { sourceCache } from "@/lib/db/schema";
-import { allLessons, lessonText } from "@/content";
+import { allLessons, getLesson, lessonText } from "@/content";
+import { lessonPlainText } from "@/lib/learning/flashcards";
+import { effectiveReview, reviewRows } from "@/lib/learning/review";
 import { anthropic, FALLBACK, Meter } from "./ai";
 import { fetchGovUkPage, searchGovUk, type FetchedPage, type SearchHit } from "./govuk";
 import { findLibraryAnswer } from "./library";
 import { findTopicBrief } from "./briefs";
+import { instantToResearch, localAnswer } from "@/lib/search/localBot";
 import { loadDocuments, rankDocuments } from "@/lib/kb/search";
-import { rankPassages, selectPassages, verifyQuote } from "./passages";
+import { rankPassages, selectPassages, splitPassages, verifyQuote } from "./passages";
 import { MODELS } from "./pricing";
-import type { AnswerPoint, ProfessionalNote, ResearchAnswer, ResearchSource } from "./types";
+import type { AnswerPoint, AnswerStep, ProfessionalNote, ResearchAnswer, ResearchSource } from "./types";
 
 /*
  * Ask Capto — answers practice questions ONLY from official sources fetched for that question, and proves it:
@@ -33,7 +36,9 @@ const MAX_PAGES = 9;
 const PROFESSIONAL_DOMAINS = ["icaew.com", "accaglobal.com", "att.org.uk", "tax.org.uk", "frc.org.uk"];
 
 export type Usage = { input: number; output: number; micros: number };
-export type Route = "library" | "sonnet" | "opus" | "sonnet>opus";
+export type Route = "instant" | "library" | "sonnet" | "opus" | "sonnet>opus";
+/** auto = start at Level 1 and go up only as needed; standard = skip the instant answer; expert = straight to Level 3. */
+export type Tier = "auto" | "standard" | "expert";
 
 export type ResearchEvent =
   | { type: "stage"; message: string }
@@ -42,7 +47,11 @@ export type ResearchEvent =
   | { type: "error"; message: string; usage: Usage };
 
 const PlanSchema = z.object({
-  in_scope: z.boolean().describe("True if this is a UK accounting, tax, payroll, pensions, company law, Companies House filing / company secretarial, AML or practice-management question."),
+  in_scope: z
+    .boolean()
+    .describe(
+      "True if this is a UK accounting, bookkeeping, tax, payroll, pensions, company law, Companies House filing / company secretarial, AML or practice-management question — including everyday how-to questions such as posting journals, double entry, bank reconciliations, coding transactions, accruals and prepayments, year-end adjustments and preparing accounts."
+    ),
   out_of_scope_reason: z.string().describe("If not in scope, one sentence saying why; otherwise empty."),
   restated_question: z.string().describe("The question restated precisely and self-contained, in UK technical terms, without client names."),
   tax_year: z.string().describe('Tax year the question is about, e.g. "2026/27", or "" if not year-specific.'),
@@ -58,25 +67,44 @@ const PlanSchema = z.object({
 
 const PLAN_SYSTEM = `You plan searches for a UK accountancy research assistant used by staff in accountancy practices.
 Given a question, decide if it's in scope, grade its complexity, and write GOV.UK search queries that will find the authoritative pages.
-In scope means anything a UK accountancy practice handles: accounting, all UK taxes, payroll, pensions, AML and practice compliance, AND company law and Companies House matters (confirmation statements, filing accounts and late filing penalties, PSCs, officers, identity verification, strike-off, share capital). Only mark a question out of scope if it is clearly unrelated to accountancy practice work.
+In scope means anything a UK accountancy practice handles: bookkeeping and accounting (journals, double entry, reconciliations, coding, accruals, prepayments, depreciation, year-end adjustments, preparing accounts — basic how-to questions from trainees are very much in scope), all UK taxes, payroll, pensions, AML and practice compliance, AND company law and Companies House matters (confirmation statements, filing accounts and late filing penalties, PSCs, officers, identity verification, strike-off, share capital). Only mark a question out of scope if it is clearly unrelated to accountancy practice work.
+For pure bookkeeping questions the answer will mostly come from Capto's own lessons; still write searches that might find related HMRC guidance (e.g. "business records", "accruals basis").
 Use HMRC's own vocabulary (e.g. "loans to participators" not "director loan tax"; "input tax" not "claiming VAT back";
 "off-payroll working" for IR35). Always include at least one 'manuals' search and one 'guidance' search. For questions
 about current rates or thresholds include a guidance search naming the tax year (e.g. "rates and thresholds for employers 2026 to 2027").
 If answering needs a tax charge, penalty or relief to be calculated, include a search for the rate itself (e.g. "rate of tax section 455 loans to participators", "fuel scale charge rates").`;
 
+const CitationSchema = z.object({
+  source_id: z.string().describe('e.g. "S2" or "L1"'),
+  quote: z.string().describe("Copied EXACTLY, character for character, from that source's passage. 10–60 words. Use ... to skip words."),
+});
+
 export const AnswerSchema = z.object({
-  short_answer: z.string().describe("2–4 sentence direct answer a practitioner can act on. If the sources don't answer it, say so plainly."),
+  short_answer: z
+    .string()
+    .describe("1–3 sentences in plain English that answer exactly what was asked — start with the answer itself, no background. A first-year trainee should understand it. If the sources don't answer it, say so plainly."),
+  steps: z
+    .array(z.object({ text: z.string().describe("One short, practical step in markdown."), citations: z.array(CitationSchema).describe("At least one citation.") }))
+    .describe("If the question asks how to do something (post, file, register, claim, calculate, account for), 3–8 numbered practical steps in order. Otherwise an empty list."),
+  example: z
+    .object({
+      title: z.string(),
+      body: z.string().describe("Markdown. A short worked illustration using the question's own facts, or simple round figures if none are given — e.g. the double entry as a Dr/Cr table, or a calculation laid out line by line."),
+    })
+    .nullable()
+    .describe("A worked example when one would make the answer clearer (journals, calculations, apportionments). It must follow the rules in your cited points. null if not useful."),
   points: z
     .array(
       z.object({
+        level: z
+          .enum(["essentials", "practitioner", "expert"])
+          .describe("essentials = what anyone needs to act correctly; practitioner = conditions, how it applies, figures, records, deadlines; expert = exceptions, anti-avoidance, edge cases, interaction with other rules."),
         heading: z.string(),
         text: z.string().describe("Markdown explanation of this point. Only facts supported by the cited quotes."),
-        citations: z
-          .array(z.object({ source_id: z.string().describe('e.g. "S2"'), quote: z.string().describe("Copied EXACTLY, character for character, from that source's passage. 10–60 words. Use ... to skip words.") }))
-          .describe("At least one citation per point."),
+        citations: z.array(CitationSchema).describe("At least one citation per point."),
       })
     )
-    .describe("3–7 points: the rule, how it applies, conditions/exceptions, figures, practical steps."),
+    .describe("3–8 points, ordered from essentials to expert. Include at least one essentials point."),
   caveats: z.array(z.string()).describe("Facts you'd need from the client, judgement calls, things the sources don't cover, or where to escalate."),
   follow_ups: z.array(z.string()).describe("2–3 natural follow-up questions."),
   confidence: z.enum(["high", "medium", "low"]).describe("high = sources directly answer it; medium = answer needs inference across sources; low = sources only partly cover it."),
@@ -86,16 +114,19 @@ export const AnswerSchema = z.object({
 // Kept stable and above the 512-token minimum so it is served from the prompt cache on every question.
 export const ANSWER_SYSTEM = `You are Ask Capto, the research assistant inside Capto Learn, used by staff at UK accountancy practices — from trainees to tax managers.
 
-You answer ONLY from the numbered official source passages supplied with each question (HMRC internal manuals and GOV.UK guidance).
+You answer ONLY from the source passages supplied with each question. Official sources (ids S1, S2…) are HMRC internal manuals and GOV.UK guidance. Capto Learn lessons (ids L1, L2…) are the platform's own training material.
 
 Evidence rules:
 - Every factual statement — especially rates, thresholds, dates, percentages, conditions and exceptions — must be supported by a quote from a supplied passage. Do not use figures or rules from memory, even if you're confident; if the passages don't contain something, say it isn't covered in the sources found and put it in caveats.
 - Quotes must be copied exactly from the passage text, character for character, including punctuation. They are checked by machine; a paraphrased or stitched-together "quote" is rejected and the point is shown to the user as unverified. Use "..." only to skip words inside one passage, never to join two passages.
 - Prefer the most specific source: an HMRC manual paragraph over a general guide; a VAT Notice section over a summary page. When sources conflict, say so and prefer the more recently updated one.
 - Never invent a source id. Only cite ids that appear in the supplied <source> tags.
+- For rates, thresholds, deadlines, penalties and legal rules, cite an official source whenever one covers the point. Use Capto Learn lessons for practical how-to (bookkeeping mechanics, journals, working papers, worked examples) or when no official source covers the point.
 
-Answering rules:
-- Lead with the practical answer in the short answer: yes / no / partly, how much, by when, which form.
+Answering rules — layer the answer from simple to advanced, and keep every layer on the question actually asked:
+- The short answer comes first and answers the exact question in plain words: yes / no / partly, how much, by when, which form, or what to do. No background, no restating the question.
+- For "how do I…" questions give numbered steps a trainee could follow at their desk, then a worked example (for bookkeeping, the journal as a Dr/Cr table).
+- Then the points, ordered essentials → practitioner → expert. Don't pad: a simple question may need only essentials and a practitioner point or two. Leave out material that doesn't bear on the question.
 - Be precise about who the rule applies to (companies vs individuals, close companies, VAT-registered businesses, employers, agents) and the tax year.
 - Where the answer depends on facts about the client, say which facts and how each possibility changes the answer.
 - Show any calculation step by step in the point text, using the figures in the question.
@@ -173,20 +204,27 @@ async function professionalNote(question: string, meter: Meter): Promise<Profess
   return { summary, links: [...links.values()] };
 }
 
-export type Drafted = { out: z.infer<typeof AnswerSchema>; points: AnswerPoint[]; unverifiedShare: number; model: string } | null;
+export type Drafted = { out: z.infer<typeof AnswerSchema>; points: AnswerPoint[]; steps: AnswerStep[]; unverifiedShare: number; model: string } | null;
 export type Plan = z.infer<typeof PlanSchema>;
 
 /** Checks every quote in a drafted answer against the full text of its source. */
 export function verifyDraft(out: z.infer<typeof AnswerSchema>, textById: Map<string, string>, model: string): NonNullable<Drafted> {
-  const points: AnswerPoint[] = out.points.map((p) => {
-    const citations = p.citations.map((c) => {
+  const check = (cs: { source_id: string; quote: string }[]) =>
+    cs.map((c) => {
       const text = textById.get(c.source_id);
       return { sourceId: c.source_id, quote: c.quote, verified: !!text && verifyQuote(c.quote, text) };
     });
-    return { heading: p.heading, text: p.text, citations, verified: citations.some((c) => c.verified) };
+  const points: AnswerPoint[] = out.points.map((p) => {
+    const citations = check(p.citations);
+    return { level: p.level, heading: p.heading, text: p.text, citations, verified: citations.some((c) => c.verified) };
   });
-  const unverifiedShare = points.length ? points.filter((p) => !p.verified).length / points.length : 1;
-  return { out, points, unverifiedShare, model };
+  const steps: AnswerStep[] = (out.steps ?? []).map((s) => {
+    const citations = check(s.citations);
+    return { text: s.text, citations, verified: citations.some((c) => c.verified) };
+  });
+  const all = [...points, ...steps];
+  const unverifiedShare = all.length ? all.filter((p) => !p.verified).length / all.length : 1;
+  return { out, points, steps, unverifiedShare, model };
 }
 
 /** One cited answer from `model`, with every quote verified against the full page text. */
@@ -230,7 +268,21 @@ export interface Gathered {
   userContent: string;
 }
 
-/** Step 2: official sources for a planned question — knowledge base first, live GOV.UK only as a fallback. */
+/** The Capto Learn lessons that best match the question, with their plain text (for quote checking). */
+async function lessonSources(queryText: string, max = 2): Promise<{ id: string; title: string; reviewed: boolean; text: string }[]> {
+  const docs = allLessons().flatMap((r) => splitPassages(lessonPlainText(r.lesson), 1200).map((text) => ({ sourceId: r.id, text: `${r.lesson.title}. ${text}` })));
+  const ranked = rankPassages(docs, queryText);
+  const ids: string[] = [];
+  for (const p of ranked) if (p.score > 4 && !ids.includes(p.sourceId) && ids.length < max) ids.push(p.sourceId);
+  if (!ids.length) return [];
+  const reviews = await reviewRows().catch(() => new Map());
+  return ids.map((id) => {
+    const ref = getLesson(id)!;
+    return { id, title: `${ref.lesson.title} (${ref.track.title})`, reviewed: effectiveReview(ref.lesson, reviews.get(id)) === "reviewed", text: lessonPlainText(ref.lesson) };
+  });
+}
+
+/** Step 2: sources for a planned question — official knowledge base first, live GOV.UK as a fallback, plus our best-matching lessons. */
 export async function gatherSources(question: string, plan: Plan, onStage: (m: string) => void = () => {}): Promise<Gathered | "no_pages" | "no_passages"> {
   const today = new Date().toISOString().slice(0, 10);
   const searches = plan.searches.slice(0, 5);
@@ -251,11 +303,15 @@ export async function gatherSources(question: string, plan: Plan, onStage: (m: s
     const live = (await Promise.all(paths.slice(0, MAX_PAGES - pages.length).map((p) => cachedPage(p)))).filter((p): p is FetchedPage => !!p);
     pages = [...pages, ...live];
   }
-  if (!pages.length) return "no_pages";
-  onStage(`Reading ${pages.length} official pages…`);
-  const sources: ResearchSource[] = pages.map((p, i) => ({ id: `S${i + 1}`, kind: "official", url: p.url, title: p.title, publisher: p.publisher, updatedAt: p.updatedAt }));
-  const textById = new Map(sources.map((s, i) => [s.id, pages[i].text]));
   const queryText = [question, plan.restated_question, ...searches.map((s) => s.query)].join(" ");
+  const lessons = await lessonSources(`${question} ${plan.restated_question}`);
+  if (!pages.length && !lessons.length) return "no_pages";
+  onStage(`Reading ${pages.length} official page${pages.length === 1 ? "" : "s"}${lessons.length ? ` and ${lessons.length} Capto lesson${lessons.length === 1 ? "" : "s"}` : ""}…`);
+  const sources: ResearchSource[] = [
+    ...pages.map((p, i) => ({ id: `S${i + 1}`, kind: "official" as const, url: p.url, title: p.title, publisher: p.publisher, updatedAt: p.updatedAt })),
+    ...lessons.map((l, i) => ({ id: `L${i + 1}`, kind: "lesson" as const, url: `/learn/${l.id}`, title: l.title, publisher: l.reviewed ? "Capto Learn lesson · reviewed" : "Capto Learn lesson · AI draft, not yet reviewed", updatedAt: null })),
+  ];
+  const textById = new Map<string, string>([...pages.map((p, i) => [`S${i + 1}`, p.text] as [string, string]), ...lessons.map((l, i) => [`L${i + 1}`, l.text] as [string, string])]);
   const passages = selectPassages(rankPassages([...textById].map(([sourceId, text]) => ({ sourceId, text })), queryText));
   if (!passages.length) return "no_passages";
   const sourceBlock = sources
@@ -274,11 +330,13 @@ export async function gatherSources(question: string, plan: Plan, onStage: (m: s
 
 /** Step 3 (final): turns a verified draft into the stored answer. Confidence can only be lowered by verification. */
 export function buildAnswer(question: string, plan: Plan, sources: ResearchSource[], draft: NonNullable<Drafted>, extra: { professional?: ProfessionalNote | null; escalated?: boolean } = {}): ResearchAnswer {
-  const { out, points, unverifiedShare } = draft;
-  const cited = new Set(points.flatMap((p) => p.citations.map((c) => c.sourceId)));
+  const { out, points, steps, unverifiedShare } = draft;
+  const cited = new Set([...points, ...steps].flatMap((p) => p.citations.map((c) => c.sourceId)));
   const confidence = unverifiedShare > 0.34 ? "low" : unverifiedShare > 0 && out.confidence === "high" ? "medium" : out.confidence;
   return {
     shortAnswer: out.short_answer,
+    steps,
+    example: out.example ?? null,
     points,
     caveats: out.caveats,
     followUps: out.follow_ups,
@@ -293,13 +351,28 @@ export function buildAnswer(question: string, plan: Plan, sources: ResearchSourc
   };
 }
 
-export async function* runResearch(question: string, opts: { professional: boolean; organizationId: string; fresh?: boolean }): AsyncGenerator<ResearchEvent> {
+export async function* runResearch(question: string, opts: { professional: boolean; organizationId: string; fresh?: boolean; tier?: Tier }): AsyncGenerator<ResearchEvent> {
   const meter = new Meter();
   const t0 = Date.now();
   const lap = (label: string) => console.info(`[research] ${label} +${Date.now() - t0}ms`);
+  const tier = opts.tier ?? "auto";
   try {
+    // Level 1 — the local question bot. No AI: answers from Capto's checked fact cards and lessons when it's sure.
+    if (tier === "auto" && !opts.fresh) {
+      yield { type: "stage", message: "Level 1 · reading your question and checking Capto's own material…" };
+      const local = localAnswer(question);
+      // In Ask Capto, Level 1 only settles plain fact questions from checked fact cards; how-to questions and
+      // anything with the client's own figures get a full answer.
+      const factOnly = local.instant?.kind === "flashcard" && question.length <= 140 && !/£\s?\d|\d{3,}/.test(question);
+      if (local.instant && factOnly) {
+        yield { type: "done", answer: instantToResearch(local.instant, local.u), usage: meter.usage, route: "instant", restated: local.u.text };
+        return;
+      }
+      yield { type: "stage", message: "Needs a fuller answer — moving up to Level 2…" };
+    }
+
     // 1. Plan + route (cheap model). Runs first so the library check compares questions in HMRC's vocabulary.
-    yield { type: "stage", message: "Working out where HMRC covers this…" };
+    yield { type: "stage", message: "Understanding your question…" };
     const plan = await planQuestion(question, meter);
     lap("planned");
     if (!plan) {
@@ -312,7 +385,7 @@ export async function* runResearch(question: string, opts: { professional: boole
     }
 
     // 2. Topic briefs (platform-wide, pre-written overnight) and the firm's answer library — both nearly free to serve.
-    if (!opts.fresh) {
+    if (!opts.fresh && tier !== "expert") {
       yield { type: "stage", message: "Checking Capto's topic briefs and your firm's answer library…" };
       const brief = await findTopicBrief(question, plan.restated_question, meter).catch((err) => {
         console.error("[research] brief check failed", err);
@@ -320,7 +393,7 @@ export async function* runResearch(question: string, opts: { professional: boole
       });
       if (brief) {
         yield { type: "stage", message: `Found a Capto topic brief — its ${brief.sourcesChecked} official source${brief.sourcesChecked === 1 ? " is" : "s are"} unchanged…` };
-        yield { type: "done", answer: { ...brief.answer, relatedLessons: relatedLessons(question) }, usage: meter.usage, route: "library", restated: plan.restated_question };
+        yield { type: "done", answer: { ...brief.answer, relatedLessons: relatedLessons(question), tier: { level: 2, label: "Standard", reason: "A quote-checked Capto topic brief" } }, usage: meter.usage, route: "library", restated: plan.restated_question };
         return;
       }
       const hit = await findLibraryAnswer(opts.organizationId, question, plan.restated_question, meter).catch((err) => {
@@ -333,13 +406,14 @@ export async function* runResearch(question: string, opts: { professional: boole
           ...hit.entry.answer,
           reuse: { libraryId: hit.entry.id, originalDate: hit.entry.createdAt.toISOString(), sourcesChecked: hit.sourcesChecked },
           relatedLessons: relatedLessons(question),
+          tier: { level: 2, label: "Standard", reason: "Reused from your firm's verified answers" },
         };
         yield { type: "done", answer, usage: meter.usage, route: "library", restated: hit.entry.restatedQuestion };
         return;
       }
     }
 
-    const professional = opts.professional ? professionalNote(plan.restated_question, meter).catch(() => null) : Promise.resolve(null);
+    const professional = opts.professional || tier === "expert" ? professionalNote(plan.restated_question, meter).catch(() => null) : Promise.resolve(null);
 
     const stages: string[] = [];
     const gathered = await gatherSources(question, plan, (m) => stages.push(m));
@@ -355,8 +429,11 @@ export async function* runResearch(question: string, opts: { professional: boole
     }
 
     // 3. Answer on the routed model; escalate a weak Sonnet answer to Opus.
-    let route: Route = plan.complexity === "simple" ? "sonnet" : "opus";
-    yield { type: "stage", message: route === "sonnet" ? "Writing a cited answer…" : "Writing a cited answer (complex question — using our most thorough model)…" };
+    let route: Route = plan.complexity === "simple" && tier !== "expert" ? "sonnet" : "opus";
+    yield {
+      type: "stage",
+      message: route === "sonnet" ? "Level 2 · writing a cited answer…" : tier === "expert" ? "Level 3 · expert research with our most thorough model…" : "Level 3 · complex question — using our most thorough model…",
+    };
     let draft = await draftAnswer(route === "sonnet" ? MODELS.sonnet : MODELS.opus, gathered.userContent, gathered.textById, meter);
     if (route === "sonnet" && (!draft || needsEscalation(draft))) {
       yield { type: "stage", message: "Double-checking with our most thorough model…" };
@@ -371,6 +448,14 @@ export async function* runResearch(question: string, opts: { professional: boole
     lap(`answered (${route})`);
     yield { type: "stage", message: "Checking every quote against the source…" };
     const answer = buildAnswer(question, plan, gathered.sources, draft, { professional: await professional, escalated: route === "sonnet>opus" });
+    answer.tier =
+      route === "sonnet"
+        ? { level: 2, label: "Standard", reason: "Everyday question — cited answer from official guidance and lessons" }
+        : {
+            level: 3,
+            label: "Expert",
+            reason: tier === "expert" ? "You asked for expert research" : route === "sonnet>opus" ? "Escalated: the first draft's quotes didn't all check out" : "Judgement-heavy question — routed to our most thorough model",
+          };
     yield { type: "done", answer, usage: meter.usage, route, restated: plan.restated_question };
   } catch (err) {
     console.error("[research]", err);

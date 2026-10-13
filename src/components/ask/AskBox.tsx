@@ -14,10 +14,18 @@ const EXAMPLES = [
 ];
 
 /** `fresh` skips the answer library (used by "Research it fresh"); with `autoStart` the question runs on load. */
-export function AskBox({ initial, canProfessional, fresh = false, autoStart = false }: { initial?: string; canProfessional: boolean; fresh?: boolean; autoStart?: boolean }) {
+type Tier = "auto" | "standard" | "expert";
+const TIERS: { key: Tier; label: string; hint: string }[] = [
+  { key: "auto", label: "Auto", hint: "Starts with an instant answer and goes up a level only when the question needs it" },
+  { key: "standard", label: "Full answer", hint: "Always write a cited answer from HMRC guidance and Capto lessons" },
+  { key: "expert", label: "Expert research", hint: "Our most thorough model plus the professional bodies' guidance — for judgement-heavy questions" },
+];
+
+export function AskBox({ initial, canProfessional, fresh = false, autoStart = false, tier: initialTier = "auto" }: { initial?: string; canProfessional: boolean; fresh?: boolean; autoStart?: boolean; tier?: Tier }) {
   const router = useRouter();
   const [q, setQ] = useState(initial ?? "");
   const [professional, setProfessional] = useState(false);
+  const [tier, setTier] = useState<Tier>(initialTier);
   const [stages, setStages] = useState<string[]>([]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -28,7 +36,7 @@ export function AskBox({ initial, canProfessional, fresh = false, autoStart = fa
     setError(null);
     setStages([]);
     try {
-      const res = await fetch("/api/research", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ question: q, professional, fresh }) });
+      const res = await fetch("/api/research", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ question: q, professional, fresh, tier }) });
       if (!res.ok || !res.body) {
         const j = (await res.json().catch(() => ({}))) as { error?: string };
         throw new Error(j.error ?? "Ask Capto is unavailable right now.");
@@ -90,13 +98,20 @@ export function AskBox({ initial, canProfessional, fresh = false, autoStart = fa
           aria-label="Your question"
         />
         <div className={styles.askFoot}>
-          {canProfessional ? (
+          <div className={styles.depthSeg} role="radiogroup" aria-label="Answer level">
+            {TIERS.map((t) => (
+              <button key={t.key} type="button" role="radio" aria-checked={tier === t.key} title={t.hint} className={tier === t.key ? styles.depthOn : undefined} disabled={busy} onClick={() => setTier(t.key)}>
+                {t.label}
+              </button>
+            ))}
+          </div>
+          {canProfessional && tier !== "expert" ? (
             <label className="small row" style={{ gap: 6 }}>
               <input type="checkbox" checked={professional} onChange={(e) => setProfessional(e.target.checked)} disabled={busy} />
               Also search ICAEW, ACCA, ATT, CIOT &amp; FRC
             </label>
           ) : (
-            <span className="small faint">Answers come only from HMRC manuals and GOV.UK guidance.</span>
+            <span className="small faint">{tier === "expert" ? "Includes ICAEW, ACCA, ATT, CIOT & FRC guidance." : "Answers come from HMRC and GOV.UK guidance and Capto lessons."}</span>
           )}
           <button className="btn btn-primary" disabled={!ready}>
             {busy ? <Loader2 size={16} className={styles.spin} /> : <Search size={16} />} {busy ? "Researching…" : "Ask"}

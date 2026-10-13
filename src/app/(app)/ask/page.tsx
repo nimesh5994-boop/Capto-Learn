@@ -12,8 +12,8 @@ import styles from "@/components/ask/ask.module.css";
 
 export const metadata = { title: "Ask Capto" };
 
-export default async function AskPage({ searchParams }: { searchParams: Promise<{ q?: string; fresh?: string }> }) {
-  const { q, fresh } = await searchParams;
+export default async function AskPage({ searchParams }: { searchParams: Promise<{ q?: string; fresh?: string; tier?: string }> }) {
+  const { q, fresh, tier } = await searchParams;
   const ctx = await requirePermission("research.use");
   if (!orgHasFeature(ctx.org, "research")) redirect("/?denied=1");
   const db = await getDb();
@@ -45,7 +45,7 @@ export default async function AskPage({ searchParams }: { searchParams: Promise<
         </div>
       </div>
       <div className={styles.layout}>
-        <AskBox initial={q} canProfessional={orgHasFeature(ctx.org, "professionalSources")} fresh={fresh === "1"} autoStart={fresh === "1"} />
+        <AskBox initial={q} canProfessional={orgHasFeature(ctx.org, "professionalSources")} fresh={fresh === "1"} autoStart={fresh === "1"} tier={tier === "standard" || tier === "expert" ? tier : "auto"} />
         <aside className="stack" style={{ gap: 14 }}>
           {maxResearchPerMonth !== null && (
             <div className="card card-pad small">

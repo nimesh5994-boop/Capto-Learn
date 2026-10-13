@@ -1,10 +1,13 @@
 import Link from "next/link";
-import { BookOpen, ExternalLink, MessageSquareQuote, Search } from "lucide-react";
+import { BookOpen, ExternalLink, GraduationCap, Layers, MessageSquareQuote, Search, Sparkles, Wand2 } from "lucide-react";
 import { requirePermission } from "@/lib/auth/dal";
 import { orgHasFeature } from "@/lib/plans";
 import { searchKb, kbStats, type KbHit } from "@/lib/kb/search";
-import { allLessons, lessonText } from "@/content";
-import { rankPassages } from "@/lib/research/passages";
+import { allLessons, getTrack } from "@/content";
+import { lessonPlainText } from "@/lib/learning/flashcards";
+import { rankPassages, splitPassages } from "@/lib/research/passages";
+import { localAnswer } from "@/lib/search/localBot";
+import { INTENT_LABEL, type Understanding } from "@/lib/search/understand";
 import { date } from "@/lib/format";
 import { getDb } from "@/lib/db/client";
 import { topicBriefs } from "@/lib/db/schema";
@@ -14,38 +17,61 @@ import styles from "@/components/ask/ask.module.css";
 
 export const metadata = { title: "Guidance search" };
 
-function relatedLessons(q: string) {
+/** Lessons for the question: ranked on the bot's lesson query, with the question's courses first. */
+function lessonsFor(u: Understanding) {
   const lessons = allLessons();
   const ranked = rankPassages(
-    lessons.map((r) => ({ sourceId: r.id, text: lessonText(r.lesson) })),
-    q
+    lessons.flatMap((r) => splitPassages(`${r.lesson.title}. ${r.lesson.summary}\n\n${lessonPlainText(r.lesson)}`, 1200).map((text) => ({ sourceId: r.id, text }))),
+    u.lessonQuery
   );
-  const ids: string[] = [];
-  for (const p of ranked) if (p.score > 2 && !ids.includes(p.sourceId) && ids.length < 4) ids.push(p.sourceId);
-  return ids.map((id) => lessons.find((l) => l.id === id)!);
+  const score = new Map<string, number>();
+  for (const p of ranked) score.set(p.sourceId, Math.max(score.get(p.sourceId) ?? 0, p.score));
+  const boost = (id: string) => {
+    const at = u.topics.indexOf(id.split("/")[0]);
+    return at < 0 ? 1 : at === 0 ? 1.6 : 1.3;
+  };
+  return [...score.entries()]
+    .map(([id, s]) => ({ id, s: s * boost(id) }))
+    .filter((x) => x.s > 2)
+    .sort((a, b) => b.s - a.s)
+    .slice(0, 5)
+    .map((x) => lessons.find((l) => l.id === x.id)!);
+}
+
+/** Keeps official results that are actually about the recognised concept (not ones that just share a common word). */
+function onTopic(u: Understanding, d: KbHit[]): boolean {
+  if (!u.concepts.length) return true;
+  const c = u.concepts[0];
+  const terms = [...c.aliases, ...(c.official ?? []), c.name].map((t) => t.toLowerCase());
+  const text = d.map((h) => `${h.title} ${h.heading ?? ""} ${h.snippetHtml.replace(/<[^>]+>|««|»»/g, "")}`).join(" ").toLowerCase();
+  return terms.some((t) => text.includes(t));
 }
 
 export default async function GuidanceSearchPage({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
   const { q = "" } = await searchParams;
   const ctx = await requirePermission("learning.view");
   const query = q.trim().slice(0, 300);
-  const [hits, stats] = await Promise.all([query ? searchKb(query, { limit: 60 }) : Promise.resolve([] as KbHit[]), kbStats()]);
+  const local = query ? localAnswer(query) : null;
+  const u = local?.u;
+  const [hits, stats] = await Promise.all([u ? searchKb(u.officialQuery || u.text, { limit: 60 }) : Promise.resolve([] as KbHit[]), kbStats()]);
 
-  // Group passages by page: best page first, up to two snippets each.
   const byDoc = new Map<string, KbHit[]>();
   for (const h of hits) byDoc.set(h.url, [...(byDoc.get(h.url) ?? []), h]);
-  const docs = [...byDoc.values()].slice(0, 15);
-  const lessons = query ? relatedLessons(query) : [];
-  // Capto topic briefs matching the search (keyword overlap only — free, no AI).
-  const briefs = query
-    ? (await (await getDb()).select().from(topicBriefs).where(and(eq(topicBriefs.status, "published"), isNotNull(topicBriefs.answer))))
-        .map((b) => ({ b, score: Math.max(termOverlap(query, b.question), termOverlap(query, b.restatedQuestion)) }))
-        .filter((x) => x.score >= 0.5)
-        .sort((x, y) => y.score - x.score)
-        .slice(0, 3)
-        .map((x) => x.b)
-    : [];
+  const allDocs = [...byDoc.values()];
+  const docs = (u ? allDocs.filter((d) => onTopic(u, d)) : allDocs).slice(0, 12);
+  const lessons = u ? lessonsFor(u) : [];
+  const instant = local?.instant ?? null;
+  const briefs =
+    query && u
+      ? (await (await getDb()).select().from(topicBriefs).where(and(eq(topicBriefs.status, "published"), isNotNull(topicBriefs.answer))))
+          .map((b) => ({ b, score: Math.max(termOverlap(u.text, b.question), termOverlap(u.text, b.restatedQuestion)) }))
+          .filter((x) => x.score >= 0.5)
+          .sort((x, y) => y.score - x.score)
+          .slice(0, 2)
+          .map((x) => x.b)
+      : [];
   const canAsk = ctx.can("research.use") && orgHasFeature(ctx.org, "research");
+  const fullAnswer = u ? `/ask?fresh=1&tier=standard&q=${encodeURIComponent(u.text)}` : "/ask";
 
   return (
     <>
@@ -53,28 +79,77 @@ export default async function GuidanceSearchPage({ searchParams }: { searchParam
         <div>
           <h1>Guidance search</h1>
           <p className="muted" style={{ maxWidth: 760 }}>
-            Instantly search Capto&apos;s synced copy of {stats.documents ? `${stats.documents.toLocaleString("en-GB")} pages of ` : ""}HMRC manuals and HMRC and Companies House guidance, plus our lessons. No AI is used, so it&apos;s instant and free. When you need a worked
-            answer for a specific client, use Ask Capto.
+            Ask in your own words. Capto&apos;s question bot works out what you mean, answers instantly from our checked lessons and fact cards where it can, and finds the right official guidance
+            {stats.documents ? ` among ${stats.documents.toLocaleString("en-GB")} HMRC and Companies House pages` : ""}. No AI is used here, so it&apos;s instant and free.
           </p>
         </div>
       </div>
 
       <form className={`card ${styles.searchForm}`} action="/search">
-        <input name="q" defaultValue={query} placeholder="e.g. input tax staff entertainment, s455 repayment, CIS gross payment status" aria-label="Search the guidance" autoFocus />
+        <input name="q" defaultValue={query} placeholder="e.g. how do I post a journal? · VAT registration threshold · overdrawn director's loan at year end" aria-label="Search" autoFocus />
         <button className="btn btn-primary">
           <Search size={15} /> Search
         </button>
       </form>
 
-      {!stats.documents && (
-        <div className="alert alert-warning" style={{ marginTop: 14 }}>
-          The knowledge base hasn&apos;t been downloaded yet. A platform admin can start it from Platform admin → Knowledge base.
+      {u && (
+        <div className={styles.understood}>
+          <Wand2 size={14} />
+          <span>
+            Understood as: <strong>{u.concepts[0]?.name ?? u.keywords.join(" ")}</strong>
+            {u.concepts.length > 1 && <> + {u.concepts.slice(1, 3).map((c) => c.name).join(", ")}</>}
+          </span>
+          <span className="pill">{INTENT_LABEL[u.intent]}</span>
+          {u.topics[0] && getTrack(u.topics[0]) && <span className="pill">{getTrack(u.topics[0])!.title}</span>}
+          {u.corrections.length > 0 && <span className="small muted">Corrected: {u.corrections.map((c) => `${c.from} → ${c.to}`).join(", ")}</span>}
         </div>
       )}
 
       {query && (
-        <div className={styles.layout} style={{ marginTop: 16 }}>
+        <div className={styles.layout} style={{ marginTop: 14 }}>
           <div className="stack" style={{ gap: 12 }}>
+            {instant && (
+              <article className={`card ${styles.instant}`}>
+                <div className={styles.kicker}>
+                  <Sparkles size={13} /> Level 1 · instant answer
+                </div>
+                <p className={styles.instantAnswer}>{instant.answer}</p>
+                {instant.excerpt.length > 0 && (
+                  <ul className={styles.instantList}>
+                    {instant.excerpt.map((s) => (
+                      <li key={s}>{s}</li>
+                    ))}
+                  </ul>
+                )}
+                <div className="row between" style={{ gap: 10, flexWrap: "wrap" }}>
+                  <Link href={`/learn/${instant.lesson.id}`} className="small row" style={{ gap: 6 }}>
+                    <GraduationCap size={14} /> From: {instant.lesson.title} · {instant.lesson.trackTitle}
+                  </Link>
+                  {canAsk && (
+                    <span className="row" style={{ gap: 6 }}>
+                      <Link href={fullAnswer} className="btn btn-sm btn-primary">
+                        Full cited answer
+                      </Link>
+                      <Link href={`/ask?fresh=1&tier=expert&q=${encodeURIComponent(u!.text)}`} className="btn btn-sm">
+                        Expert research
+                      </Link>
+                    </span>
+                  )}
+                </div>
+              </article>
+            )}
+
+            {!instant && canAsk && u && u.concepts.length > 0 && (
+              <div className="card card-pad row between" style={{ gap: 10, flexWrap: "wrap" }}>
+                <span className="small">
+                  No instant answer for this one — it needs the rule applied properly. <span className="muted">Ask Capto writes a cited answer in about 30 seconds.</span>
+                </span>
+                <Link href={fullAnswer} className="btn btn-primary btn-sm">
+                  <MessageSquareQuote size={14} /> Get the full answer
+                </Link>
+              </div>
+            )}
+
             {briefs.map((b) => (
               <article key={b.id} className={`card ${styles.result}`} style={{ borderLeft: "4px solid var(--primary)" }}>
                 <div className={styles.resultMeta}>Capto topic brief · {b.area} · quote-checked</div>
@@ -84,8 +159,13 @@ export default async function GuidanceSearchPage({ searchParams }: { searchParam
                 <p className={styles.snippet}>{b.answer?.shortAnswer}</p>
               </article>
             ))}
+
+            <h2 className={styles.groupHead}>Official guidance{docs.length ? ` (${docs.length})` : ""}</h2>
             {docs.length === 0 ? (
-              <div className="card card-pad muted">No official guidance matched. Try HMRC&apos;s own terms (e.g. &ldquo;input tax&rdquo; rather than &ldquo;claim VAT back&rdquo;).</div>
+              <div className="card card-pad muted small">
+                {u?.concepts.length ? `No HMRC or Companies House page is specifically about ${u.concepts[0].name}. ` : "No official guidance matched. "}
+                {lessons.length ? "Capto's lessons cover it — see the right-hand column." : "Try HMRC's own terms (e.g. “input tax” rather than “claim VAT back”)."}
+              </div>
             ) : (
               docs.map((passages) => {
                 const d = passages[0];
@@ -112,22 +192,32 @@ export default async function GuidanceSearchPage({ searchParams }: { searchParam
             )}
           </div>
           <aside className="stack" style={{ gap: 14 }}>
-            {canAsk && (
-              <div className="card card-pad stack" style={{ gap: 8 }}>
-                <div className="small">Need an answer for a specific situation, with the rule applied to your facts?</div>
-                <Link href={`/ask?q=${encodeURIComponent(query)}`} className="btn btn-primary btn-sm">
-                  <MessageSquareQuote size={14} /> Ask Capto
-                </Link>
-              </div>
-            )}
             {lessons.length > 0 && (
-              <div className="card card-pad stack" style={{ gap: 6 }}>
-                <div className="small muted">Related lessons</div>
+              <div className="card card-pad stack" style={{ gap: 8 }}>
+                <div className={styles.kicker}>
+                  <BookOpen size={13} /> From your courses
+                </div>
                 {lessons.map((l) => (
-                  <Link key={l.id} href={`/learn/${l.id}`} className="small row" style={{ gap: 6 }}>
-                    <BookOpen size={13} /> {l.lesson.title}
+                  <Link key={l.id} href={`/learn/${l.id}`} className="small" style={{ display: "block" }}>
+                    <strong>{l.lesson.title}</strong>
+                    <div className="faint">
+                      {l.track.title} · {l.lesson.minutes} min
+                    </div>
                   </Link>
                 ))}
+                {u?.topics[0] && (
+                  <Link href={`/flashcards?course=${u.topics[0]}`} className="small row" style={{ gap: 6 }}>
+                    <Layers size={13} /> Flashcards for this topic
+                  </Link>
+                )}
+              </div>
+            )}
+            {canAsk && !instant && (
+              <div className="card card-pad stack" style={{ gap: 8 }}>
+                <div className="small">Need the rule applied to a specific client?</div>
+                <Link href={`/ask?q=${encodeURIComponent(u?.text ?? query)}`} className="btn btn-sm">
+                  <MessageSquareQuote size={14} /> Ask Capto
+                </Link>
               </div>
             )}
             <div className="card card-pad small faint">Contains public sector information licensed under the Open Government Licence v3.0. Always check the linked GOV.UK page before relying on it.</div>
