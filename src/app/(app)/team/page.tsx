@@ -8,6 +8,7 @@ import { LEVELS } from "@/content/types";
 import { openAssignments, overallStats, viewAssignment } from "@/lib/learning/progress";
 import { skillsFor } from "@/lib/learning/skillData";
 import { skillBand } from "@/lib/learning/skills";
+import { latestSkillChecks } from "@/lib/learning/skillCheck";
 import { orgHasFeature } from "@/lib/plans";
 import { date } from "@/lib/format";
 import { daysAgo } from "@/lib/time";
@@ -29,7 +30,7 @@ export default async function TeamTrainingPage() {
     .where(and(eq(users.organizationId, ctx.org.id), eq(users.status, "active")))
     .orderBy(asc(users.name));
   const ids = members.map((m) => m.id);
-  const [{ progress, skills }, assigned, struggles] = await Promise.all([
+  const [{ progress, skills }, assigned, struggles, checks] = await Promise.all([
     skillsFor(ids),
     openAssignments(ctx.org.id),
     // Questions the team most often gets wrong in the last 90 days — where to focus coaching.
@@ -40,6 +41,7 @@ export default async function TeamTrainingPage() {
       .groupBy(exerciseAttempts.lessonId, exerciseAttempts.exerciseId)
       .orderBy(sql`count(*) filter (where not ${exerciseAttempts.correct}) desc`)
       .limit(8),
+    latestSkillChecks(ids),
   ]);
   const all = tracks();
   const nameOf = new Map(members.map((m) => [m.id, m.name]));
@@ -94,6 +96,11 @@ export default async function TeamTrainingPage() {
                     <td>
                       <strong>{m.name}</strong>
                       <div className="small faint">{m.jobTitle ?? (m.lastLoginAt ? `Last in ${date(m.lastLoginAt)}` : "Never signed in")}</div>
+                      {checks.get(m.id) && (
+                        <a href={`/skills-check/result?user=${m.id}`} className="small">
+                          Skills check {date(checks.get(m.id)!.completedAt)}
+                        </a>
+                      )}
                     </td>
                     <td>
                       <ProgressBar pct={o.pct} />

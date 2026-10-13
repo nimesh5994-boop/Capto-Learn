@@ -8,12 +8,15 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   const ctx = await requireUser();
   const { user, org, state, can } = ctx;
 
-  // Three groups, matching Capto Sign: the day-to-day workspace, the practice's own administration, and
-  // (Capto staff only) the platform. Each item appears only when the person holds the permission behind it.
-  const workspace: NavKey[] = ["dashboard"];
-  if (can("learning.view")) workspace.push("learn", "review", "progress", "search");
-  if (can("research.use") && orgHasFeature(org, "research")) workspace.push("ask");
-  if ((can("progress.view_team") || can("assignments.manage")) && orgHasFeature(org, "teamProgress")) workspace.push("team");
+  // Learning, research, the team view, then the practice's own administration and (Capto staff only) the
+  // platform. Each item appears only when the person holds the permission behind it.
+  const learn: NavKey[] = ["dashboard"];
+  if (can("learning.view")) learn.push("learn", "review", "flashcards", "skillsCheck", "progress");
+  const research: NavKey[] = [];
+  if (can("learning.view")) research.push("search");
+  if (can("research.use") && orgHasFeature(org, "research")) research.push("ask");
+  const manage: NavKey[] = [];
+  if ((can("progress.view_team") || can("assignments.manage")) && orgHasFeature(org, "teamProgress")) manage.push("team");
 
   const practice: NavKey[] = [];
   if (can("team.manage")) practice.push("admin.users");
@@ -29,7 +32,9 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   if (ctx.isPlatformAdmin) platform.push("platform.team", "platform.roles");
 
   const groups: NavGroup[] = [
-    { label: "Workspace", items: workspace },
+    { label: "Learn", items: learn },
+    { label: "Research", items: research },
+    { label: "Manage", items: manage },
     { label: ctx.isInternal ? "Workspace admin" : "Practice admin", items: practice },
     { label: "Platform admin", items: platform },
   ];

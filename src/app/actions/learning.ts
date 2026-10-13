@@ -10,7 +10,9 @@ import { getLesson } from "@/content";
 import { mark, quizScore, QUIZ_PASS_MARK, type ExerciseResponse, type MarkResult } from "@/lib/learning/marking";
 import { seedReviewItems } from "@/lib/learning/daily";
 import { dueDate, nextBox } from "@/lib/learning/schedule";
-import { reviewItems } from "@/lib/db/schema";
+import { reviewItems, skillChecks } from "@/lib/db/schema";
+import { checkQuestions } from "@/lib/learning/skillCheck";
+import { placeSubject } from "@/lib/learning/placement";
 import { renderMarkdown } from "@/lib/markdown";
 
 type Result<T> = { ok: true; data: T } | { ok: false; error: string };
@@ -171,5 +173,27 @@ export async function reportLessonProblem(lessonId: string, input: { kind: strin
     const db = await getDb();
     await db.insert(lessonFeedback).values({ organizationId: ctx.org.id, userId: ctx.user.id, lessonId, ...parsed.data });
     return null;
+  });
+}
+
+/** Marks a skills check (starting assessment) and saves the suggested starting level per subject. Answers are -1 for "Not sure". */
+export async function submitSkillCheck(slugs: string[], answers: Record<string, number>): Promise<Result<{ id: string }>> {
+  return guard(async () => {
+    const ctx = await authorize("learning.view", { write: true });
+    const parsed = z.object({ slugs: z.array(z.string().max(60)).min(1).max(30), answers: z.record(z.string().max(200), z.number().int()) }).safeParse({ slugs, answers });
+    if (!parsed.success) throw new AccessError("Couldn't read your answers.");
+    const questions = await checkQuestions(ctx.user.id, parsed.data.slugs);
+    if (!questions.length) throw new AccessError("Choose at least one subject.");
+    const bySubject = new Map<string, { level: (typeof questions)[number]["level"]; correct: boolean }[]>();
+    for (const q of questions) {
+      const list = bySubject.get(q.track) ?? [];
+      list.push({ level: q.level, correct: parsed.data.answers[`${q.lessonId}#${q.questionId}`] === q.answer });
+      bySubject.set(q.track, list);
+    }
+    const results = Object.fromEntries([...bySubject].map(([slug, a]) => [slug, placeSubject(a)]));
+    const db = await getDb();
+    const [row] = await db.insert(skillChecks).values({ organizationId: ctx.org.id, userId: ctx.user.id, results }).returning({ id: skillChecks.id });
+    revalidatePath("/");
+    return { id: row.id };
   });
 }

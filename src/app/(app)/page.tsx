@@ -8,6 +8,7 @@ import { getLesson, tracks } from "@/content";
 import { myProgress, openAssignments, overallStats, trackStats, viewAssignment } from "@/lib/learning/progress";
 import { orgHasFeature } from "@/lib/plans";
 import { dueCount } from "@/lib/learning/daily";
+import { latestSkillChecks } from "@/lib/learning/skillCheck";
 import { date, dateTime } from "@/lib/format";
 import { ProgressBar, TrackIcon } from "@/components/learn/bits";
 import styles from "./dashboard.module.css";
@@ -20,7 +21,7 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
   const { user, org, can } = ctx;
   const db = await getDb();
   const canAsk = can("research.use") && orgHasFeature(org, "research");
-  const [progress, myAssignments, recent, reviewDue] = await Promise.all([
+  const [progress, myAssignments, recent, reviewDue, checks] = await Promise.all([
     myProgress(user.id),
     openAssignments(org.id, [user.id]),
     canAsk
@@ -32,6 +33,7 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
           .limit(5)
       : Promise.resolve([]),
     dueCount(user.id),
+    latestSkillChecks([user.id]),
   ]);
 
   const overall = overallStats(progress);
@@ -82,6 +84,16 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
         <div className="alert alert-warning" style={{ marginBottom: 18 }}>
           You don&apos;t have access to that page. Ask an admin in your firm if you need it.
         </div>
+      )}
+
+      {can("learning.view") && !checks.has(user.id) && overall.done < 3 && (
+        <Link href="/skills-check" className="card card-pad row between" style={{ marginBottom: 18, textDecoration: "none", color: "inherit", borderLeft: "4px solid var(--accent, var(--primary))" }}>
+          <span>
+            <strong>New here? Take the 10-minute skills check</strong>
+            <span className="small muted"> · a few questions per subject, and we&apos;ll suggest where to start in each course.</span>
+          </span>
+          <span className="btn btn-primary btn-sm">Start</span>
+        </Link>
       )}
 
       {reviewDue > 0 && (

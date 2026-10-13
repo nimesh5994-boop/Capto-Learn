@@ -191,6 +191,20 @@ export const reviewItems = pgTable(
   (t) => [uniqueIndex("review_items_user_q_uq").on(t.userId, t.lessonId, t.questionId), index("review_items_due_idx").on(t.userId, t.dueAt)]
 );
 
+/** A completed skills check (starting assessment): per-subject results and the suggested starting level. */
+export const skillChecks = pgTable(
+  "skill_checks",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    organizationId: uuid("organization_id").notNull().references(() => organizations.id, { onDelete: "cascade" }),
+    userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+    results: jsonb("results").$type<Record<string, { right: number; total: number; start: "foundation" | "practitioner" | "advanced"; strong: boolean }>>().notNull(),
+    completedAt: timestamp("completed_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index("skill_checks_user_idx").on(t.userId, t.completedAt)]
+);
+export type SkillCheck = typeof skillChecks.$inferSelect;
+
 export type AssignmentTarget = "track" | "module" | "lesson";
 
 /** A manager assigning training to a team member, with an optional due date. Completion is derived from lesson_progress. */

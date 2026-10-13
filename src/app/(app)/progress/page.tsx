@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Award, Download } from "lucide-react";
+import { Award, Compass, Download } from "lucide-react";
 import { requirePermission } from "@/lib/auth/dal";
 import { getLesson } from "@/content";
 import { skillsFor } from "@/lib/learning/skillData";
@@ -30,9 +30,14 @@ export default async function MyProgressPage() {
           <h1>My progress</h1>
           <p className="muted">Your skill in each subject, your certificates and your CPD record.</p>
         </div>
-        <a href="/api/cpd" className="btn">
-          <Download size={15} /> Download CPD log (CSV)
-        </a>
+        <div className="row" style={{ gap: 8 }}>
+          <Link href="/skills-check" className="btn">
+            <Compass size={15} /> Skills check
+          </Link>
+          <a href="/api/cpd" className="btn">
+            <Download size={15} /> Download CPD log (CSV)
+          </a>
+        </div>
       </div>
 
       <div className="grid-3" style={{ marginBottom: 18 }}>

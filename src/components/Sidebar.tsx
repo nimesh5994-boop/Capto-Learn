@@ -6,6 +6,8 @@ import {
   Activity,
   BookOpenCheck,
   Building2,
+  Compass,
+  Layers,
   ClipboardCheck,
   CreditCard,
   GraduationCap,
@@ -33,6 +35,8 @@ export type NavKey =
   | "learn"
   | "review"
   | "progress"
+  | "flashcards"
+  | "skillsCheck"
   | "search"
   | "ask"
   | "team"
@@ -53,6 +57,8 @@ const ITEMS: Record<NavKey, { href: string; label: string; icon: LucideIcon; exa
   dashboard: { href: "/", label: "Dashboard", icon: LayoutDashboard, exact: true },
   learn: { href: "/learn", label: "Courses", icon: GraduationCap },
   review: { href: "/review", label: "Daily 5", icon: Repeat },
+  flashcards: { href: "/flashcards", label: "Flashcards", icon: Layers },
+  skillsCheck: { href: "/skills-check", label: "Skills check", icon: Compass },
   progress: { href: "/progress", label: "My progress", icon: TrendingUp },
   search: { href: "/search", label: "Guidance search", icon: Search },
   ask: { href: "/ask", label: "Ask Capto", icon: MessageSquareQuote },
