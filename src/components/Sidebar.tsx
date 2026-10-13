@@ -13,6 +13,7 @@ import {
   LogOut,
   Mail,
   MessageSquareQuote,
+  Repeat,
   Search,
   Database,
   Palette,
@@ -29,6 +30,7 @@ import styles from "./Sidebar.module.css";
 export type NavKey =
   | "dashboard"
   | "learn"
+  | "review"
   | "search"
   | "ask"
   | "team"
@@ -48,6 +50,7 @@ export type NavKey =
 const ITEMS: Record<NavKey, { href: string; label: string; icon: LucideIcon; exact?: boolean }> = {
   dashboard: { href: "/", label: "Dashboard", icon: LayoutDashboard, exact: true },
   learn: { href: "/learn", label: "Courses", icon: GraduationCap },
+  review: { href: "/review", label: "Daily 5", icon: Repeat },
   search: { href: "/search", label: "Guidance search", icon: Search },
   ask: { href: "/ask", label: "Ask Capto", icon: MessageSquareQuote },
   team: { href: "/team", label: "Team training", icon: ClipboardCheck },

@@ -170,6 +170,27 @@ export const exerciseAttempts = pgTable(
   (t) => [index("exercise_attempts_lesson_idx").on(t.lessonId, t.exerciseId), index("exercise_attempts_user_idx").on(t.userId)]
 );
 
+/**
+ * Daily 5 spaced review: one row per learner per quiz question they've met. Leitner boxes 1–5 — a right answer
+ * moves the card up a box (seen again later), a wrong one sends it back to box 1 (seen again tomorrow).
+ */
+export const reviewItems = pgTable(
+  "review_items",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    organizationId: uuid("organization_id").notNull().references(() => organizations.id, { onDelete: "cascade" }),
+    userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+    lessonId: text("lesson_id").notNull(),
+    questionId: text("question_id").notNull(),
+    box: integer("box").notNull().default(1),
+    dueAt: timestamp("due_at", { withTimezone: true }).notNull(),
+    reviews: integer("reviews").notNull().default(0),
+    lapses: integer("lapses").notNull().default(0),
+    lastReviewedAt: timestamp("last_reviewed_at", { withTimezone: true }),
+  },
+  (t) => [uniqueIndex("review_items_user_q_uq").on(t.userId, t.lessonId, t.questionId), index("review_items_due_idx").on(t.userId, t.dueAt)]
+);
+
 export type AssignmentTarget = "track" | "module" | "lesson";
 
 /** A manager assigning training to a team member, with an optional due date. Completion is derived from lesson_progress. */

@@ -7,6 +7,7 @@ import { researchQueries } from "@/lib/db/schema";
 import { getLesson, tracks } from "@/content";
 import { myProgress, openAssignments, overallStats, trackStats, viewAssignment } from "@/lib/learning/progress";
 import { orgHasFeature } from "@/lib/plans";
+import { dueCount } from "@/lib/learning/daily";
 import { date, dateTime } from "@/lib/format";
 import { ProgressBar, TrackIcon } from "@/components/learn/bits";
 import styles from "./dashboard.module.css";
@@ -19,7 +20,7 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
   const { user, org, can } = ctx;
   const db = await getDb();
   const canAsk = can("research.use") && orgHasFeature(org, "research");
-  const [progress, myAssignments, recent] = await Promise.all([
+  const [progress, myAssignments, recent, reviewDue] = await Promise.all([
     myProgress(user.id),
     openAssignments(org.id, [user.id]),
     canAsk
@@ -30,6 +31,7 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
           .orderBy(desc(researchQueries.createdAt))
           .limit(5)
       : Promise.resolve([]),
+    dueCount(user.id),
   ]);
 
   const overall = overallStats(progress);
@@ -80,6 +82,16 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
         <div className="alert alert-warning" style={{ marginBottom: 18 }}>
           You don&apos;t have access to that page. Ask an admin in your firm if you need it.
         </div>
+      )}
+
+      {reviewDue > 0 && (
+        <Link href="/review" className="card card-pad row between" style={{ marginBottom: 18, textDecoration: "none", color: "inherit", borderLeft: "4px solid var(--primary)" }}>
+          <span>
+            <strong>Daily 5 is ready</strong>
+            <span className="small muted"> · {reviewDue} question{reviewDue === 1 ? "" : "s"} due from lessons you&apos;ve taken. Two minutes keeps them fresh.</span>
+          </span>
+          <span className="btn btn-primary btn-sm">Start</span>
+        </Link>
       )}
 
       <div className={styles.stats}>

@@ -8,6 +8,9 @@ import { exerciseAttempts, lessonFeedback, lessonProgress } from "@/lib/db/schem
 import { AccessError, authorize } from "@/lib/auth/dal";
 import { getLesson } from "@/content";
 import { mark, quizScore, QUIZ_PASS_MARK, type ExerciseResponse, type MarkResult } from "@/lib/learning/marking";
+import { seedReviewItems } from "@/lib/learning/daily";
+import { dueDate, nextBox } from "@/lib/learning/schedule";
+import { reviewItems } from "@/lib/db/schema";
 import { renderMarkdown } from "@/lib/markdown";
 
 type Result<T> = { ok: true; data: T } | { ok: false; error: string };
@@ -116,6 +119,8 @@ export async function submitQuiz(lessonId: string, answers: number[]): Promise<R
     await db.insert(exerciseAttempts).values(
       ref.lesson.quiz.map((q, i) => ({ organizationId: ctx.org.id, userId: ctx.user.id, lessonId, exerciseId: q.id, correct: parsed.data[i] === q.answer, response: { kind: "mcq", choice: parsed.data[i] ?? null } }))
     );
+    // Add this lesson's questions to the learner's Daily 5 review deck.
+    await seedReviewItems(ctx.org.id, ctx.user.id, lessonId).catch((err) => console.error("[daily5] seed", err));
     revalidatePath("/learn", "layout");
     revalidatePath("/");
     return { score, passed, questions: ref.lesson.quiz.map((q, i) => ({ correct: parsed.data[i] === q.answer, answer: q.answer, explainHtml: renderMarkdown(q.explain) })) };
@@ -126,6 +131,36 @@ const FeedbackSchema = z.object({
   kind: z.enum(["error", "out_of_date", "unclear", "suggestion"]),
   message: z.string().trim().min(5, { error: "Tell us a bit more (at least a few words)." }).max(3000),
 });
+
+export interface ReviewResult {
+  correct: boolean;
+  answer: number;
+  explainHtml: string;
+  nextInDays: number;
+}
+
+/** Marks one Daily 5 card and reschedules it (right: up a box; wrong: back to tomorrow). */
+export async function submitReview(itemId: string, choice: number): Promise<Result<ReviewResult>> {
+  return guard(async () => {
+    const ctx = await authorize("learning.view", { write: true });
+    const parsed = z.object({ itemId: z.uuid(), choice: z.number().int() }).safeParse({ itemId, choice });
+    if (!parsed.success) throw new AccessError("Couldn't read your answer.");
+    const db = await getDb();
+    const [item] = await db.select().from(reviewItems).where(and(eq(reviewItems.id, parsed.data.itemId), eq(reviewItems.userId, ctx.user.id)));
+    if (!item) throw new AccessError("That review card no longer exists.");
+    const q = getLesson(item.lessonId)?.lesson.quiz.find((x) => x.id === item.questionId);
+    if (!q) throw new AccessError("That question no longer exists.");
+    const correct = parsed.data.choice === q.answer;
+    const box = nextBox(item.box, correct);
+    const due = dueDate(box);
+    await db
+      .update(reviewItems)
+      .set({ box, dueAt: due, reviews: sql`${reviewItems.reviews} + 1`, lapses: correct ? item.lapses : sql`${reviewItems.lapses} + 1`, lastReviewedAt: new Date() })
+      .where(eq(reviewItems.id, item.id));
+    await db.insert(exerciseAttempts).values({ organizationId: ctx.org.id, userId: ctx.user.id, lessonId: item.lessonId, exerciseId: q.id, correct, response: { kind: "mcq", choice: parsed.data.choice, via: "daily5" } });
+    return { correct, answer: q.answer, explainHtml: renderMarkdown(q.explain), nextInDays: Math.round((due.getTime() - Date.now()) / 86_400_000) };
+  });
+}
 
 export async function reportLessonProblem(lessonId: string, input: { kind: string; message: string }): Promise<Result<null>> {
   return guard(async () => {
