@@ -10,6 +10,8 @@ export interface PlanDef {
   key: PlanKey;
   label: string;
   monthlyPrice: number | null;
+  /** Paying yearly up front: two months free. */
+  annualPrice: number | null;
   tagline: string;
   /** null = unlimited */
   maxUsers: number | null;
@@ -27,6 +29,7 @@ export const PLANS: Record<PlanKey, PlanDef> = {
     key: "trial",
     label: "Free trial",
     monthlyPrice: null,
+    annualPrice: null,
     tagline: `Everything in Professional for ${TRIAL_DAYS} days.`,
     maxUsers: 5,
     maxResearchPerMonth: 40,
@@ -37,9 +40,10 @@ export const PLANS: Record<PlanKey, PlanDef> = {
     key: "starter",
     label: "Starter",
     monthlyPrice: 39,
+    annualPrice: 390,
     tagline: "Sole practitioners and small teams: the full course library plus Ask Capto.",
-    maxUsers: 3,
-    maxResearchPerMonth: 100,
+    maxUsers: 5,
+    maxResearchPerMonth: 150,
     maxInterviewsPerMonth: 5,
     features: ["research"],
   },
@@ -47,8 +51,9 @@ export const PLANS: Record<PlanKey, PlanDef> = {
     key: "professional",
     label: "Professional",
     monthlyPrice: 99,
+    annualPrice: 990,
     tagline: "Growing firms: assign training, track the team, professional-body search.",
-    maxUsers: 15,
+    maxUsers: 20,
     maxResearchPerMonth: 600,
     maxInterviewsPerMonth: 25,
     features: ["research", "professionalSources", "assignments", "teamProgress", "customRoles", "customBranding"],
@@ -57,6 +62,7 @@ export const PLANS: Record<PlanKey, PlanDef> = {
     key: "practice",
     label: "Practice",
     monthlyPrice: 229,
+    annualPrice: 2290,
     tagline: "Multi-office practices needing controls, audit and unlimited seats.",
     maxUsers: null,
     maxResearchPerMonth: 2000,

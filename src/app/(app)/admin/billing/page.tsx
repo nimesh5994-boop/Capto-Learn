@@ -63,6 +63,11 @@ export default async function BillingPage() {
                 {money(p.monthlyPrice)}
                 <span className="small muted"> / month + VAT</span>
               </div>
+              {p.annualPrice !== null && (
+                <div className="small muted" style={{ marginTop: -4 }}>
+                  or {money(p.annualPrice)} a year — two months free
+                </div>
+              )}
               <p className="small muted">{p.tagline}</p>
               <ul className={styles.features}>
                 <li>{p.maxUsers === null ? "Unlimited users" : `Up to ${p.maxUsers} users`}</li>
