@@ -109,9 +109,12 @@ export async function inviteMember(input: { email: string; role: string }): Prom
       html: `<p style="font-family:sans-serif">${ctx.user.name} has invited you to join <strong>${ctx.org.name}</strong> on Capto Learn as <strong>${label}</strong>.</p><p style="font-family:sans-serif"><a href="${link}">Accept the invitation</a> — the link expires in ${INVITE_DAYS} days.</p>`,
     });
     await audit(actorOf(ctx), "team.invited", `Invited ${email.data} as ${label}`);
+    if (mail.error) console.error(`[invite email failed] to=${email.data}: ${mail.error}`);
     return mail.sent
       ? { ok: true, message: `Invitation emailed to ${email.data}.`, link }
-      : { ok: true, message: "Invitation created. Email isn't set up yet — copy this link and send it to them yourself.", link };
+      : mail.skipped
+        ? { ok: true, message: "Invitation created. Email isn't set up yet — copy this link and send it to them yourself.", link }
+        : { ok: true, message: `Invitation created, but the email couldn't be sent (${mail.error}). Copy this link and send it to them yourself.`, link };
   });
 }
 

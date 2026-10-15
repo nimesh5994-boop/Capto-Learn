@@ -20,9 +20,11 @@ export async function sendEmail(input: { to: string; subject: string; html: stri
     console.info(`[email skipped — RESEND_API_KEY/EMAIL_FROM not set] to=${input.to} subject="${input.subject}"`);
     return { sent: false, skipped: true };
   }
+  // EMAIL_FROM may be a bare address or "Name <address>"; only the address is used, under the firm's name.
+  const address = fromAddress.match(/<([^>]+)>/)?.[1] ?? fromAddress.trim();
   try {
     const { error } = await new Resend(key).emails.send({
-      from: `${input.fromName.replace(/[<>"]/g, "")} <${fromAddress}>`,
+      from: `${input.fromName.replace(/[<>"]/g, "")} <${address}>`,
       to: input.to,
       subject: input.subject,
       html: input.html,
