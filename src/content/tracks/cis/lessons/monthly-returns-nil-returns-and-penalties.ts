@@ -66,7 +66,7 @@ The return can be filed online through the **CIS online service**, through comme
 - **Late payment** of deductions: interest and possible surcharge or penalties under the PAYE-style late payment regime.
 - **Incorrect returns:** penalties for inaccuracies can apply if the return is wrong. Submitting a **false** declaration, or failing to keep records, can lead to penalties of **up to £3,000**.
 - **Amending a return:** submit an **amended return** for the tax month; the later return replaces the earlier one.
-- **Quarterly payments:** small contractors whose average monthly deductions are **£1,500 or less** may pay **quarterly** (check CIS340 for the rules).
+- **Quarterly payments:** contractors whose average monthly payments to HMRC (PAYE, National Insurance, student loan and CIS deductions **together**) are expected to be **less than £1,500** may pay **quarterly**.
 - **Records:** keep payment records, verification evidence and copies of statements for **three years** after the end of the tax year to which they relate.`,
     },
     {

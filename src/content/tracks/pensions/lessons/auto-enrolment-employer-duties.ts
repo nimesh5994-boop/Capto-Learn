@@ -64,7 +64,7 @@ The **declaration of compliance** is made online with TPR (employer or an author
 - Postponement notices
 - The declaration of compliance and any TPR correspondence
 
-Most records must be kept for **six years**, and some (such as opt-in and opt-out notices) for four. The employer is responsible even where a payroll bureau holds them, so check that your engagement terms say who keeps what.`,
+Most records must be kept for **six years**, except records of opt-outs (the opt-out notice), which must be kept for **four** years. Opt-in and joining notices follow the six-year rule. The employer is responsible even where a payroll bureau holds them, so check that your engagement terms say who keeps what.`,
     },
     {
       kind: "callout",
@@ -169,7 +169,7 @@ Most records must be kept for **six years**, and some (such as opt-in and opt-ou
       prompt: "How long should most automatic enrolment records be kept?",
       options: ["1 year", "3 years", "6 years", "10 years"],
       answer: 2,
-      explain: "Six years, with four years for some records such as opt-in and opt-out notices.",
+      explain: "Six years. The exception is opt-out records, which must be kept for four years.",
     },
     {
       kind: "mcq",

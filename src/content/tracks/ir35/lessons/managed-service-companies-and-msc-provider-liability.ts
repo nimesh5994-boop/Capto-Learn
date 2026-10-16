@@ -28,8 +28,8 @@ export const lesson: Lesson = {
 
 - The company's **business consists wholly or mainly of providing the services of an individual** (the worker) to **third-party clients**.
 - The worker receives **payments (or payments and benefits) from the company** that represent **the greater part of the sums the company receives from the client** for the worker's services.
-- There is a further statutory condition about **how the worker's payments are determined and treated**. Check the precise wording in s61B(1) and ESM3510.
-- An **"MSC provider"** is **involved with the company**: that is, the provider (or an associate) **benefits financially on an ongoing basis** from the provision of the services, or **influences or controls** the services or the way payments to the worker are made.
+- The way those payments are made means the worker receives **more, after tax and NIC, than they would if every payment were treated as employment income** (for example, part paid as dividends or expenses) (s61B(1); ESM3510).
+- An **"MSC provider"** is **involved with the company**: that is, the provider (or an associate) does any of the following (ESM3520): **benefits financially on an ongoing basis** from the provision of the services; **influences or controls** the provision of the services; influences or controls **the way payments to the worker are made**; influences or controls the **company's finances or activities**; or **gives or promotes an undertaking to make good any tax loss**.
 
 Read the exact wording of s61B and ESM3510 before concluding that a particular company is, or is not, an MSC.`,
     },

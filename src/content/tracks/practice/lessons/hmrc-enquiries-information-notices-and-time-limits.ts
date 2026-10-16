@@ -24,7 +24,7 @@ export const lesson: Lesson = {
       kind: "callout",
       tone: "rule",
       title: "Enquiry windows",
-      md: `- **Self Assessment (individuals, partnerships, trusts):** HMRC has the right to open an enquiry within **12 months after the filing date** of the return, if the return was filed on time (TMA 1970 s9A). If filed late, the window runs to the **next 31 January, 30 April, 31 July or 31 October** that falls **at least 12 months** after the actual filing date.
+      md: `- **Self Assessment (individuals, partnerships, trusts):** HMRC has the right to open an enquiry within **12 months after the date the return was delivered**, if it was filed on time (TMA 1970 s9A; HMRC Enquiry Manual EM1506). If filed late, the window runs to the **quarter day (31 January, 30 April, 31 July or 31 October)** next following the first anniversary of the date it was delivered.
 - **Company Tax Returns:** an enquiry window of **12 months after the date the return was delivered** (FA 1998 Sch 18 para 24), with similar rules for late filing.
 - An enquiry can be a **full enquiry** (into everything on the return) or limited to an **aspect** (a particular claim or figure).
 - The enquiry **ends** when HMRC issues a **closure notice** stating its conclusions. The taxpayer may ask the **First-tier Tribunal** to direct HMRC to close an enquiry.
@@ -130,8 +130,8 @@ An assessment outside the ordinary limit generally requires HMRC to show **carel
       id: "mcq-window-sa",
       prompt: "A Self Assessment return is filed on time on 20 December 2025 (filing deadline 31 January 2026). By when can HMRC open an enquiry as of right?",
       options: ["20 December 2026", "31 January 2027", "31 January 2029", "31 January 2031"],
-      answer: 1,
-      explain: "For a Self Assessment return delivered on or before the filing date (31 January 2026), the enquiry window runs to the first anniversary of the filing date: 31 January 2027.",
+      answer: 0,
+      explain: "For a Self Assessment return delivered on time, the enquiry window runs for 12 months from the date HMRC received it (TMA 1970 s9A; EM1506), not from the 31 January filing date: 20 December 2026.",
     },
     {
       kind: "mcq",

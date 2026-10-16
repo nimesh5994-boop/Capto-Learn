@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-13T16:10:29.322Z",
+ "generatedAt": "2026-10-16T05:01:56.508Z",
  "lessons": {
   "accounts-production/accruals-prepayments-deferred-income": {
    "hash": "a493181e37f009d4",
@@ -1870,7 +1870,7 @@
    ]
   },
   "capital-taxes/estate-administration-iht400-and-deadlines": {
-   "hash": "c8df49d2a207767d",
+   "hash": "7456562b874eed9c",
    "cards": [
     {
      "id": "capital-taxes/estate-administration-iht400-and-deadlines#f1",
@@ -2000,7 +2000,7 @@
    ]
   },
   "capital-taxes/iht-basics-nil-rate-bands-and-the-estate": {
-   "hash": "f30cc967747adf7c",
+   "hash": "2e7e4ba7fc5ead2e",
    "cards": [
     {
      "id": "capital-taxes/iht-basics-nil-rate-bands-and-the-estate#f1",
@@ -2037,21 +2037,13 @@
     {
      "id": "capital-taxes/iht-basics-nil-rate-bands-and-the-estate#f5",
      "lessonId": "capital-taxes/iht-basics-nil-rate-bands-and-the-estate",
-     "front": "IHT: forms for claiming transferred NRB and RNRB?",
-     "back": "IHT402 for NRB; IHT435 for RNRB",
-     "evidence": "The claim is made on the surviving spouse's estate (form IHT402 for NRB; the RNRB is claimed on IHT435).",
-     "taxYear": "2026/27"
-    },
-    {
-     "id": "capital-taxes/iht-basics-nil-rate-bands-and-the-estate#f6",
-     "lessonId": "capital-taxes/iht-basics-nil-rate-bands-and-the-estate",
      "front": "IHT: long-term UK residence test for foreign assets?",
      "back": "UK resident for at least 10 of the preceding 20 tax years",
      "evidence": "Domicile was replaced on 6 April 2025 by long-term UK residence (resident in the UK for at least 10 of the preceding 20 tax years) as the test for whether foreign assets are within the charge.",
      "taxYear": "2026/27"
     },
     {
-     "id": "capital-taxes/iht-basics-nil-rate-bands-and-the-estate#f7",
+     "id": "capital-taxes/iht-basics-nil-rate-bands-and-the-estate#f6",
      "lessonId": "capital-taxes/iht-basics-nil-rate-bands-and-the-estate",
      "front": "IHT: when do unused pension funds enter the estate?",
      "back": "Deaths on or after 6 April 2027",
@@ -2241,7 +2233,7 @@
    ]
   },
   "cis/cis-changes-from-april-2026-and-advising-construction-clients": {
-   "hash": "61a6f91b38c374c8",
+   "hash": "023cbc17d97bc023",
    "cards": [
     {
      "id": "cis/cis-changes-from-april-2026-and-advising-construction-clients#f1",
@@ -2384,7 +2376,7 @@
    ]
   },
   "cis/gross-payment-status-tests-and-changes": {
-   "hash": "f43b2cc1b8e692a8",
+   "hash": "dedf8a89ad33d0e8",
    "cards": [
     {
      "id": "cis/gross-payment-status-tests-and-changes#f1",
@@ -2437,7 +2429,7 @@
    ]
   },
   "cis/monthly-returns-nil-returns-and-penalties": {
-   "hash": "e9ad0d09c0b031d4",
+   "hash": "c90af78423da6322",
    "cards": [
     {
      "id": "cis/monthly-returns-nil-returns-and-penalties#f1",
@@ -2481,14 +2473,6 @@
     },
     {
      "id": "cis/monthly-returns-nil-returns-and-penalties#f6",
-     "lessonId": "cis/monthly-returns-nil-returns-and-penalties",
-     "front": "CIS: when may small contractors pay deductions quarterly?",
-     "back": "Average monthly deductions of £1,500 or less",
-     "evidence": "Quarterly payments: small contractors whose average monthly deductions are £1,500 or less may pay quarterly (check CIS340 for the rules).",
-     "taxYear": "2026/27"
-    },
-    {
-     "id": "cis/monthly-returns-nil-returns-and-penalties#f7",
      "lessonId": "cis/monthly-returns-nil-returns-and-penalties",
      "front": "CIS: how long must records be kept?",
      "back": "Three years after the end of the relevant tax year",
@@ -5892,7 +5876,7 @@
    ]
   },
   "ir35/chapter-8-deemed-employment-payment": {
-   "hash": "859427392f27784e",
+   "hash": "2e92b0e6e3f73506",
    "cards": [
     {
      "id": "ir35/chapter-8-deemed-employment-payment#f1",
@@ -6145,7 +6129,7 @@
    ]
   },
   "ir35/managed-service-companies-and-msc-provider-liability": {
-   "hash": "cce8724c46d5ac8c",
+   "hash": "717a133c105e2e2f",
    "cards": [
     {
      "id": "ir35/managed-service-companies-and-msc-provider-liability#f1",
@@ -7325,7 +7309,7 @@
    ]
   },
   "pensions/auto-enrolment-employer-duties": {
-   "hash": "f6ef111a03aceaac",
+   "hash": "31b56d1e7844f99f",
    "cards": [
     {
      "id": "pensions/auto-enrolment-employer-duties#f1",
@@ -9104,18 +9088,10 @@
    ]
   },
   "practice/hmrc-enquiries-information-notices-and-time-limits": {
-   "hash": "8fa00bfc15b8a2ad",
+   "hash": "33d5bd5bda99aeb5",
    "cards": [
     {
      "id": "practice/hmrc-enquiries-information-notices-and-time-limits#f1",
-     "lessonId": "practice/hmrc-enquiries-information-notices-and-time-limits",
-     "front": "Self Assessment: HMRC enquiry window for a return filed on time?",
-     "back": "12 months after the filing date of the return",
-     "evidence": "Self Assessment (individuals, partnerships, trusts): HMRC has the right to open an enquiry within 12 months after the filing date of the return, if the return was filed on time (TMA 1970 s9A).",
-     "taxYear": "2026/27"
-    },
-    {
-     "id": "practice/hmrc-enquiries-information-notices-and-time-limits#f2",
      "lessonId": "practice/hmrc-enquiries-information-notices-and-time-limits",
      "front": "Company Tax Return: HMRC enquiry window?",
      "back": "12 months after the date the return was delivered",
@@ -9123,7 +9099,7 @@
      "taxYear": "2026/27"
     },
     {
-     "id": "practice/hmrc-enquiries-information-notices-and-time-limits#f3",
+     "id": "practice/hmrc-enquiries-information-notices-and-time-limits#f2",
      "lessonId": "practice/hmrc-enquiries-information-notices-and-time-limits",
      "front": "Discovery assessment: time limit for ordinary behaviour?",
      "back": "4 years",
@@ -9131,7 +9107,7 @@
      "taxYear": "2026/27"
     },
     {
-     "id": "practice/hmrc-enquiries-information-notices-and-time-limits#f4",
+     "id": "practice/hmrc-enquiries-information-notices-and-time-limits#f3",
      "lessonId": "practice/hmrc-enquiries-information-notices-and-time-limits",
      "front": "Discovery assessment: time limit where behaviour is careless?",
      "back": "6 years",
@@ -9139,7 +9115,7 @@
      "taxYear": "2026/27"
     },
     {
-     "id": "practice/hmrc-enquiries-information-notices-and-time-limits#f5",
+     "id": "practice/hmrc-enquiries-information-notices-and-time-limits#f4",
      "lessonId": "practice/hmrc-enquiries-information-notices-and-time-limits",
      "front": "Discovery assessment: time limit where behaviour is deliberate?",
      "back": "20 years",
@@ -9147,7 +9123,7 @@
      "taxYear": "2026/27"
     },
     {
-     "id": "practice/hmrc-enquiries-information-notices-and-time-limits#f6",
+     "id": "practice/hmrc-enquiries-information-notices-and-time-limits#f5",
      "lessonId": "practice/hmrc-enquiries-information-notices-and-time-limits",
      "front": "Schedule 36 information notice: penalty for failing to comply?",
      "back": "Initial £300, then up to £60 per day while failure continues",
@@ -9155,7 +9131,7 @@
      "taxYear": "2026/27"
     },
     {
-     "id": "practice/hmrc-enquiries-information-notices-and-time-limits#f7",
+     "id": "practice/hmrc-enquiries-information-notices-and-time-limits#f6",
      "lessonId": "practice/hmrc-enquiries-information-notices-and-time-limits",
      "front": "Schedule 36 taxpayer notice: time to appeal against it?",
      "back": "30 days (except for statutory records)",
@@ -9165,7 +9141,7 @@
    ]
   },
   "practice/pcrt-standards-for-tax-planning-and-tax-conduct": {
-   "hash": "6ce4ca3bbd7d85ad",
+   "hash": "62928df2b6ca28a7",
    "cards": [
     {
      "id": "practice/pcrt-standards-for-tax-planning-and-tax-conduct#f1",
@@ -9178,21 +9154,13 @@
     {
      "id": "practice/pcrt-standards-for-tax-planning-and-tax-conduct#f2",
      "lessonId": "practice/pcrt-standards-for-tax-planning-and-tax-conduct",
-     "front": "PCRT: which three standards must tax planning meet?",
-     "back": "Client-specific, lawful, and based on full disclosure to the tax authority",
-     "evidence": "Tax planning must be:",
-     "taxYear": "2026/27"
-    },
-    {
-     "id": "practice/pcrt-standards-for-tax-planning-and-tax-conduct#f3",
-     "lessonId": "practice/pcrt-standards-for-tax-planning-and-tax-conduct",
      "front": "GAAR: test for whether an arrangement is abusive?",
      "back": "Cannot reasonably be regarded as a reasonable course of action (double reasonableness test)",
      "evidence": "An arrangement is abusive if entering into or carrying it out cannot reasonably be regarded as a reasonable course of action having regard to all the circumstances (the \"double reasonableness\" test).",
      "taxYear": "2026/27"
     },
     {
-     "id": "practice/pcrt-standards-for-tax-planning-and-tax-conduct#f4",
+     "id": "practice/pcrt-standards-for-tax-planning-and-tax-conduct#f3",
      "lessonId": "practice/pcrt-standards-for-tax-planning-and-tax-conduct",
      "front": "DOTAS: does a scheme reference number (SRN) mean HMRC approval?",
      "back": "No; it only shows the scheme was disclosed, not that it works",
@@ -9200,7 +9168,7 @@
      "taxYear": "2026/27"
     },
     {
-     "id": "practice/pcrt-standards-for-tax-planning-and-tax-conduct#f5",
+     "id": "practice/pcrt-standards-for-tax-planning-and-tax-conduct#f4",
      "lessonId": "practice/pcrt-standards-for-tax-planning-and-tax-conduct",
      "front": "PCRT: what if a client refuses to correct an error in their return?",
      "back": "Consider ceasing to act; don't perpetuate the error; consider an AML report",
@@ -9208,7 +9176,7 @@
      "taxYear": "2026/27"
     },
     {
-     "id": "practice/pcrt-standards-for-tax-planning-and-tax-conduct#f6",
+     "id": "practice/pcrt-standards-for-tax-planning-and-tax-conduct#f5",
      "lessonId": "practice/pcrt-standards-for-tax-planning-and-tax-conduct",
      "front": "Tax evasion vs mitigation: how does each differ?",
      "back": "Evasion is illegal deliberate deception of HMRC; mitigation uses reliefs as Parliament intended",

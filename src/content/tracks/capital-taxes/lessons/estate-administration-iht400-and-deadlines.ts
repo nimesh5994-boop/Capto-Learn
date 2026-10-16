@@ -26,10 +26,10 @@ export const lesson: Lesson = {
       head: ["Situation", "Report to HMRC?"],
       rows: [
         ["Estate **below the nil-rate band** (£325,000) with **no chargeable gifts** in the previous 7 years above the limits", "**Excepted estate**: no IHT400; details given on the probate application"],
-        ["Gross estate **up to £650,000** where a **transferred nil-rate band** doubles the threshold (both bands available)", "Excepted estate; claim the transfer using **IHT217**"],
+        ["Gross estate **up to £650,000** where a **transferred nil-rate band** doubles the threshold (both bands available)", "Excepted estate; the transfer is claimed in the probate application (form IHT217 is not used for deaths on or after 1 January 2022)"],
         ["Estate where the **spouse/civil partner and charity exemptions** reduce the chargeable estate below the NRB, **gross value up to £3 million**", "Excepted (exempt) estate: no IHT400 (the spouse exemption only counts where both spouses have always been long-term UK resident or UK domiciled)"],
         ["Estate with **foreign assets** over the limits, trusts, **gifts** that exceed limits, or **tax to pay**", "**IHT400** (with supplementary pages) required"],
-        ["A **claim to transfer** a deceased spouse's unused NRB or RNRB with an estate that isn't excepted", "IHT400 with **IHT402** (NRB) and the RNRB schedule (IHT435)"],
+        ["A **claim to transfer** a deceased spouse's unused NRB or RNRB with an estate that isn't excepted", "IHT400 with **IHT402** (NRB), and **IHT435** plus **IHT436** (RNRB and the transferred RNRB)"],
       ],
     },
     {
@@ -87,7 +87,7 @@ For deaths before **6 April 2027** most unused pension funds are **outside the e
 
 **Step 3: IHT.** £1,140,000 − £1,000,000 = £140,000 × 40% = **£56,000**.
 
-**Step 4: report and pay.** An IHT400 is required because tax is payable. Pay by **28 February 2027** and report within a year of the death. Claim the transferred NRB (**IHT402**) and the RNRB (**IHT435**), supplying the husband's papers.
+**Step 4: report and pay.** An IHT400 is required because tax is payable. Pay by **28 February 2027** and report within a year of the death. Claim the transferred NRB (**IHT402**) and the RNRB with the transferred RNRB (**IHT435** and **IHT436**), supplying the husband's papers.
 
 **Step 5: loss on sale.** The shares were valued at £120,000 and sold for £90,000 within 12 months: a loss of **£30,000**. The executors can claim to substitute the sale price, reducing the estate to £1,110,000 and the chargeable estate to £110,000: IHT **£44,000**, a saving of **£12,000** (£30,000 × 40%). Where the IHT relief is claimed, the substituted value is also used for CGT, so the executors cannot claim a CGT loss on the same shares as well. Check the interaction before claiming.
 

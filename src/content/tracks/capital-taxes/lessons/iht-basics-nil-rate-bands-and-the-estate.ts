@@ -57,7 +57,7 @@ The RNRB (up to **£175,000**) is available where the estate includes a **qualif
 
 ### Transferring bands between spouses
 
-Any **unused percentage** of the NRB and RNRB on the first death can be **transferred** to the survivor, who can then claim up to **£650,000** NRB and **£350,000** RNRB (maximum, with the current amounts). The claim is made on the surviving spouse's estate (form **IHT402** for NRB; the RNRB is claimed on **IHT435**). **Keep the first spouse's papers**, because the claim may come decades later.
+Any **unused percentage** of the NRB and RNRB on the first death can be **transferred** to the survivor, who can then claim up to **£650,000** NRB and **£350,000** RNRB (maximum, with the current amounts). The claim is made on the surviving spouse's estate (form **IHT402** for NRB; the RNRB on **IHT435**, with **IHT436** to transfer the unused RNRB). **Keep the first spouse's papers**, because the claim may come decades later.
 
 ### Exemptions that reduce the estate
 
@@ -95,7 +95,7 @@ Any **unused percentage** of the NRB and RNRB on the first death can be **transf
 
 **Step 3: tax.** Estate £830,000 is below £1,000,000 bands, so **IHT = nil**.
 
-**Step 4: the claims.** The executors claim the **transferred NRB (IHT402)** and **RNRB** (IHT435), providing Edith's papers: marriage certificate, death certificate and evidence of her estate.
+**Step 4: the claims.** The executors claim the **transferred NRB (IHT402)** and the **RNRB** with the transferred RNRB (IHT435 and IHT436), providing Edith's papers: marriage certificate, death certificate and evidence of her estate.
 
 **Step 5: the same facts without Edith's unused bands.** Bands £325,000 + £175,000 = £500,000. Taxable = £330,000 × 40% = **£132,000**. That's the cost of not having the transfer, which is why the file from the first death matters.`,
       },

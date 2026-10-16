@@ -5,6 +5,8 @@
  *
  *   npx tsx scripts/flashcards.mts submit [--all]   lessons without cards (or whose text changed); --all redoes everything
  *   npx tsx scripts/flashcards.mts collect          writes cards once the batch has finished (safe to re-run)
+ *   npx tsx scripts/flashcards.mts salvage          no AI, free: after a lesson is edited, keeps the cards whose evidence is
+ *                                                   still word-for-word in the new text and drops the rest
  */
 import fs from "node:fs";
 import path from "node:path";
@@ -182,8 +184,29 @@ async function now(all: boolean) {
   console.log(`Done: ${todo.length} lessons, kept ${kept} cards. Rejected: ${JSON.stringify(rejected)}. Failed: ${failed.length ? failed.join("; ") : "none"}. Cost $${(micros / 1e6).toFixed(2)}.`);
 }
 
+/** Re-checks the cards of edited lessons against their new text. Cards on corrected facts fail the evidence check and go. */
+function salvage() {
+  const file = load();
+  let kept = 0;
+  let dropped = 0;
+  for (const r of allLessons()) {
+    const entry = file.lessons[r.id];
+    const hash = lessonTextHash(r.lesson);
+    if (!entry || entry.hash === hash) continue;
+    const plain = lessonPlainText(r.lesson);
+    const good = entry.cards.filter((c) => !rejectCard(c, plain));
+    dropped += entry.cards.length - good.length;
+    kept += good.length;
+    file.lessons[r.id] = { hash, cards: good.map((c, i) => ({ ...c, id: `${r.id}#f${i + 1}` })) };
+    console.log(`${r.id}: kept ${good.length}/${entry.cards.length}`);
+  }
+  save(file);
+  console.log(`Salvaged ${kept} cards, dropped ${dropped}. Run "submit" or "now" later to top up lessons with few cards.`);
+}
+
 const [cmd, flag] = process.argv.slice(2);
 if (cmd === "submit") await submit(flag === "--all");
 else if (cmd === "collect") await collect();
 else if (cmd === "now") await now(flag === "--all");
-else console.log("Usage: flashcards.mts submit [--all] | collect | now [--all]");
+else if (cmd === "salvage") salvage();
+else console.log("Usage: flashcards.mts submit [--all] | collect | now [--all] | salvage");

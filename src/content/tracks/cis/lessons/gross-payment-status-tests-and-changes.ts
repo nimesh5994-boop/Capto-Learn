@@ -6,12 +6,12 @@ export const lesson: Lesson = {
   level: "practitioner",
   minutes: 35,
   summary:
-    "How a subcontractor qualifies for gross payment status (the business, turnover and compliance tests), how to calculate the turnover threshold for each business type, how HMRC can withdraw status, and the changes announced for April 2026 on VAT compliance and cancellation for suspected fraud.",
+    "How a subcontractor qualifies for gross payment status (the business, turnover and compliance tests), how to calculate the turnover threshold for each business type, how HMRC can withdraw status, why VAT compliance counts in the compliance test, and the April 2026 supply-chain fraud rules that allow immediate cancellation.",
   objectives: [
     "State the business, turnover and compliance tests for gross payment status",
     "Calculate the minimum turnover required for a sole trader, partnership or company",
     "Explain how status is kept, reviewed and withdrawn",
-    "Describe the reforms announced for GPS from April 2026 and why they matter for compliance monitoring",
+    "Explain the VAT compliance test and the April 2026 supply-chain fraud rules, and why they matter for compliance monitoring",
     "Advise a subcontractor client on applying for and protecting gross payment status",
   ],
   taxYear: "2026/27",
@@ -56,12 +56,9 @@ For a company with **four** or more directors the £100,000 total will be the lo
     {
       kind: "callout",
       tone: "rule",
-      title: "Changes announced for April 2026",
-      md: `HMRC's CIS reform (following the consultation on the scheme) announced:
-
-- **VAT compliance** to be added to the GPS **compliance test**, though **small businesses that are not VAT registered** will not be refused GPS on that basis.
-- HMRC will be able to **cancel GPS immediately** where it has **reasonable grounds to suspect** a GPS holder has **fraudulently provided an incorrect return or information** across **VAT, Self Assessment, Corporation Tax or PAYE**.
-- **Tolerances for minor lateness**: regulations are to set out compliance failures that can be disregarded (for example how late a return or payment is, and how many times), and where there is **reasonable excuse for errors**, GPS will not be removed.
+      title: "Recent changes to know",
+      md: `- **VAT compliance** has been part of the GPS **compliance test** since **6 April 2024** (CISR46040), so late VAT returns and payments now count alongside PAYE, Self Assessment and Corporation Tax.
+- **Supply-chain fraud (from 6 April 2026):** where a business **knew or should have known** that its payments or CIS credits were connected with deliberate non-compliance, HMRC can raise a determination, charge a **30% penalty** (which can be transferred to an officer) and **cancel GPS immediately**, with a **five-year bar** on reapplying (CISR85010).
 - **Payments to local authorities and public bodies** as subcontractors fall outside CIS from 6 April 2026.
 - **Nil returns** for contractors are reinstated from 6 April 2026 (see the returns lesson).
 
@@ -94,7 +91,7 @@ Check the **CIS reform manual and legislation** to confirm the final detail and 
 
 **Step 5: apply** online as a limited company. Contractors will verify Alder's status and pay gross once HMRC has confirmed it.
 
-**Step 6: protect the status.** Diary the VAT, PAYE and corporation tax dates; with the April 2026 changes, VAT compliance will also count, and suspected fraud in any of these taxes can lead to immediate cancellation.`,
+**Step 6: protect the status.** Diary the VAT, PAYE and corporation tax dates, because late VAT counts in the compliance test too. From April 2026, being caught up in supply-chain fraud can lead to immediate cancellation and a five-year bar.`,
       },
     ],
   },
@@ -168,10 +165,10 @@ Check the **CIS reform manual and legislation** to confirm the final detail and 
     {
       kind: "mcq",
       id: "q-vat-2026",
-      prompt: "From April 2026, what is being added to the GPS compliance test?",
-      options: ["VAT compliance", "Inheritance tax", "Capital gains tax", "Stamp duty"],
+      prompt: "Since April 2024, which tax's compliance has also counted in the GPS compliance test?",
+      options: ["VAT", "Inheritance tax", "Capital gains tax", "Stamp duty"],
       answer: 0,
-      explain: "VAT compliance (with protection for small businesses that are not VAT registered).",
+      explain: "VAT compliance has counted since 6 April 2024 (HMRC manual CISR46040), alongside PAYE, Self Assessment and Corporation Tax.",
     },
     {
       kind: "mcq",

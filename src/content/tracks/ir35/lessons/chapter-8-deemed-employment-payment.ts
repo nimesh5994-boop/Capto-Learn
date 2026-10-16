@@ -34,7 +34,7 @@ export const lesson: Lesson = {
 8. **Deduct the employer NIC on the deemed payment itself.** The figure left after step 7 is treated as **including** that employer NIC. Work backwards: find the amount which, **plus employer NIC at 15% of it**, equals the step 7 figure. In other words **deemed payment = step 7 amount ÷ 1.15**.
 9. The result is the **deemed employment payment**, on which the PSC must account for **income tax** and **employee and employer NIC** (the employer NIC computed in step 8).
 
-The payment is treated as made on **5 April** (the end of the tax year). Check HMRC's guidance for the current reporting and payment dates before you advise a client.`,
+The payment is treated as made on **5 April** (the end of the tax year). Report it on a **Full Payment Submission on or before 5 April**. If the exact figures aren't ready, put a provisional figure on that FPS, then report the final figures and pay any balancing tax and NIC **by 31 January** after the end of the tax year. Interest is charged on the late balance, but no penalty applies.`,
     },
     {
       kind: "md",
