@@ -1,6 +1,7 @@
 /* Navigation entries, shared by the server layout (permissions, quick-jump index) and the client sidebar. */
 import {
   Activity,
+  BellRing,
   BookOpenCheck,
   Building2,
   Compass,
@@ -33,6 +34,7 @@ export type NavKey =
   | "flashcards"
   | "skillsCheck"
   | "search"
+  | "updates"
   | "ask"
   | "team"
   | "interviews"
@@ -58,6 +60,7 @@ export const NAV_ITEMS: Record<NavKey, { href: string; label: string; icon: Luci
   progress: { href: "/progress", label: "My progress", icon: TrendingUp },
   coach: { href: "/coach", label: "My coach", icon: MessageCircleHeart },
   search: { href: "/search", label: "Guidance search", icon: Search },
+  updates: { href: "/updates", label: "HMRC updates", icon: BellRing },
   ask: { href: "/ask", label: "Ask Capto", icon: MessageSquareQuote },
   team: { href: "/team", label: "Team training", icon: ClipboardCheck, exact: true },
   interviews: { href: "/team/interviews", label: "Interview tests", icon: UserCheck },
