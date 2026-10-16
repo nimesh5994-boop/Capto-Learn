@@ -18,17 +18,17 @@ export const lesson: Lesson = {
   body: [
     {
       kind: "md",
-      md: `For many years the advice for the well-off was to spend other assets first and leave pensions to pass **outside the estate**, because most pension death benefits (paid at the trustees' discretion) were outside inheritance tax. The Autumn Budget 2024 announced the end of that: from **6 April 2027** most **unused pension funds and death benefits** are brought **within the member's estate** for IHT. It is a major change, and you should check the current legislation and HMRC guidance for the final detail, so every estate-planning conversation with a client who has a significant pension needs revisiting.`,
+      md: `For many years the advice for the well-off was to spend other assets first and leave pensions to pass **outside the estate**, because most pension death benefits (paid at the trustees' discretion) were outside inheritance tax. The Autumn Budget 2024 announced the end of that, and the change is now legislated in **Finance Act 2026**: for deaths on or after **6 April 2027** most **unused pension funds and death benefits** are brought **within the member's estate** for IHT. It is a major change, so every estate-planning conversation with a client who has a significant pension needs revisiting. HMRC's technical note sets out the detail, and some guidance (for example for beneficiaries) is still to be published, so check for updates before advising.`,
     },
     {
       kind: "callout",
       tone: "rule",
-      title: "What the government has said (as at the published policy documents)",
+      title: "The rules (Finance Act 2026 and HMRC's technical note)",
       md: `- **In scope:** most unused pension funds and death benefits will be treated as part of the estate on **deaths on or after 6 April 2027**, even where the scheme administrator or trustees have discretion over who gets them.
-- **Out of scope:** **death-in-service benefits** from registered pension schemes, and **dependants' scheme pensions** from defined benefit schemes or collective money purchase arrangements.
+- **Out of scope:** **death-in-service benefits** from registered pension schemes (only benefits from the member's current employment immediately before death; refunds and benefits from deferred membership don't qualify), and **dependants' scheme pensions**.
 - **Exemptions continue:** the usual IHT exemptions for benefits passing to a **surviving spouse or civil partner** and to **registered charities** will apply.
-- **Who pays:** the **personal representatives (PRs)**, not the pension scheme administrators, will be responsible for **reporting and paying** IHT on unused pension funds and death benefits. Scheme administrators will have to provide the information the PRs need.
-- **Income tax:** the policy documents do not remove income tax on beneficiaries. For deaths **after 75**, beneficiaries still pay income tax at their marginal rate when they withdraw, so **both** IHT and income tax can apply. Check the final legislation and HMRC guidance for any relief before advising a client on the combined rate.`,
+- **Who pays:** the **personal representatives (PRs)**, not the pension scheme administrators, are responsible for **reporting and paying** IHT on unused pension funds and death benefits. Once benefits vest in a beneficiary, the beneficiary becomes **jointly and severally liable** with the PRs. PRs can issue a **withholding notice** (the scheme holds back up to 50% of a beneficiary's entitlement) and a PR or beneficiary can issue a **payment notice** (minimum £1,000) requiring the scheme to pay the IHT direct to HMRC. Scheme administrators must provide the information the PRs need.
+- **Income tax:** income tax on beneficiaries is not removed. For deaths **at 75 or over**, beneficiaries still pay income tax at their marginal rate on what they receive, so **both** taxes can apply. However, IHT paid on the death benefit **does not count towards the beneficiary's taxable income**, so income tax falls only on the amount left after IHT. HMRC has said further guidance for beneficiaries will follow, so check it before advising on the combined rate.`,
     },
     {
       kind: "md",
@@ -45,7 +45,7 @@ export const lesson: Lesson = {
 |---|---|---|
 | Income tax on beneficiary withdrawals | Normally **nil** | **Marginal rate** |
 | IHT (from 2027) | **Yes**, on the fund in the estate | **Yes**, on the fund in the estate |
-| Combined effect | IHT only | IHT then income tax on withdrawals (potential double charge) |
+| Combined effect | IHT only | IHT, then income tax on the amount left after IHT |
 
 ### Why the lump sum allowances still matter
 
@@ -79,9 +79,9 @@ Refer to a **regulated financial adviser** for product and investment decisions,
 
 **Step 3: the extra IHT.** £280,000 − £40,000 = **£240,000**, which is 40% of the £600,000 pension.
 
-**Step 4: income tax.** Pauline is 72, so if she died **before 75** the children would pay no income tax on pension withdrawals (subject to the LSDBA). If she lived beyond 75, withdrawals would be taxed at their marginal rates, **in addition** to the IHT.
+**Step 4: income tax.** Pauline is 72, so if she died **before 75** the children would pay no income tax on pension withdrawals (subject to the LSDBA). If she lived beyond 75, withdrawals would be taxed at their marginal rates **in addition** to the IHT, though only on the amount left after IHT.
 
-**Step 5: what to say.** Explain the potential cost, recommend she takes regulated financial advice, and set out the tax-planning options above. Record in the file that figures are illustrative and based on current published policy.`,
+**Step 5: what to say.** Explain the potential cost, recommend she takes regulated financial advice, and set out the tax-planning options above. Record in the file that figures are illustrative and based on Finance Act 2026 and HMRC guidance at the date of advice.`,
       },
     ],
   },
@@ -170,6 +170,7 @@ Refer to a **regulated financial adviser** for product and investment decisions,
   ],
   sources: [
     { label: "Inheritance Tax on unused pension funds and death benefits – GOV.UK", url: "https://www.gov.uk/government/publications/reforming-inheritance-tax-unused-pension-funds-and-death-benefits/inheritance-tax-on-unused-pension-funds-and-death-benefits" },
+    { label: "Technical note: Inheritance Tax on pensions – GOV.UK", url: "https://www.gov.uk/government/publications/inheritance-tax-on-pensions-technical-note/technical-note-inheritance-tax-on-pensions" },
     { label: "Inheritance Tax on pensions: liability, reporting and payment – GOV.UK", url: "https://www.gov.uk/government/consultations/inheritance-tax-on-pensions-liability-reporting-and-payment" },
     { label: "Inheritance Tax rates and thresholds – GOV.UK", url: "https://www.gov.uk/inheritance-tax" },
     { label: "Tax when you receive a pension – GOV.UK", url: "https://www.gov.uk/tax-on-pension" },

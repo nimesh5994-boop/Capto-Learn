@@ -49,7 +49,7 @@ export const lesson: Lesson = {
 
 ### The net pay anomaly
 
-A worker earning **below the personal allowance** (£12,570) pays no income tax, so a net pay scheme gives **no relief** at all, while the same worker under RAS receives a 20% top-up. HMRC now makes an **annual top-up payment** to eligible low earners in net pay schemes for **2024/25 onwards**, invited by letter in the following tax year, with the first payments being rolled out from 2026.`,
+A worker earning **below the personal allowance** (£12,570) pays no income tax, so a net pay scheme gives **no relief** at all, while the same worker under RAS receives a 20% top-up. HMRC now makes an **annual top-up payment** to eligible low earners in net pay schemes for **2024/25 onwards**. HMRC identifies eligible people from its own records and, in the tax year after the contribution was paid, contacts them to confirm bank details so the top-up can be paid directly.`,
     },
     {
       kind: "callout",
@@ -81,7 +81,7 @@ A worker earning **below the personal allowance** (£12,570) pays no income tax,
       {
         kind: "journal",
         title: "Net pay: monthly deduction for Ben (£1,188 ÷ 12 = £99)",
-        narrative: "The pension is deducted from gross pay before tax. Shown as a liability due to the scheme with the employer's 3% in a separate entry.",
+        narrative: "The pension is deducted from gross pay before tax. Shown as a liability due to the scheme with the employer's 3% in a separate entry. Simplified: PAYE and NIC deductions are left out, so 'net wages payable' here is before those deductions.",
         lines: [
           { account: "Gross wages", dr: 2500 },
           { account: "Pension creditor (scheme)", cr: 99 },

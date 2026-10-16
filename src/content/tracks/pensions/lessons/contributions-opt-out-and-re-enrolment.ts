@@ -37,7 +37,7 @@ export const lesson: Lesson = {
 - To opt out the worker must give a **valid opt-out notice** obtained from the **pension provider**, not from the employer; an employer can't supply a form of its own for this purpose.
 - If the worker opts out within the window, they are treated as if they had **never joined**: the **employee's contributions are refunded** (normally within one month) and the **employer's contributions** are returned to the employer. No tax relief is retained.
 - If the worker opts out **after** the window, they simply **stop contributing**; no refund is due, and the contributions already paid stay in the pension.
-- It is a **criminal offence** and a breach of the legislation to **induce or encourage** a worker to opt out (by words or acts, or by taking action that has that effect) or to treat a worker unfairly for staying in. Employers must not tell a worker that opting out is "better for them".`,
+- It is **against the law** (a breach TPR can enforce with compliance notices and penalties) to **induce or encourage** a worker to opt out (by words or acts, or by taking action that has that effect) or to treat a worker unfairly for staying in. Employers must not tell a worker that opting out is "better for them".`,
     },
     {
       kind: "md",
@@ -49,7 +49,7 @@ export const lesson: Lesson = {
 
 ### Re-enrolment
 
-Every **three years** the employer must put back into the scheme any eligible jobholder who has **opted out** or **ceased active membership** since the last enrolment. The new enrolment date is chosen within a window of **six months before to six months after** the third anniversary of the duties start date (or the previous re-enrolment date). The worker again gets the opt-out window. **Re-declaration** to TPR follows within five months.
+Every **three years** the employer must put back into the scheme any eligible jobholder who has **opted out** or **ceased active membership** since the last enrolment. The new enrolment date is chosen within a six-month window running from **three months before to three months after** the third anniversary of the duties start date (or the previous re-enrolment date). The worker again gets the opt-out window. **Re-declaration** to TPR follows within five months.
 
 Payroll software normally flags the workers, but **check** that the system has:
 - picked up those who opted out three years ago and are still eligible;
@@ -184,6 +184,8 @@ Payroll software normally flags the workers, but **check** that the system has:
     { label: "Workplace pension contribution rates – GOV.UK", url: "https://www.gov.uk/workplace-pensions/what-you-your-employer-and-the-government-pay" },
     { label: "Opting out of a workplace pension – GOV.UK", url: "https://www.gov.uk/workplace-pensions/opting-out" },
     { label: "Pensions Act 2008 Part 1", url: "https://www.legislation.gov.uk/ukpga/2008/30/part/1" },
+    { label: "Re-enrolling staff in a pension scheme (TPR)", url: "https://www.thepensionsregulator.gov.uk/en/employers/re-enrolment/next-re-enrolment-i-am-an-employer-with-staff-to-put-back-into-my-pension-scheme/re-enrolling-staff-in-a-pension-scheme-script" },
+    { label: "How TPR enforces automatic enrolment (TPR)", url: "https://www.thepensionsregulator.gov.uk/en/employers/warnings-notices-and-payment-of-fines/how-we-enforce" },
     { label: "Automatic enrolment detailed guidance (TPR)", url: "https://www.thepensionsregulator.gov.uk/en/document-library/automatic-enrolment-detailed-guidance" },
   ],
 };

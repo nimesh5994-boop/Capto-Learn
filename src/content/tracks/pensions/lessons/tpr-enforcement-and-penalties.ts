@@ -30,7 +30,7 @@ export const lesson: Lesson = {
         ["Unpaid contributions notice", "Requires the employer to pay unpaid contributions to the scheme and tell workers", "Contributions deducted but not paid, or not paid by the due date"],
         ["Fixed penalty notice (FPN)", "A **£400** fine", "Failure to comply with a compliance or unpaid contributions notice, or other breach"],
         ["Escalating penalty notice (EPN)", "A **daily** fine until compliance", "Failure to comply after an FPN"],
-        ["Prosecution / further action", "Criminal proceedings in serious cases", "Wilful failure, inducing opt-out, falsifying records"],
+        ["Prosecution / further action", "Criminal proceedings in serious cases", "Wilfully failing to enrol eligible staff, or knowingly giving false information in a declaration of compliance"],
       ],
     },
     {
@@ -55,7 +55,7 @@ The fine grows until the employer complies with the notice or TPR withdraws it. 
 
 1. **Stop and assess.** Find out the **date** the duty arose, which workers should have been enrolled and from when.
 2. **Enrol** the workers immediately and pay **backdated contributions** where TPR's guidance requires them. The employer must pay its own share of anything owed. How far the **employee** share missed through late enrolment can be recovered from the worker is limited, so follow TPR's detailed guidance on late enrolment (and take advice) before making any deduction.
-3. **Pay** unpaid contributions to the scheme and **notify** TPR of any late payments (employers must report material payment failures to TPR).
+3. **Pay** unpaid contributions to the scheme and agree the catch-up with the provider. The duty to report **material payment failures** to TPR sits with the scheme's trustees or managers (the provider), not the employer, so a late payment may already have been reported; check for any unpaid contributions notice.
 4. **Declare compliance** (or re-declare) as soon as possible.
 5. **Respond to every TPR notice by its deadline**, even if only to ask for an extension or provide evidence.
 6. **Review** the payroll set-up so the error cannot recur, and record the fix on the client file.
@@ -173,14 +173,15 @@ An employer can **apply for a review** of a notice by TPR within the time limit 
       kind: "mcq",
       id: "q-induce",
       prompt: "Inducing a worker to opt out is…",
-      options: ["Allowed with consent", "A breach that can lead to enforcement action, including prosecution", "Only a tax matter", "A civil dispute only"],
+      options: ["Allowed with consent", "A breach of the law that TPR can enforce with compliance notices and penalties", "Only a tax matter", "A private matter between employer and worker"],
       answer: 1,
-      explain: "It is prohibited under the Pensions Act 2008 and can be prosecuted.",
+      explain: "It is prohibited under the Pensions Act 2008 and TPR can take enforcement action. The automatic enrolment criminal offences are wilfully failing to enrol eligible staff and knowingly giving false information in a declaration.",
     },
   ],
   sources: [
     { label: "How TPR enforces – automatic enrolment", url: "https://www.thepensionsregulator.gov.uk/en/employers/warnings-notices-and-payment-of-fines/how-we-enforce" },
     { label: "What happens if my client doesn't comply? (TPR)", url: "https://www.thepensionsregulator.gov.uk/en/business-advisers/automatic-enrolment-guide-for-business-advisers/what-happens-if-my-client-doesnt-comply-or-is-late-complying" },
+    { label: "Reporting payment failures (TPR General Code)", url: "https://www.thepensionsregulator.gov.uk/document-library/code-of-practice/reporting-to-tpr/whistleblowing-reporting-breaches-of-the-law/reporting-payment-failures" },
     { label: "Apply for a review (TPR)", url: "https://www.thepensionsregulator.gov.uk/en/employers/warnings-notices-and-payment-of-fines/apply-for-a-review" },
     { label: "Appeal to the tribunal (TPR)", url: "https://www.thepensionsregulator.gov.uk/en/employers/warnings-notices-and-payment-of-fines/appeal-to-the-tribunal" },
   ],

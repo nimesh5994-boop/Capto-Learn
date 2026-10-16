@@ -30,7 +30,7 @@ export const lesson: Lesson = {
 - A **director is a "worker"** only if they have a **contract of employment** with the company **and** at least one other person (who may be another director) also has a contract of employment with it.
 - A company with **two directors who both have employment contracts** and no other staff: both are workers, so the company has duties.
 - A company with two directors where **only one** has an employment contract and no other staff: neither is a worker, so no duties.
-- A company with **any other employee** (for example a part-time administrator) has duties for that employee, and for any director with a contract.
+- A company with **any other employee** (for example a part-time administrator) has duties for that employee. A director with a contract is then also a worker, but the company **can choose** whether to automatically enrol a director; a director left out can still opt in or join.
 
 TPR provides an online form to tell it you are **not an employer** (useful to document the position).`,
     },
@@ -54,7 +54,7 @@ TPR provides an online form to tell it you are **not an employer** (useful to do
       kind: "md",
       md: `### Declaration of compliance and re-declaration
 
-The **declaration of compliance** is made online with TPR (employer or an authorised third party). It confirms the employer has chosen a scheme, assessed workers and enrolled those who qualify. Missing the 5-month deadline does **not** by itself cause a fine, but TPR sends reminders and may investigate. Every **three years** the employer must carry out **re-enrolment** (on a chosen date within a six-month window around the third anniversary of staging) and file a **re-declaration**.
+The **declaration of compliance** is made online with TPR (employer or an authorised third party). It confirms the employer has chosen a scheme, assessed workers and enrolled those who qualify. Missing the 5-month deadline is a breach: TPR normally issues a **compliance notice**, and a **£400 fixed penalty** can follow if the notice isn't complied with (see the enforcement lesson). Every **three years** the employer must carry out **re-enrolment** (on a chosen date within a six-month window that starts three months before and ends three months after the third anniversary of the staging date) and file a **re-declaration**.
 
 ### Records to keep
 
@@ -185,6 +185,7 @@ Most records must be kept for **six years**, except records of opt-outs (the opt
     { label: "Director exemptions from automatic enrolment (TPR)", url: "https://www.thepensionsregulator.gov.uk/en/business-advisers/automatic-enrolment-guide-for-business-advisers/director-exemptions-from-automatic-enrolment" },
     { label: "Employer duties and defining the workforce (TPR)", url: "https://www.thepensionsregulator.gov.uk/en/document-library/automatic-enrolment-detailed-guidance/1-employer-duties-and-defining-the-workforce" },
     { label: "Workplace pensions – GOV.UK", url: "https://www.gov.uk/workplace-pensions" },
+    { label: "How TPR enforces automatic enrolment (TPR)", url: "https://www.thepensionsregulator.gov.uk/en/employers/warnings-notices-and-payment-of-fines/how-we-enforce" },
     { label: "Pensions Act 2008 Part 1", url: "https://www.legislation.gov.uk/ukpga/2008/30/part/1" },
   ],
 };

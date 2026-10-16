@@ -71,10 +71,10 @@ Postponement is helpful for **short-term and seasonal** staff, and for new start
       kind: "callout",
       tone: "warning",
       title: "Don't forget",
-      md: `- **Directors with contracts** are assessed like any worker once the director exemptions no longer apply.
+      md: `- **Directors with contracts** are assessed like any worker once the director exemptions no longer apply, but the company can choose not to automatically enrol a director (who can still opt in or join).
 - A worker with **two jobs** is assessed separately by each employer on earnings from that employer only.
 - Workers **over State Pension age** and aged under 75 are **non-eligible jobholders**: no automatic enrolment, but you must enrol them if they ask and then contribute.
-- **Apprentices and under-22s** earning above the trigger can opt in, but they aren't automatically enrolled until 22.`,
+- **Under-22s** (including younger apprentices) earning above the trigger can opt in, but they aren't automatically enrolled until 22. Apprentices aged 22 or over are assessed like any other worker.`,
     },
   ],
   scenario: {
@@ -194,6 +194,7 @@ Postponement is helpful for **short-term and seasonal** staff, and for new start
   sources: [
     { label: "Review of the AE earnings trigger and qualifying earnings band for 2026/27", url: "https://www.gov.uk/government/publications/review-of-the-automatic-enrolment-earnings-trigger-and-qualifying-earnings-band-for-202627/review-of-the-automatic-enrolment-earnings-trigger-and-qualifying-earnings-band-for-202627" },
     { label: "Earnings thresholds (TPR)", url: "https://www.thepensionsregulator.gov.uk/en/employers/new-employers/im-an-employer-who-has-to-provide-a-pension/declare-your-compliance/ongoing-duties-for-employers/earnings-thresholds" },
+    { label: "Director exemptions from automatic enrolment (TPR)", url: "https://www.thepensionsregulator.gov.uk/en/business-advisers/automatic-enrolment-guide-for-business-advisers/director-exemptions-from-automatic-enrolment" },
     { label: "Assessing the workforce (TPR detailed guidance)", url: "https://www.thepensionsregulator.gov.uk/en/document-library/automatic-enrolment-detailed-guidance/3-assessing-the-workforce" },
     { label: "Workplace pensions – GOV.UK", url: "https://www.gov.uk/workplace-pensions" },
   ],

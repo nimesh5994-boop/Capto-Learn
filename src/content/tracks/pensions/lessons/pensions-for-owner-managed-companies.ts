@@ -37,7 +37,7 @@ export const lesson: Lesson = {
       kind: "callout",
       tone: "rule",
       title: "Relevant UK earnings",
-      md: `For personal contribution relief, the limit is the **higher of £3,600 and 100% of the individual's relevant UK earnings** in the tax year: broadly employment income (salary, bonuses, taxable benefits), self-employed profits and certain furnished holiday-let profits. **Dividends, interest and rental income are not relevant earnings.** A director paid a £12,570 salary can personally contribute up to **£12,570 gross** (£10,056 net under relief at source) and get tax relief, however large their dividends.`,
+      md: `For personal contribution relief, the limit is the **higher of £3,600 and 100% of the individual's relevant UK earnings** in the tax year: broadly employment income (salary, bonuses, taxable benefits) and self-employed profits. **Dividends, interest and rental income are not relevant earnings.** Furnished holiday-let profits stopped counting when the FHL regime was abolished from 6 April 2025. A director paid a £12,570 salary can personally contribute up to **£12,570 gross** (£10,056 net under relief at source) and get tax relief, however large their dividends.`,
     },
     {
       kind: "md",
@@ -71,7 +71,7 @@ If the family member is an employee, the **auto-enrolment** position is the same
       kind: "callout",
       tone: "tip",
       title: "Auto-enrolment for the director",
-      md: `A sole director never has AE duties. If two directors both have employment contracts, they are workers and must be assessed. Whether or not AE applies, the company can still pay **employer contributions** to a director's pension voluntarily.`,
+      md: `A sole director never has AE duties. If two directors both have employment contracts, they are workers and the company has duties, but it **can choose** whether to automatically enrol a director (a director left out can still opt in or join, and the company must still declare compliance). Whether or not AE applies, the company can still pay **employer contributions** to a director's pension voluntarily.`,
     },
   ],
   scenario: {
@@ -88,7 +88,7 @@ If the family member is an employee, the **auto-enrolment** position is the same
 
 **Step 4: the decision.** The employer route is more efficient: a larger relievable amount, corporation tax relief, no NIC. Record the commercial rationale (long-term remuneration, retention, reduced extraction of taxable dividends) in a **board minute**.
 
-**Step 5: AE.** Company with two employees (Marcus and Elena) both with contracts: both are workers, so it has AE duties. Check categories (both over £10,000 earnings) and that the scheme meets AE minimums.`,
+**Step 5: AE.** Elena is an employee, so the company has AE duties. Her £10,000 salary is **not above** the £10,000 earnings trigger, so she is a **non-eligible jobholder**: no automatic enrolment, but if she opts in the company must enrol her and contribute. If Marcus has an employment contract he is also a worker (Elena has one too); he earns above the trigger, but as a director the company can choose whether to enrol him. Either way, declare compliance and check that the scheme meets AE minimums.`,
       },
       {
         kind: "journal",
@@ -191,5 +191,7 @@ If the family member is an employee, the **auto-enrolment** position is the same
     { label: "BIM46035 – employer pension contributions", url: "https://www.gov.uk/hmrc-internal-manuals/business-income-manual/bim46035" },
     { label: "Annual allowance – GOV.UK", url: "https://www.gov.uk/tax-on-your-private-pension/annual-allowance" },
     { label: "Directors and automatic enrolment (TPR)", url: "https://www.thepensionsregulator.gov.uk/en/employers/what-if-i-dont-have-any-staff/directors-and-automatic-enrolment-do-you-have-duties" },
+    { label: "Director exemptions from automatic enrolment (TPR)", url: "https://www.thepensionsregulator.gov.uk/en/business-advisers/automatic-enrolment-guide-for-business-advisers/director-exemptions-from-automatic-enrolment" },
+    { label: "PIM4165 – repeal of the furnished holiday lettings rules", url: "https://www.gov.uk/hmrc-internal-manuals/property-income-manual/pim4165" },
   ],
 };

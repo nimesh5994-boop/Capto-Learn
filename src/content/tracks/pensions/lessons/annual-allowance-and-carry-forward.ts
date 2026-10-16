@@ -90,7 +90,7 @@ She was a member of a registered scheme throughout. She is a higher-rate taxpaye
 
 **Step 3: charge.** Nil, because all of the excess is covered by carried-forward allowance.
 
-**Step 4: the company's side.** The contribution is deductible if wholly and exclusively for the trade (see the directors track). A £110,000 contribution is unusually large relative to Octavia's duties, so the "reasonable package" test and the HMRC spreading rules for very large contributions should be checked before it is paid.
+**Step 4: the company's side.** The contribution is deductible if wholly and exclusively for the trade (see the directors track). A £110,000 contribution is unusually large relative to Octavia's duties, so the "reasonable package" test should be checked before it is paid. The HMRC spreading rules don't bite here: relief is spread only where contributions are more than 210% of the previous period's and the excess over 110% of the previous period's is **£500,000 or more**.
 
 **Step 5: record.** File a schedule showing inputs, unused allowances, the order used and the closing unused balance, and a note that Octavia has used £40,000 + £10,000 of carry forward, leaving **£35,000 (2024/25) and £30,000 (2025/26)** available for 2027/28 (which will drop out in later years as the three-year window moves).`,
       },
@@ -179,6 +179,7 @@ She was a member of a registered scheme throughout. She is a higher-rate taxpaye
     { label: "Annual allowance – GOV.UK", url: "https://www.gov.uk/tax-on-your-private-pension/annual-allowance" },
     { label: "Pension schemes rates – GOV.UK", url: "https://www.gov.uk/government/publications/rates-and-allowances-pension-schemes/pension-schemes-rates" },
     { label: "PTM051100 – annual allowance: essential principles", url: "https://www.gov.uk/hmrc-internal-manuals/pensions-tax-manual/ptm051100" },
+    { label: "PTM043400 – employer contributions: spreading", url: "https://www.gov.uk/hmrc-internal-manuals/pensions-tax-manual/ptm043400" },
     { label: "PTM056410 – annual allowance tax charge: scheme pays", url: "https://www.gov.uk/hmrc-internal-manuals/pensions-tax-manual/ptm056410" },
   ],
 };

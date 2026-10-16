@@ -51,7 +51,7 @@ If the arrangement is not valid, tax and NIC are due on the **full original pay*
       md: `### Effects to warn the client and employee about
 
 - **Lower gross pay** reduces anything linked to it: **statutory sick, maternity, paternity and adoption pay**, **mortgage affordability**, **life cover** multiples, **overtime** and **redundancy** calculations, and **Statutory Sick Pay qualifying earnings**.
-- **State benefits**: the reduced earnings may bring the employee below the **lower earnings limit** or the **primary threshold**, affecting State Pension qualifying years or Class 1 credits for a low earner.
+- **State benefits**: for a low earner, the reduced earnings may fall below the Class 1 **lower earnings limit** (£6,708 a year for 2026/27), so the year may no longer count towards State Pension and other contributory benefits. (Earnings between the lower earnings limit and the primary threshold still count, even though no NIC is paid.)
 - **Auto-enrolment:** pay after the sacrifice is what is assessed. A worker could drop below the **£10,000 trigger** or the qualifying band after sacrifice. The employer must meet the **minimum contribution** requirement (the total must be at least 8% with the employer paying at least 3%) based on the scheme's earnings definition, and records must show how.
 - **Student loan** repayments and **Child Benefit High Income Charge**/**personal allowance taper** are based on income after the sacrifice, which can be a benefit: sacrificing salary can reduce adjusted net income (relevant at £60,000 and £100,000).
 - **Employer contributions** are subject to the **annual allowance** (£60,000 for 2026/27) like any other pension input.`,

@@ -31,8 +31,8 @@ export const lesson: Lesson = {
 
 For every **£2** by which adjusted income exceeds **£260,000**, the annual allowance falls by **£1**, down to a **minimum of £10,000** (reached at adjusted income of £360,000 or more).
 
-- **Threshold income** is broadly **net income** (after allowable deductions) **less** the gross amount of **personal** pension contributions paid under relief at source or net pay, **without** adding back employer contributions (except those made under salary sacrifice arrangements entered into after 8 July 2015).
-- **Adjusted income** is net income **plus** the member's own pension contributions given relief at source or by net pay **plus** **employer contributions** (pension input amounts).`,
+- **Threshold income** is broadly **net income** (after allowable deductions) **less** the gross amount of **personal** pension contributions paid under **relief at source** (net pay contributions have already reduced net income), **without** adding back employer contributions (except amounts given up under salary sacrifice or flexible remuneration arrangements made after 8 July 2015, which are added).
+- **Adjusted income** is net income **plus** member contributions paid under a **net pay arrangement** **plus** **employer contributions** (the pension input amount less the member's own contributions). Relief at source contributions are not added back, because they never reduced net income.`,
     },
     {
       kind: "md",
@@ -51,9 +51,9 @@ The MPAA is **£10,000** for 2026/27. It applies from the day a member first **f
 
 - taking **income from flexi-access drawdown** (not just tax-free cash);
 - taking an **uncrystallised funds pension lump sum (UFPLS)**;
-- buying certain **flexible annuities**, or taking a **small pot** payment in some cases (not all small pots trigger it).
+- buying a **flexible lifetime annuity** (one whose payments can go down), or receiving a scheme pension from a money purchase arrangement where fewer than 11 other people are already receiving a scheme pension.
 
-Taking **only the tax-free lump sum** (pension commencement lump sum) does **not** trigger the MPAA. Once triggered:
+Taking **only the tax-free lump sum** (pension commencement lump sum) does **not** trigger the MPAA, and nor does a **small pots lump sum** (it is not one of the trigger events). Once triggered:
 
 - DC inputs above **£10,000** in a year create an excess taxed at the member's marginal rate;
 - **Unused MPAA cannot be carried forward**, and carry forward cannot be used to cover an MPAA excess;
@@ -188,6 +188,7 @@ Taking **only the tax-free lump sum** (pension commencement lump sum) does **not
   ],
   sources: [
     { label: "PTM057100 – annual allowance: tapered annual allowance", url: "https://www.gov.uk/hmrc-internal-manuals/pensions-tax-manual/ptm057100" },
+    { label: "PTM056520 – money purchase annual allowance: trigger events", url: "https://www.gov.uk/hmrc-internal-manuals/pensions-tax-manual/ptm056520" },
     { label: "PTM056510 – money purchase annual allowance: general", url: "https://www.gov.uk/hmrc-internal-manuals/pensions-tax-manual/ptm056510" },
     { label: "Pension schemes rates – GOV.UK", url: "https://www.gov.uk/government/publications/rates-and-allowances-pension-schemes/pension-schemes-rates" },
     { label: "Annual allowance – GOV.UK", url: "https://www.gov.uk/tax-on-your-private-pension/annual-allowance" },
