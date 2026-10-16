@@ -49,7 +49,7 @@ CDD is required when you **establish a business relationship**, carry out an **o
 
 - **Simplified due diligence (SDD)** is allowed where the **risk is assessed as low** (for example certain regulated or listed entities), after assessing the relationship and the risk, and with continued monitoring. You still need to **identify** the client.
 - **Enhanced due diligence (EDD)** is **required** where:
-  - The client or transaction is linked to a **high-risk third country** (as defined by HM Treasury's list);
+  - The client, or a party to a relevant transaction, is **established in a high-risk third country** (a country listed by the FATF, as set out in HM Treasury's advisory notice);
   - The client is a **politically exposed person (PEP)**, or a **family member or known close associate** of a PEP;
   - The structure or transaction is **complex, unusually large** or with **no apparent economic or legal purpose**;
   - The firm's own risk assessment indicates **high risk** (for example opaque offshore ownership, or a **non-face-to-face** relationship combined with other risk factors).
@@ -57,7 +57,7 @@ CDD is required when you **establish a business relationship**, carry out an **o
 
 ### PEPs
 
-A **PEP** is an individual entrusted with a **prominent public function** (other than as a middle-ranking or junior official) in a state other than the UK (and, in the UK, **domestic PEPs** are treated more lightly unless higher-risk indicators exist). The rules extend to **family members** and **known close associates**. For a PEP client you must: have **senior management approval** to proceed, establish the **source of wealth and funds**, and conduct **enhanced ongoing monitoring**. PEP status doesn't mean refusal; it means more scrutiny.
+A **PEP** is an individual entrusted with a **prominent public function** (other than as a middle-ranking or junior official), **in the UK or abroad**. The rules extend to **family members** and **known close associates**. EDD always applies to a PEP: you must have **senior management approval** to establish or continue the relationship, establish the **source of wealth and funds**, and conduct **enhanced ongoing monitoring**. Since **10 January 2024** a **domestic (UK) PEP** has a **lower starting point for risk** than a non-domestic PEP, so a lighter level of EDD applies unless other risk factors are present. EDD continues for **at least 12 months** after the PEP leaves office (longer if the risk warrants it). PEP status doesn't mean refusal; it means more scrutiny.
 
 ### Verifying identity in practice
 
@@ -87,7 +87,7 @@ A **PEP** is an individual entrusted with a **prominent public function** (other
         kind: "md",
         md: `**Step 1: beneficial owners.** More than 25%: **Mr Kovacs (40%)** and **Mara Trust (35%)**. For the trust, identify the **settlor, trustees, protector and beneficiaries**; and look through to the **individuals** who ultimately benefit or control. Ms Lin (15%) and Mr Dray (10%) are below the threshold, but check for **control** by other means.
 
-**Step 2: PEP.** Mr Kovacs held a prominent public function abroad. He is a **PEP** (and the **look-back** period for risk should be considered). EDD applies: **senior management approval**, **source of wealth and funds**, and **enhanced monitoring**.
+**Step 2: PEP.** Mr Kovacs held a prominent public function abroad (a deputy minister) but left office three years ago. The mandatory PEP measures run for **at least 12 months** after leaving office, and longer where the risk warrants it, so the firm must decide on a risk basis whether to keep treating him as a PEP. Given his former role and the other risk factors below, it applies PEP-level EDD: **senior management approval**, **source of wealth and funds**, and **enhanced monitoring**.
 
 **Step 3: other risk factors.** Cayman trust (opaque structure), overseas owner, remote introduction, property sector. The firm-wide risk assessment rates this **high risk**.
 
@@ -189,6 +189,9 @@ A **PEP** is an individual entrusted with a **prominent public function** (other
     { label: "Money Laundering Regulations 2017 – ICAEW", url: "https://www.icaew.com/technical/trust-and-ethics/anti-money-laundering/uk-law-and-guidance/money-laundering-regulations-2017" },
     { label: "Money Laundering Regulations 2017 – legislation.gov.uk (reg 28 CDD)", url: "https://www.legislation.gov.uk/uksi/2017/692/regulation/28" },
     { label: "Money Laundering Regulations 2017 – legislation.gov.uk (reg 33 EDD)", url: "https://www.legislation.gov.uk/uksi/2017/692/regulation/33" },
+    { label: "ECSH33337 – testing procedures for politically exposed persons (HMRC)", url: "https://www.gov.uk/hmrc-internal-manuals/economic-crime-supervision-handbook/ecsh33337" },
+    { label: "AMLG11650 – politically exposed persons (HMRC AML guidance)", url: "https://www.gov.uk/hmrc-internal-manuals/anti-money-laundering-guidance-for-supervised-businesses/amlg11650" },
+    { label: "Money laundering advisory notice: high-risk third countries – GOV.UK", url: "https://www.gov.uk/government/publications/money-laundering-advisory-notice-high-risk-third-countries--2" },
     { label: "Verify your identity for Companies House – GOV.UK", url: "https://www.gov.uk/guidance/verify-your-identity-for-companies-house" },
     { label: "ECSH21500 – MLR 2017 (HMRC Economic Crime Supervision Handbook)", url: "https://www.gov.uk/hmrc-internal-manuals/economic-crime-supervision-handbook/ecsh21500" },
   ],

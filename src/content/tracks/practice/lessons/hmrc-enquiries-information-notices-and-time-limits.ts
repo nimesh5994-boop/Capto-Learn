@@ -25,7 +25,7 @@ export const lesson: Lesson = {
       tone: "rule",
       title: "Enquiry windows",
       md: `- **Self Assessment (individuals, partnerships, trusts):** HMRC has the right to open an enquiry within **12 months after the date the return was delivered**, if it was filed on time (TMA 1970 s9A; HMRC Enquiry Manual EM1506). If filed late, the window runs to the **quarter day (31 January, 30 April, 31 July or 31 October)** next following the first anniversary of the date it was delivered.
-- **Company Tax Returns:** an enquiry window of **12 months after the date the return was delivered** (FA 1998 Sch 18 para 24), with similar rules for late filing.
+- **Company Tax Returns:** an enquiry window of **12 months after the date the return was delivered** (FA 1998 Sch 18 para 24), with similar rules for late filing. For a company in a **group that is not small**, the 12 months run from the **statutory filing date** instead (EM1514).
 - An enquiry can be a **full enquiry** (into everything on the return) or limited to an **aspect** (a particular claim or figure).
 - The enquiry **ends** when HMRC issues a **closure notice** stating its conclusions. The taxpayer may ask the **First-tier Tribunal** to direct HMRC to close an enquiry.
 - During the window HMRC doesn't need any reason to open an enquiry; a **random** or **risk-based** selection is enough.`,
@@ -87,7 +87,7 @@ An assessment outside the ordinary limit generally requires HMRC to show **carel
     walkthrough: [
       {
         kind: "md",
-        md: `**Step 1: window.** The return was delivered on 10 January 2026, so the enquiry window ends **10 January 2027**. HMRC's letter on 15 November 2026 is within it.
+        md: `**Step 1: window.** Pellham is a stand-alone company (not in a group that isn't small), and the return was delivered on time on 10 January 2026, so the enquiry window ends **10 January 2027**. HMRC's letter on 15 November 2026 is within it.
 
 **Step 2: deadline.** 30 days from 15 November is **15 December 2026**. Diary it and ask for an extension if needed.
 
@@ -190,5 +190,7 @@ An assessment outside the ordinary limit generally requires HMRC to show **carel
     { label: "Penalties: an overview for agents and advisers – GOV.UK", url: "https://www.gov.uk/guidance/penalties-an-overview-for-agents-and-advisers" },
     { label: "DMBM570290 – Schedule 36 FA 2008 penalties", url: "https://www.gov.uk/hmrc-internal-manuals/debt-management-and-banking/dmbm570290" },
     { label: "HMRC Compliance Handbook", url: "https://www.gov.uk/hmrc-internal-manuals/compliance-handbook" },
+    { label: "EM1506 – opening the enquiry: SA time limits", url: "https://www.gov.uk/hmrc-internal-manuals/enquiry-manual/em1506" },
+    { label: "EM1514 – CTSA time limits: groups", url: "https://www.gov.uk/hmrc-internal-manuals/enquiry-manual/em1514" },
   ],
 };

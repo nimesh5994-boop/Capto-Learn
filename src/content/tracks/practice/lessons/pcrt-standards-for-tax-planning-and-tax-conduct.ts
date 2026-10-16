@@ -10,7 +10,7 @@ export const lesson: Lesson = {
   objectives: [
     "Explain what PCRT is, who issues it and the version in force from 1 January 2026",
     "Distinguish tax evasion, tax avoidance and tax mitigation",
-    "Apply PCRT's five standards for tax planning: client-specific, lawful, disclosure and transparency, tax planning arrangements, and professional judgement and documentation",
+    "Apply PCRT's five standards for tax planning: client-specific, lawful, disclosure and transparency, advising on tax planning arrangements, and professional judgement and documentation",
     "Describe the GAAR and the disclosure regime for avoidance schemes at a high level",
     "Handle a client who proposes aggressive planning or refuses to correct an error",
   ],
@@ -36,10 +36,10 @@ export const lesson: Lesson = {
       title: "Standards for tax planning (PCRT)",
       md: `PCRT sets **five standards for tax planning**, which build on the fundamental principles:
 
-1. **Client specific**: planning is designed for the particular client's circumstances and objectives, not an off-the-shelf **marketed scheme** sold as a product.
-2. **Lawful**: it works within the law as it is, applying a **realistic** view of the legislation and case law.
+1. **Client specific**: planning must be specific to the particular client's **facts and circumstances**, and the client must be alerted to the **wider risks** and implications. An off-the-shelf **marketed scheme** sold as a product is unlikely to meet this.
+2. **Lawful**: act lawfully and with integrity, and base the planning on a **realistic assessment of the facts** and a **credible view of the law** (a "credible basis"), drawing the client's attention to anti-avoidance rules and any material uncertainty.
 3. **Disclosure and transparency**: the advice must not rely for its effectiveness on the tax authority having **less than the relevant facts**, and any disclosure must **fairly represent all relevant facts**.
-4. **Tax planning arrangements**: don't create, encourage or promote arrangements that set out to achieve results **contrary to the clear intention of Parliament**, or that are **highly artificial or contrived** and exploit shortcomings in the law.
+4. **Advising on tax planning arrangements**: don't create, encourage or promote arrangements that set out to achieve results **contrary to the clear intention of Parliament**, or that are **highly artificial or contrived** and exploit shortcomings in the law.
 5. **Professional judgement and appropriate documentation**: apply judgement to the whole picture and **record** the advice given and the reasons for it.
 
 You must also **explain the risks** to the client (including that HMRC may challenge the arrangement and the position may change), **not mislead** HMRC and **not assist** in planning that you know or suspect is evasion. Read the current PCRT text for the full wording of each standard and the supporting guidance.`,
@@ -85,7 +85,7 @@ You must also **explain the risks** to the client (including that HMRC may chall
 - **Client-specific?** No, it's a marketed product.
 - **Lawful and realistic?** The arrangement is unlikely to work as claimed.
 - **Disclosure and transparency?** The client wants it hidden from the return. The plan only works if HMRC has less than the relevant facts, which would be **misleading HMRC**.
-- **Tax planning arrangements?** Routing pay through a trust as "loans" is highly artificial and goes against Parliament's clear intention for employment income.
+- **Advising on tax planning arrangements?** Routing pay through a trust as "loans" is highly artificial and goes against Parliament's clear intention for employment income.
 - **Professional judgement and documentation?** Record the advice and the reasons for declining in writing.
 
 **Step 4: action.**
@@ -139,7 +139,7 @@ You must also **explain the risks** to the client (including that HMRC may chall
         "It should not be highly artificial or contrived, exploiting shortcomings in the law",
       ],
       answers: [0, 1, 2, 4],
-      explain: "Client specific, lawful, disclosure and transparency, and the tax planning arrangements standard. The fifth standard is professional judgement and appropriate documentation.",
+      explain: "Client specific, lawful, disclosure and transparency, and the advising on tax planning arrangements standard. The fifth standard is professional judgement and appropriate documentation.",
     },
   ],
   quiz: [
@@ -187,6 +187,7 @@ You must also **explain the risks** to the client (including that HMRC may chall
   sources: [
     { label: "PCRT – ICAEW (effective 1 January 2026)", url: "https://www.icaew.com/technical/tax/working-in-tax/pcrt" },
     { label: "PCRT update published to reflect new international standards – ACCA", url: "https://www.accaglobal.com/gb/en/news/2025/October/tax-conduct.html" },
+    { label: "PCRT effective 1 January 2026 (full text) – ACCA", url: "https://www.accaglobal.com/content/dam/ACCA_Global/Technical/PCRT/PCRT-011025.pdf" },
     { label: "ATT – Professional conduct in relation to taxation", url: "https://www.att.org.uk/professional-standards/professional-conduct-relation-taxation" },
     { label: "Finance Act 2013 Part 5 – General anti-abuse rule", url: "https://www.legislation.gov.uk/ukpga/2013/29/part/5" },
     { label: "Tax Agent's Handbook – GOV.UK", url: "https://www.gov.uk/guidance/tax-agents-handbook/online-services-for-agents" },

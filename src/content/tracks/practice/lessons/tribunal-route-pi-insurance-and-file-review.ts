@@ -38,7 +38,7 @@ export const lesson: Lesson = {
       tone: "rule",
       title: "First-tier Tribunal basics",
       md: `- Cases are allocated to a **category**: **Default Paper** (decided without a hearing), **Basic** (a short hearing, simple cases), **Standard** (most cases) and **Complex** (significant or technically difficult, with greater costs risk).
-- **Costs:** in Basic and Default Paper cases each side generally bears its own costs; in Complex cases the **loser may be ordered to pay the other side's costs**, unless the taxpayer opts out of the cost regime within 28 days of the category notification.
+- **Costs:** in Default Paper, Basic and Standard cases each side generally bears its own costs (the tribunal can still award costs in any category if a party has acted **unreasonably**); in Complex cases the **loser may be ordered to pay the other side's costs**, unless the taxpayer opts out of the cost regime in writing within 28 days of the category notification.
 - **Late appeals:** the tribunal can allow a late appeal, applying the test in *Martland v HMRC* (the length of the delay, the reason for it and all the circumstances), but it should not be relied upon.
 - **Hardship:** in some disputes a taxpayer can apply to postpone payment of disputed tax.
 - **Alternative dispute resolution (ADR):** HMRC offers ADR for suitable cases; use it where appropriate, as it is faster and cheaper.
@@ -200,6 +200,7 @@ Treat these as **circumstances** to notify to your insurer, follow your **compla
     { label: "Appeal against a tax decision – GOV.UK", url: "https://www.gov.uk/tax-tribunal" },
     { label: "Tax Tribunal: what to expect – GOV.UK", url: "https://www.gov.uk/tax-tribunal/appeal-to-the-tribunal" },
     { label: "Self Assessment: how to appeal against penalties for late filing and late payment – GOV.UK", url: "https://www.gov.uk/government/publications/self-assessment-appeal-against-penalties-for-late-filing-and-late-payment-sa370/self-assessment-how-to-appeal-against-penalties-for-late-filing-and-late-payment" },
+    { label: "ARTG8660 – First-tier Tribunal: right to award costs (HMRC)", url: "https://www.gov.uk/hmrc-internal-manuals/appeals-reviews-and-tribunals-guidance/artg8660" },
     { label: "Responsibilities and obligations of an ICAEW member firm – AML", url: "https://www.icaew.com/technical/trust-and-ethics/anti-money-laundering/responsibilities-and-obligations-of-an-icaew-member-firm" },
     { label: "HMRC Compliance Handbook", url: "https://www.gov.uk/hmrc-internal-manuals/compliance-handbook" },
   ],

@@ -48,7 +48,7 @@ For clients within MTD for IT (sole traders and landlords with qualifying income
 1. Have an **Agent Services Account** and be **authorised** by the client for **MTD for Income Tax** (using the **digital handshake** or the route HMRC specifies).
 2. **Sign the client up** to MTD for IT (or confirm HMRC has done so) and confirm **accounting method and period**.
 3. Choose **compatible software** and keep **digital records**.
-4. Submit **quarterly updates**, an **end of period statement**/final declaration as the rules require, and keep evidence of **client approval** before each submission.
+4. Submit **quarterly updates** and the **tax return (final declaration)** by 31 January after the tax year, and keep evidence of **client approval** before each submission. (The **end of period statement** originally planned has been **removed**, so it is not needed.)
 5. Keep the **engagement letter** aligned: who is responsible for digital records, deadlines for information, penalties.
 
 Check HMRC's **agent step-by-step guidance** for the exact sequence and the current routes for Self Assessment, VAT, PAYE and Corporation Tax.
@@ -183,6 +183,8 @@ When you **cease to act**: agree the **date** with the client, **remove or cance
     { label: "Authorise a tax agent (64-8) – GOV.UK", url: "https://www.gov.uk/government/publications/tax-agents-and-advisers-authorising-your-agent-64-8" },
     { label: "Add your client authorisations for Making Tax Digital for Income Tax – GOV.UK", url: "https://www.gov.uk/guidance/add-your-client-authorisations-for-making-tax-digital-for-income-tax" },
     { label: "Making Tax Digital for Income Tax as an agent: step by step – GOV.UK", url: "https://www.gov.uk/government/collections/making-tax-digital-for-income-tax-as-an-agent-step-by-step" },
+    { label: "Outcome of the Making Tax Digital small business review (end of period statement removed) – GOV.UK", url: "https://www.gov.uk/government/publications/outcome-of-the-making-tax-digital-small-business-review" },
+    { label: "Check if you're eligible for Making Tax Digital for Income Tax – GOV.UK", url: "https://www.gov.uk/guidance/check-if-youre-eligible-for-making-tax-digital-for-income-tax" },
     { label: "The Tax Agent's Handbook – GOV.UK", url: "https://www.gov.uk/guidance/tax-agents-handbook/online-services-for-agents" },
   ],
 };

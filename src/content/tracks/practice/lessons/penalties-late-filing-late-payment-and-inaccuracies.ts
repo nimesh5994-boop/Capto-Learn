@@ -38,11 +38,11 @@ export const lesson: Lesson = {
       title: "MTD for Income Tax: the new points-based regime",
       md: `Taxpayers within **MTD for Income Tax** (from **April 2026**) are subject to a **points-based** late submission regime:
 
-- **1 penalty point** for each missed **quarterly update** or **tax return** deadline.
+- **1 penalty point** for each missed **quarterly update** or **tax return** deadline (one point per deadline). **For 2026/27 there are no penalties for missing a quarterly update deadline**; points for quarterly updates start from 2027/28. The 2026/27 tax return deadline still counts.
 - At **4 points** (the threshold for quarterly submitters) a **£200 penalty** is charged, and **£200** for each further missed deadline.
-- Points **expire after 24 months** if the taxpayer stays below the threshold. Once at the threshold, they must submit on time for **12 consecutive months** and catch up any outstanding submissions to clear the points.
-- **Late payment** (2026/27 tax year): no penalty for the first 15 days (30 days in the first year of MTD); **3%** of the unpaid tax from day 16 to 30 (if applicable); after day 30, **3% at day 15 plus 3% at day 30**, plus a **10% annual** rate charged daily on the outstanding balance. For 2027/28 the first two percentages increase to **4%**.
-- The new regime doesn't apply to partnerships, trusts, estates or non-resident companies.`,
+- Points **expire after 24 months** if the taxpayer stays below the threshold. Once at the threshold, they must submit on time for **12 months** and catch up any outstanding submissions for the previous 24 months to clear the points.
+- **Late payment** (2026/27 tax year): no penalty if paid within **15 days**; **3%** of the tax owed at day 15 if paid between day 16 and 30; from day 31, **3% at day 15 plus 3% at day 30**, plus a second penalty at **10% a year** charged daily on the outstanding balance. In the taxpayer's **first year** in MTD, no penalty is charged if the tax is paid within **30 days**. For 2027/28 the first two percentages increase to **4%**. The penalties don't apply to payments on account.
+- The new penalties don't apply to returns for partnerships, trusts, estates or non-resident companies. From **April 2027** they apply to everyone who submits a personal Self Assessment return, whether or not they are in MTD.`,
     },
     {
       kind: "md",
