@@ -302,6 +302,6 @@ Balance = £19,750 − £4,700 = **£15,050** debit (in the bank)`,
     { label: "GOV.UK – VAT rates", url: "https://www.gov.uk/vat-rates" },
     { label: "HMRC VAT Notice 700/21 – keeping VAT records (including the VAT account)", url: "https://www.gov.uk/guidance/record-keeping-for-vat-notice-70021" },
     { label: "GOV.UK – What records to keep (self-employed)", url: "https://www.gov.uk/self-employed-records/what-records-to-keep" },
-    { label: "ACCA – Introduction to Bookkeeping (double entry and the trial balance)", url: "https://www.accaglobal.com/gb/en/student/tuition-study-options/different-tuition/acca-x-online-courses-from-acca/what-acca-x-course-are-available/introduction-to-bookkeeping.html" },
+    { label: "ACCA – FA1 Recording Financial Transactions: study resources (double entry and the trial balance)", url: "https://www.accaglobal.com/gb/en/student/exam-support-resources/foundation-level-study-resources/fa1.html" },
   ],
 };

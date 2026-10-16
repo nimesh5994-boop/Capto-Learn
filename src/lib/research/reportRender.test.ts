@@ -40,11 +40,11 @@ const answer: ResearchAnswer = {
 
 describe("renderDocx", () => {
   it("produces a Word file holding the report's text, table and links", async () => {
-    const blocks = buildReport("What is the VAT threshold?", answer, { firm: "QA Practice", preparedBy: "Jo", reference: "Smith Ltd", url: "https://learn.chitta.cloud/ask/x", exportedAt: new Date() });
+    const blocks = buildReport("What is the VAT threshold?", answer, { docRef: "CL-1", firm: "QA Practice", preparedBy: "Jo", reference: "Smith Ltd", url: "https://learn.chitta.cloud/ask/x", exportedAt: new Date() });
     const buf = await renderDocx(blocks, { firm: "QA Practice", color: "#a01f62" });
     expect(buf.subarray(0, 2).toString()).toBe("PK");
     const xml = unzipEntry(buf, "word/document.xml");
-    for (const t of ["What is the VAT threshold?", "Smith Ltd", "£90,000", "Historic test", "Bank", "Register for VAT", "research aid, not advice"]) expect(xml).toContain(t);
+    for (const t of ["What is the VAT threshold?", "Smith Ltd", "£90,000", "Historic test", "Bank", "Register for VAT", "Review and approval", "TECHNICAL RESEARCH MEMORANDUM", "CL-1"]) expect(xml).toContain(t);
     expect(xml).toContain("<w:tbl>");
     expect(unzipEntry(buf, "word/_rels/document.xml.rels")).toContain("https://www.gov.uk/register-for-vat");
   });

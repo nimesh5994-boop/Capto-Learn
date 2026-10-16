@@ -49,7 +49,7 @@ export const lesson: Lesson = {
       md: `### The logic of the choices
 
 1. **Salary up to £5,000** costs the company no NIC, is deductible, and uses part of the director's personal allowance. But if it is **below the lower earnings limit** (£6,708 a year, £129 a week), it **does not give a qualifying year** for State Pension. Pay at least the LEL, or the client may need a voluntary contribution.
-2. **Salary between £5,000 and £12,570** carries **employer NIC at 15%** (no employee NIC). With corporation tax relief at 19% the real net cost is about 12.2p per £1 of NIC. In many sole-director cases a salary at £12,570 is still beneficial **if** the employer NIC is smaller than the saving from using the whole personal allowance as deductible salary rather than as part of the dividend band. The worked example below tests this; run it for every client.
+2. **Salary between £5,000 and £12,570** carries **employer NIC at 15%** (no employee NIC). With corporation tax relief at 19% the real net cost is about 12.2p per £1 of salary above £5,000 (15p less 19% relief). In many sole-director cases a salary at £12,570 is still beneficial **if** the employer NIC is smaller than the saving from using the whole personal allowance as deductible salary rather than as part of the dividend band. The worked example below tests this; run it for every client.
 3. **Salary above £12,570** adds **employee NIC (8%)** plus employer NIC (15%) and income tax. This is rarely optimal for a basic-rate director compared with dividends, but may help when profits are low and the director needs earnings for **pension relief** or **mortgage** purposes.
 4. **Dividends** are taxed at **10.75%** inside the basic-rate band, so the extraction rate is no longer as cheap relative to employment income as it used to be. For a higher-rate taxpayer the dividend rate is **35.75%**, so profit extracted as dividends faces corporation tax plus dividend tax.`,
     },
@@ -86,15 +86,15 @@ The company can't claim the Employment Allowance (only employee is a director). 
           ["Profit after tax = dividend", "£25,348.54", "£32,400.00"],
           ["Personal allowance left for dividends", "£0", "£7,570"],
           ["Dividends taxable after allowance and £500", "£24,848.54", "£24,330.00"],
-          ["Dividend tax at 10.75%", "£2,671.27", "£2,615.48"],
-          ["**Imran's net income**", "**£35,247.27**", "**£34,784.52**"],
+          ["Dividend tax at 10.75%", "£2,671.22", "£2,615.48"],
+          ["**Imran's net income**", "**£35,247.32**", "**£34,784.52**"],
         ],
       },
       {
         kind: "md",
         md: `**Reading the result.** Package A leaves Imran about **£463 better off**, even though it costs £1,135.50 of employer NIC, because the extra £7,570 of salary is corporation-tax deductible (19% relief) and sits inside his personal allowance. Package B uses the £7,570 allowance against the dividend, which has already suffered corporation tax.
 
-**Total tax and NIC.** A: £1,135.50 + £5,945.96 + £2,671.27 = £9,752.73. B: £0 + £7,600 + £2,615.48 = £10,215.48. A is cheaper by **£462.75**.
+**Total tax and NIC.** A: £1,135.50 + £5,945.96 + £2,671.22 = £9,752.68. B: £0 + £7,600 + £2,615.48 = £10,215.48. A is cheaper by **£462.80**.
 
 **But test it for each client.** At profits above £50,000 the marginal corporation tax rate climbs towards 26.5% on the band between £50,000 and £250,000 (marginal relief), making the salary deduction even more valuable. If the **director's other income** takes them into the higher-rate band, the dividend rate is 35.75%, and more salary or a pension contribution may become more attractive.
 

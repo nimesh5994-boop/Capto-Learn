@@ -44,7 +44,7 @@ The distinction that matters most is between transactions that are **within the 
       kind: "md",
       md: `### The domestic reverse charge (construction)
 
-For most building and construction services supplied between VAT-registered businesses and reported within the Construction Industry Scheme, the **customer**, not the supplier, accounts for the VAT, unless the customer is an end user or intermediary supplier that has told the supplier so in writing.
+For most building and construction services supplied between VAT-registered businesses and reported within the Construction Industry Scheme, the **customer**, not the supplier, accounts for the VAT, unless the customer is an end user or intermediary supplier that has told the supplier so in writing. It only covers standard- and reduced-rated services: zero-rated work (such as most construction of new homes) is outside it.
 
 - **The supplier** invoices without charging VAT, marks the invoice as reverse charge (e.g. "customer to account to HMRC for the VAT"), and includes the net value in **box 6** only.
 - **The customer** works out the VAT at the appropriate rate, puts it in **box 1** as output tax and (subject to the normal rules) reclaims it in **box 4**, and includes the net purchase in **box 7**. The net effect on the customer's payment is usually nil.
@@ -89,7 +89,7 @@ When a UK business buys most business services from an overseas supplier (softwa
 
 **Sales**
 - Rewiring work for householders (end consumers): **£40,000** net, VAT at 20% charged
-- Electrical installation for a main contractor on a new-build site, invoiced under the **domestic reverse charge**: **£25,000** net, no VAT charged
+- Electrical installation for a main contractor building a new office block (standard-rated work), invoiced under the **domestic reverse charge**: **£25,000** net, no VAT charged
 
 **Purchases**
 - Cable and fittings from wholesalers: **£18,000** net + **£3,600** VAT

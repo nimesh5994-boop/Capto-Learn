@@ -99,7 +99,7 @@ After importing 18 months of bank statements and coding what you can, the query 
 **Query list.** Gary's answers on the £3,460:
 - £1,800 to a holiday company: personal
 - £1,200 to a garage: van repair (he finds the VAT invoice: £1,000 + £200 VAT)
-- £460 for a scheduling app subscription with no VAT charged`,
+- £460 for a scheduling app subscription from a small UK developer that isn't VAT registered, so no VAT was charged (an overseas supplier would have meant a reverse charge)`,
       },
       {
         kind: "journal",

@@ -26,6 +26,8 @@ export interface ReportBrand {
   color: string;
   /** PNG or JPEG data: URL; anything else is skipped. */
   logoDataUrl?: string | null;
+  /** Document reference for the page footer. */
+  docRef?: string;
 }
 
 const MUTED = "6B6470";
@@ -79,7 +81,7 @@ export async function renderDocx(blocks: Block[], brand: ReportBrand): Promise<B
   } else {
     children.push(new Paragraph({ children: [new TextRun({ text: brand.firm, bold: true, color, size: 26 })], spacing: { after: 120 } }));
   }
-  children.push(new Paragraph({ children: [new TextRun({ text: "Research note · Ask Capto", color: MUTED, size: 18 })], spacing: { after: 200 } }));
+  children.push(new Paragraph({ children: [new TextRun({ text: "TECHNICAL RESEARCH MEMORANDUM", color: MUTED, size: 17, bold: true })], spacing: { after: 200 } }));
 
   const metaRows: TableRow[] = [];
   const flushMeta = () => {
@@ -158,6 +160,26 @@ export async function renderDocx(blocks: Block[], brand: ReportBrand): Promise<B
         );
         break;
       }
+      case "signoff": {
+        const cell = (t: string, head = false, width = 25) =>
+          new TableCell({
+            width: { size: width, type: WidthType.PERCENTAGE },
+            shading: head ? { type: ShadingType.CLEAR, fill: "F6F1F4", color: "auto" } : undefined,
+            children: [new Paragraph({ children: [new TextRun({ text: t, bold: head, size: 19 })], spacing: { before: head ? 40 : 160, after: head ? 40 : 160 } })],
+          });
+        children.push(
+          new Table({
+            width: { size: 100, type: WidthType.PERCENTAGE },
+            borders: { top: cellBorder, bottom: cellBorder, left: cellBorder, right: cellBorder, insideHorizontal: cellBorder, insideVertical: cellBorder },
+            rows: [
+              new TableRow({ tableHeader: true, children: [cell("Role", true, 26), cell("Name", true, 28), cell("Signature", true, 26), cell("Date", true, 20)] }),
+              ...b.rows.map((r) => new TableRow({ children: [cell(r.role, false, 26), cell(r.name, false, 28), cell("", false, 26), cell(r.date, false, 20)] })),
+            ],
+          }),
+          new Paragraph({ text: "" })
+        );
+        break;
+      }
       case "quote":
         children.push(
           new Paragraph({
@@ -193,7 +215,7 @@ export async function renderDocx(blocks: Block[], brand: ReportBrand): Promise<B
             children: [
               new Paragraph({
                 alignment: AlignmentType.CENTER,
-                children: [new TextRun({ text: `${brand.firm} · Research aid, not advice · Page `, size: 16, color: MUTED }), new TextRun({ children: [PageNumber.CURRENT], size: 16, color: MUTED })],
+                children: [new TextRun({ text: `${brand.firm}${brand.docRef ? ` · ${brand.docRef}` : ""} · Confidential · Page `, size: 16, color: MUTED }), new TextRun({ children: [PageNumber.CURRENT], size: 16, color: MUTED })],
               }),
             ],
           }),

@@ -38,7 +38,7 @@ The cycle is the same on both sides: **document → enter → allocate payment �
       kind: "callout",
       tone: "rule",
       title: "Simplified and modified invoices",
-      md: `A retailer can issue a **simplified invoice** for supplies of up to **£250 including VAT**, showing less detail (the customer's name isn't needed). For larger amounts the customer needs a full VAT invoice to support an input tax claim. See HMRC's guidance on VAT invoices for the full rules.`,
+      md: `A VAT-registered business (retailer or not) can issue a **simplified invoice** where the supply is **£250 or less including VAT**, showing less detail (the customer's name and address, a sequential number and the VAT-exclusive values aren't needed). For larger amounts the customer needs a full (or, from a retailer, modified) VAT invoice to support an input tax claim. See VAT Notice 700/21 for the full rules.`,
     },
     {
       kind: "md",

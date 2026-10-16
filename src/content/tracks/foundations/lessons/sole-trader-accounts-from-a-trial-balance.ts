@@ -5,6 +5,7 @@ export const lesson: Lesson = {
   title: "Sole trader accounts from a trial balance",
   level: "advanced",
   minutes: 45,
+  taxYear: "2026/27",
   summary:
     "Turning a sole trader's trial balance and year-end adjustments into an income statement and balance sheet: closing stock, depreciation, accruals, prepayments, private use, and the capital account reconciliation that proves it all ties up.",
   objectives: [

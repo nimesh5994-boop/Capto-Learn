@@ -6,7 +6,7 @@ export const lesson: Lesson = {
   level: "practitioner",
   minutes: 30,
   summary:
-    "Why repaying a director's loan just before the deadline and borrowing again straight afterwards doesn't work: the 30-day rule (s464C), the arrangements rule (s464D) and the practical planning that stays on the right side of them.",
+    "Why repaying a director's loan just before the deadline and borrowing again straight afterwards doesn't work: the 30-day rule (CTA 2010 s464ZA(1)), the arrangements rule (s464ZA(3)), the exclusion for repayments taxed as income, and the practical planning that stays on the right side of them.",
   objectives: [
     "Explain what 'bed and breakfasting' of a director's loan is and why HMRC counters it",
     "Apply the 30-day rule and its £5,000 conditions to a series of repayments and new loans",
@@ -18,24 +18,24 @@ export const lesson: Lesson = {
   body: [
     {
       kind: "md",
-      md: `A familiar pattern: the DLA is overdrawn at the year end. Just before the nine-month deadline the director "repays" it (often with a bonus, dividend or a short-term personal loan), and then borrows the same amount again a few days later. On paper the s455 charge has been avoided; in substance the director has had the money throughout. Parliament closed this route in 2013 with two rules in **CTA 2010 Part 10 Chapter 3A**.`,
+      md: `A familiar pattern: the DLA is overdrawn at the year end. Just before the nine-month deadline the director "repays" it (often with a bonus, dividend or a short-term personal loan), and then borrows the same amount again a few days later. On paper the s455 charge has been avoided; in substance the director has had the money throughout. Parliament closed this route in 2013 with two matching rules. They were originally in CTA 2010 ss464C–464D; for repayments from **30 October 2024** they are in **CTA 2010 s464ZA** (with s464ZB), which works in the same way.`,
     },
     {
       kind: "callout",
       tone: "rule",
-      title: "The 30-day rule (CTA 2010 s464C)",
+      title: "The 30-day rule (CTA 2010 s464ZA(1))",
       md: `The rule applies where, within any period of **30 days**:
 
 - the participator **repays £5,000 or more** of a loan on which s455 would otherwise be (or has been) charged, **and**
-- the company **makes new loans or confers benefits** on the same person (or an associate) of **£5,000 or more** in total.
+- the company **makes new loans** to the same person (or an associate) of **£5,000 or more** in total, in a **later accounting period** than the loan being repaid.
 
 The repayment is then **matched** against the new loan. Relief under s458 is denied on the **lower** of the two amounts, so s455 tax is payable on that matched sum as if the original loan hadn't been repaid.`,
     },
     {
       kind: "callout",
       tone: "rule",
-      title: "The arrangements rule (CTA 2010 s464D)",
-      md: `If the loan outstanding at the time of the repayment is **£15,000 or more**, and at that time there are **arrangements** (any understanding or scheme, formal or not) under which the participator will receive **£5,000 or more** of new loans or benefits at any time **after** the repayment, the repayment is matched with the new loans. There is **no 30-day limit**: a re-borrowing 6 months later can still be caught if it was planned.
+      title: "The arrangements rule (CTA 2010 s464ZA(3))",
+      md: `If the loan outstanding immediately before the repayment is **£15,000 or more**, and at that time there are **arrangements** (any understanding or scheme, formal or not) under which the participator will receive **£5,000 or more** of new loans to replace some or all of the amount repaid, the repayment is matched with the new loans. There is **no 30-day limit**: a re-borrowing 6 months later can still be caught if it was planned.
 
 "Arrangements" isn't defined and has a wide meaning. Evidence of intention (emails, a pattern of repay-and-redraw each year end, a banking agreement) is what HMRC looks for.`,
     },
@@ -43,11 +43,12 @@ The repayment is then **matched** against the new loan. Relief under s458 is den
       kind: "md",
       md: `### What counts as a "repayment"
 
-Anything that discharges the debt: a cash payment, crediting a **dividend** or **bonus** to the DLA, a **set-off** against a credit loan, or a **release**. The rules apply whatever the method. Both rules also apply to **benefits** (s464A), not only loans.
+Anything that discharges the debt counts as a repayment, such as a cash payment or a **set-off** against a credit loan. But the matching rules **don't apply to a repayment that itself gives rise to an income tax charge** on the participator (s464ZA(6)): a **dividend** or **bonus** (taxed through PAYE) credited to the DLA is outside both rules. This only works if the dividend or bonus is credited to the loan account. If it is paid out in cash and the cash is paid back in, the exclusion is lost.
 
 ### What the rules *don't* touch
 
-- Repayments or new loans **below £5,000**. (Both rules need a £5,000 floor; the 30-day rule needs both legs at £5,000 or more.)
+- Under the 30-day rule, repayments or new loans totalling **under £5,000**. Under the arrangements rule, a balance **under £15,000** before the repayment, or arranged new loans **under £5,000**.
+- Repayments by a **dividend or bonus credited to the DLA**, because they are taxed as income.
 - **Genuine** repayments from the director's own resources with no arrangement to re-borrow and no new loan in the following 30 days.
 - A new loan taken **after** the 30 days where there was **no** pre-arranged plan, and the loan outstanding was below £15,000 at repayment.
 - Ordinary **expenses** and **salary/dividends** properly paid.`,
@@ -135,7 +136,7 @@ Anything that discharges the debt: a cash payment, crediting a **dividend** or *
       prompt: "The arrangements rule applies only if the amount owed at the time of repayment is at least…",
       options: ["£5,000", "£10,000", "£15,000", "£25,000"],
       answer: 2,
-      explain: "s464D needs a balance of £15,000 or more outstanding and arrangements for £5,000 or more of new loans or benefits.",
+      explain: "s464ZA(3) needs a balance of £15,000 or more outstanding and arrangements for £5,000 or more of new loans.",
     },
   ],
   quiz: [
@@ -175,9 +176,9 @@ Anything that discharges the debt: a cash payment, crediting a **dividend** or *
       kind: "mcq",
       id: "q-set-off",
       prompt: "A dividend credited to a director's overdrawn loan account is…",
-      options: ["Not a repayment", "A repayment that can still be matched if the director borrows again", "A deduction for CT", "Always protected"],
+      options: ["Not a repayment", "A repayment that is outside the matching rules, because it gives rise to an income tax charge", "A deduction for CT", "A repayment that is always matched if the director borrows again"],
       answer: 1,
-      explain: "The method of repayment doesn't matter. The matching rules apply to any discharge of the debt.",
+      explain: "s464ZA(6) excludes a repayment that itself gives rise to an income tax charge, such as a dividend credited to the loan account. The dividend must be lawful and actually credited, not paid out in cash and paid back.",
     },
     {
       kind: "mcq",
@@ -191,7 +192,8 @@ Anything that discharges the debt: a cash payment, crediting a **dividend** or *
   sources: [
     { label: "CTM61615 – repayment of loans: B&B general", url: "https://www.gov.uk/hmrc-internal-manuals/company-taxation-manual/ctm61615" },
     { label: "CTM61635 – B&B arrangements rule", url: "https://www.gov.uk/hmrc-internal-manuals/company-taxation-manual/ctm61635" },
-    { label: "CTA 2010 s464C – 30 day rule", url: "https://www.legislation.gov.uk/ukpga/2010/4/section/464C" },
-    { label: "CTA 2010 s464D – arrangements rule", url: "https://www.legislation.gov.uk/ukpga/2010/4/section/464D" },
+    { label: "CTM61630 – B&B 30-day rule (s464ZA(1))", url: "https://www.gov.uk/hmrc-internal-manuals/company-taxation-manual/ctm61630" },
+    { label: "CTM61642 – exclusion for repayments chargeable to income tax (s464ZA(6))", url: "https://www.gov.uk/hmrc-internal-manuals/company-taxation-manual/ctm61642" },
+    { label: "Close company shareholders anti-avoidance measure (s464ZA, from 30 October 2024)", url: "https://www.gov.uk/government/publications/corporation-tax-close-company-shareholders-anti-avoidance-measure/draft-legislation-accessible-version" },
   ],
 };

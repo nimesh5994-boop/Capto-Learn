@@ -71,13 +71,15 @@ At the year end, the bookkeeper or accountant estimates the tax on the year's ta
     },
     {
       kind: "md",
-      md: `### Deadlines
+      md: `A company generally qualifies in its first financial year if it meets the conditions in that year. After that, it must meet them in **both the current year and the previous year**, so one good or bad year doesn't change its size on its own.
+
+### Deadlines
 
 - **Accounts to Companies House:** 9 months after the year end for a private company (first accounts: 21 months from incorporation, or 3 months from the accounting reference date if later).
 - **Corporation tax payment:** for most small companies, 9 months and 1 day after the end of the accounting period.
 - **Company tax return (CT600):** 12 months after the end of the accounting period.
 
-Companies House filing requirements are changing under the Economic Crime and Corporate Transparency Act 2023 (identity verification and changes to what small companies must file). Check current Companies House guidance before filing rather than relying on how it was done last year.`,
+Companies House filing requirements are changing under the Economic Crime and Corporate Transparency Act 2023 (identity verification and changes to what small companies must file). Companies House guidance says that from **1 April 2028** accounts can only be filed using commercial software, abridged accounts end, and small companies and micro-entities must deliver a profit and loss account (with an option not to publish it on the register). Check current Companies House guidance before filing rather than relying on how it was done last year.`,
     },
     {
       kind: "callout",
@@ -224,7 +226,7 @@ Sam asks: *"How much more can I take as a dividend?"*`,
       prompt: "A company has turnover of £800,000, a balance sheet total of £600,000 and 6 employees. Is it a micro-entity (periods from 6 April 2025)?",
       options: ["No, its balance sheet total is over £500,000", "Yes, it meets two of the three tests", "No, it must meet all three", "Only if it's dormant"],
       answer: 1,
-      explain: "It meets the turnover (≤ £1m) and employees (≤ 10) tests, which is two of the three.",
+      explain: "It meets the turnover (≤ £1m) and employees (≤ 10) tests, which is two of the three. After its first financial year, it must also have met the conditions in the previous year.",
     },
     {
       kind: "mcq",
@@ -238,7 +240,7 @@ Sam asks: *"How much more can I take as a dividend?"*`,
   sources: [
     { label: "Companies Act 2006 s386 – duty to keep accounting records", url: "https://www.legislation.gov.uk/ukpga/2006/46/section/386" },
     { label: "Companies Act 2006 s830 – distributions to be made only out of profits available", url: "https://www.legislation.gov.uk/ukpga/2006/46/section/830" },
-    { label: "Companies House – Life of a company: annual requirements (accounts)", url: "https://www.gov.uk/government/publications/life-of-a-company-annual-requirements/life-of-a-company-part-1-accounts" },
+    { label: "Companies House – Preparing and filing Companies House accounts", url: "https://www.gov.uk/government/publications/filing-your-companies-house-accounts/life-of-a-company-part-1-accounts" },
     { label: "HMRC – Rates and allowances for Corporation Tax", url: "https://www.gov.uk/government/publications/rates-and-allowances-corporation-tax/rates-and-allowances-corporation-tax" },
     { label: "GOV.UK – Pay your Corporation Tax bill", url: "https://www.gov.uk/pay-corporation-tax" },
     { label: "FRC – FRS 102", url: "https://www.frc.org.uk/library/standards-codes-policy/accounting-and-reporting/uk-accounting-standards/frs-102/" },

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildReport, markdownBlocks, reportFilename } from "./report";
+import { buildReport, documentRef, markdownBlocks, reportFilename } from "./report";
 import type { ResearchAnswer } from "./types";
 
 describe("markdownBlocks", () => {
@@ -39,31 +39,62 @@ describe("buildReport", () => {
     model: "x",
     generatedAt: "2026-10-10T10:00:00.000Z",
   };
-  const meta = { firm: "QA Practice", preparedBy: "Jo Bloggs", reference: "Smith Ltd", note: "Asked by the partner.", url: "https://learn.chitta.cloud/ask/abc", exportedAt: new Date("2026-10-16T09:00:00Z") };
+  const meta = { docRef: "CL-ABC12345", firm: "QA Practice", preparedBy: "Jo Bloggs", reference: "Smith Ltd", note: "Asked by the partner.", url: "https://learn.chitta.cloud/ask/abc", exportedAt: new Date("2026-10-16T09:00:00Z") };
   const blocks = buildReport("Does s455 apply?", answer, meta, "Smith Ltd loan");
   const text = JSON.stringify(blocks);
 
-  it("puts the title, question, reference and who prepared it first", () => {
+  it("opens with the memorandum details: reference, client, subject, preparer, dates and classification", () => {
     expect(blocks[0]).toEqual({ kind: "title", text: "Smith Ltd loan" });
-    expect(blocks).toContainEqual({ kind: "meta", label: "Question", value: "Does s455 apply?" });
-    expect(blocks).toContainEqual({ kind: "meta", label: "Client / reference", value: "Smith Ltd" });
+    expect(blocks).toContainEqual({ kind: "meta", label: "Document reference", value: "CL-ABC12345" });
+    expect(blocks).toContainEqual({ kind: "meta", label: "Client / matter", value: "Smith Ltd" });
+    expect(blocks).toContainEqual({ kind: "meta", label: "Subject", value: "Does s455 apply?" });
     expect(blocks).toContainEqual({ kind: "meta", label: "Prepared by", value: "Jo Bloggs, QA Practice" });
-    expect(blocks).toContainEqual({ kind: "meta", label: "Answered", value: "10 October 2026" });
+    expect(blocks).toContainEqual({ kind: "meta", label: "Date of research", value: "10 October 2026" });
+    expect(blocks).toContainEqual({ kind: "meta", label: "Classification", value: "Confidential: internal working paper" });
   });
-  it("shows how much was verified, and marks unverified points and quotes", () => {
-    expect(text).toContain("1 of 2 points verified");
-    expect(blocks).toContainEqual({ kind: "h3", text: "Repayment", tag: "Expert · Unverified" });
-    expect(blocks).toContainEqual({ kind: "quote", text: "repaid", source: "[S1] CTM61505", verified: false });
+  it("numbers the sections in order, conclusion first, and points the status line at the review section", () => {
+    const heads = blocks.filter((b) => b.kind === "h2").map((b) => (b.kind === "h2" ? b.text : ""));
+    expect(heads).toEqual([
+      "1. Summary of conclusion",
+      "2. Question and background",
+      "3. Scope and basis of preparation",
+      "4. Analysis",
+      "5. Recommended approach",
+      "6. Illustrative example: Loan of £10,000",
+      "7. Matters to confirm before advising",
+      "8. Review and approval",
+      "Appendix A: Sources and evidence",
+      "Appendix B: Important notice",
+    ]);
+    expect(text).toContain("approved (section 8)");
+    expect(blocks).toContainEqual({ kind: "h3", text: "4.1  Repayment", tag: "Expert" });
   });
+  it("references sources in the text, flags unverified points, and puts the quotations in Appendix A", () => {
+    expect(text).toContain("1 of 2 points are supported");
+    expect(text).toContain("Sources: [S1] · quotation NOT verified");
+    expect(text).toContain("Sources: [S1] · quotations verified word for word");
+    const appendix = blocks.slice(blocks.findIndex((b) => b.kind === "h2" && b.text.startsWith("Appendix A")));
+    expect(appendix).toContainEqual({ kind: "quote", text: "repaid", source: "[S1]", verified: false });
+    expect(appendix).toContainEqual({ kind: "quote", text: "the loan", source: "[S1]", verified: true });
+  });
+  it("includes a sign-off box with the preparer filled in and reviewer and approver left blank", () => {
+    const so = blocks.find((b) => b.kind === "signoff");
+    expect(so && so.kind === "signoff" && so.rows.map((r) => [r.role, r.name])).toEqual([
+      ["Prepared by", "Jo Bloggs"],
+      ["Reviewed by", ""],
+      ["Approved for client use", ""],
+    ]);
+  });
+  it("makes a stable document reference", () => expect(documentRef("a6509153-a4d6-44f4-9d88-178a39bacf97")).toBe("CL-A6509153"));
   it("links lesson sources to the app, and always ends with the disclaimer and OGL notice", () => {
     expect(text).toContain("https://learn.chitta.cloud/learn/directors/s455");
-    expect(text).toContain("research aid, not advice");
+    expect(text).toContain("is a research aid and is not advice");
     expect(text).toContain("Open Government Licence v3.0");
   });
-  it("leaves out the question line when the title is the question", () => {
+  it("uses the question as the title and leaves out an empty client line", () => {
     const b = buildReport("Does s455 apply?", answer, { ...meta, reference: "", note: "" });
-    expect(b.some((x) => x.kind === "meta" && x.label === "Question")).toBe(false);
-    expect(b.some((x) => x.kind === "meta" && x.label === "Client / reference")).toBe(false);
+    expect(b[0]).toEqual({ kind: "title", text: "Does s455 apply?" });
+    expect(b.some((x) => x.kind === "meta" && x.label === "Client / matter")).toBe(false);
   });
 });
 

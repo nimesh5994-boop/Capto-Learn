@@ -76,7 +76,7 @@ Don't use reversing journals for **prepayment releases** or **deferred income** 
   ],
   scenario: {
     title: "June month-end for Quarry Hill Brewing Co Ltd",
-    narrative: `**Quarry Hill Brewing Co Ltd** (VAT registered) gets monthly management accounts. Draft profit for **June 2026** is **£11,800**. Reviewing the period around 30 June you find:
+    narrative: `**Quarry Hill Brewing Co Ltd** (VAT registered) gets monthly management accounts. Draft year-to-date profit for the **three months to 30 June 2026** (the company's year started on 1 April) is **£11,800**. Reviewing the period around 30 June you find:
 
 1. Malt worth **£4,200** net was delivered on 28 June and included in the June stock count; the supplier's invoice is dated 3 July.
 2. The annual insurance premium of **£3,600** for 1 April 2026 to 31 March 2027 was paid in April and posted in full to Insurance.
@@ -87,7 +87,7 @@ Don't use reversing journals for **prepayment releases** or **deferred income** 
       {
         kind: "table",
         caption: "Adjustments at 30 June 2026",
-        head: ["#", "Journal", "£", "Effect on June profit"],
+        head: ["#", "Journal", "£", "Effect on year-to-date profit"],
         rows: [
           ["1", "Dr Purchases, Cr Accruals (reverse 1 July)", "4,200", "(4,200)"],
           ["2", "Dr Prepayments, Cr Insurance (then release £300 a month)", "2,700", "+2,700"],
@@ -98,11 +98,11 @@ Don't use reversing journals for **prepayment releases** or **deferred income** 
       },
       {
         kind: "md",
-        md: `**Item 2:** by 30 June, three months of cover (April to June, £900) have been used, so £2,700 is prepaid. April's management accounts were overcharged and May and June undercharged; going forward the schedule releases £300 a month.
+        md: `**Item 2:** by 30 June, three months of cover (April to June, £900) have been used, so £2,700 is prepaid. April's management accounts were overcharged by £3,300 and May and June each missed their £300 charge. Posting the £2,700 in June puts the year to date right, but June's own monthly column will show a £2,700 credit, so note it as a catch-up in the commentary. Going forward the schedule releases £300 a month.
 
 **Item 4:** the VAT on the deposit was correctly accounted for when it was received. Only the net £2,000 is deferred until the beer is supplied in September.
 
-**Corrected June profit:** £11,800 − £4,200 + £2,700 + £1,800 − £2,000 − £650 = **£9,450**.`,
+**Corrected year-to-date profit at 30 June:** £11,800 − £4,200 + £2,700 + £1,800 − £2,000 − £650 = **£9,450**.`,
       },
       {
         kind: "journal",

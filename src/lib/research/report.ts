@@ -21,10 +21,13 @@ export type Block =
   | { kind: "p"; runs: Run[]; tone?: "muted" | "warning" }
   | { kind: "list"; ordered: boolean; items: Run[][] }
   | { kind: "table"; header: Run[][]; rows: Run[][][] }
-  | { kind: "quote"; text: string; source: string; verified: boolean };
+  | { kind: "quote"; text: string; source: string; verified: boolean }
+  | { kind: "signoff"; rows: { role: string; name: string; date: string }[] };
 
 export interface ReportMeta {
   firm: string;
+  /** Shown on every page, e.g. "CL-A6509153" (see documentRef). */
+  docRef: string;
   preparedBy: string;
   /** Client, job or file reference typed when saving. */
   reference?: string;
@@ -130,95 +133,155 @@ export function markdownBlocks(md: string): Block[] {
 }
 
 const LEVEL: Record<string, string> = { essentials: "Essentials", practitioner: "Practitioner", expert: "Expert" };
-const CONFIDENCE: Record<ResearchAnswer["confidence"], string> = { high: "High", medium: "Medium", low: "Low — check with a senior" };
+const CONFIDENCE: Record<ResearchAnswer["confidence"], string> = {
+  high: "High: the official sources address the question directly.",
+  medium: "Medium: the conclusion draws on more than one source or needs some interpretation.",
+  low: "Low: the sources only partly cover the question. Senior review is essential.",
+};
 
-/** The whole report, in reading order. */
+/** A stable, human-readable document reference for an answer, e.g. "CL-A6509153". */
+export const documentRef = (queryId: string): string => `CL-${queryId.replace(/-/g, "").slice(0, 8).toUpperCase()}`;
+
+const para = (text: string, tone?: "muted"): Block => ({ kind: "p", runs: [{ text }], tone });
+
+/**
+ * The whole report, laid out as a technical research memorandum in the style UK professional firms use for
+ * file notes: reference and classification, conclusion first, scope and basis of preparation, numbered analysis
+ * with source references, matters to confirm, a review sign-off box, and the evidence in an appendix.
+ */
 export function buildReport(question: string, answer: ResearchAnswer, meta: ReportMeta, title?: string): Block[] {
   const steps = answer.steps ?? [];
   const checked = [...answer.points, ...steps];
-  const verified = checked.filter((p) => p.verified).length;
-  const byId = new Map(answer.sources.map((s) => [s.id, s]));
-  const srcName = (id: string) => (byId.get(id) ? `[${id}] ${byId.get(id)!.title}` : id);
-  const quotes = (cs: { sourceId: string; quote: string; verified: boolean }[]): Block[] => cs.map((c) => ({ kind: "quote", text: c.quote, source: srcName(c.sourceId), verified: c.verified }));
+  const verified = checked.filter((x) => x.verified).length;
+  const official = answer.sources.filter((s) => s.kind !== "lesson");
+  const lessons = answer.sources.filter((s) => s.kind === "lesson");
+  const refLine = (cs: { sourceId: string }[], ok: boolean): Block => ({
+    kind: "p",
+    tone: "muted",
+    runs: [
+      {
+        text: cs.length
+          ? `Sources: ${[...new Set(cs.map((c) => c.sourceId))].map((r) => `[${r}]`).join(", ")} · ${ok ? "quotations verified word for word" : "quotation NOT verified: treat with caution"}`
+          : "No supporting quotation: treat with caution",
+      },
+    ],
+  });
+  let n = 0;
+  const section = (text: string): Block => ({ kind: "h2", text: `${++n}. ${text}` });
+  // Sections 1–3 and "Matters to confirm" always appear; the review section follows the optional ones.
+  const reviewSection = 5 + (answer.points.length ? 1 : 0) + (steps.length ? 1 : 0) + (answer.example ? 1 : 0) + (answer.professional ? 1 : 0);
 
   const out: Block[] = [{ kind: "title", text: title?.trim() || question }];
-  if (title && title.trim() !== question.trim()) out.push({ kind: "meta", label: "Question", value: question });
-  if (meta.reference) out.push({ kind: "meta", label: "Client / reference", value: meta.reference });
+  out.push({ kind: "meta", label: "Document reference", value: meta.docRef });
+  if (meta.reference) out.push({ kind: "meta", label: "Client / matter", value: meta.reference });
   out.push(
+    { kind: "meta", label: "Subject", value: question },
     { kind: "meta", label: "Prepared by", value: `${meta.preparedBy}, ${meta.firm}` },
-    { kind: "meta", label: "Answered", value: fmtDate(answer.generatedAt) },
-    { kind: "meta", label: "Exported", value: fmtDate(meta.exportedAt) },
-    { kind: "meta", label: "Confidence", value: `${CONFIDENCE[answer.confidence]} · ${verified} of ${checked.length} points verified word for word against their source` }
+    { kind: "meta", label: "Date of research", value: fmtDate(answer.generatedAt) },
+    { kind: "meta", label: "Date issued", value: fmtDate(meta.exportedAt) }
   );
   if (answer.taxYear) out.push({ kind: "meta", label: "Tax year", value: answer.taxYear });
-  if (meta.note) out.push({ kind: "h2", text: "Notes" }, ...meta.note.split(/\n{2,}/).map((p): Block => ({ kind: "p", runs: [{ text: p.trim() }] })));
+  out.push(
+    { kind: "meta", label: "Status", value: `Draft for review. Not to be relied on until reviewed and approved (section ${reviewSection}).` },
+    { kind: "meta", label: "Classification", value: "Confidential: internal working paper" }
+  );
 
-  out.push({ kind: "h2", text: "Short answer" }, ...markdownBlocks(answer.shortAnswer));
+  // Conclusion first.
+  out.push(
+    section("Summary of conclusion"),
+    ...markdownBlocks(answer.shortAnswer),
+    para(`Confidence: ${CONFIDENCE[answer.confidence]} ${verified} of ${checked.length} points are supported by quotations verified word for word against their source.`, "muted")
+  );
+
+  // The question and any background the preparer recorded.
+  out.push(section("Question and background"), { kind: "p", runs: [{ text: "Question as put: ", bold: true }, { text: question }] });
+  if (meta.note) out.push({ kind: "p", runs: [{ text: "Background noted by the preparer:", bold: true }] }, ...meta.note.split(/\n{2,}/).map((x) => para(x.trim())));
+  out.push(para("No other facts have been assumed. If the client's circumstances differ from the question above, the conclusion may not apply.", "muted"));
+
+  // Scope and basis of preparation.
+  const dates = official.map((s) => s.updatedAt).filter((d): d is string => !!d).sort();
+  out.push(section("Scope and basis of preparation"), {
+    kind: "list",
+    ordered: false,
+    items: [
+      [
+        {
+          text: `Research was carried out with Ask Capto on ${fmtDate(answer.generatedAt)} using ${official.length} official source${official.length === 1 ? "" : "s"} (HMRC internal manuals and GOV.UK guidance)${lessons.length ? ` and ${lessons.length} Capto Learn training lesson${lessons.length === 1 ? "" : "s"}` : ""}, listed in Appendix A.`,
+        },
+      ],
+      ...(dates.length ? [[{ text: `The publishers last updated the official sources between ${fmtDate(dates[0])} and ${fmtDate(dates[dates.length - 1])}.` }]] : []),
+      [{ text: "Each point is supported by a quotation checked word for word against the source text. Any point whose quotation could not be verified is marked." }],
+      [{ text: "Primary legislation and case law were not consulted directly. HMRC guidance sets out HMRC's view of the law and does not bind the courts." }],
+      [{ text: "Matters outside the question (for example other taxes, anti-avoidance rules or the client's wider position) are not considered unless mentioned below." }],
+    ],
+  });
+
+  if (answer.points.length) {
+    out.push(section("Analysis"));
+    const sec = n;
+    answer.points.forEach((pt, i) => out.push({ kind: "h3", text: `${sec}.${i + 1}  ${pt.heading}`, tag: pt.level ? LEVEL[pt.level] : undefined }, ...markdownBlocks(pt.text), refLine(pt.citations, pt.verified)));
+  }
 
   if (steps.length) {
-    out.push({ kind: "h2", text: "How to do it" });
-    steps.forEach((s, i) => {
-      out.push({ kind: "h3", text: `Step ${i + 1}`, tag: s.verified ? "Verified" : "Unverified" }, ...markdownBlocks(s.text), ...quotes(s.citations));
-    });
+    out.push(section("Recommended approach"));
+    const sec = n;
+    steps.forEach((st, i) => out.push({ kind: "h3", text: `${sec}.${i + 1}` }, ...markdownBlocks(st.text), refLine(st.citations, st.verified)));
   }
 
   if (answer.example) {
-    out.push(
-      { kind: "h2", text: `Worked example: ${answer.example.title}` },
-      ...markdownBlocks(answer.example.body),
-      { kind: "p", tone: "muted", runs: [{ text: "An illustration applying the points below. The figures are examples, not taken from the sources." }] }
-    );
+    out.push(section(`Illustrative example: ${answer.example.title}`), ...markdownBlocks(answer.example.body), para("The figures are illustrative only and are not taken from the sources.", "muted"));
   }
 
-  if (answer.points.length) {
-    out.push({ kind: "h2", text: "The detail" });
-    for (const p of answer.points) {
-      const tag = [p.level ? LEVEL[p.level] : null, p.verified ? "Verified" : "Unverified"].filter(Boolean).join(" · ");
-      out.push({ kind: "h3", text: p.heading, tag }, ...markdownBlocks(p.text), ...quotes(p.citations));
-    }
-  }
-
-  if (answer.caveats.length) {
-    out.push({ kind: "h2", text: "Check before you advise" }, { kind: "list", ordered: false, items: answer.caveats.map((c) => markdownBlocks(c).flatMap((b) => (b.kind === "p" ? b.runs : []))) });
-  }
+  out.push(section("Matters to confirm before advising"), {
+    kind: "list",
+    ordered: true,
+    items: [
+      ...answer.caveats.map((c) => markdownBlocks(c).flatMap((b) => (b.kind === "p" ? b.runs : []))),
+      [{ text: "Confirm that the client's facts match the question and background in section 2." }],
+      [{ text: "Check that the sources in Appendix A have not been updated since the date of research." }],
+    ],
+  });
 
   if (answer.professional) {
     out.push(
-      { kind: "h2", text: "What the professional bodies say" },
-      { kind: "p", tone: "muted", runs: [{ text: "From ICAEW, ACCA, ATT, CIOT or FRC websites. Not quote-verified by Capto." }] },
+      section("Guidance from professional bodies"),
+      para("Summarised from ICAEW, ACCA, ATT, CIOT or FRC websites. These are not verified by Capto: read the linked material in full before relying on it.", "muted"),
       ...markdownBlocks(answer.professional.summary),
       { kind: "list", ordered: false, items: answer.professional.links.map((l) => [{ text: l.title, link: l.url }]) }
     );
   }
 
-  const appUrl = meta.url.replace(/\/ask\/.*$/, "");
-  out.push({
-    kind: "h2",
-    text: "Sources",
-  });
-  out.push({
-    kind: "list",
-    ordered: false,
-    items: answer.sources.map((s) => [
-      { text: `[${s.id}] `, bold: true },
-      { text: s.title, link: s.kind === "lesson" ? `${appUrl}${s.url}` : s.url },
-      { text: ` · ${s.publisher}${s.updatedAt ? ` · updated ${fmtDate(s.updatedAt)}` : ""}` },
-    ]),
+  // Evidence of the firm's review under its quality management procedures.
+  out.push(section("Review and approval"), para("Complete before this memorandum is relied on or its conclusions are shared with a client.", "muted"), {
+    kind: "signoff",
+    rows: [
+      { role: "Prepared by", name: meta.preparedBy, date: fmtDate(meta.exportedAt) },
+      { role: "Reviewed by", name: "", date: "" },
+      { role: "Approved for client use", name: "", date: "" },
+    ],
   });
 
+  // Appendix A: every source, with the quotations relied on from it.
+  const appUrl = meta.url.replace(/\/ask\/.*$/, "");
+  const cited = checked.flatMap((x) => x.citations);
+  out.push({ kind: "h2", text: "Appendix A: Sources and evidence" });
+  for (const s of answer.sources) {
+    const link = s.kind === "lesson" ? `${appUrl}${s.url}` : s.url;
+    out.push(
+      { kind: "h3", text: `[${s.id}] ${s.title}` },
+      { kind: "p", tone: "muted", runs: [{ text: `${s.publisher}${s.updatedAt ? ` · last updated ${fmtDate(s.updatedAt)}` : ""} · ` }, { text: link, link }] },
+      ...cited.filter((c) => c.sourceId === s.id).map((c): Block => ({ kind: "quote", text: c.quote, source: `[${s.id}]`, verified: c.verified }))
+    );
+  }
+
   out.push(
-    { kind: "h2", text: "Important" },
-    {
-      kind: "p",
-      tone: "muted",
-      runs: [
-        {
-          text: "Ask Capto is a research aid, not advice. It answers from official HMRC and GOV.UK guidance and Capto Learn's lessons, and checks every quote word for word against its source. Apply professional judgement and your firm's review process before advising a client, and check the linked guidance has not changed since the date above.",
-        },
-      ],
-    },
-    { kind: "p", tone: "muted", runs: [{ text: "Contains public sector information licensed under the Open Government Licence v3.0." }] },
-    { kind: "p", tone: "muted", runs: [{ text: "View online: " }, { text: meta.url, link: meta.url }] }
+    { kind: "h2", text: "Appendix B: Important notice" },
+    para(
+      `This memorandum was prepared by ${meta.firm} using Ask Capto, a research tool that answers from official HMRC and GOV.UK guidance and checks each quotation against its source. It is a research aid and is not advice. A suitably qualified person must review it, applying professional judgement and the firm's quality management procedures, before it is relied on or its conclusions are given to a client. Guidance and law change, so check the sources have not been updated since the date of research.`,
+      "muted"
+    ),
+    para("Contains public sector information licensed under the Open Government Licence v3.0.", "muted"),
+    { kind: "p", tone: "muted", runs: [{ text: `Reference ${meta.docRef}. Live answer: ` }, { text: meta.url, link: meta.url }] }
   );
   return out;
 }

@@ -18,7 +18,7 @@ export const lesson: Lesson = {
       kind: "md",
       md: `A partnership's income statement is prepared exactly like a sole trader's, down to net profit. What's different is what happens next: the profit has to be **shared** between the partners. That sharing is shown in an **appropriation account**, and each partner's share is credited to their own accounts in the balance sheet.
 
-A partnership (other than an LLP) isn't a separate legal person and doesn't pay tax itself. Each partner pays income tax and NIC on their own share of the taxable profit, reported on their personal return, and the partnership files a partnership return showing how the profit was split.`,
+In England, Wales and Northern Ireland a partnership (other than an LLP) isn't a separate legal person; a Scottish partnership is, but it still doesn't pay income tax itself. Each partner pays income tax and NIC on their own share of the taxable profit, reported on their personal return, and the partnership files a partnership return showing how the profit was split.`,
     },
     {
       kind: "callout",
@@ -239,8 +239,8 @@ C's total: £30,000 + £500 = **£30,500**`,
   ],
   sources: [
     { label: "Partnership Act 1890 s24 – rules as to interests and duties of partners", url: "https://www.legislation.gov.uk/ukpga/Vict/53-54/39/section/24" },
-    { label: "HMRC Partnership Manual PM10000 – introduction to partnerships", url: "https://www.gov.uk/hmrc-internal-manuals/partnership-manual/pm10000" },
-    { label: "HMRC Business Income Manual BIM82000 – partnerships: general notes", url: "https://www.gov.uk/hmrc-internal-manuals/business-income-manual/bim82000" },
+    { label: "HMRC Partnership Manual PM120100 – what is a partnership?", url: "https://www.gov.uk/hmrc-internal-manuals/partnership-manual/pm120100" },
+    { label: "HMRC Partnership Manual PM137000 – profit sharing arrangements", url: "https://www.gov.uk/hmrc-internal-manuals/partnership-manual/pm137000" },
     { label: "GOV.UK – Set up a business partnership", url: "https://www.gov.uk/set-up-business-partnership" },
   ],
 };

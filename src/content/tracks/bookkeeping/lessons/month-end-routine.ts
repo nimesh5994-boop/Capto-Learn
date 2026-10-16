@@ -95,7 +95,7 @@ A profit and loss account is only right if the balance sheet is right, because e
     walkthrough: [
       {
         kind: "md",
-        md: `**VAT control.** Expected balance = unpaid September return £6,240 + October's net VAT (£3,100 − £1,450 = £1,650) = **£7,890** credit. The account shows £9,140, so there's **£1,250** unexplained, exactly the amount in suspense. Check whether the unknown receipt was a customer payment wrongly coded with VAT as well as being in suspense, or whether a journal hit VAT control directly. Run the VAT control account transaction listing for October to find it.
+        md: `**VAT control.** Expected balance = unpaid September return £6,240 + October's net VAT (£3,100 − £1,450 = £1,650) = **£7,890** credit. The account shows £9,140, so there's **£1,250** unexplained, exactly the amount in suspense. A difference of the full £1,250 (rather than a VAT fraction of it) suggests the receipt was posted twice, once to suspense and once straight to VAT control, or that a journal hit VAT control directly. Run the VAT control account transaction listing for October to find it.
 
 **PAYE/NIC.** Expected balance = October's liability **£4,320**. The account shows £8,610: the difference is **£4,290**, the September payment. It went out of the bank on 21 October but was coded elsewhere (often to Wages). Find it and recode it to the liability.
 

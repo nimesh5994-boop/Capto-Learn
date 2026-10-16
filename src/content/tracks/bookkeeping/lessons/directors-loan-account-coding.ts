@@ -86,7 +86,7 @@ A **salary** goes through payroll and the payroll journal (covered later in this
       title: "When the account is overdrawn: the three issues to flag",
       md: `You aren't expected to give tax advice on an overdrawn DLA, but you are expected to spot it and tell your manager. The main issues are:
 
-- **s455 tax (CTA 2010 s455).** If a close company has lent money to a participator (e.g. a director-shareholder) and the loan is still outstanding **9 months after the end of the accounting period**, the company pays an extra charge of **33.75%** of the amount outstanding (32.5% for loans made before 6 April 2022). It's due with the corporation tax, 9 months and 1 day after the year end. It's repayable by HMRC once the loan is repaid, released or written off, but not until 9 months after the end of the period in which that happens, so it costs the company cash for a long time.
+- **s455 tax (CTA 2010 s455).** If a close company has lent money to a participator (e.g. a director-shareholder) and the loan is still outstanding **9 months after the end of the accounting period**, the company pays an extra charge on the amount outstanding at a rate that depends on when the loan was made: **35.75%** for loans made on or after **6 April 2026**, **33.75%** for loans made from 6 April 2022 to 5 April 2026, and 32.5% for loans made before 6 April 2022. It's due with the corporation tax, 9 months and 1 day after the year end. It's repayable by HMRC once the loan is repaid, released or written off, but not until 9 months after the end of the period in which that happens, so it costs the company cash for a long time.
 - **Beneficial loan benefit-in-kind.** If the director's combined loans from the company exceed **£10,000 at any time in the tax year** and interest is charged at less than HMRC's official rate, there's a taxable benefit to report on the P11D, with Class 1A NIC for the company.
 - **"Bed and breakfasting".** Paying the loan off just before the deadline and taking it straight back out doesn't work. Where repayments of **£5,000 or more** are followed within **30 days** by new borrowing of £5,000 or more, the repayment is matched against the new loan, not the old one. There are wider anti-avoidance rules for arrangements too.
 
@@ -162,9 +162,9 @@ Mark's salary was paid through payroll from the company bank account, so it isn'
       },
       {
         kind: "md",
-        md: `**Step 3: flag it.** Mark is wrong: he owes the company **£5,970**. If he doesn't repay it (or the company doesn't vote further lawful dividends credited to his account) by **31 December 2026**, s455 tax of 33.75% × £5,970 = **£2,014.88** would be payable on 1 January 2027 with the corporation tax.
+        md: `**Step 3: flag it.** Mark is wrong: he owes the company **£5,970**. If he doesn't repay it (or the company doesn't vote further lawful dividends credited to his account) by **31 December 2026**, s455 tax of 33.75% × £5,970 = **£2,014.88** would be payable on 1 January 2027 with the corporation tax. (The drawings were all made before 6 April 2026, so the 33.75% rate applies. Anything Mark draws from 6 April 2026 onwards falls under the 35.75% rate.)
 
-Your note to the manager also covers the **peak balance during the tax year**: with £1,500 a month going out and the dividend not credited until September, the balance went over £10,000 owed at some point, so a beneficial-loan benefit-in-kind needs looking at. Leave the advice to the manager; your job is the accurate schedule.`,
+Your note to the manager also covers the **peak balance during the tax year**. Taking the transfers and expense claims month by month, the account peaked at about **£9,150** owed at the end of September, just before the dividend was credited. That's under £10,000, so the beneficial-loan exemption looks likely to apply for 2025/26, but only just. Show the month-by-month balances in your schedule so the manager can confirm this. And if the £1,500 transfers carry on after 31 March 2026, the balance will pass £10,000 within about three months of 2026/27, so flag that too. Leave the advice to the manager; your job is the accurate schedule.`,
       },
     ],
   },
@@ -225,7 +225,7 @@ Overdrawn: £12,250 − £10,720 = **£1,530** owed by the director.`,
       answer: 6075,
       unit: "£",
       explain:
-        "Repayments made within 9 months of the year end (here, by 30 September 2026) reduce the amount on which s455 is charged. The £6,000 was repaid in July and wasn't followed by new borrowing, so the bed-and-breakfasting rule doesn't bite. s455 is charged at 33.75% on the £18,000 still outstanding.",
+        "Repayments made within 9 months of the year end (here, by 30 September 2026) reduce the amount on which s455 is charged. The £6,000 was repaid in July and wasn't followed by new borrowing, so the bed-and-breakfasting rule doesn't bite. The loans were made before 6 April 2026, so s455 is charged at 33.75% on the £18,000 still outstanding.",
       working: `Outstanding 9 months after year end: £24,000 − £6,000 = £18,000
 s455: £18,000 × 33.75% = **£6,075**`,
     },
@@ -278,10 +278,10 @@ s455: £18,000 × 33.75% = **£6,075**`,
     {
       kind: "mcq",
       id: "q-s455-rate",
-      prompt: "At what rate is s455 tax charged on a loan to a participator made in 2026 that is still outstanding 9 months after the year end?",
-      options: ["19%", "25%", "32.5%", "33.75%"],
+      prompt: "At what rate is s455 tax charged on a loan to a participator made in **May 2026** that is still outstanding 9 months after the year end?",
+      options: ["25%", "32.5%", "33.75%", "35.75%"],
       answer: 3,
-      explain: "33.75% for loans made on or after 6 April 2022. The 32.5% rate applies to loans made before that date.",
+      explain: "35.75% for loans made on or after 6 April 2026. Loans made from 6 April 2022 to 5 April 2026 are charged at 33.75%, and loans made before 6 April 2022 at 32.5%.",
     },
     {
       kind: "mcq",

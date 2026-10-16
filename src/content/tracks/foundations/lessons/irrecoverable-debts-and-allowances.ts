@@ -60,9 +60,10 @@ If the client is VAT registered and accounted for the output VAT when the invoic
 
 1. The output VAT has been accounted for and paid.
 2. The debt has been **written off in the VAT account** and transferred to a separate refunds-for-bad-debts account.
-3. At least **6 months** have passed since the **later** of the date payment was due and the date of the supply.
-4. The claim is made within **4 years and 6 months** of that later date.
-5. The debt hasn't been sold or factored under a legal assignment.
+3. The value of the supply isn't more than the customary selling price.
+4. At least **6 months** have passed since the **later** of the date payment was due and the date of the supply.
+5. The claim is made within **4 years and 6 months** of that later date.
+6. The debt hasn't been paid, sold or factored under a legal assignment.
 
 The relief is claimed by including the VAT in **box 4** of the return for the period in which the conditions are first met.
 

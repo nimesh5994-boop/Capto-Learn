@@ -40,14 +40,14 @@ export const lesson: Lesson = {
       md: `- A **capital distribution** in the winding up of a company is treated as a **disposal of shares** by the shareholder (TCGA 1992 s122). It is **not** a dividend. The gain is the amount received less the base cost of the shares.
 - CGT rates for 2026/27: **18% / 24%** on ordinary gains; the annual exempt amount is **£3,000**.
 - **Business Asset Disposal Relief (BADR)** taxes qualifying gains at **18%** from 6 April 2026 (14% in 2025/26), up to a **£1 million lifetime limit**.
-- For BADR on shares: the individual must be an **officer or employee** and hold **at least 5% of the ordinary share capital with 5% of the voting rights**, in a **trading company** (or holding company of a trading group), throughout the **2 years** before the **cessation of the business**. The distribution must be made **within 3 years** after the cessation. (CG64115 deals with liquidations.)
+- For BADR on shares: the individual must be an **officer or employee** and hold **at least 5% of the ordinary share capital with 5% of the voting rights**, and be entitled to **at least 5% of either the distributable profits and assets on a winding up, or the sale proceeds** if the company is sold, in a **trading company** (or holding company of a trading group), throughout the **2 years** before the **cessation of the business**. The distribution must be made **within 3 years** after the cessation. (CG64115 deals with liquidations.)
 - **Informal strike-offs:** under **CTA 2010 s1030A**, distributions of up to **£25,000** in total are treated as capital if conditions are met; above £25,000 the whole distribution is taxed as income.`,
     },
     {
       kind: "callout",
       tone: "warning",
       title: "The winding-up TAAR (ITTOIA 2005 ss396B, 404A)",
-      md: `The **targeted anti-avoidance rule** applies to winding-ups from 6 April 2016. If **all four conditions** are met, the distribution is **taxed as a dividend**, not capital:
+      md: `The **targeted anti-avoidance rule** applies to distributions in a winding up made on or after 6 April 2016. If **all four conditions** are met, the distribution is **taxed as a dividend**, not capital:
 
 - **A:** the individual held **at least 5%** of the company immediately before the winding-up.
 - **B:** the company was a **close company** at some point in the two years before.
@@ -64,7 +64,7 @@ HMRC's target is "phoenixism", closing and reopening to turn income into capital
 2. **Overdrawn director's loan account?** Don't leave it. In an MVL the liquidator will treat it as an asset and normally **sets it off against the distribution**. Check how s455 and s458 relief apply (CTM61559). A loan the shareholder can't repay can't just be ignored.
 3. **Final accounts and corporation tax return.** The final accounting period and a liquidation period have separate returns. Tax on gains in the company (for example on assets distributed in specie) must be paid.
 4. **Capital allowances and balancing charges** on assets disposed of; **stock** and **work in progress** valued correctly.
-5. **Claim BADR** on the shareholder's Self Assessment for the year of the distribution (the entrepreneurs' relief box), or on the CGT account.
+5. **Claim BADR** on the shareholder's Self Assessment return for the year of the distribution, or using Section A of the BADR helpsheet. The deadline is the first anniversary of the 31 January after the end of that tax year (for 2026/27, 31 January 2029).
 6. **Retain records** (6 years for companies, plus liquidation papers).
 7. **Check the date** of the first distribution: BADR needs it **within three years** of cessation.`,
     },
@@ -85,7 +85,7 @@ HMRC's target is "phoenixism", closing and reopening to turn income into capital
 
 **Step 2: capital or income?** The distribution is a capital distribution, so Ellis has a **disposal of shares**. Gain = £210,000 − £100 = **£209,900**.
 
-**Step 3: BADR conditions.** Officer, 100% shareholder, trading company, held for the 2 years before cessation, distribution made within 3 years of cessation (cessation 31 March 2026, distribution November 2026). BADR available.
+**Step 3: BADR conditions.** Officer, 100% shareholder (so 100% of the votes and of the profits and assets), trading company, held for the 2 years before cessation, distribution made within 3 years of cessation (cessation 31 March 2026, distribution November 2026). BADR available.
 
 **Step 4: CGT.** The £209,900 is well within the £1 million lifetime limit. The annual exempt amount is £3,000. Tax: (£209,900 − £3,000) × 18% = **£37,242**.
 
@@ -185,6 +185,8 @@ HMRC's target is "phoenixism", closing and reopening to turn income into capital
     { label: "CG64115 – BADR on liquidation", url: "https://www.gov.uk/hmrc-internal-manuals/capital-gains-manual/cg64115" },
     { label: "CTM61559 – loans to participators and MVL", url: "https://www.gov.uk/hmrc-internal-manuals/company-taxation-manual/ctm61559" },
     { label: "Business Asset Disposal Relief – GOV.UK", url: "https://www.gov.uk/business-asset-disposal-relief" },
+    { label: "Business Asset Disposal Relief: eligibility", url: "https://www.gov.uk/business-asset-disposal-relief/eligibility" },
+    { label: "Business Asset Disposal Relief: how to claim", url: "https://www.gov.uk/business-asset-disposal-relief/how-to-claim" },
     { label: "Capital Gains Tax rates", url: "https://www.gov.uk/capital-gains-tax/rates" },
     { label: "Closing a limited company – GOV.UK", url: "https://www.gov.uk/closing-a-limited-company" },
   ],

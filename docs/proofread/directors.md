@@ -1,0 +1,61 @@
+# Proofread report: Directors, DLA & profit extraction track (October 2026)
+
+Scope: `src/content/tracks/directors/index.ts` and all 11 lessons. All arithmetic in exercises, worked examples, tables and journals was recomputed, and MCQ/multi answer indexes were checked. `npx tsx scripts/validate-content.mts directors` passes (3 modules, 11 lessons, 105 questions) and `npx tsc --noEmit -p .` is clean. As instructed, I didn't re-check s455 at 35.75% or the s456 £15,000 conditions; CTM61540 confirms them anyway.
+
+## Changed
+
+- `lessons/anti-bed-and-breakfasting-rules.ts:46` (and quiz `q-set-off`, `:181`): said a dividend or bonus credited to the DLA is a repayment that "can still be matched" and that the rules "apply whatever the method". This was wrong. s464ZA(6) excludes a repayment that itself gives rise to an income tax charge, such as a dividend or a PAYE bonus credited to the loan account. The exclusion is lost if the money is paid out in cash and paid back in. The text, the quiz options, the answer explanation and the "what the rules don't touch" list now say this. Source: https://www.gov.uk/hmrc-internal-manuals/company-taxation-manual/ctm61642
+- `lessons/anti-bed-and-breakfasting-rules.ts:9, :21, :26, :37, :139, :195–197`: cited the rules as CTA 2010 s464C (30-day) and s464D (arrangements), "Part 10 Chapter 3A". For repayments from 30 October 2024 they are in s464ZA(1) and s464ZA(3), with s464ZB; Chapter 3B (old ss464C–464D) was removed. Section references, callout titles and the MCQ explanation were updated. The two dead legislation.gov.uk links were replaced with CTM61630, CTM61642 and the GOV.UK policy paper. Sources: https://www.gov.uk/hmrc-internal-manuals/company-taxation-manual/ctm61630, https://www.gov.uk/hmrc-internal-manuals/company-taxation-manual/ctm61635, https://www.gov.uk/government/publications/corporation-tax-close-company-shareholders-anti-avoidance-measure/draft-legislation-accessible-version
+- `lessons/anti-bed-and-breakfasting-rules.ts:30–31, :38`: said the rules match new loans "or benefits". Under s464ZA the matched items are new chargeable payments (loans), so the wording is now "new loans". Also added that, under the 30-day rule, the new loans must be in a later accounting period. The arrangements rule now says "immediately before the repayment" and "to replace some or all of the amount repaid". Same sources (CTM61630, CTM61635, policy paper).
+- `lessons/anti-bed-and-breakfasting-rules.ts:50`: said both rules need a £5,000 repayment floor. The arrangements rule tests the balance (£15,000 or more) and the arranged new loans (£5,000 or more), not the size of the repayment. The bullet now gives each rule's own thresholds. Source: CTM61635.
+- `lessons/s455-charge-and-s458-relief.ts:38` (s464A): said the benefits charge applies to any non-loan benefit, "for example by transferring an asset for less than market value". It needs the company to be a party to **tax avoidance arrangements**, and it doesn't apply where the extraction is already taxed as a distribution. The text now says this, and adds that s464B relief for returned benefits was withdrawn for return payments made on or after 30 October 2024. Sources: https://www.gov.uk/hmrc-internal-manuals/company-taxation-manual/ctm61575, https://www.gov.uk/hmrc-internal-manuals/company-taxation-manual/ctm61625
+- `lessons/s455-charge-and-s458-relief.ts:55`: gave the s458 claim time limit as "4 years from the end of the accounting period in which the relief arises". The limit is 4 years from the end of the **financial year** in which the loan is repaid, released or written off. Also added the CT600A vs form L2P point. Sources: https://www.gov.uk/hmrc-internal-manuals/company-taxation-manual/ctm61600, https://www.gov.uk/directors-loans/you-owe-your-company-money
+- `lessons/s455-charge-and-s458-relief.ts:57`: said a dividend set-off counts as a repayment "only if ... not part of a bed-and-breakfasting arrangement". Since a credited dividend is excluded from matching, that was inconsistent with the rules. It now says the set-off counts if the dividend is lawful and actually paid (credited), and that credited dividends and bonuses are outside the matching rules. Sources: CTM61600 (dividend credit as repayment) and CTM61642.
+- `lessons/dividends-legality-and-paperwork.ts:28`: said interim accounts are used "for a dividend paid before accounts are filed". Interim accounts are used where the distribution couldn't be justified by reference to the last annual accounts. For private companies there are no statutory form requirements for interim or initial accounts. Added CTM15205 as a source. Source: https://www.gov.uk/hmrc-internal-manuals/company-taxation-manual/ctm15205
+- `lessons/salary-vs-dividend-planning.ts:89, :97`: the Package A dividend tax was £2,671.27. £24,848.54 × 10.75% = £2,671.22, so net income is £35,247.32 (was £35,247.27), total tax is £9,752.68 (was £9,752.73), and the saving over B is £462.80 (was £462.75). "About £463" and "about £460" are unchanged. This was an arithmetic fix.
+- `lessons/salary-vs-dividend-planning.ts:52`: "about 12.2p per £1 of NIC" should be per £1 of **salary** above £5,000 (15p less 19% CT relief). Arithmetic and wording fix.
+- `lessons/alphabet-shares-waivers-and-settlements.ts:90`: Orla's tax was £1,820.18. £16,930 × 10.75% = £1,819.98. The £9,985 family saving is unchanged. Arithmetic fix.
+- `lessons/directors-loan-account-basics.ts:102` (scenario): said that if the £7,500 cash was really salary or a dividend "the DLA is understated as a debit". It's the reverse: the £7,500 comes out of the DLA, so Tom's credit balance gets larger. Internal logic fix.
+- `lessons/directors-loan-account-basics.ts:61` (checklist): pointed to "beneficial loan reporting (P11D / s455 interest) in the next lesson". The next lesson is dividends, and "s455 interest" is meaningless here. It now refers to the BIK (P11D and Class 1A) and the beneficial loans lesson. Source: https://www.gov.uk/directors-loans/you-owe-your-company-money
+- `lessons/directors-loan-account-basics.ts:216` (sources): the CT600 guide doesn't cover CT61. It was replaced with GOV.UK "If you lend your company money", which confirms the 20% deduction, the quarterly CT61 and the Self Assessment reporting. Source: https://www.gov.uk/directors-loans/you-lend-your-company-money
+- `lessons/closing-a-company-mvl-badr-and-the-taar.ts:43` (and scenario step 3): the BADR conditions for shares left out the economic test, which is entitlement to at least 5% of distributable profits and assets on a winding up, or of the sale proceeds. Added. Source: https://www.gov.uk/business-asset-disposal-relief/eligibility
+- `lessons/closing-a-company-mvl-badr-and-the-taar.ts:67`: said to claim BADR in "the entrepreneurs' relief box, or on the CGT account". It now says to claim on the Self Assessment return or Section A of the BADR helpsheet, and gives the claim deadline. Source: https://www.gov.uk/business-asset-disposal-relief/how-to-claim
+- `lessons/closing-a-company-mvl-badr-and-the-taar.ts:50`: "applies to winding-ups from 6 April 2016" is now "distributions in a winding up made on or after 6 April 2016", regardless of when the winding up began. Source: https://www.gov.uk/hmrc-internal-manuals/company-taxation-manual/ctm36305
+- `lessons/writing-off-a-directors-loan.ts:62` (insolvency tip): said s455 tax "is reclaimed for the liquidator in certain cases". CTM61560 says s458 relief is due when the loan is repaid, released or written off, and that a write-off brings the s415 charge and possibly Class 1 NIC. The tip now says this. Source: https://www.gov.uk/hmrc-internal-manuals/company-taxation-manual/ctm61560
+- `lessons/writing-off-a-directors-loan.ts:67` (scenario): the release happens in 2027/28 (after the 1 January 2028 s455 payment), but it is computed at 2026/27 rates. Added a note that the figures use 2026/27 rates and should be checked for the year of release. No figures changed.
+
+## SUSPECT
+
+- `lessons/directors-duties-and-responsibilities.ts:51`: says the member-approval requirement for loans to directors (ss197–214) "is largely a public-company rule". Under s197, member approval applies to loans by **any** company (subject to exceptions such as s207's £10,000 and s204's £50,000). Only the quasi-loan and credit-transaction rules (ss198–201) are limited to public and associated companies. Search snippets of the official explanatory notes support this, but legislation.gov.uk couldn't be fetched, so I left it. Strongly recommend correcting it: an overdrawn DLA over £10,000 may need shareholder approval.
+- `lessons/directors-loan-account-basics.ts:64` and quiz `q-sheet-disclosure`: cite "CA 2006 ss412–413" for disclosure of advances and credits. I believe s412 covers directors' remuneration and only s413 covers advances, credits and guarantees. I couldn't fetch legislation.gov.uk to confirm.
+- `lessons/directors-duties-and-responsibilities.ts:60`: describes PCRT as "not assisting with tax avoidance that has no reasonable basis". PCRT's standard is framed around arrangements that are highly artificial or contrived and exploit shortcomings in the legislation. PCRT is not on the official-source list, so I left it unchanged.
+- `lessons/alphabet-shares-waivers-and-settlements.ts` quiz `q-children` explanation: "The £100 limit applies per parent-gift". My understanding is that it is per child, per parent, across all that parent's settlements. TSEM4300 doesn't state the scope.
+
+## UNVERIFIED
+
+Could not be fetched (legislation.gov.uk) or not found on the HMRC pages I checked:
+
+- CA 2006 s250/s251 wording, s847, s830, s831, Part 23; IA 1986 ss238/239; *BTI v Sequana* holding (bailii not fetched).
+- ITEPA s188 being displaced where s415 applies (NIM12020 broadly supports "only s415 should apply"); ITA 2007 s19(2)(d) is confirmed by SAIM5200.
+- Whether the winding-up TAAR applies to s1030A strike-off distributions (the table says it does). CTM36305 doesn't address it.
+- The pension contribution spreading rules (FA 2004 s197). The lesson only says to check them. The paid basis is confirmed by PTM043100.
+- Jones v Garnett facts (one of two £1 shares each), as stated from the case, not re-read.
+- The quarterly-review wording for the official rate is supported by a quote from the GOV.UK rates page in search results. The current table confirms 3.75% from 6 April 2026 with no change since.
+
+## Confirmed against official sources this session (no change needed)
+
+- Dividend allowance £500 and rates 10.75% / 35.75% / 39.35% for 2026/27 (GOV.UK Tax on dividends).
+- NIC 2026/27: LEL £6,708 (£129/wk), PT £12,570 (£1,048/month), ST £5,000 (£417/month), UEL £50,270, 15% employer, 8%/2% employee, Class 1A 15%, EA £10,500; the single-director EA restriction.
+- Official rate 3.75% from 6 April 2026; £10,000 threshold, averaging and precise methods, employee or HMRC election (480 Chapter 17).
+- CGT 18%/24%, AEA £3,000, BADR 18% from 6 April 2026 (14% in 2025/26, 10% before), £1m lifetime limit, 3-year window after cessation.
+- TAAR conditions A–D (CTM36305); s1030A £25,000 (CG64115); MVL declaration of solvency, 12 months (GOV.UK).
+- s458 relief timing (CTM61610) and dividend credit as repayment (CTM61600); MVL set-off is a repayment, not a release (CTM61559).
+- Write-off: s415 dividend income, no gross-up from 2016/17 (SAIM5200, CTM61655); Class 1 NIC and *Stewart Fraser* (CTM61660, NIM12020).
+- Interest to directors: 20% deduction, CT61 quarterly (GOV.UK).
+- Settlements: TSEM4205 (outright gifts, B shares Example 5), TSEM4210, TSEM4225 (waivers, "bounteous arrangement").
+- BIM46035 (wholly and exclusively, remuneration package, partial disallowance), PTM043100 (paid basis), annual allowance £60,000, 3-year carry forward, taper £200k/£260k, NMPA 57 from 6 April 2028, unused pensions in IHT from 6 April 2027 (FA 2026).
+- Companies House "Being a company director" page lists the 7 duties.
+
+## Clean
+
+3 of 11 lessons were checked with no changes: directors-duties-and-responsibilities (apart from the SUSPECT items), beneficial-loan-benefit-in-kind, and employer-pension-contributions-as-extraction. `index.ts` is also clean.

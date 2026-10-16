@@ -3,7 +3,7 @@ import { getDb } from "@/lib/db/client";
 import { researchQueries, savedResearch } from "@/lib/db/schema";
 import { AccessError, authorize } from "@/lib/auth/dal";
 import { appUrl } from "@/lib/url";
-import { buildReport, reportFilename } from "@/lib/research/report";
+import { buildReport, documentRef, reportFilename } from "@/lib/research/report";
 import { renderDocx } from "@/lib/research/reportDocx";
 import { renderPdf } from "@/lib/research/reportPdf";
 
@@ -43,15 +43,15 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
   const blocks = buildReport(
     row.question,
     row.answer,
-    { firm: ctx.org.name, preparedBy: ctx.user.name, reference: saved?.reference, note: saved?.note, url: `${appUrl()}/ask/${id}`, exportedAt: new Date() },
+    { firm: ctx.org.name, docRef: documentRef(id), preparedBy: ctx.user.name, reference: saved?.reference, note: saved?.note, url: `${appUrl()}/ask/${id}`, exportedAt: new Date() },
     saved?.title
   );
-  const brand = { firm: ctx.org.name, color: ctx.org.brandColor, logoDataUrl: ctx.org.logoDataUrl };
+  const brand = { firm: ctx.org.name, color: ctx.org.brandColor, logoDataUrl: ctx.org.logoDataUrl, docRef: documentRef(id) };
   const body = format === "docx" ? await renderDocx(blocks, brand) : await renderPdf(blocks, brand);
   return new Response(new Uint8Array(body), {
     headers: {
       "content-type": TYPES[format],
-      "content-disposition": `attachment; filename="${reportFilename(title, format)}"`,
+      "content-disposition": `attachment; filename="${reportFilename(`${documentRef(id)} ${title}`, format)}"`,
       "cache-control": "private, no-store",
     },
   });

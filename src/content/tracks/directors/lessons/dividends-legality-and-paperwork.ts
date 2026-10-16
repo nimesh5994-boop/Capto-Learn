@@ -25,7 +25,7 @@ export const lesson: Lesson = {
       tone: "rule",
       title: "The legal test (CA 2006 Part 23)",
       md: `- A company may only make a distribution out of **profits available for the purpose** (s830): accumulated, realised profits less accumulated, realised losses.
-- Distributions are judged by reference to **"relevant accounts"** (ss836–839): the last annual accounts, or interim accounts for a dividend paid before accounts are filed, or initial accounts for a first period.
+- Distributions are judged by reference to **"relevant accounts"** (ss836–839): normally the last annual accounts; **interim accounts** where the distribution couldn't be justified by the last annual accounts (for example, profits made since the year end); or **initial accounts** for a distribution before the first annual accounts. For a private company there are no statutory form requirements for interim or initial accounts.
 - A shareholder who receives a distribution knowing, or having reasonable grounds to believe, it was unlawful must **repay** it (s847).
 - The articles may add restrictions, and a **public** company has an additional net-assets test.`,
     },
@@ -201,6 +201,7 @@ Never backdate a minute. It makes a problem into a dishonesty issue.`,
   ],
   sources: [
     { label: "Companies Act 2006 Part 23 – distributions", url: "https://www.legislation.gov.uk/ukpga/2006/46/part/23" },
+    { label: "CTM15205 – when dividends are due and the relevant accounts", url: "https://www.gov.uk/hmrc-internal-manuals/company-taxation-manual/ctm15205" },
     { label: "Tax on dividends – GOV.UK", url: "https://www.gov.uk/tax-on-dividends" },
     { label: "Income Tax rates and allowances (current and past)", url: "https://www.gov.uk/government/publications/rates-and-allowances-income-tax/income-tax-rates-and-allowances-current-and-past" },
     { label: "Rate of tax for the loans to participators charge", url: "https://www.gov.uk/government/publications/corporation-tax-rate-of-tax-for-the-loans-to-participators-charge/corporation-tax-rate-of-tax-for-the-loans-to-participators-charge" },

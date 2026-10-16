@@ -11,7 +11,7 @@ const WARN = "#b45309";
 const s = StyleSheet.create({
   page: { paddingTop: 44, paddingBottom: 56, paddingHorizontal: 50, fontFamily: "Helvetica", fontSize: 10.5, lineHeight: 1.45, color: "#221a22" },
   firm: { fontFamily: "Helvetica-Bold", fontSize: 13 },
-  kicker: { fontSize: 8.5, color: MUTED, marginTop: 4, marginBottom: 14 },
+  kicker: { fontSize: 8, color: MUTED, marginTop: 4, marginBottom: 14, fontFamily: "Helvetica-Bold", letterSpacing: 0.8 },
   title: { fontFamily: "Helvetica-Bold", fontSize: 18, lineHeight: 1.25, marginBottom: 12 },
   metaTable: { borderWidth: 0.6, borderColor: LINE, marginBottom: 12 },
   metaRow: { flexDirection: "row", borderBottomWidth: 0.6, borderColor: LINE },
@@ -133,6 +133,26 @@ function BlockView({ b, color }: { b: Block; color: string }) {
           <Text style={[s.quoteSrc, { color: b.verified ? MUTED : WARN }]}>{pdfSafe(`${b.verified ? "Found word for word in" : "Not found word for word in"} ${b.source}`)}</Text>
         </View>
       );
+    case "signoff":
+      return (
+        <View style={s.table} wrap={false}>
+          <View style={s.tr}>
+            {["Role", "Name", "Signature", "Date"].map((h) => (
+              <Text key={h} style={s.th}>
+                {h}
+              </Text>
+            ))}
+          </View>
+          {b.rows.map((r, i) => (
+            <View key={i} style={[s.tr, { minHeight: 30 }]}>
+              <Text style={s.td}>{pdfSafe(r.role)}</Text>
+              <Text style={s.td}>{pdfSafe(r.name)}</Text>
+              <Text style={s.td}> </Text>
+              <Text style={s.td}>{pdfSafe(r.date)}</Text>
+            </View>
+          ))}
+        </View>
+      );
     default:
       return null;
   }
@@ -149,7 +169,7 @@ export async function renderPdf(blocks: Block[], brand: ReportBrand): Promise<Bu
       <Page size="A4" style={s.page}>
         {/* eslint-disable-next-line jsx-a11y/alt-text -- react-pdf's Image has no alt; the firm name is the document author */}
         {logo ? <Image src={brand.logoDataUrl!} style={fitBox(logo.width, logo.height, 150, 48)} /> : <Text style={[s.firm, { color }]}>{pdfSafe(brand.firm)}</Text>}
-        <Text style={s.kicker}>Research note · Ask Capto</Text>
+        <Text style={s.kicker}>TECHNICAL RESEARCH MEMORANDUM</Text>
         {title && <BlockView b={title} color={color} />}
         <View style={s.metaTable}>
           {meta.map((m, i) => (
@@ -162,7 +182,7 @@ export async function renderPdf(blocks: Block[], brand: ReportBrand): Promise<Bu
         {rest.map((b, i) => (
           <BlockView key={i} b={b} color={color} />
         ))}
-        <Text style={s.footer} render={({ pageNumber, totalPages }) => `${pdfSafe(brand.firm)} · Research aid, not advice · Page ${pageNumber} of ${totalPages}`} fixed />
+        <Text style={s.footer} render={({ pageNumber, totalPages }) => `${pdfSafe(brand.firm)}${brand.docRef ? ` · ${brand.docRef}` : ""} · Confidential · Page ${pageNumber} of ${totalPages}`} fixed />
       </Page>
     </Document>
   );

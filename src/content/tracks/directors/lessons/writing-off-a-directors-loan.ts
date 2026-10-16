@@ -59,12 +59,12 @@ export const lesson: Lesson = {
       kind: "callout",
       tone: "tip",
       title: "Insolvency",
-      md: `If the company goes into insolvent liquidation the s455 tax is reclaimed for the liquidator in certain cases (CTM61560), but the **liquidator can pursue the director** for the overdrawn balance. A write-off made on the eve of insolvency can be challenged as a **transaction at an undervalue** (Insolvency Act 1986 s238). Don't let the client treat a write-off as a way of avoiding repayment to creditors.`,
+      md: `If the company goes into insolvent liquidation, s458 relief (and repayment of the s455 tax) is due only if the loan is repaid, released or written off (CTM61560). The **liquidator can pursue the director** for the overdrawn balance, and if it is written off the director faces the s415 income tax charge and possibly Class 1 NIC. A write-off made on the eve of insolvency can be challenged as a **transaction at an undervalue** (Insolvency Act 1986 s238). Don't let the client treat a write-off as a way of avoiding repayment to creditors.`,
     },
   ],
   scenario: {
     title: "Tilbury Electrical Ltd: £20,000 that cannot be repaid",
-    narrative: `Tilbury Electrical Ltd's director and sole shareholder, Neil Tilbury, has an overdrawn loan account of **£20,000** at 31 March 2027. The year-end s455 charge was paid on 1 January 2028 (£7,150 = 35.75% × £20,000). Neil takes a £12,570 salary from the company and has no other income. Distributable reserves are £55,000. Neil has no cash to repay the loan and asks you to write it off in the 2027/28 tax year. He hasn't used his £500 dividend allowance elsewhere.`,
+    narrative: `Tilbury Electrical Ltd's director and sole shareholder, Neil Tilbury, has an overdrawn loan account of **£20,000** at 31 March 2027. The year-end s455 charge was paid on 1 January 2028 (£7,150 = 35.75% × £20,000). Neil takes a £12,570 salary from the company and has no other income. Distributable reserves are £55,000. Neil has no cash to repay the loan and asks you to write it off in the 2027/28 tax year. He hasn't used his £500 dividend allowance elsewhere. (The figures below use 2026/27 rates and thresholds; check the rates for the year in which the release actually happens.)`,
     walkthrough: [
       {
         kind: "md",

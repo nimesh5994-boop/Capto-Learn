@@ -58,7 +58,7 @@ If the director lends money to the company, the balance sits as a credit on the 
       tone: "tip",
       title: "The year-end checklist for an overdrawn DLA",
       md: `1. Is the DLA debit at the **year-end date**? If so, note the amount.
-2. Is it **over £10,000 at any time** in the tax year? If so, consider the beneficial loan reporting (P11D / s455 interest) in the next lesson.
+2. Is it **over £10,000 at any time** in the tax year? If so, a beneficial loan benefit in kind (P11D and Class 1A NIC) may arise. This is covered in the beneficial loans lesson.
 3. Can it be cleared before **9 months and 1 day after the year end**? Options: declare a dividend (if reserves exist), vote a bonus (with PAYE and NIC), or the director repays cash. Each has a different cost.
 4. Watch for **bed and breakfasting**: repaying just before the deadline and borrowing again straight afterwards will not remove the s455 charge. This is covered in a later lesson.
 5. Show the DLA balance in the accounts (Companies Act 2006 ss412–413 disclosure of advances and credits to directors).`,
@@ -99,7 +99,7 @@ If the director lends money to the company, the balance sits as a credit on the 
 
 Tom's £2,000 payment into the company reduces what he owes, so it **credits** his account. The closing position is **Cr £1,050**: the company owes Tom, so there is no s455 exposure at 30 June.
 
-**But resolve the £7,500 cash.** If it is in fact salary or a dividend, the DLA is understated as a debit, and the company has unreported PAYE. If it is a loan, the credit figure is right but the cash must be evidenced. Always ask before finalising.`,
+**But resolve the £7,500 cash.** If it is in fact salary or a dividend, it comes out of the DLA (Tom's credit balance becomes larger), and the company has unreported PAYE or an undocumented dividend. If it is a loan, the Cr £1,050 figure is right but the cash must be evidenced. Always ask before finalising.`,
       },
       {
         kind: "journal",
@@ -213,6 +213,6 @@ Tom's £2,000 payment into the company reduces what he owes, so it **credits** h
     { label: "Director's loans – GOV.UK", url: "https://www.gov.uk/directors-loans" },
     { label: "Close companies: loans to participators – CTM61505", url: "https://www.gov.uk/hmrc-internal-manuals/company-taxation-manual/ctm61505" },
     { label: "Companies Act 2006 s413 – advances and credits to directors", url: "https://www.legislation.gov.uk/ukpga/2006/46/section/413" },
-    { label: "Company Tax Return guide (CT600) – includes CT61 for income tax on interest", url: "https://www.gov.uk/government/publications/corporation-tax-company-tax-return-ct600-2015-version-3" },
+    { label: "Director's loans: if you lend your company money (20% deduction and CT61)", url: "https://www.gov.uk/directors-loans/you-lend-your-company-money" },
   ],
 };

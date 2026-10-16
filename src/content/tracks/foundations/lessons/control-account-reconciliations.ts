@@ -129,7 +129,7 @@ Items 1, 2 and 5 need journals in the nominal ledger. Item 4 needs the duplicate
           { account: "Trade receivables control", cr: 1310 },
         ],
         narrative:
-          "The £450 credit note was for £375 net plus £75 VAT (standard-rated). The irrecoverable debt is shown net of any VAT relief, which hasn't been claimed yet. Total credit to control: £450 + £300 + £560 = £1,310.",
+          "The £450 credit note was for £375 net plus £75 VAT (standard-rated). No VAT bad debt relief has been claimed yet, so the whole £560 is charged to irrecoverable debts. Total credit to control: £450 + £300 + £560 = £1,310.",
       },
     ],
   },

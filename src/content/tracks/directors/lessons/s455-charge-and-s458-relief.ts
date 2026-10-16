@@ -35,7 +35,7 @@ export const lesson: Lesson = {
       md: `### Who and what is caught
 
 - A **participator** is a person with a share or interest in the capital or income of the company: shareholders (including those on small percentages), loan creditors, and in practice most directors who own shares.
-- **Loans and advances** include overdrawn DLAs, paying a personal bill, lending cash, and releasing a debt owed to the company. A separate but parallel charge (**s464A**) applies at the same rate where the company confers a **benefit** on a participator, for example by transferring an asset for less than market value, through an arrangement that isn't a loan and isn't otherwise taxed as income.
+- **Loans and advances** include overdrawn DLAs, paying a personal bill, lending cash, and releasing a debt owed to the company. A separate but parallel charge (**s464A**) applies at the same rate where the close company is a party to **tax avoidance arrangements** under which a **benefit** is conferred on a participator other than by a loan (it doesn't apply where the extraction is already taxed as a distribution). Relief for a benefit that is returned to the company (s464B) has been withdrawn for return payments made on or after 30 October 2024.
 - **Exceptions:** a loan of up to **£15,000** in total to a full-time working director or employee who has **no material interest** (5% or less) is outside s455 (s456). Owner-directors will almost never qualify. A **debt for the supply of goods or services** in the ordinary course on normal credit terms is also excluded.`,
     },
     {
@@ -52,9 +52,9 @@ Relief is given when the loan is **repaid, released or written off**. It is clai
 
 - Full repayment before the deadline: **no s455 tax** is due at all.
 - Repayment after the deadline: the tax paid is **refunded**, but only **9 months and 1 day after the end of the accounting period in which the repayment was made**. HMRC pays no interest on the delay. Company interest on the original late payment is also a cost.
-- **Claim time limit:** 4 years from the end of the accounting period in which the relief arises.
+- **Claim time limit:** 4 years from the end of the **financial year** (1 April to 31 March) in which the loan is repaid, released or written off. A claim made within 2 years of the end of the loan's accounting period goes on the CT600A; after that, use form L2P.
 - **Write-off or release:** relief is available but the **participator has an income tax charge** (and possible NIC). See the lesson on writing off a DLA.
-- **Repayments by set-off**, such as declaring a dividend and crediting the loan account, are treated as repayments only if they are genuine and not part of a bed-and-breakfasting arrangement (see next lesson).`,
+- **Repayments by set-off**, such as declaring a dividend and crediting the loan account, count as repayments if the dividend is lawful and is actually paid (credited unreservedly to the account). Cash repayments can be undone by the bed-and-breakfasting matching rules (see next lesson); a repayment that is itself taxed as income, such as a dividend or bonus credited to the account, is excluded from those rules.`,
     },
     {
       kind: "table",
@@ -210,6 +210,8 @@ Compare the all-in cost for the client: that is the real advice.
   sources: [
     { label: "CTM61505 – loans to participators: general", url: "https://www.gov.uk/hmrc-internal-manuals/company-taxation-manual/ctm61505" },
     { label: "Corporation Tax: rate of tax for the loans to participators charge", url: "https://www.gov.uk/government/publications/corporation-tax-rate-of-tax-for-the-loans-to-participators-charge/corporation-tax-rate-of-tax-for-the-loans-to-participators-charge" },
+    { label: "CTM61600 – relief on repayment: time limits", url: "https://www.gov.uk/hmrc-internal-manuals/company-taxation-manual/ctm61600" },
+    { label: "CTM61575 – arrangements conferring benefit on participators (s464A)", url: "https://www.gov.uk/hmrc-internal-manuals/company-taxation-manual/ctm61575" },
     { label: "CTA 2010 s455", url: "https://www.legislation.gov.uk/ukpga/2010/4/section/455" },
     { label: "CTA 2010 s458 – relief in case of repayment etc.", url: "https://www.legislation.gov.uk/ukpga/2010/4/section/458" },
     { label: "Director's loans: if you owe your company money", url: "https://www.gov.uk/directors-loans/you-owe-your-company-money" },
