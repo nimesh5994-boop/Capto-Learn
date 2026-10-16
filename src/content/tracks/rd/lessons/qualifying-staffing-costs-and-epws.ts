@@ -62,7 +62,7 @@ Count both **direct R&D** (resolving the uncertainty: designing, building and te
       kind: "callout",
       tone: "warning",
       title: "The 9-month rule for unpaid amounts",
-      md: `Staffing costs that are accrued at the period end (most often bonuses) only count for that period if they're **paid within 9 months** after the end of the period. Otherwise they count in the period in which they're paid. Check the payroll after the year end before finalising the claim.`,
+      md: `Staffing costs that are accrued at the period end (most often bonuses) only count for that period if they're **paid within 9 months** after the end of the period. Otherwise they count in the period in which they're paid. Under the merged scheme and ERIS, every category of qualifying expenditure must also have been **paid before the claim is made** (CTA 2009 s1139A; CIRD132000). Check the payroll after the year end before finalising the claim.`,
     },
     {
       kind: "md",

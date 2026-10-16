@@ -16,7 +16,7 @@ export const lesson: Lesson = {
   body: [
     {
       kind: "md",
-      md: `In 2023 HMRC published estimates that **error and fraud** in R&D relief for 2020–21 was **16.7%** of the cost overall, and **24.4%** in the SME scheme. In its sample, a quarter of claims were fully disallowed because **no qualifying R&D took place at all**, and a further 19% overclaimed. Most of it was carelessness rather than fraud, but HMRC responded with claim notification, the AIF, named officers and agents, a dedicated R&D compliance team and many more enquiries.
+      md: `In 2023 HMRC published estimates that **error and fraud** in R&D relief for 2020–21 was **16.7%** of the cost overall, and **24.4%** in the SME scheme. In its sample, a quarter of claims were fully disallowed because **no qualifying R&D took place at all**, and around half of claims contained some non-compliance. Most of it was carelessness rather than fraud, but HMRC responded with claim notification, the AIF, named officers and agents, a dedicated R&D compliance team and many more enquiries.
 
 For your practice, this means R&D claims are **high-risk**. If your firm files the CT600, you're part of the claim, even if a specialist prepared it.`,
     },

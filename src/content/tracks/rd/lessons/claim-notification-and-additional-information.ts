@@ -28,7 +28,9 @@ It does **not** need to notify if:
 - it has made an R&D claim in the **3 years ending on the last day of the notification period**; or
 - the accounting period falls in the same period of account as another accounting period for which it has made a claim or notification.
 
-A claim for an accounting period beginning before 1 April 2023 made in an amended return submitted **on or after 1 April 2023** is ignored for the 3-year test.
+For the 3-year test, ignore a previous claim that HMRC rejected by removing it from the Company Tax Return, and a claim for an accounting period beginning before 1 April 2023 made in an amended return received **on or after 1 April 2023**.
+
+Where notification is needed, HMRC's guidance says the company must either submit the claim notification form, or make the claim itself in its Company Tax Return (or an amendment) so that HMRC receives it by the last day of the notification period.
 
 If notification was required and missed, **no claim can be made** for that period.`,
     },
@@ -40,7 +42,7 @@ If notification was required and missed, **no claim can be made** for that perio
         ["Company", "Registered name and Unique Taxpayer Reference"],
         ["Responsible officer", "Name, role, telephone and email of the senior officer responsible for the claim"],
         ["Agent / adviser", "Name, address, contact details and role of any agent involved"],
-        ["The claim", "Accounting period and period of account dates; number of R&D projects; a short overview of the projects"],
+        ["The claim", "Accounting period and period of account dates; a summary of the high-level planned R&D activities (no evidence is needed at this stage)"],
       ],
     },
     {
@@ -83,9 +85,10 @@ A separate AIF is needed for each accounting period.`,
 2. The **baseline** level of knowledge or capability the company planned to advance.
 3. The **advance** in science or technology it aimed to achieve.
 4. The **scientific or technological uncertainties** it faced.
-5. **How** the project sought to overcome those uncertainties (including any qualifying indirect activities).
+5. **How** the project sought to overcome those uncertainties (including any qualifying indirect activities), and whether they were resolved.
+6. The **tax relief** claimed and the qualifying costs for the project.
 
-These map directly onto the DSIT Guidelines. A description that talks about commercial goals ("to launch a market-leading app") instead of technological ones is a red flag for HMRC.`,
+Headings 1 to 5 map directly onto the DSIT Guidelines. A description that talks about commercial goals ("to launch a market-leading app") instead of technological ones is a red flag for HMRC.`,
     },
     {
       kind: "md",
@@ -96,7 +99,7 @@ These map directly onto the DSIT Guidelines. A description that talks about comm
 
 ### Time limit
 
-A claim must be made in the CT600 (or an amendment to it) within **2 years** of the end of the accounting period (24 months from the last day of a period of account of 18 months or less). There's no late-claim discretion.`,
+A claim must be made in the CT600 (or an amendment to it) within **2 years** of the end of a 12-month accounting period. HMRC's guidance puts it as 24 months from the last day of a period of account of 18 months or less, or 42 months from the first day of a longer period of account. There's no late-claim discretion.`,
     },
     {
       kind: "callout",
@@ -114,7 +117,7 @@ Separately, Fenwick plans to change its year end, so the next period of account 
       {
         kind: "md",
         md: `1. **Was notification needed for 2025?** Fenwick has never claimed, so it isn't exempt. The notification period ran from 1 January 2025 to **30 June 2026** (6 months after the end of the period of account).
-2. **Was it made?** No. It's now September 2026: the window has closed. **No claim can be made for the year ended 31 December 2025**, however strong the R&D. Explain this to Joe clearly and in writing, and check whether anyone (including your firm) had been asked to advise before June 2026.
+2. **Was it made?** No, and no claim reached HMRC in a return by that date either. It's now September 2026: the window has closed. **No claim can be made for the year ended 31 December 2025**, however strong the R&D. Explain this to Joe clearly and in writing, and check whether anyone (including your firm) had been asked to advise before June 2026.
 3. **Next period.** The 18-month period of account to 30 June 2027 will be split for CT into an accounting period of 12 months (to 31 December 2026) and 6 months (to 30 June 2027). There's a single notification window for the period of account, ending **31 December 2027**. Submit the notification now, while the work is going on.
 4. **AIF and CT600.** For each accounting period, submit the AIF first, then the CT600 with boxes 656 and 657 ticked and CT600L completed.
 5. **Time limits.** HMRC's guidance measures the claim deadline as 24 months from the last day of a period of account of 18 months or less, i.e. **30 June 2029**. To be safe, aim to make the claim for the first accounting period (to 31 December 2026) within 2 years of *its* end, by 31 December 2028, and don't leave either to the last minute.`,

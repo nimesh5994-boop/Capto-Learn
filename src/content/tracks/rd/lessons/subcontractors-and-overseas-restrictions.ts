@@ -55,7 +55,9 @@ For accounting periods beginning on or after 1 April 2024, two categories are re
 
 The exception (CTA 2009 s1138A) applies where the R&D must take place overseas because the **conditions needed for it are not present in the UK**, are present where it's done, and it would be **wholly unreasonable** to replicate them in the UK. Conditions can be **geographical, environmental or social** (e.g. a particular disease population, terrain, climate) or **legal or regulatory** (e.g. a regulator requires a trial in that country). **Cost and the availability of workers are disregarded**: "it's cheaper in India" or "we couldn't recruit developers in the UK" never qualifies.
 
-Staffing costs of the claimant's own employees aren't restricted by location, nor are consumables or software.`,
+Staffing costs of the claimant's own employees aren't restricted by location, nor are consumables or software.
+
+**Northern Ireland:** an NI-registered SME claiming **ERIS** isn't subject to the overseas restrictions on contractor and EPW payments (unless it can and does opt out of the NI rules). The restrictions still apply to merged RDEC claims.`,
     },
     {
       kind: "callout",

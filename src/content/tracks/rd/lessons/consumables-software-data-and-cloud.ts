@@ -28,8 +28,8 @@ export const lesson: Lesson = {
         ["Contracted-out R&D", "Payments to subcontractors (see next lesson)", "Overseas restriction; who is the decision-maker"],
         ["**Consumable or transformable items**", "Materials used up or transformed in the R&D, including **water, fuel and power**", "Excluded if they end up in products sold in the ordinary course of business"],
         ["**Software**", "Licences and software used directly in the R&D", "Apportion if also used for non-R&D work"],
-        ["**Data licences**", "Licences for datasets used directly in the R&D (APs beginning on or after 1 April 2023)", "Must directly contribute to resolving the uncertainty"],
-        ["**Cloud computing services**", "Computing, storage and related services used directly in the R&D (APs beginning on or after 1 April 2023)", "Apportion; exclude general IT hosting"],
+        ["**Data licences**", "Licences for datasets used directly in the R&D (APs beginning on or after 1 April 2023)", "Must directly contribute to resolving the uncertainty (qualifying indirect activities don't count)"],
+        ["**Cloud computing services**", "Computing, storage and related services used directly in the R&D (APs beginning on or after 1 April 2023)", "Direct R&D only, not qualifying indirect activities; apportion; exclude general IT hosting"],
         ["**Payments to clinical trial volunteers**", "Payments to subjects taking part in clinical trials", "Only for the trial itself"],
       ],
     },
@@ -37,7 +37,7 @@ export const lesson: Lesson = {
       kind: "callout",
       tone: "rule",
       title: "Consumables in products that are sold",
-      md: `Since 1 April 2015, the cost of consumables is **excluded** where they become part of an item produced in the R&D that is then **sold or transferred in the ordinary course of business** (CTA 2009, see CIRD82300). The exclusion only bites in the period of the sale. Items that are kept for more trials, scrapped as substandard, or sold only as waste can still qualify.
+      md: `Since 1 April 2015, the cost of consumables is **excluded** where they become part of an item produced in the R&D that is then **sold or transferred in the ordinary course of business** (CTA 2009 s1126A; see CIRD136000 for the merged scheme and ERIS, CIRD82300 for the old schemes). The exclusion only bites in the period of the sale. Items that are kept for more trials, scrapped as substandard, or sold only as waste can still qualify.
 
 Example: a food manufacturer developing a shelf-stable recipe can claim ingredients for test batches that are thrown away, but not ingredients in batches sold to a supermarket.`,
     },
@@ -222,6 +222,7 @@ Capital expenditure on R&D (plant, machinery, laboratory buildings, but not land
   sources: [
     { label: "HMRC CIRD manual: categories of qualifying expenditure overview (CIRD82100)", url: "https://www.gov.uk/hmrc-internal-manuals/corporate-intangibles-research-and-development-manual/cird82100" },
     { label: "HMRC CIRD manual: consumable items (CIRD82300)", url: "https://www.gov.uk/hmrc-internal-manuals/corporate-intangibles-research-and-development-manual/cird82300" },
+    { label: "HMRC CIRD manual: reformed reliefs – consumable items (CIRD136000)", url: "https://www.gov.uk/hmrc-internal-manuals/corporate-intangibles-research-and-development-manual/cird136000" },
     { label: "HMRC CIRD manual: software (CIRD82500)", url: "https://www.gov.uk/hmrc-internal-manuals/corporate-intangibles-research-and-development-manual/cird82500" },
     { label: "HMRC CIRD manual: clinical trial volunteers (CIRD84400)", url: "https://www.gov.uk/hmrc-internal-manuals/corporate-intangibles-research-and-development-manual/cird84400" },
     { label: "HMRC: merged R&D expenditure credit scheme and ERIS", url: "https://www.gov.uk/guidance/research-and-development-rd-tax-relief-the-merged-scheme-and-enhanced-rd-intensive-support" },

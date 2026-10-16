@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-16T14:31:39.753Z",
+ "generatedAt": "2026-10-16T14:34:18.274Z",
  "lessons": {
   "accounts-production/accruals-prepayments-deferred-income": {
    "hash": "a493181e37f009d4",
@@ -6900,7 +6900,7 @@
    ]
   },
   "pensions/annual-allowance-and-carry-forward": {
-   "hash": "24c06a943d29bfeb",
+   "hash": "2a3d4a50b88dbc1b",
    "cards": [
     {
      "id": "pensions/annual-allowance-and-carry-forward#f1",
@@ -7226,7 +7226,7 @@
    ]
   },
   "pensions/pensions-and-inheritance-tax-from-2027": {
-   "hash": "cc3b153bc427e965",
+   "hash": "1fc82f78024ae69e",
    "cards": [
     {
      "id": "pensions/pensions-and-inheritance-tax-from-2027#f1",
@@ -7239,29 +7239,13 @@
     {
      "id": "pensions/pensions-and-inheritance-tax-from-2027#f2",
      "lessonId": "pensions/pensions-and-inheritance-tax-from-2027",
-     "front": "IHT on pensions from 2027: who reports and pays the IHT?",
-     "back": "The personal representatives (PRs), not the scheme administrators",
-     "evidence": "- Who pays: the personal representatives (PRs), not the pension scheme administrators, will be responsible for reporting and paying IHT on unused pension funds and death benefits.",
-     "taxYear": "2026/27"
-    },
-    {
-     "id": "pensions/pensions-and-inheritance-tax-from-2027#f3",
-     "lessonId": "pensions/pensions-and-inheritance-tax-from-2027",
-     "front": "Pensions and IHT 2027: which benefits stay out of scope?",
-     "back": "Death-in-service benefits from registered schemes; dependants' scheme pensions from DB or CMP arrangements",
-     "evidence": "- Out of scope: death-in-service benefits from registered pension schemes, and dependants' scheme pensions from defined benefit schemes or collective money purchase arrangements.",
-     "taxYear": "2026/27"
-    },
-    {
-     "id": "pensions/pensions-and-inheritance-tax-from-2027#f4",
-     "lessonId": "pensions/pensions-and-inheritance-tax-from-2027",
      "front": "IHT: rate charged on taxable estate above NRB and RNRB?",
      "back": "40%",
      "evidence": "- IHT is charged at 40% on the part of the taxable estate above the available nil-rate band and residence nil-rate band (and the RNRB taper for estates over £2 million, which now catches pension funds too).",
      "taxYear": "2026/27"
     },
     {
-     "id": "pensions/pensions-and-inheritance-tax-from-2027#f5",
+     "id": "pensions/pensions-and-inheritance-tax-from-2027#f3",
      "lessonId": "pensions/pensions-and-inheritance-tax-from-2027",
      "front": "IHT: RNRB taper applies to estates over what value?",
      "back": "£2 million",
@@ -7269,7 +7253,7 @@
      "taxYear": "2026/27"
     },
     {
-     "id": "pensions/pensions-and-inheritance-tax-from-2027#f6",
+     "id": "pensions/pensions-and-inheritance-tax-from-2027#f4",
      "lessonId": "pensions/pensions-and-inheritance-tax-from-2027",
      "front": "Do BPR and APR apply to pension funds in the estate?",
      "back": "No, neither applies",
@@ -7277,7 +7261,7 @@
      "taxYear": "2026/27"
     },
     {
-     "id": "pensions/pensions-and-inheritance-tax-from-2027#f7",
+     "id": "pensions/pensions-and-inheritance-tax-from-2027#f5",
      "lessonId": "pensions/pensions-and-inheritance-tax-from-2027",
      "front": "Pensions: LSDBA amount?",
      "back": "£1,073,100",
@@ -7401,7 +7385,7 @@
    ]
   },
   "pensions/tapered-annual-allowance-and-mpaa": {
-   "hash": "d47dfa025433652d",
+   "hash": "e65ca37dde0da800",
    "cards": [
     {
      "id": "pensions/tapered-annual-allowance-and-mpaa#f1",
@@ -7438,21 +7422,13 @@
     {
      "id": "pensions/tapered-annual-allowance-and-mpaa#f5",
      "lessonId": "pensions/tapered-annual-allowance-and-mpaa",
-     "front": "MPAA: does taking only the tax-free lump sum trigger it?",
-     "back": "No",
-     "evidence": "Taking only the tax-free lump sum (pension commencement lump sum) does not trigger the MPAA.",
-     "taxYear": "2026/27"
-    },
-    {
-     "id": "pensions/tapered-annual-allowance-and-mpaa#f6",
-     "lessonId": "pensions/tapered-annual-allowance-and-mpaa",
      "front": "MPAA: deadline to tell other schemes after flexible access statement?",
      "back": "Within 91 days of receiving the statement",
      "evidence": "The member must tell every other scheme they are contributing to within 91 days of receiving the flexible access statement from the provider.",
      "taxYear": "2026/27"
     },
     {
-     "id": "pensions/tapered-annual-allowance-and-mpaa#f7",
+     "id": "pensions/tapered-annual-allowance-and-mpaa#f6",
      "lessonId": "pensions/tapered-annual-allowance-and-mpaa",
      "front": "MPAA triggered: alternative annual allowance for DB inputs?",
      "back": "£50,000",
@@ -7460,7 +7436,7 @@
      "taxYear": "2026/27"
     },
     {
-     "id": "pensions/tapered-annual-allowance-and-mpaa#f8",
+     "id": "pensions/tapered-annual-allowance-and-mpaa#f7",
      "lessonId": "pensions/tapered-annual-allowance-and-mpaa",
      "front": "Can unused MPAA be carried forward, or carry forward cover an MPAA excess?",
      "back": "No to both",
@@ -8451,7 +8427,7 @@
    ]
   },
   "practice/customer-due-diligence-edd-peps-and-beneficial-ownership": {
-   "hash": "6c9d0f63016b3e28",
+   "hash": "83c688724f050809",
    "cards": [
     {
      "id": "practice/customer-due-diligence-edd-peps-and-beneficial-ownership#f1",
@@ -8732,7 +8708,7 @@
    ]
   },
   "practice/hmrc-agent-authorisation-asa-64-8-and-mtd": {
-   "hash": "d745c895d7dfdb57",
+   "hash": "d0a1f110fe78d3fc",
    "cards": [
     {
      "id": "practice/hmrc-agent-authorisation-asa-64-8-and-mtd#f1",
@@ -8838,7 +8814,7 @@
    ]
   },
   "practice/pcrt-standards-for-tax-planning-and-tax-conduct": {
-   "hash": "62928df2b6ca28a7",
+   "hash": "dfe4505c91e7d7b3",
    "cards": [
     {
      "id": "practice/pcrt-standards-for-tax-planning-and-tax-conduct#f1",
@@ -8883,7 +8859,7 @@
    ]
   },
   "practice/penalties-late-filing-late-payment-and-inaccuracies": {
-   "hash": "37eb5bca1825205a",
+   "hash": "1090626b82b30e3c",
    "cards": [
     {
      "id": "practice/penalties-late-filing-late-payment-and-inaccuracies#f1",
@@ -8981,7 +8957,7 @@
    ]
   },
   "practice/tribunal-route-pi-insurance-and-file-review": {
-   "hash": "24ab118be53c8144",
+   "hash": "dc8012a196bee933",
    "cards": [
     {
      "id": "practice/tribunal-route-pi-insurance-and-file-review#f1",
@@ -9010,21 +8986,13 @@
     {
      "id": "practice/tribunal-route-pi-insurance-and-file-review#f4",
      "lessonId": "practice/tribunal-route-pi-insurance-and-file-review",
-     "front": "FTT Complex case: time to opt out of the cost regime?",
-     "back": "Within 28 days of the category notification",
-     "evidence": "unless the taxpayer opts out of the cost regime within 28 days of the category notification.",
-     "taxYear": "2026/27"
-    },
-    {
-     "id": "practice/tribunal-route-pi-insurance-and-file-review#f5",
-     "lessonId": "practice/tribunal-route-pi-insurance-and-file-review",
      "front": "FTT: test applied for late appeals?",
      "back": "Martland v HMRC: length of delay, reason for it, all circumstances",
      "evidence": "the tribunal can allow a late appeal, applying the test in Martland v HMRC (the length of the delay, the reason for it and all the circumstances), but it should not be relied upon.",
      "taxYear": "2026/27"
     },
     {
-     "id": "practice/tribunal-route-pi-insurance-and-file-review#f6",
+     "id": "practice/tribunal-route-pi-insurance-and-file-review#f5",
      "lessonId": "practice/tribunal-route-pi-insurance-and-file-review",
      "front": "PII: how long should run-off cover normally last when a firm closes?",
      "back": "Normally six years or longer",
@@ -9032,7 +9000,7 @@
      "taxYear": "2026/27"
     },
     {
-     "id": "practice/tribunal-route-pi-insurance-and-file-review#f7",
+     "id": "practice/tribunal-route-pi-insurance-and-file-review#f6",
      "lessonId": "practice/tribunal-route-pi-insurance-and-file-review",
      "front": "Hot review vs cold review: what is the difference?",
      "back": "Hot: experienced reviewer before sign-off. Cold: independent, after completion, on a sample of files.",
@@ -9042,7 +9010,7 @@
    ]
   },
   "rd/claim-notification-and-additional-information": {
-   "hash": "2756f0d6b2c8e8dc",
+   "hash": "c668390f9248a43e",
    "cards": [
     {
      "id": "rd/claim-notification-and-additional-information#f1",
@@ -9085,18 +9053,11 @@
      "front": "R&D: which CT600 boxes are ticked for notification and AIF?",
      "back": "Box 656 (notification made or exempt) and box 657 (AIF submitted)",
      "evidence": "tick box 656 (claim notification made, or exempt) and box 657 (AIF submitted)"
-    },
-    {
-     "id": "rd/claim-notification-and-additional-information#f7",
-     "lessonId": "rd/claim-notification-and-additional-information",
-     "front": "R&D: time limit for making a claim in the CT600?",
-     "back": "2 years from the end of the accounting period",
-     "evidence": "A claim must be made in the CT600 (or an amendment to it) within 2 years of the end of the accounting period (24 months from the last day of a period of account of 18 months or less)."
     }
    ]
   },
   "rd/compliance-red-flags-and-professional-responsibility": {
-   "hash": "450cda4867c34b56",
+   "hash": "4eacf3cdce48a582",
    "cards": [
     {
      "id": "rd/compliance-red-flags-and-professional-responsibility#f1",
@@ -9204,7 +9165,7 @@
    ]
   },
   "rd/consumables-software-data-and-cloud": {
-   "hash": "7cd893191bc18fc3",
+   "hash": "bd2b124fa60b5c63",
    "cards": [
     {
      "id": "rd/consumables-software-data-and-cloud#f1",
@@ -9222,20 +9183,6 @@
     },
     {
      "id": "rd/consumables-software-data-and-cloud#f3",
-     "lessonId": "rd/consumables-software-data-and-cloud",
-     "front": "R&D: which APs can claim data licences and cloud computing costs?",
-     "back": "APs beginning on or after 1 April 2023",
-     "evidence": "Category: Data licences; What qualifies: Licences for datasets used directly in the R&D (APs beginning on or after 1 April 2023); Key restriction: Must directly contribute to resolving the uncertainty."
-    },
-    {
-     "id": "rd/consumables-software-data-and-cloud#f4",
-     "lessonId": "rd/consumables-software-data-and-cloud",
-     "front": "R&D: when are consumables excluded because the product is sold?",
-     "back": "When they become part of an item produced in the R&D that is sold or transferred in the ordinary course of business",
-     "evidence": "Since 1 April 2015, the cost of consumables is excluded where they become part of an item produced in the R&D that is then sold or transferred in the ordinary course of business (CTA 2009, see CIRD82300)."
-    },
-    {
-     "id": "rd/consumables-software-data-and-cloud#f5",
      "lessonId": "rd/consumables-software-data-and-cloud",
      "front": "R&D: what % of externally provided worker payments qualifies (unconnected)?",
      "back": "65% of staff provider payments",
@@ -9366,7 +9313,7 @@
    ]
   },
   "rd/qualifying-staffing-costs-and-epws": {
-   "hash": "5dd17d982fe5b36a",
+   "hash": "30bbc80e50173487",
    "cards": [
     {
      "id": "rd/qualifying-staffing-costs-and-epws#f1",
@@ -9521,7 +9468,7 @@
    ]
   },
   "rd/subcontractors-and-overseas-restrictions": {
-   "hash": "7a4ccfd11bb45f4e",
+   "hash": "2a2089f74c52ea5a",
    "cards": [
     {
      "id": "rd/subcontractors-and-overseas-restrictions#f1",
