@@ -53,7 +53,7 @@ Repayments made by **dividends or bonus** (which are taxed on the director) aren
 
 As part of the year end, check every dividend declared or paid in the year against **distributable reserves** (retained earnings after the current year's profit and tax, ignoring share premium, revaluation reserves and other capital reserves). See the company secretarial track for the paperwork and the law.
 
-If dividends exceeded distributable reserves and the directors knew, the excess is repayable under CA 2006 s847. The usual correction is to **reverse the excess dividend to the director's loan account**, which may then be overdrawn, with s455 consequences.`,
+If dividends exceeded distributable reserves, a shareholder who knew or had reasonable grounds to believe the dividend was unlawful must repay the excess under CA 2006 s847. A director-shareholder of an owner-managed company will almost always be treated as knowing. The usual correction is to **reverse the excess dividend to the director's loan account**, which may then be overdrawn, with s455 consequences.`,
     },
     {
       kind: "journal",
@@ -218,6 +218,7 @@ Grace plans to repay £20,000 from her savings in June 2027, then "take it back 
     { label: "Director's loans: overview", url: "https://www.gov.uk/directors-loans" },
     { label: "Corporation Tax Act 2010 s464C – repayments and new loans (bed and breakfasting)", url: "https://www.legislation.gov.uk/ukpga/2010/4/section/464C" },
     { label: "Companies Act 2006 s413 – advances and credits granted to directors", url: "https://www.legislation.gov.uk/ukpga/2006/46/section/413" },
-    { label: "FRC: FRS 102 Explainer – summary of the Periodic Review 2024 changes", url: "https://www.frc.org.uk/docs/9461/html/" },
+    { label: "FRC: FRS 102 (September 2024 edition, paras 1AC.35–1AC.36 small entity related party and director advance disclosures)", url: "https://www.frc.org.uk/library/standards-codes-policy/accounting-and-reporting/uk-accounting-standards/frs-102/" },
+    { label: "HMRC Company Taxation manual: dividends, distributions and company law (CTM15205)", url: "https://www.gov.uk/hmrc-internal-manuals/company-taxation-manual/ctm15205" },
   ],
 };

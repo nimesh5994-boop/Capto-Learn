@@ -5,6 +5,7 @@ import {
   BookOpenCheck,
   Bookmark,
   Building2,
+  ClipboardList,
   Compass,
   Layers,
   ClipboardCheck,
@@ -38,6 +39,7 @@ export type NavKey =
   | "updates"
   | "ask"
   | "saved"
+  | "register"
   | "team"
   | "interviews"
   | "admin.users"
@@ -65,6 +67,7 @@ export const NAV_ITEMS: Record<NavKey, { href: string; label: string; icon: Luci
   updates: { href: "/updates", label: "HMRC updates", icon: BellRing },
   ask: { href: "/ask", label: "Ask Capto", icon: MessageSquareQuote, exact: true },
   saved: { href: "/ask/saved", label: "Saved research", icon: Bookmark },
+  register: { href: "/ask/register", label: "Research register", icon: ClipboardList },
   team: { href: "/team", label: "Team training", icon: ClipboardCheck, exact: true },
   interviews: { href: "/team/interviews", label: "Interview tests", icon: UserCheck },
   "admin.users": { href: "/admin/users", label: "Users", icon: UsersRound },

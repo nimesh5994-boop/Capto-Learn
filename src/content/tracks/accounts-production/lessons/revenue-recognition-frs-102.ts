@@ -27,7 +27,7 @@ For many simple businesses (a shop, a plumber billing each job on completion) no
       rows: [
         ["1. Identify the contract", "Is there an enforceable agreement with a customer?", "Can be written, oral or implied by customary business practice"],
         ["2. Identify the performance obligations", "What distinct goods or services has the company promised?", "A good or service is distinct if the customer can benefit from it on its own and it's separately identifiable in the contract"],
-        ["3. Determine the transaction price", "How much does the company expect to be entitled to?", "Include variable consideration (rebates, bonuses, penalties) only to the extent a significant reversal is highly unlikely"],
+        ["3. Determine the transaction price", "How much does the company expect to be entitled to?", "Include variable consideration (rebates, bonuses, penalties) only to the extent it's highly probable the company will be entitled to the cumulative revenue recognised once the uncertainty is resolved"],
         ["4. Allocate the price", "How much belongs to each performance obligation?", "In proportion to relative standalone selling prices"],
         ["5. Recognise revenue", "When is each obligation satisfied?", "When (or as) control passes to the customer: at a point in time or over time"],
       ],
@@ -65,7 +65,7 @@ Otherwise revenue is recognised at the **point in time** control passes (typical
       kind: "callout",
       tone: "tip",
       title: "Transition and tax",
-      md: `The amendments include transitional provisions (see the FRC's staff factsheets on revenue and on initial application). Any change in timing of profits on transition may have **corporation tax** consequences: HMRC follows GAAP for trading profits, with specific rules for spreading adjustments arising from a change of accounting basis. Quantify the effect before the first set of accounts under the new rules is finalised.`,
+      md: `The amendments include transitional provisions (see the FRC's staff factsheets on revenue and on initial application). Any change in timing of profits on transition may have **corporation tax** consequences: HMRC follows GAAP for trading profits, and under the change of basis rules a company's transition adjustment is generally taxed (or relieved) in full as arising on the first day of the first period on the new basis, not spread. Quantify the effect before the first set of accounts under the new rules is finalised.`,
     },
   ],
   scenario: {
@@ -195,12 +195,12 @@ Revenue for 2026: **£24,375**. The remaining **£5,625** of support is a **cont
       prompt: "When can variable consideration be included in the transaction price?",
       options: [
         "Always, at the maximum amount",
-        "Only to the extent it's highly probable a significant reversal won't occur",
+        "Only to the extent it's highly probable the company will be entitled to the cumulative revenue recognised when the uncertainty is resolved",
         "Never",
         "Only when received in cash",
       ],
       answer: 1,
-      explain: "Variable consideration is constrained to the amount for which a significant reversal is highly unlikely.",
+      explain: "FRS 102 Section 23 words the constraint positively: include variable consideration only to the extent it's highly probable the company will be entitled to the cumulative revenue recognised. It has broadly the same effect as the IFRS 15 'significant reversal' test.",
     },
     {
       kind: "mcq",
@@ -216,6 +216,6 @@ Revenue for 2026: **£24,375**. The remaining **£5,625** of support is a **cont
     { label: "FRC: FRS factsheets and explainers (revenue; initial application)", url: "https://www.frc.org.uk/library/standards-codes-policy/accounting-and-reporting/uk-accounting-standards/frs-factsheets/" },
     { label: "FRC revises UK and Ireland accounting standards (March 2024)", url: "https://www.frc.org.uk/news-and-events/news/2024/03/frc-revises-uk-and-ireland-accounting-standards/" },
     { label: "ICAEW: new revenue recognition model for FRS 102 and FRS 105", url: "https://www.icaew.com/insights/viewpoints-on-the-news/2024/mar-2024/new-revenue-recognition-model-for-frs-102-and-105" },
-    { label: "HMRC Business Income manual: change of accounting basis (BIM34000)", url: "https://www.gov.uk/hmrc-internal-manuals/business-income-manual/bim34000" },
+    { label: "HMRC Business Income manual: change of basis – adjustment income and expenses, charge to tax (BIM34095)", url: "https://www.gov.uk/hmrc-internal-manuals/business-income-manual/bim34095" },
   ],
 };

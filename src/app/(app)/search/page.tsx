@@ -14,8 +14,8 @@ import { localAnswer } from "@/lib/search/localBot";
 import { INTENT_LABEL, type Understanding } from "@/lib/search/understand";
 import { date } from "@/lib/format";
 import { getDb } from "@/lib/db/client";
-import { topicBriefs } from "@/lib/db/schema";
-import { and, eq, isNotNull } from "drizzle-orm";
+import { researchQueries, topicBriefs } from "@/lib/db/schema";
+import { and, desc, eq, isNotNull } from "drizzle-orm";
 import { termOverlap } from "@/lib/research/libraryRules";
 import styles from "@/components/ask/ask.module.css";
 
@@ -80,6 +80,23 @@ export default async function GuidanceSearchPage({ searchParams }: { searchParam
           .map((x) => x.b)
       : [];
   const canAsk = ctx.can("research.use") && orgHasFeature(ctx.org, "research");
+  // The firm's own reviewed research: approved answers to the same question, free to open and download.
+  const firmAnswers =
+    canAsk && query && u && u.keywords.length >= 2
+      ? (
+          await (await getDb())
+            .select({ id: researchQueries.id, question: researchQueries.question, answer: researchQueries.answer, reviewedByName: researchQueries.reviewedByName, reviewedAt: researchQueries.reviewedAt })
+            .from(researchQueries)
+            .where(and(eq(researchQueries.organizationId, ctx.org.id), eq(researchQueries.reviewStatus, "approved"), isNotNull(researchQueries.answer)))
+            .orderBy(desc(researchQueries.reviewedAt))
+            .limit(500)
+        )
+          .map((r) => ({ r, score: Math.max(termOverlap(u.text, r.question), termOverlap(query, r.question)) }))
+          .filter((x) => x.score >= 0.6)
+          .sort((a, b) => b.score - a.score)
+          .slice(0, 3)
+          .map((x) => x.r)
+      : [];
   const fullAnswer = u ? `/ask?fresh=1&tier=standard&q=${encodeURIComponent(u.text)}` : "/ask";
 
   return (
@@ -165,6 +182,29 @@ export default async function GuidanceSearchPage({ searchParams }: { searchParam
                 </Link>
               </div>
             )}
+
+            {firmAnswers.map((f) => (
+              <article key={f.id} className={`card ${styles.result}`} style={{ borderLeft: "4px solid var(--accent)" }}>
+                <div className={styles.resultMeta}>
+                  Your firm&apos;s research register · approved by {f.reviewedByName ?? "a reviewer"}
+                  {f.reviewedAt ? ` on ${date(f.reviewedAt)}` : ""}
+                  {f.answer?.taxYear ? ` · tax year ${f.answer.taxYear}` : ""}
+                </div>
+                <h3>
+                  <Link href={`/ask/${f.id}`}>{f.question}</Link>
+                </h3>
+                <p className={styles.snippet}>{f.answer?.shortAnswer.replace(/[*_`#>]/g, "").slice(0, 300)}</p>
+                <div className="row small" style={{ gap: 10 }}>
+                  <Link href={`/ask/${f.id}`}>Open the reviewed answer</Link>
+                  <a href={`/api/research/${f.id}/report?format=pdf`} download>
+                    PDF memo
+                  </a>
+                  <a href={`/api/research/${f.id}/report?format=docx`} download>
+                    Word memo
+                  </a>
+                </div>
+              </article>
+            ))}
 
             {briefs.map((b) => (
               <article key={b.id} className={`card ${styles.result}`} style={{ borderLeft: "4px solid var(--primary)" }}>

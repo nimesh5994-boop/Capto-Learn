@@ -120,6 +120,15 @@ export function AnswerView({ question, answer }: { question: string; answer: Res
           <span>
             <Library size={14} /> Reused from your firm&apos;s answer library (first researched {date(answer.reuse.originalDate)}). Today we re-checked all {answer.reuse.sourcesChecked} official source
             {answer.reuse.sourcesChecked === 1 ? "" : "s"} — none has changed since.
+            {answer.reuse.approvedBy && (
+              <>
+                {" "}
+                <strong>
+                  Reviewed and approved by {answer.reuse.approvedBy}
+                  {answer.reuse.approvedAt ? ` on ${date(answer.reuse.approvedAt)}` : ""}.
+                </strong>
+              </>
+            )}
           </span>
           <Link href={`/ask?fresh=1&q=${encodeURIComponent(question)}`} className="btn btn-sm">
             <RefreshCw size={13} /> Research it fresh

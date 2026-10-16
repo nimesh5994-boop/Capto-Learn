@@ -445,9 +445,35 @@ export const researchQueries = pgTable(
     helpful: boolean("helpful"),
     feedbackNote: text("feedback_note"),
     shared: boolean("shared").notNull().default(false),
+    /** Firm review (research register): "approved" answers are reused first and visible firm-wide; "changes" stops reuse. */
+    reviewStatus: text("review_status").$type<ResearchReviewStatus>(),
+    reviewedById: uuid("reviewed_by_id").references(() => users.id, { onDelete: "set null" }),
+    reviewedByName: text("reviewed_by_name"),
+    reviewedAt: timestamp("reviewed_at", { withTimezone: true }),
+    reviewNote: text("review_note"),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [index("research_queries_org_idx").on(t.organizationId, t.createdAt), index("research_queries_user_idx").on(t.userId, t.createdAt)]
+);
+
+export type ResearchReviewStatus = "approved" | "changes";
+
+/** Every Word/PDF report issued from an answer: the research register's record of documents. */
+export const researchExports = pgTable(
+  "research_exports",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    organizationId: uuid("organization_id").notNull().references(() => organizations.id, { onDelete: "cascade" }),
+    userId: uuid("user_id").references(() => users.id, { onDelete: "set null" }),
+    userName: text("user_name").notNull(),
+    queryId: uuid("query_id").notNull().references(() => researchQueries.id, { onDelete: "cascade" }),
+    docRef: text("doc_ref").notNull(),
+    format: text("format").$type<"docx" | "pdf">().notNull(),
+    /** Client / matter written on the document, as it was when issued. */
+    reference: text("reference").notNull().default(""),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index("research_exports_org_idx").on(t.organizationId, t.createdAt), index("research_exports_query_idx").on(t.queryId)]
 );
 
 /**

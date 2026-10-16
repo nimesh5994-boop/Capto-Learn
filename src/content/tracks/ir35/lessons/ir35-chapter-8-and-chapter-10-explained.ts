@@ -26,7 +26,7 @@ export const lesson: Lesson = {
       md: `Both regimes ask the same question: **if the worker had been engaged by the client directly, under a contract with the terms and working practices that actually apply, would they be an employee of the client?**
 
 - **Chapter 8** (ss48–61, "intermediaries") applies where the services are provided through an intermediary and, **if the arrangements were a contract between the worker and the client**, the worker would be regarded as an employee (s49(1)(c)).
-- **Chapter 10** (ss61M–61Z, "workers' services provided through intermediaries") uses the same test but puts the **client** (or the relevant party) in charge of the determination, with the **fee-payer** accounting for tax and NIC.
+- **Chapter 10** (ss61K–61X, "workers' services provided through intermediaries") uses the same test but puts the **client** (or the relevant party) in charge of the determination, with the **fee-payer** accounting for tax and NIC.
 
 You apply the **employment status tests** in the previous lesson to the hypothetical contract. A real contract between the client and the PSC supplies the terms; the **working practices** show how it operates.`,
     },
@@ -41,7 +41,7 @@ You apply the **employment status tests** in the previous lesson to the hypothet
         ["Amount charged", "A deemed payment calculated on the PSC's receipts with a 5% allowance and deductions", "The fee-payer's payment to the PSC, less VAT and (in some cases) expenses"],
         ["Employer NIC and apprenticeship levy", "On the PSC's deemed payment", "Paid by the fee-payer on the deemed direct payment"],
         ["Reporting", "Annual calculation; reported as employment income of the worker at 5 April", "Through the fee-payer's RTI submissions"],
-        ["Legislation", "ITEPA 2003 ss48–61", "ITEPA 2003 ss61M–61Z"],
+        ["Legislation", "ITEPA 2003 ss48–61", "ITEPA 2003 ss61K–61X"],
       ],
     },
     {
@@ -49,7 +49,7 @@ You apply the **employment status tests** in the previous lesson to the hypothet
       md: `### Key definitions
 
 - **Worker:** the individual who does the work.
-- **Intermediary (Chapter 8):** a company, partnership or individual (other than the worker) through which the worker provides services. A **personal service company (PSC)** is an intermediary company in which the worker has a **material interest**: broadly **more than 5%** of the ordinary share capital (or the right to more than 5% of distributions), or the company is a managed service company, or the worker receives payments that aren't employment income and which could reasonably be taken to be for the services.
+- **Intermediary (Chapter 8):** a company, partnership or individual (other than the worker) through which the worker provides services. A **personal service company (PSC)** is an intermediary company in which the worker has a **material interest**: broadly **more than 5%** of the ordinary share capital (or the right to more than 5% of distributions), or the worker receives payments or benefits directly from the company that aren't employment income and can reasonably be taken to be remuneration for the services. If the company is a **managed service company**, the MSC rules (Chapter 9) take precedence and Chapter 8 does not apply.
 - **Relevant engagement:** each engagement (contract, assignment or role) is assessed on its own facts. A contractor can have **some engagements inside** IR35 and **some outside**.
 - **Client / end user:** the person for whom the services are ultimately provided.
 - **Fee-payer (Chapter 10):** the party that pays the intermediary. It is the client if there is no agency; otherwise the **agency** (or the party nearest the PSC in the contractual chain above the intermediary).
@@ -113,7 +113,7 @@ You apply the **employment status tests** in the previous lesson to the hypothet
         { text: "A large listed retailer", answer: 1 },
         { text: "A 10-person marketing agency", answer: 0 },
         { text: "A government department", answer: 1 },
-        { text: "A small UK-based charity (private/voluntary sector, meeting fewer than 2 of the size tests)", answer: 0 },
+        { text: "A small UK-based charity (private/voluntary sector, exceeding fewer than 2 of the size thresholds)", answer: 0 },
       ],
       explain: "Public sector clients and medium or large private clients use Chapter 10; small private clients leave the decision to the PSC under Chapter 8.",
     },
@@ -189,5 +189,7 @@ You apply the **employment status tests** in the previous lesson to the hypothet
     { label: "ITEPA 2003 Part 2 Chapter 10 – workers' services provided through intermediaries", url: "https://www.legislation.gov.uk/ukpga/2003/1/part/2/chapter/10" },
     { label: "Off-payroll working for clients – GOV.UK", url: "https://www.gov.uk/guidance/off-payroll-working-for-clients" },
     { label: "ESM8020 – key terms for the intermediaries legislation", url: "https://www.gov.uk/hmrc-internal-manuals/employment-status-manual/esm8020" },
+    { label: "ESM8045 – conditions of liability where the intermediary is a company", url: "https://www.gov.uk/hmrc-internal-manuals/employment-status-manual/esm8045" },
+    { label: "ESM10004 – managed service companies and off-payroll working", url: "https://www.gov.uk/hmrc-internal-manuals/employment-status-manual/esm10004" },
   ],
 };

@@ -6,7 +6,7 @@ export const lesson: Lesson = {
   level: "practitioner",
   minutes: 35,
   summary:
-    "How a subcontractor records income net of CIS deductions, how sole traders, partnerships and limited companies reclaim the tax suffered (Self Assessment, partnership return, Employer Payment Summary and the corporation tax return), and the checks on payment statements.",
+    "How a subcontractor records income net of CIS deductions, how sole traders, partnerships and limited companies reclaim the tax suffered (Self Assessment, the partnership return and the Employer Payment Summary), and the checks on payment statements.",
   objectives: [
     "Explain how CIS deductions suffered are credited against the subcontractor's own tax",
     "Record sales and CIS deductions suffered correctly in the subcontractor's books",
@@ -26,9 +26,9 @@ export const lesson: Lesson = {
       title: "Where the deductions suffered are claimed",
       md: `| Subcontractor | How the deductions are claimed |
 |---|---|
-| **Sole trader** | On the **Self Assessment** return (the self-employment pages: the CIS deductions suffered box). The deductions are **credited against** the income tax and NIC liability (including Class 4 and Class 2 where relevant); any excess is **repaid**. |
+| **Sole trader** | On the **Self Assessment** return (the self-employment pages: the CIS deductions suffered box). The deductions are **credited against** the income tax and NIC liability (including Class 4, and any voluntary Class 2); any excess is **repaid**. |
 | **Partnership** | On the **partnership return**, with each partner's share of the deductions credited on their own Self Assessment return. |
-| **Limited company** | Through the **Employer Payment Summary (EPS)** each month, set against the company's **PAYE, NIC and Apprenticeship Levy** liabilities. Any balance not used is **repaid after the end of the tax year**, or can be set against **corporation tax** (on the CT600). |
+| **Limited company** | Through its **payroll scheme**: the **Employer Payment Summary (EPS)** each month, set against the company's **PAYE, NIC, student loan and CIS** liabilities. Any balance not used is **refunded after the end of the tax year** on a repayment claim, or can be set against corporation tax due. It is **not** claimed on the CT600. |
 
 Always claim the deductions **actually suffered** and **supported by a payment and deduction statement** (or bank evidence).`,
     },
@@ -49,7 +49,7 @@ The contractor must give the subcontractor a **statement** by the **19th** of th
 
 ### Companies: the EPS offset
 
-A company with PAYE reports **CIS deductions suffered** on its **EPS** for the month and reduces what it pays HMRC for PAYE and NIC. It must apply the CIS credit against **PAYE, NIC and Apprenticeship Levy** first. If the **CIS credit exceeds those liabilities**, the **excess** carries forward through the year and any balance left at the end of the tax year is **repaid** (or set against corporation tax if the company so claims). If the company has **no PAYE**, claim through the **corporation tax return**.
+A limited company uses its **payroll scheme** to reclaim CIS. It sends its FPS as usual and reports the year-to-date **CIS deductions suffered** on its **EPS**, which reduces what it pays HMRC for **PAYE, NIC, student loan deductions and its own CIS deductions** as a contractor. If the **CIS credit exceeds those liabilities**, the **excess** carries forward to later months **within the same tax year** (no in-year repayment, except in liquidation or administration). Any balance left at the end of the tax year is **refunded** on a repayment claim, or can be set against corporation tax due. **Don't** claim CIS deductions on the **corporation tax return** itself: GOV.UK warns that a penalty may follow.
 
 ### Why it matters at 30%
 
@@ -60,7 +60,7 @@ An **unregistered** subcontractor suffers **30%** deductions, which may exceed t
       tone: "warning",
       title: "Common errors",
       md: `- Recording **sales at the net amount received**, understating turnover and VAT.
-- Claiming **deductions that aren't on a statement**, or claiming them **twice** (EPS and CT600).
+- Claiming **deductions that aren't on a statement**, or claiming them on the **CT600** instead of (or as well as) the EPS.
 - Setting CIS against the **wrong tax year**.
 - **Not chasing** missing statements: HMRC may refuse the credit.
 - **Forgetting** that a **limited company** doesn't claim CIS on a Self Assessment return.`,
@@ -68,9 +68,9 @@ An **unregistered** subcontractor suffers **30%** deductions, which may exceed t
   ],
   scenario: {
     title: "Two clients: Joel Parks (sole trader) and Cole Plumbing Ltd",
-    narrative: `**1. Joel Parks**, a self-employed plasterer on the 20% rate, invoiced Redfern Interiors Ltd **£2,800 plus VAT £560 = £3,360** (labour £2,000, materials £800). He received **£2,960** after a **£400** deduction. For 2026/27 his total tax and Class 4/Class 2 NIC liability before CIS is **£6,000**; his CIS deductions suffered for the year total **£7,500**.
+    narrative: `**1. Joel Parks**, a self-employed plasterer on the 20% rate, invoiced Redfern Interiors Ltd **£2,800 plus VAT £560 = £3,360** (labour £2,000, materials £800). He received **£2,960** after a **£400** deduction. For 2026/27 his total income tax and Class 4 NIC liability before CIS is **£6,000**; his CIS deductions suffered for the year total **£7,500**.
 
-**2. Cole Plumbing Ltd** suffers CIS deductions of **£2,000 a month** for the year (£24,000 in total) and has PAYE, NIC and Apprenticeship Levy liabilities of **£1,500 a month** (£18,000 in total).`,
+**2. Cole Plumbing Ltd** suffers CIS deductions of **£2,000 a month** for the year (£24,000 in total) and has PAYE and NIC liabilities of **£1,500 a month** (£18,000 in total).`,
     walkthrough: [
       {
         kind: "md",
@@ -108,7 +108,7 @@ An **unregistered** subcontractor suffers **30%** deductions, which may exceed t
     {
       kind: "numeric",
       id: "company-offset",
-      prompt: "A company's PAYE, NIC and Apprenticeship Levy for the year total £18,000 and CIS deductions suffered total £24,000. How much CIS credit remains to be repaid after the year end (£)?",
+      prompt: "A company's PAYE and NIC for the year total £18,000 and CIS deductions suffered total £24,000. How much CIS credit remains to be repaid after the year end (£)?",
       answer: 6000,
       unit: "£",
       explain: "Offset against PAYE/NIC first; the excess is repaid.",
@@ -133,7 +133,7 @@ An **unregistered** subcontractor suffers **30%** deductions, which may exceed t
       prompt: "How does a limited company primarily claim CIS deductions suffered during the year?",
       options: ["On a Self Assessment return", "Through the EPS against PAYE/NIC liabilities", "By phoning HMRC", "It can't claim them"],
       answer: 1,
-      explain: "Through the Employer Payment Summary, with any balance repaid after the year end or through the CT return.",
+      explain: "Through the Employer Payment Summary, with any balance refunded after the year end (or set against corporation tax due). It is not claimed on the CT600.",
     },
   ],
   quiz: [
@@ -181,7 +181,8 @@ An **unregistered** subcontractor suffers **30%** deductions, which may exceed t
   sources: [
     { label: "What you must do as a CIS subcontractor – GOV.UK", url: "https://www.gov.uk/what-you-must-do-as-a-cis-subcontractor" },
     { label: "Get paid as a CIS subcontractor – GOV.UK", url: "https://www.gov.uk/what-you-must-do-as-a-cis-subcontractor/get-paid" },
-    { label: "Claim back CIS deductions as a subcontractor – GOV.UK", url: "https://www.gov.uk/what-you-must-do-as-a-cis-subcontractor/claim-back-deductions" },
+    { label: "Claim back CIS deductions as a subcontractor – GOV.UK", url: "https://www.gov.uk/what-you-must-do-as-a-cis-subcontractor/pay-tax-and-claim-back-deductions" },
+    { label: "Self-employed National Insurance rates – GOV.UK", url: "https://www.gov.uk/self-employed-national-insurance-rates" },
     { label: "CIS 340 guide – GOV.UK", url: "https://www.gov.uk/government/publications/construction-industry-scheme-cis-340/construction-industry-scheme-a-guide-for-contractors-and-subcontractors-cis-340" },
   ],
 };

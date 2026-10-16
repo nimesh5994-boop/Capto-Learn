@@ -24,8 +24,8 @@ export const lesson: Lesson = {
       kind: "callout",
       tone: "rule",
       title: "Contractors and subcontractors (FA 2004 Part 3 Chapter 3)",
-      md: `- A **contractor** is a business (or other body) that **pays subcontractors** for **construction work**. This includes builders, developers, property companies that engage builders, and other businesses that carry out repairs or alterations on their own premises.
-- A **deemed contractor** is a business that isn't mainly in construction but whose **expenditure on construction operations exceeds £3 million in the previous 12 months** (HMRC's CIS340 guidance). Examples are large retailers, banks and other organisations with big property programmes.
+      md: `- A **contractor** is a business (or other body) that **pays subcontractors** for **construction work**. These **mainstream contractors** include builders, property developers and speculative builders.
+- A **deemed contractor** is a business that isn't mainly in construction but whose **expenditure on construction operations exceeds £3 million in any rolling 12-month period** (HMRC's CIS340 guidance). Examples are large retailers, banks and other organisations with big property programmes. A deemed contractor (but not a public body or a mainstream contractor) need not apply CIS to work on **property used for its own business**, such as its offices, shops or warehouses; work on property **held as an investment, let to third parties or for sale** stays within CIS.
 - A **subcontractor** is a business that carries out construction work for a contractor. Subcontractors don't have to register, but the **deduction is higher** (30%) if they don't.
 - **Employees** are dealt with by PAYE, not CIS. Genuine employment status is decided separately (see the IR35 and employment status track).
 
@@ -40,20 +40,20 @@ Contractors must **register** with HMRC, **verify** subcontractors, **deduct** t
         ["Demolition and dismantling; construction, alteration, repair, extension of buildings and structures", "Scaffolding hire with no labour"],
         ["Civil engineering works: roads, bridges, pipelines, power lines", "Carpet and lino fitting (not part of the fabric)"],
         ["Installing systems of heating, lighting, power, water, ventilation, drainage, communications and fire protection", "Manufacture of materials and delivery to site"],
-        ["Internal cleaning and decoration (as part of construction)", "Office and cleaning work after the construction (routine maintenance)"],
-        ["Painting and decorating external or internal surfaces", "Installation of movable furniture or fittings that are not part of the structure"],
+        ["Internal cleaning carried out in the course of, or on completion of, construction", "External cleaning (other than painting or decorating), and routine cleaning of premises not undergoing construction"],
+        ["Painting and decorating external or internal surfaces", "Manufacture, delivery and installation of seating, blinds and louvred shutters"],
       ],
     },
     {
       kind: "md",
       md: `### Things to check
 
-- **Mixed contracts:** if a contract includes both construction and excluded work, the whole of the **construction part** is within CIS; where the excluded part is a separate item it can be left out.
+- **Mixed contracts:** if a single contract includes both construction and excluded work, **all payments under that contract** are within CIS, even if the excluded work is invoiced separately (CIS340 Appendix A).
 - **Who is paying whom:** CIS applies to **payments by contractors to subcontractors**. Payments to **suppliers of materials** or the sale of goods are outside, though **labour-only** or **labour-and-materials** contracts are within.
 - **Payments to employees** (even on construction sites) are within PAYE, not CIS.
 - **Public bodies:** from **6 April 2026**, payments to **local authorities and other public bodies** as subcontractors are **outside** the scope of CIS. Check the legislation and HMRC guidance for the precise list.
 - **Mainstream contractors** (those whose main business is construction) and **deemed contractors** both have to register, verify subcontractors, deduct and report. Check CIS340 for any differences in the detail.
-- **Land and property owners:** a landlord who has a repair done may be a contractor if the **spend is over the threshold or the landlord is itself a property business** that regularly engages builders. Many one-off homeowners are not within CIS.`,
+- **Land and property owners:** a property investment business (one that lets buildings or holds them for capital gain) is a contractor only as a **deemed contractor** once its construction spend exceeds **£3 million**. If it starts **developing** property (multiple or substantial construction contracts), it becomes a **mainstream contractor** straight away. Ordinary **householders** having work done on their own homes are not contractors.`,
     },
     {
       kind: "callout",
@@ -61,7 +61,7 @@ Contractors must **register** with HMRC, **verify** subcontractors, **deduct** t
       title: "Common scope mistakes",
       md: `- Treating **plasterers, joiners and decorators** as outside CIS because they are "trades" (they're construction operations).
 - Treating **materials supply** and **labour** together as one item without splitting them: the deduction applies to the labour part.
-- Forgetting that a **small landlord** with a regular programme of works may still be a contractor.
+- Forgetting that a landlord or property investor that starts **developing** property becomes a **mainstream contractor**, with no £3 million threshold.
 - **Self-employed** drivers and others who are not construction operators (for example haulage-only suppliers) being included incorrectly.
 - Applying CIS to **VAT** (the deduction excludes VAT).`,
     },

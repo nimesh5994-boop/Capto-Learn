@@ -50,7 +50,8 @@ If the filed version omits the auditor's report, it must still state whether the
 - **abridged accounts** are abolished;
 - **small and micro companies must file a profit and loss account**, with an option (details to be confirmed) not to have it published on the register;
 - companies claiming audit exemption must give a **strengthened eligibility statement**;
-- all parts of the accounts and reports must be filed **together**.
+- all parts of the accounts and reports must be filed **together**;
+- the number of times a company can **shorten its accounting reference period** is reduced.
 
 Clients who value keeping their profit private need to hear about this well before their first year affected.`,
     },
@@ -58,7 +59,7 @@ Clients who value keeping their profit private need to hear about this well befo
       kind: "md",
       md: `### Deadlines and penalties (recap)
 
-- **Companies House**: 9 months after the year end for a private company (21 months from incorporation for a first period over 12 months). Late filing penalties start at **£150** and double if late two years running.
+- **Companies House**: 9 months after the year end for a private company (for a first period over 12 months, the later of 21 months from incorporation and 3 months from the accounting reference date). Late filing penalties start at **£150** and double if late two years running.
 - **HMRC**: the CT600 is due **12 months** after the end of the accounting period, but tax is usually **payable 9 months and 1 day** after the end of the period (large companies pay by instalments). HMRC's CT late filing penalties were **doubled** for returns with a filing date on or after **1 April 2026**.
 
 ### iXBRL and the end of the free HMRC service
@@ -185,7 +186,7 @@ The accounts and tax computation submitted with the CT600 must be in **iXBRL** (
     },
   ],
   sources: [
-    { label: "Companies House: preparing and filing Companies House accounts", url: "https://www.gov.uk/government/publications/life-of-a-company-annual-requirements/life-of-a-company-part-1-accounts" },
+    { label: "Companies House: preparing and filing Companies House accounts", url: "https://www.gov.uk/government/publications/filing-your-companies-house-accounts/life-of-a-company-part-1-accounts" },
     { label: "Companies House to bring in changes to accounts filing from April 2028", url: "https://www.gov.uk/government/news/companies-house-to-bring-in-changes-to-accounts-filing-from-april-2028" },
     { label: "Filing company accounts and tax returns if you previously used the HMRC online service", url: "https://www.gov.uk/guidance/closure-of-the-service-to-file-your-company-accounts-and-tax-return" },
     { label: "Companies Act 2006 s444 – filing obligations of companies subject to small companies regime", url: "https://www.legislation.gov.uk/ukpga/2006/46/section/444" },

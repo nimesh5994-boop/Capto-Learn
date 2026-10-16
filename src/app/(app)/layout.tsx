@@ -20,6 +20,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   const research: NavKey[] = [];
   if (can("learning.view")) research.push("search", "updates");
   if (can("research.use") && orgHasFeature(org, "research")) research.push("ask", "saved");
+  if (can("research.register") && orgHasFeature(org, "research")) research.push("register");
   const manage: NavKey[] = [];
   if ((can("progress.view_team") || can("assignments.manage")) && orgHasFeature(org, "teamProgress")) manage.push("team");
   if (can("interviews.manage")) manage.push("interviews");

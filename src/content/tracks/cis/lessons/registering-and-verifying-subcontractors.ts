@@ -34,7 +34,7 @@ export const lesson: Lesson = {
       kind: "callout",
       tone: "rule",
       title: "Registering as a contractor",
-      md: `A business must **register as a contractor** with HMRC before it pays any subcontractors for construction work (or once it becomes a deemed contractor). Registration is online and gives the contractor its **CIS reference** and access to the **CIS online service**. Most contractors already have an **employer PAYE reference** and an **Accounts Office reference**. Those are needed, because CIS deductions are paid alongside PAYE/NIC (to the same payment reference) and employers claim any CIS deductions **suffered** on their own income through the **Employer Payment Summary** (EPS).`,
+      md: `A business must **register as a contractor** with HMRC before it pays any subcontractors for construction work (or once it becomes a deemed contractor). Registration is online and gives the contractor its **CIS reference** and access to the **CIS online service**. Most contractors already have an **employer PAYE reference** and an **Accounts Office reference**. Those are needed, because CIS deductions are paid alongside PAYE/NIC (to the same payment reference), and a **limited company** that also works as a subcontractor claims the CIS deductions **suffered** on its own income through the **Employer Payment Summary** (EPS).`,
     },
     {
       kind: "md",
@@ -45,6 +45,8 @@ export const lesson: Lesson = {
 3. **Apply the rate** to every payment until HMRC tells you otherwise. HMRC writes if the rate changes.
 4. **Re-verify** if the subcontractor's details change (for example, a sole trader incorporating) or HMRC advises it.
 5. **Keep a record**: the verification date, the reference and the rate.
+
+You don't have to verify a subcontractor again if you included them on a CIS return in the **current or previous two tax years**; otherwise verify before paying them.
 
 ### Subcontractors
 

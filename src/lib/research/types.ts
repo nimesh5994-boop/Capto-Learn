@@ -62,7 +62,7 @@ export interface ResearchAnswer {
   relatedLessons: { id: string; title: string; track: string }[];
   professional?: ProfessionalNote | null;
   /** Set when this answer was reused from the firm's answer library rather than researched fresh. */
-  reuse?: { libraryId: string; originalDate: string; sourcesChecked: number } | null;
+  reuse?: { libraryId: string; originalDate: string; sourcesChecked: number; approvedBy?: string; approvedAt?: string } | null;
   /** Set when this answer is a Capto topic brief (written overnight, shared across firms). */
   brief?: { id: string; area: string; writtenAt: string; sourcesChecked: number } | null;
   /** Set when the question bot served this from what it has learned (Level 1, no AI). */

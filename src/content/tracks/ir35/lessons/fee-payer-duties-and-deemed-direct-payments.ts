@@ -41,10 +41,10 @@ The result is the **deemed direct payment**. If it is nil or negative there is n
       md: `### What the fee-payer must do
 
 - **Deduct income tax and employee NIC** from the payment to the intermediary (on the deemed direct payment only: **not** on the VAT or the part representing materials/expenses).
-- Pay **employer Class 1 NIC (15% above the secondary threshold)** and any **Apprenticeship Levy** to HMRC **on top** of the payment. **Employer NIC cannot be deducted** from the amount paid to the intermediary.
-- **Report** through **RTI** (Full Payment Submission) and indicate the worker as an **"off-payroll worker subject to the rules"** using the RTI indicator. Use the worker's **NI number** and a **tax code** (ask for it) and treat the worker as a normal payroll payee.
+- Pay **employer Class 1 NIC (15% above the secondary threshold)** and any **Apprenticeship Levy** to HMRC **on top** of the payment. **Employer NIC cannot be deducted** from the amount paid to the intermediary, and the **Employment Allowance cannot be used** against it.
+- **Report** through **RTI** (Full Payment Submission) and indicate the worker as an **"off-payroll worker subject to the rules"** using the RTI indicator. Add the worker to payroll like any other starter: give them a **starter checklist**, whose declaration decides the **tax code**. This will often be **BR**, because the worker usually has a main job with their own intermediary (0T week 1/month 1 if no checklist is returned).
 - **Pay VAT** on the invoice as normal. VAT is **not** part of the deemed direct payment.
-- **Give the worker a payslip-style statement** showing the deductions made.
+- **Show the worker the deductions made**, on a payslip or on the remittance notice.
 - **Keep records**: the SDS, the invoice, the calculation and the evidence for the materials or expenses deducted.
 
 ### What happens in the contractor's company
@@ -64,7 +64,7 @@ The PSC receives the invoice **net of tax and employee NIC**. HMRC guidance for 
   ],
   scenario: {
     title: "A month's payment to Nova Analytics Ltd",
-    narrative: `Taurus Retail plc (a large client) engages Ian Dunmore through his company, Nova Analytics Ltd. Taurus has determined the engagement is **inside IR35** and pays the PSC directly, so Taurus is the fee-payer. For March 2027 Nova invoices **£5,000 + £1,000 VAT = £6,000**. The invoice includes **£400** of separately identified software licences bought for the project (direct cost of materials). Ian has a tax code 1257L and no other income from Taurus. Use the monthly thresholds: primary threshold £1,048, upper earnings limit £4,189, secondary threshold £417.`,
+    narrative: `Taurus Retail plc (a large client) engages Ian Dunmore through his company, Nova Analytics Ltd. Taurus has determined the engagement is **inside IR35** and pays the PSC directly, so Taurus is the fee-payer. For March 2027 Nova invoices **£5,000 + £1,000 VAT = £6,000**. The invoice includes **£400** of separately identified software licences bought for the project (direct cost of materials). Ian takes no salary from Nova, so his starter checklist gives him tax code 1257L (most deemed employees are on BR), and he has no other income from Taurus. Use the monthly thresholds: primary threshold £1,048, upper earnings limit £4,189, secondary threshold £417.`,
     walkthrough: [
       {
         kind: "md",
@@ -185,6 +185,7 @@ The PSC receives the invoice **net of tax and employee NIC**. HMRC guidance for 
   ],
   sources: [
     { label: "Deemed employer responsibilities under off-payroll working rules – GOV.UK", url: "https://www.gov.uk/guidance/fee-payer-responsibilities-under-the-off-payroll-working-rules" },
+    { label: "ESM10019 – operating PAYE", url: "https://www.gov.uk/hmrc-internal-manuals/employment-status-manual/esm10019" },
     { label: "ESM10028 – how to calculate the deemed direct payment", url: "https://www.gov.uk/hmrc-internal-manuals/employment-status-manual/esm10028" },
     { label: "ESM9070 – how to calculate the deemed direct payment (public sector rules)", url: "https://www.gov.uk/hmrc-internal-manuals/employment-status-manual/esm9070" },
     { label: "Rates and thresholds for employers 2026 to 2027", url: "https://www.gov.uk/guidance/rates-and-thresholds-for-employers-2026-to-2027" },

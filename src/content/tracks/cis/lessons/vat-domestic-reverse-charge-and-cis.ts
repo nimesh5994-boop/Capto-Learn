@@ -28,7 +28,7 @@ export const lesson: Lesson = {
 
 - The supply is **at the standard (20%) or reduced (5%) rate** (zero-rated supplies, such as new-build dwellings, are outside).
 - The **supplier and the customer are both VAT-registered** in the UK, and the customer is a **CIS contractor** (including a deemed contractor).
-- The customer is **not an "end user"** or an "**intermediary supplier**" (see below).
+- The customer has **not confirmed in writing** that it is an "**end user**" or an "**intermediary supplier**" (see below).
 
 It doesn't apply to professional services (architects, surveyors), manufacturing of building components, or other excluded activities. The service list matches the CIS "construction operations".`,
     },
@@ -36,7 +36,7 @@ It doesn't apply to professional services (architects, surveyors), manufacturing
       kind: "md",
       md: `### End users and intermediary suppliers
 
-An **end user** is a business that doesn't make onward supplies of construction services (for example a property owner, landlord or retailer who commissions work for its own premises). An **intermediary supplier** is a business connected with an end user in a specified way. These customers **don't** apply the reverse charge. They can give the supplier **written notification** (for example: *"We are an end user for the purposes of section 55A VATA 1994 reverse charge for building and construction services. Issue us with a normal VAT invoice, with VAT charged at the appropriate rate. We will not account for the reverse charge."*). The supplier relies on that notification and **charges VAT normally**.
+An **end user** is a VAT- and CIS-registered business that doesn't make onward supplies of the construction services it buys (for example a property owner, landlord or retailer who commissions work for its own premises). An **intermediary supplier** is a VAT- and CIS-registered business connected with an end user (an interest in the same land, or the same corporate group) that passes the services on to it. These customers can take themselves out of the reverse charge by giving the supplier **written notification**. Notification is **optional**: if a customer that meets the conditions doesn't confirm its status in writing, the supplier **must use the reverse charge**. Example wording: *"We are an end user for the purposes of section 55A VATA 1994 reverse charge for building and construction services. Issue us with a normal VAT invoice, with VAT charged at the appropriate rate. We will not account for the reverse charge."*. The supplier relies on that notification and **charges VAT normally**.
 
 ### The invoice
 
@@ -201,6 +201,7 @@ The customer's net VAT effect is **nil** if the input tax is fully recoverable. 
   ],
   sources: [
     { label: "VAT domestic reverse charge for building and construction services – GOV.UK", url: "https://www.gov.uk/guidance/vat-domestic-reverse-charge-for-building-and-construction-services" },
+    { label: "VAT domestic reverse charge technical guide – GOV.UK", url: "https://www.gov.uk/guidance/vat-reverse-charge-technical-guide" },
     { label: "Domestic reverse charge procedure (VAT Notice 735) – GOV.UK", url: "https://www.gov.uk/guidance/the-vat-domestic-reverse-charge-procedure-notice-735" },
     { label: "VATREVCON37100 – invoices under the construction reverse charge", url: "https://www.gov.uk/hmrc-internal-manuals/vat-reverse-charge-for-building-and-construction-services-manual/vatrevcon37100" },
     { label: "VATA 1994 s55A – reverse charge", url: "https://www.legislation.gov.uk/ukpga/1994/23/section/55A" },

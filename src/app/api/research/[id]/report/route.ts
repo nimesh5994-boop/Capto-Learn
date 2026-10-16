@@ -1,6 +1,7 @@
-import { and, eq, or } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
+import { canViewAnswer } from "@/lib/research/register";
 import { getDb } from "@/lib/db/client";
-import { researchQueries, savedResearch } from "@/lib/db/schema";
+import { researchExports, researchQueries, savedResearch } from "@/lib/db/schema";
 import { AccessError, authorize } from "@/lib/auth/dal";
 import { appUrl } from "@/lib/url";
 import { buildReport, documentRef, reportFilename } from "@/lib/research/report";
@@ -35,8 +36,8 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
   const [row] = await db
     .select()
     .from(researchQueries)
-    .where(and(eq(researchQueries.id, id), eq(researchQueries.organizationId, ctx.org.id), or(eq(researchQueries.userId, ctx.user.id), eq(researchQueries.shared, true))));
-  if (!row?.answer) return Response.json({ error: "Not found." }, { status: 404 });
+    .where(and(eq(researchQueries.id, id), eq(researchQueries.organizationId, ctx.org.id)));
+  if (!row?.answer || !canViewAnswer(row, { orgId: ctx.org.id, userId: ctx.user.id, canRegister: ctx.can("research.register") })) return Response.json({ error: "Not found." }, { status: 404 });
   const [saved] = await db.select().from(savedResearch).where(and(eq(savedResearch.queryId, id), eq(savedResearch.userId, ctx.user.id)));
 
   const title = saved?.title || row.question;
@@ -48,6 +49,8 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
   );
   const brand = { firm: ctx.org.name, color: ctx.org.brandColor, logoDataUrl: ctx.org.logoDataUrl, docRef: documentRef(id) };
   const body = format === "docx" ? await renderDocx(blocks, brand) : await renderPdf(blocks, brand);
+  // The research register keeps a record of every document issued.
+  await db.insert(researchExports).values({ organizationId: ctx.org.id, userId: ctx.user.id, userName: ctx.user.name, queryId: id, docRef: documentRef(id), format, reference: saved?.reference ?? "" });
   return new Response(new Uint8Array(body), {
     headers: {
       "content-type": TYPES[format],

@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-16T07:38:21.123Z",
+ "generatedAt": "2026-10-16T14:31:39.753Z",
  "lessons": {
   "accounts-production/accruals-prepayments-deferred-income": {
    "hash": "a493181e37f009d4",
@@ -49,7 +49,7 @@
    ]
   },
   "accounts-production/choosing-the-reporting-framework": {
-   "hash": "c89651cdbff49e2b",
+   "hash": "a4369a29c3b0d2a0",
    "cards": [
     {
      "id": "accounts-production/choosing-the-reporting-framework#f1",
@@ -156,7 +156,7 @@
    ]
   },
   "accounts-production/directors-loans-dividends-and-related-parties": {
-   "hash": "4ca91f24ff473c77",
+   "hash": "dc763f1a5c08b639",
    "cards": [
     {
      "id": "accounts-production/directors-loans-dividends-and-related-parties#f1",
@@ -217,59 +217,52 @@
    ]
   },
   "accounts-production/filing-statutory-accounts": {
-   "hash": "13a83f5c6e89475e",
+   "hash": "90741946a6f72311",
    "cards": [
     {
      "id": "accounts-production/filing-statutory-accounts#f1",
-     "lessonId": "accounts-production/filing-statutory-accounts",
-     "front": "Companies House: private company accounts filing deadline?",
-     "back": "9 months after the year end (21 months from incorporation for a first period over 12 months)",
-     "evidence": "- Companies House: 9 months after the year end for a private company (21 months from incorporation for a first period over 12 months)."
-    },
-    {
-     "id": "accounts-production/filing-statutory-accounts#f2",
      "lessonId": "accounts-production/filing-statutory-accounts",
      "front": "Companies House: late filing penalty for accounts, starting amount?",
      "back": "£150, doubling if late two years running",
      "evidence": "Late filing penalties start at £150 and double if late two years running."
     },
     {
-     "id": "accounts-production/filing-statutory-accounts#f3",
+     "id": "accounts-production/filing-statutory-accounts#f2",
      "lessonId": "accounts-production/filing-statutory-accounts",
      "front": "HMRC: when is the CT600 due, and when is corporation tax usually payable?",
      "back": "CT600: 12 months after period end; tax: 9 months and 1 day after",
      "evidence": "- HMRC: the CT600 is due 12 months after the end of the accounting period, but tax is usually payable 9 months and 1 day after the end of the period (large companies pay by instalments)."
     },
     {
-     "id": "accounts-production/filing-statutory-accounts#f4",
+     "id": "accounts-production/filing-statutory-accounts#f3",
      "lessonId": "accounts-production/filing-statutory-accounts",
      "front": "HMRC CT late filing penalties: when did they double?",
      "back": "Returns with a filing date on or after 1 April 2026",
      "evidence": "HMRC's CT late filing penalties were doubled for returns with a filing date on or after 1 April 2026."
     },
     {
-     "id": "accounts-production/filing-statutory-accounts#f5",
+     "id": "accounts-production/filing-statutory-accounts#f4",
      "lessonId": "accounts-production/filing-statutory-accounts",
      "front": "When did the free HMRC/Companies House joint accounts and CT filing service close?",
      "back": "31 March 2026",
      "evidence": "HMRC and Companies House's free joint online service for filing accounts and the Company Tax Return closed on 31 March 2026, so every company now needs commercial software (or an agent using it)."
     },
     {
-     "id": "accounts-production/filing-statutory-accounts#f6",
+     "id": "accounts-production/filing-statutory-accounts#f5",
      "lessonId": "accounts-production/filing-statutory-accounts",
      "front": "Small company: what may be omitted from accounts filed at Companies House?",
      "back": "Profit and loss account and directors' report (filleted), with a balance sheet statement saying so",
      "evidence": "It may omit the profit and loss account and directors' report (\"filleted\" accounts), with a statement on the balance sheet that it has done so."
     },
     {
-     "id": "accounts-production/filing-statutory-accounts#f7",
+     "id": "accounts-production/filing-statutory-accounts#f6",
      "lessonId": "accounts-production/filing-statutory-accounts",
      "front": "Companies House: what changes for filleted and abridged accounts from 1 April 2028?",
      "back": "Abridged accounts abolished; small and micro companies must file a profit and loss account",
      "evidence": "- abridged accounts are abolished;"
     },
     {
-     "id": "accounts-production/filing-statutory-accounts#f8",
+     "id": "accounts-production/filing-statutory-accounts#f7",
      "lessonId": "accounts-production/filing-statutory-accounts",
      "front": "Companies Act: who signs the balance sheet for the board, and which section?",
      "back": "A director, with name stated (CA 2006 s414)",
@@ -332,7 +325,7 @@
    ]
   },
   "accounts-production/going-concern-final-review-and-sign-off": {
-   "hash": "35d34f7948134d2d",
+   "hash": "911519cee6ee828b",
    "cards": [
     {
      "id": "accounts-production/going-concern-final-review-and-sign-off#f1",
@@ -379,7 +372,7 @@
    ]
   },
   "accounts-production/leases-frs-102": {
-   "hash": "1ff3dbe58943cba0",
+   "hash": "c885f2ea54ed0f07",
    "cards": [
     {
      "id": "accounts-production/leases-frs-102#f1",
@@ -405,33 +398,26 @@
     {
      "id": "accounts-production/leases-frs-102#f4",
      "lessonId": "accounts-production/leases-frs-102",
-     "front": "FRS 102 lease liability at commencement: how measured and discounted?",
-     "back": "PV of unpaid payments, at implicit rate or else incremental borrowing rate",
-     "evidence": "Lease liability at commencement = present value of the lease payments not yet paid, discounted at the interest rate implicit in the lease or, if that can't be readily determined, the lessee's incremental borrowing rate (the FRC's lessee accounting factsheet explains the practical approaches available to smaller entities that don't have a ready borrowing rate)."
-    },
-    {
-     "id": "accounts-production/leases-frs-102#f5",
-     "lessonId": "accounts-production/leases-frs-102",
      "front": "FRS 102 leases: initial measurement of ROU asset?",
      "back": "Liability + payments at/before commencement + initial direct costs + restoration costs − incentives",
      "evidence": "ROU asset at commencement = the lease liability + payments made at or before commencement + initial direct costs + estimated restoration costs − lease incentives received."
     },
     {
-     "id": "accounts-production/leases-frs-102#f6",
+     "id": "accounts-production/leases-frs-102#f5",
      "lessonId": "accounts-production/leases-frs-102",
      "front": "FRS 102 leases: how is the ROU asset depreciated?",
      "back": "Normally straight line over the shorter of lease term and useful life",
      "evidence": "- the ROU asset is depreciated, normally straight line over the shorter of the lease term and useful life."
     },
     {
-     "id": "accounts-production/leases-frs-102#f7",
+     "id": "accounts-production/leases-frs-102#f6",
      "lessonId": "accounts-production/leases-frs-102",
      "front": "FRS 102 lease transition: are lessee comparatives restated?",
      "back": "Generally no; leases brought on balance sheet at date of initial application",
      "evidence": "On first applying the amendments, lessees generally don't restate comparatives."
     },
     {
-     "id": "accounts-production/leases-frs-102#f8",
+     "id": "accounts-production/leases-frs-102#f7",
      "lessonId": "accounts-production/leases-frs-102",
      "front": "Balance sheet size limits that ROU assets could push a company over?",
      "back": "£500,000 micro; £7.5m small",
@@ -494,7 +480,7 @@
    ]
   },
   "accounts-production/revenue-recognition-frs-102": {
-   "hash": "fd318bafe1f8038f",
+   "hash": "7b3cf67d307f7e79",
    "cards": [
     {
      "id": "accounts-production/revenue-recognition-frs-102#f1",
@@ -513,26 +499,19 @@
     {
      "id": "accounts-production/revenue-recognition-frs-102#f3",
      "lessonId": "accounts-production/revenue-recognition-frs-102",
-     "front": "FRS 102 s23: when is variable consideration included in the transaction price?",
-     "back": "Only to the extent a significant reversal is highly unlikely",
-     "evidence": "Step: 3. Determine the transaction price; Question: How much does the company expect to be entitled to?; Key points: Include variable consideration (rebates, bonuses, penalties) only to the extent a significant reversal is highly unlikely."
-    },
-    {
-     "id": "accounts-production/revenue-recognition-frs-102#f4",
-     "lessonId": "accounts-production/revenue-recognition-frs-102",
      "front": "FRS 102 s23: contract liability vs contract asset?",
      "back": "Liability: paid/invoiced before performing. Asset: performed, right to payment not just time-based",
      "evidence": "- Contract liability (deferred income): the customer has paid or been invoiced before the company performs."
     },
     {
-     "id": "accounts-production/revenue-recognition-frs-102#f5",
+     "id": "accounts-production/revenue-recognition-frs-102#f4",
      "lessonId": "accounts-production/revenue-recognition-frs-102",
      "front": "FRS 102 s23: what distinguishes a trade debtor from a contract asset?",
      "back": "Trade debtor: unconditional right to payment (only passage of time needed)",
      "evidence": "- Trade debtor: an unconditional right to payment (only the passage of time is needed)."
     },
     {
-     "id": "accounts-production/revenue-recognition-frs-102#f6",
+     "id": "accounts-production/revenue-recognition-frs-102#f5",
      "lessonId": "accounts-production/revenue-recognition-frs-102",
      "front": "FRS 105 micro-entities: how is the new revenue model applied?",
      "back": "Simplified version, applied prospectively to new contracts",
@@ -1525,7 +1504,7 @@
    ]
   },
   "capital-taxes/bpr-and-apr-reforms-from-april-2026": {
-   "hash": "2c40f63df66cd39b",
+   "hash": "2998230ff8c63316",
    "cards": [
     {
      "id": "capital-taxes/bpr-and-apr-reforms-from-april-2026#f1",
@@ -1578,7 +1557,7 @@
    ]
   },
   "capital-taxes/business-asset-disposal-relief": {
-   "hash": "9694439b13db373c",
+   "hash": "02f47c1a1eb23371",
    "cards": [
     {
      "id": "capital-taxes/business-asset-disposal-relief#f1",
@@ -1622,14 +1601,6 @@
     },
     {
      "id": "capital-taxes/business-asset-disposal-relief#f6",
-     "lessonId": "capital-taxes/business-asset-disposal-relief",
-     "front": "BADR: how is the claim made and by when?",
-     "back": "In writing, usually on the SA return (SA108), by 31 January 12 months after the tax year end",
-     "evidence": "The individual must claim it in writing (usually on the Self Assessment return, SA108 and the BADR box) by 31 January, 12 months after the end of the tax year of the disposal.",
-     "taxYear": "2026/27"
-    },
-    {
-     "id": "capital-taxes/business-asset-disposal-relief#f7",
      "lessonId": "capital-taxes/business-asset-disposal-relief",
      "front": "BADR: tax treatment of gains above the lifetime limit?",
      "back": "Taxed at the normal 18%/24% rates",
@@ -1769,7 +1740,7 @@
    ]
   },
   "capital-taxes/chargeable-lifetime-transfers-and-trusts-basics": {
-   "hash": "97fc12d8bc0c5c64",
+   "hash": "3bb8924de0ada230",
    "cards": [
     {
      "id": "capital-taxes/chargeable-lifetime-transfers-and-trusts-basics#f1",
@@ -1822,14 +1793,6 @@
     {
      "id": "capital-taxes/chargeable-lifetime-transfers-and-trusts-basics#f7",
      "lessonId": "capital-taxes/chargeable-lifetime-transfers-and-trusts-basics",
-     "front": "CGT: relief for gifting assets into a CLT trust?",
-     "back": "Gift holdover relief (s260), with a joint claim",
-     "evidence": "- CGT: because a CLT is a disposal, gift holdover relief (s260) is available for any asset given into a trust that is a CLT, so no CGT arises on the transfer if a joint claim is made.",
-     "taxYear": "2026/27"
-    },
-    {
-     "id": "capital-taxes/chargeable-lifetime-transfers-and-trusts-basics#f8",
-     "lessonId": "capital-taxes/chargeable-lifetime-transfers-and-trusts-basics",
      "front": "IHT: form used to report a CLT?",
      "back": "Form IHT100",
      "evidence": "Reporting is on form IHT100 (see HMRC's guidance for the reporting deadline).",
@@ -1838,7 +1801,7 @@
    ]
   },
   "capital-taxes/estate-administration-iht400-and-deadlines": {
-   "hash": "7456562b874eed9c",
+   "hash": "7421156da91d8944",
    "cards": [
     {
      "id": "capital-taxes/estate-administration-iht400-and-deadlines#f1",
@@ -1907,18 +1870,10 @@
    ]
   },
   "capital-taxes/gift-holdover-rollover-and-incorporation-relief": {
-   "hash": "30974896bb1662dd",
+   "hash": "2f46592e5049fc1b",
    "cards": [
     {
      "id": "capital-taxes/gift-holdover-rollover-and-incorporation-relief#f1",
-     "lessonId": "capital-taxes/gift-holdover-rollover-and-incorporation-relief",
-     "front": "Gift holdover (s165): deadline for the joint claim?",
-     "back": "Within 4 years of the end of the tax year of the gift",
-     "evidence": "Claim: Joint claim by donor and donee within 4 years of the end of the tax year of the gift.",
-     "taxYear": "2026/27"
-    },
-    {
-     "id": "capital-taxes/gift-holdover-rollover-and-incorporation-relief#f2",
      "lessonId": "capital-taxes/gift-holdover-rollover-and-incorporation-relief",
      "front": "Rollover relief: permitted timing of the replacement asset?",
      "back": "1 year before to 3 years after the disposal",
@@ -1926,7 +1881,7 @@
      "taxYear": "2026/27"
     },
     {
-     "id": "capital-taxes/gift-holdover-rollover-and-incorporation-relief#f3",
+     "id": "capital-taxes/gift-holdover-rollover-and-incorporation-relief#f2",
      "lessonId": "capital-taxes/gift-holdover-rollover-and-incorporation-relief",
      "front": "Incorporation relief: claim position for transfers from 6 April 2026?",
      "back": "Relief requires a claim; it no longer applies automatically",
@@ -1934,7 +1889,7 @@
      "taxYear": "2026/27"
     },
     {
-     "id": "capital-taxes/gift-holdover-rollover-and-incorporation-relief#f4",
+     "id": "capital-taxes/gift-holdover-rollover-and-incorporation-relief#f3",
      "lessonId": "capital-taxes/gift-holdover-rollover-and-incorporation-relief",
      "front": "Incorporation relief: claim deadline for a 2026/27 transfer?",
      "back": "31 January 2029, on the Self Assessment return",
@@ -1942,7 +1897,7 @@
      "taxYear": "2026/27"
     },
     {
-     "id": "capital-taxes/gift-holdover-rollover-and-incorporation-relief#f5",
+     "id": "capital-taxes/gift-holdover-rollover-and-incorporation-relief#f4",
      "lessonId": "capital-taxes/gift-holdover-rollover-and-incorporation-relief",
      "front": "Incorporation relief: how is the deferred gain calculated?",
      "back": "Gain × (value of shares received ÷ total consideration)",
@@ -1950,7 +1905,7 @@
      "taxYear": "2026/27"
     },
     {
-     "id": "capital-taxes/gift-holdover-rollover-and-incorporation-relief#f6",
+     "id": "capital-taxes/gift-holdover-rollover-and-incorporation-relief#f5",
      "lessonId": "capital-taxes/gift-holdover-rollover-and-incorporation-relief",
      "front": "Rollover relief: tax treatment if proceeds are only partly reinvested?",
      "back": "Gain up to the un-reinvested proceeds is chargeable now; the rest is deferred",
@@ -1958,7 +1913,7 @@
      "taxYear": "2026/27"
     },
     {
-     "id": "capital-taxes/gift-holdover-rollover-and-incorporation-relief#f7",
+     "id": "capital-taxes/gift-holdover-rollover-and-incorporation-relief#f6",
      "lessonId": "capital-taxes/gift-holdover-rollover-and-incorporation-relief",
      "front": "Holdover under s260: which non-business gifts qualify?",
      "back": "Assets given into a trust that are a chargeable lifetime transfer for IHT",
@@ -1968,7 +1923,7 @@
    ]
   },
   "capital-taxes/iht-basics-nil-rate-bands-and-the-estate": {
-   "hash": "2e7e4ba7fc5ead2e",
+   "hash": "ff5c4996acf99dd1",
    "cards": [
     {
      "id": "capital-taxes/iht-basics-nil-rate-bands-and-the-estate#f1",
@@ -2201,18 +2156,10 @@
    ]
   },
   "cis/cis-changes-from-april-2026-and-advising-construction-clients": {
-   "hash": "023cbc17d97bc023",
+   "hash": "4bc227d46ca24c9f",
    "cards": [
     {
      "id": "cis/cis-changes-from-april-2026-and-advising-construction-clients#f1",
-     "lessonId": "cis/cis-changes-from-april-2026-and-advising-construction-clients",
-     "front": "CIS: when are nil returns reinstated, and for which months?",
-     "back": "From 6 April 2026, for any month with no subcontractor payments (unless HMRC told in advance)",
-     "evidence": "Change: Nil returns reinstated: file a nil return for any month with no subcontractor payments unless HMRC was told in advance; Date / status: From 6 April 2026; Who is affected: Contractors; Action: Add to the compliance calendar; consider notifying HMRC of expected quiet periods.",
-     "taxYear": "2026/27"
-    },
-    {
-     "id": "cis/cis-changes-from-april-2026-and-advising-construction-clients#f2",
      "lessonId": "cis/cis-changes-from-april-2026-and-advising-construction-clients",
      "front": "CIS: treatment of payments to local authorities and public bodies as subcontractors from 6 April 2026?",
      "back": "Outside CIS: no verification or deduction",
@@ -2220,7 +2167,7 @@
      "taxYear": "2026/27"
     },
     {
-     "id": "cis/cis-changes-from-april-2026-and-advising-construction-clients#f3",
+     "id": "cis/cis-changes-from-april-2026-and-advising-construction-clients#f2",
      "lessonId": "cis/cis-changes-from-april-2026-and-advising-construction-clients",
      "front": "CIS: deduction rates by subcontractor status?",
      "back": "30% unregistered, 20% registered, 0% GPS",
@@ -2228,7 +2175,7 @@
      "taxYear": "2026/27"
     },
     {
-     "id": "cis/cis-changes-from-april-2026-and-advising-construction-clients#f4",
+     "id": "cis/cis-changes-from-april-2026-and-advising-construction-clients#f3",
      "lessonId": "cis/cis-changes-from-april-2026-and-advising-construction-clients",
      "front": "MTD for Income Tax: income threshold for mandation from 6 April 2026, and later thresholds?",
      "back": "Over £50,000; over £30,000 from April 2027; over £20,000 from April 2028",
@@ -2236,25 +2183,17 @@
      "taxYear": "2026/27"
     },
     {
-     "id": "cis/cis-changes-from-april-2026-and-advising-construction-clients#f5",
+     "id": "cis/cis-changes-from-april-2026-and-advising-construction-clients#f4",
      "lessonId": "cis/cis-changes-from-april-2026-and-advising-construction-clients",
      "front": "CIS contractor: by what day of the month must payments be made (annual review check)?",
      "back": "The 22nd",
      "evidence": "2. Were all monthly returns (including nil returns) filed on time? Were all payments made by the 22nd?",
      "taxYear": "2026/27"
-    },
-    {
-     "id": "cis/cis-changes-from-april-2026-and-advising-construction-clients#f6",
-     "lessonId": "cis/cis-changes-from-april-2026-and-advising-construction-clients",
-     "front": "How does a limited company subcontractor reclaim CIS deductions?",
-     "back": "Via the EPS against PAYE/NIC (if it has PAYE) or through the CT return",
-     "evidence": "- Structure: a limited company reclaims CIS through the EPS against PAYE/NIC (if it has PAYE) or through the CT return; a sole trader reclaims through Self Assessment.",
-     "taxYear": "2026/27"
     }
    ]
   },
   "cis/cis-compliance-risks-and-hmrc-checks": {
-   "hash": "ba1a37004135962f",
+   "hash": "34a41e2aeaacf24c",
    "cards": [
     {
      "id": "cis/cis-compliance-risks-and-hmrc-checks#f1",
@@ -2275,21 +2214,13 @@
     {
      "id": "cis/cis-compliance-risks-and-hmrc-checks#f3",
      "lessonId": "cis/cis-compliance-risks-and-hmrc-checks",
-     "front": "CIS: late monthly return penalty sequence?",
-     "back": "£100, then £200, then £300 or 5% of the deductions",
-     "evidence": "- Late returns: £100, then £200 and then £300 or 5% of the deductions (see the returns lesson).",
-     "taxYear": "2026/27"
-    },
-    {
-     "id": "cis/cis-compliance-risks-and-hmrc-checks#f4",
-     "lessonId": "cis/cis-compliance-risks-and-hmrc-checks",
      "front": "CIS: who is generally liable if too little tax is deducted?",
      "back": "The contractor",
      "evidence": "Risk: Wrong rate of deduction; Who bears it: Contractor (liable for the under-deduction); Typical cause: Not verifying; ignoring HMRC's response; using a stale rate; Control: Verify before first payment; keep evidence; check rate changes.",
      "taxYear": "2026/27"
     },
     {
-     "id": "cis/cis-compliance-risks-and-hmrc-checks#f5",
+     "id": "cis/cis-compliance-risks-and-hmrc-checks#f4",
      "lessonId": "cis/cis-compliance-risks-and-hmrc-checks",
      "front": "CIS: nil returns requirement from 6 April 2026?",
      "back": "Nil returns are reinstated",
@@ -2299,18 +2230,10 @@
    ]
   },
   "cis/cis-scope-contractors-subcontractors-and-construction-operations": {
-   "hash": "8efb2c3427cb1efe",
+   "hash": "39f9d40a74b2095c",
    "cards": [
     {
      "id": "cis/cis-scope-contractors-subcontractors-and-construction-operations#f1",
-     "lessonId": "cis/cis-scope-contractors-subcontractors-and-construction-operations",
-     "front": "CIS: spend making a non-construction business a deemed contractor?",
-     "back": "Over £3 million on construction operations in the previous 12 months",
-     "evidence": "A deemed contractor is a business that isn't mainly in construction but whose expenditure on construction operations exceeds £3 million in the previous 12 months (HMRC's CIS340 guidance).",
-     "taxYear": "2026/27"
-    },
-    {
-     "id": "cis/cis-scope-contractors-subcontractors-and-construction-operations#f2",
      "lessonId": "cis/cis-scope-contractors-subcontractors-and-construction-operations",
      "front": "CIS: deduction rate if a subcontractor is not registered?",
      "back": "30%",
@@ -2318,7 +2241,7 @@
      "taxYear": "2026/27"
     },
     {
-     "id": "cis/cis-scope-contractors-subcontractors-and-construction-operations#f3",
+     "id": "cis/cis-scope-contractors-subcontractors-and-construction-operations#f2",
      "lessonId": "cis/cis-scope-contractors-subcontractors-and-construction-operations",
      "front": "CIS: how are payments to employees on construction sites treated?",
      "back": "Within PAYE, not CIS",
@@ -2326,7 +2249,7 @@
      "taxYear": "2026/27"
     },
     {
-     "id": "cis/cis-scope-contractors-subcontractors-and-construction-operations#f4",
+     "id": "cis/cis-scope-contractors-subcontractors-and-construction-operations#f3",
      "lessonId": "cis/cis-scope-contractors-subcontractors-and-construction-operations",
      "front": "CIS: what is a subcontractor with gross payment status paid?",
      "back": "Gross, with no deductions",
@@ -2334,7 +2257,7 @@
      "taxYear": "2026/27"
     },
     {
-     "id": "cis/cis-scope-contractors-subcontractors-and-construction-operations#f5",
+     "id": "cis/cis-scope-contractors-subcontractors-and-construction-operations#f4",
      "lessonId": "cis/cis-scope-contractors-subcontractors-and-construction-operations",
      "front": "CIS: from 6 April 2026, how are payments to public bodies as subcontractors treated?",
      "back": "Outside the scope of CIS",
@@ -2344,7 +2267,7 @@
    ]
   },
   "cis/gross-payment-status-tests-and-changes": {
-   "hash": "dedf8a89ad33d0e8",
+   "hash": "f0b29c204e840288",
    "cards": [
     {
      "id": "cis/gross-payment-status-tests-and-changes#f1",
@@ -2373,21 +2296,13 @@
     {
      "id": "cis/gross-payment-status-tests-and-changes#f4",
      "lessonId": "cis/gross-payment-status-tests-and-changes",
-     "front": "CIS: deduction rates once GPS is withdrawn?",
-     "back": "20%, or 30% if details are mismatched",
-     "evidence": "The business is then paid at 20% (or 30% if details are mismatched) until it requalifies.",
-     "taxYear": "2026/27"
-    },
-    {
-     "id": "cis/gross-payment-status-tests-and-changes#f5",
-     "lessonId": "cis/gross-payment-status-tests-and-changes",
      "front": "CIS GPS compliance test: what period does HMRC look at?",
      "back": "The last 12 months",
      "evidence": "HMRC looks at the last 12 months.",
      "taxYear": "2026/27"
     },
     {
-     "id": "cis/gross-payment-status-tests-and-changes#f6",
+     "id": "cis/gross-payment-status-tests-and-changes#f5",
      "lessonId": "cis/gross-payment-status-tests-and-changes",
      "front": "CIS: when do payments to local authorities and public bodies leave the scheme?",
      "back": "From 6 April 2026",
@@ -2397,7 +2312,7 @@
    ]
   },
   "cis/monthly-returns-nil-returns-and-penalties": {
-   "hash": "c90af78423da6322",
+   "hash": "c833ff2ae84df65a",
    "cards": [
     {
      "id": "cis/monthly-returns-nil-returns-and-penalties#f1",
@@ -2418,21 +2333,13 @@
     {
      "id": "cis/monthly-returns-nil-returns-and-penalties#f3",
      "lessonId": "cis/monthly-returns-nil-returns-and-penalties",
-     "front": "CIS: when must nil returns be filed again?",
-     "back": "From 6 April 2026, unless HMRC told in advance of no payments",
-     "evidence": "From 6 April 2026 contractors must file a nil return for any month in which they don't pay subcontractors, unless they have told HMRC in advance that they won't be making payments.",
-     "taxYear": "2026/27"
-    },
-    {
-     "id": "cis/monthly-returns-nil-returns-and-penalties#f4",
-     "lessonId": "cis/monthly-returns-nil-returns-and-penalties",
      "front": "CIS: penalty for a CIS300 return 1 day late?",
      "back": "£100",
      "evidence": "Return filed…: 1 day late; Penalty: £100.",
      "taxYear": "2026/27"
     },
     {
-     "id": "cis/monthly-returns-nil-returns-and-penalties#f5",
+     "id": "cis/monthly-returns-nil-returns-and-penalties#f4",
      "lessonId": "cis/monthly-returns-nil-returns-and-penalties",
      "front": "CIS: penalty for a CIS300 return 6 months late?",
      "back": "£300 or 5% of CIS deductions on the return, whichever is higher",
@@ -2440,7 +2347,7 @@
      "taxYear": "2026/27"
     },
     {
-     "id": "cis/monthly-returns-nil-returns-and-penalties#f6",
+     "id": "cis/monthly-returns-nil-returns-and-penalties#f5",
      "lessonId": "cis/monthly-returns-nil-returns-and-penalties",
      "front": "CIS: how long must records be kept?",
      "back": "Three years after the end of the relevant tax year",
@@ -2450,7 +2357,7 @@
    ]
   },
   "cis/registering-and-verifying-subcontractors": {
-   "hash": "78f81049677c1dce",
+   "hash": "57dd0471e161d639",
    "cards": [
     {
      "id": "cis/registering-and-verifying-subcontractors#f1",
@@ -2503,7 +2410,7 @@
    ]
   },
   "cis/subcontractor-statements-and-reclaiming-cis-deductions": {
-   "hash": "0cbf50d2a9bd1595",
+   "hash": "7d68357ce432d684",
    "cards": [
     {
      "id": "cis/subcontractor-statements-and-reclaiming-cis-deductions#f1",
@@ -2516,14 +2423,6 @@
     {
      "id": "cis/subcontractor-statements-and-reclaiming-cis-deductions#f2",
      "lessonId": "cis/subcontractor-statements-and-reclaiming-cis-deductions",
-     "front": "CIS: how does a limited company subcontractor claim deductions suffered each month?",
-     "back": "Through the Employer Payment Summary (EPS), set against PAYE, NIC and Apprenticeship Levy",
-     "evidence": "Through the Employer Payment Summary (EPS) each month, set against the company's PAYE, NIC and Apprenticeship Levy liabilities.",
-     "taxYear": "2026/27"
-    },
-    {
-     "id": "cis/subcontractor-statements-and-reclaiming-cis-deductions#f3",
-     "lessonId": "cis/subcontractor-statements-and-reclaiming-cis-deductions",
      "front": "CIS: how does a sole trader subcontractor reclaim deductions suffered?",
      "back": "On the Self Assessment return (self-employment pages); excess is repaid",
      "evidence": "On the Self Assessment return (the self-employment pages: the CIS deductions suffered box).",
@@ -2532,7 +2431,7 @@
    ]
   },
   "cis/vat-domestic-reverse-charge-and-cis": {
-   "hash": "cb29dcc2a9f23007",
+   "hash": "16e8d57355c3c2a3",
    "cards": [
     {
      "id": "cis/vat-domestic-reverse-charge-and-cis#f1",
@@ -2553,21 +2452,13 @@
     {
      "id": "cis/vat-domestic-reverse-charge-and-cis#f3",
      "lessonId": "cis/vat-domestic-reverse-charge-and-cis",
-     "front": "VAT reverse charge: definition of an end user?",
-     "back": "A business that doesn't make onward supplies of construction services",
-     "evidence": "An end user is a business that doesn't make onward supplies of construction services (for example a property owner, landlord or retailer who commissions work for its own premises).",
-     "taxYear": "2026/27"
-    },
-    {
-     "id": "cis/vat-domestic-reverse-charge-and-cis#f4",
-     "lessonId": "cis/vat-domestic-reverse-charge-and-cis",
      "front": "Reverse charge invoice: required wording?",
      "back": "\"Reverse charge: Customer to pay the VAT to HMRC\" or \"Reverse charge: VAT Act 1994 Section 55A applies\"",
      "evidence": "- \"Reverse charge: Customer to pay the VAT to HMRC\", or\n- \"Reverse charge: VAT Act 1994 Section 55A applies\".",
      "taxYear": "2026/27"
     },
     {
-     "id": "cis/vat-domestic-reverse-charge-and-cis#f5",
+     "id": "cis/vat-domestic-reverse-charge-and-cis#f4",
      "lessonId": "cis/vat-domestic-reverse-charge-and-cis",
      "front": "CIS with reverse charge: how is the CIS deduction calculated?",
      "back": "Amount excluding VAT, less materials, times the CIS rate",
@@ -2577,7 +2468,7 @@
    ]
   },
   "cis/working-out-the-cis-deduction": {
-   "hash": "36a9cb99600ac52c",
+   "hash": "23d6ce9804916a7d",
    "cards": [
     {
      "id": "cis/working-out-the-cis-deduction#f1",
@@ -2625,14 +2516,6 @@
      "front": "CIS: how long must copies of payment and deduction statements be kept?",
      "back": "Three years",
      "evidence": "Keep copies for three years.",
-     "taxYear": "2026/27"
-    },
-    {
-     "id": "cis/working-out-the-cis-deduction#f7",
-     "lessonId": "cis/working-out-the-cis-deduction",
-     "front": "CIS: what if no evidence of materials cost is provided?",
-     "back": "Whole payment is liable to deduction",
-     "evidence": "If none is provided, the whole payment is liable to deduction.",
      "taxYear": "2026/27"
     }
    ]
@@ -5776,7 +5659,7 @@
    ]
   },
   "ir35/chapter-8-deemed-employment-payment": {
-   "hash": "2e92b0e6e3f73506",
+   "hash": "8fb7ec8dc976a4d3",
    "cards": [
     {
      "id": "ir35/chapter-8-deemed-employment-payment#f1",
@@ -5813,7 +5696,7 @@
    ]
   },
   "ir35/client-size-test-and-status-determination-statements": {
-   "hash": "9815f9ffb27197e3",
+   "hash": "8afbb99856163420",
    "cards": [
     {
      "id": "ir35/client-size-test-and-status-determination-statements#f1",
@@ -5874,7 +5757,7 @@
    ]
   },
   "ir35/employment-status-tests-employed-or-self-employed": {
-   "hash": "ff332220e5f63ebe",
+   "hash": "876933f8f2a3fee0",
    "cards": [
     {
      "id": "ir35/employment-status-tests-employed-or-self-employed#f1",
@@ -5921,7 +5804,7 @@
    ]
   },
   "ir35/fee-payer-duties-and-deemed-direct-payments": {
-   "hash": "292fdcf09aabeee1",
+   "hash": "16d2d49eb6983de2",
    "cards": [
     {
      "id": "ir35/fee-payer-duties-and-deemed-direct-payments#f1",
@@ -5958,21 +5841,13 @@
     {
      "id": "ir35/fee-payer-duties-and-deemed-direct-payments#f5",
      "lessonId": "ir35/fee-payer-duties-and-deemed-direct-payments",
-     "front": "IR35 Ch10: can the fee-payer deduct employer NIC from the PSC's payment?",
-     "back": "No - it is the fee-payer's own cost",
-     "evidence": "Employer NIC cannot be deducted from the amount paid to the intermediary.",
-     "taxYear": "2026/27"
-    },
-    {
-     "id": "ir35/fee-payer-duties-and-deemed-direct-payments#f6",
-     "lessonId": "ir35/fee-payer-duties-and-deemed-direct-payments",
      "front": "IR35 Ch10: how must the fee-payer flag the worker on RTI?",
      "back": "Off-payroll worker subject to the rules indicator on the Full Payment Submission",
      "evidence": "Report through RTI (Full Payment Submission) and indicate the worker as an \"off-payroll worker subject to the rules\" using the RTI indicator.",
      "taxYear": "2026/27"
     },
     {
-     "id": "ir35/fee-payer-duties-and-deemed-direct-payments#f7",
+     "id": "ir35/fee-payer-duties-and-deemed-direct-payments#f6",
      "lessonId": "ir35/fee-payer-duties-and-deemed-direct-payments",
      "front": "IR35 Ch10: which NIC earnings period applies to a director-worker?",
      "back": "An annual period (others use the pay period)",
@@ -5982,7 +5857,7 @@
    ]
   },
   "ir35/ir35-chapter-8-and-chapter-10-explained": {
-   "hash": "783ad8dfc8c70b1c",
+   "hash": "20e16cdebcaebac0",
    "cards": [
     {
      "id": "ir35/ir35-chapter-8-and-chapter-10-explained#f1",
@@ -6001,26 +5876,12 @@
     {
      "id": "ir35/ir35-chapter-8-and-chapter-10-explained#f3",
      "lessonId": "ir35/ir35-chapter-8-and-chapter-10-explained",
-     "front": "IR35: which legislation sections cover Chapter 8 and Chapter 10?",
-     "back": "Chapter 8: ITEPA 2003 ss48–61; Chapter 10: ss61M–61Z",
-     "evidence": "Legislation; Chapter 8 (intermediaries legislation, 'IR35'): ITEPA 2003 ss48–61; Chapter 10 (off-payroll working rules): ITEPA 2003 ss61M–61Z."
-    },
-    {
-     "id": "ir35/ir35-chapter-8-and-chapter-10-explained#f4",
-     "lessonId": "ir35/ir35-chapter-8-and-chapter-10-explained",
      "front": "IR35 Chapter 8: allowance in the deemed payment calculation?",
      "back": "5% allowance on the PSC's receipts, plus deductions",
      "evidence": "Amount charged; Chapter 8 (intermediaries legislation, 'IR35'): A deemed payment calculated on the PSC's receipts with a 5% allowance and deductions; Chapter 10 (off-payroll working rules): The fee-payer's payment to the PSC, less VAT and (in some cases) expenses."
     },
     {
-     "id": "ir35/ir35-chapter-8-and-chapter-10-explained#f5",
-     "lessonId": "ir35/ir35-chapter-8-and-chapter-10-explained",
-     "front": "IR35: when does a worker have a material interest in a PSC (shareholding)?",
-     "back": "More than 5% of ordinary share capital (or right to more than 5% of distributions)",
-     "evidence": "A personal service company (PSC) is an intermediary company in which the worker has a material interest: broadly more than 5% of the ordinary share capital (or the right to more than 5% of distributions), or the company is a managed service company, or the worker receives payments that aren't employment income and which could reasonably be taken to be for the services."
-    },
-    {
-     "id": "ir35/ir35-chapter-8-and-chapter-10-explained#f6",
+     "id": "ir35/ir35-chapter-8-and-chapter-10-explained#f4",
      "lessonId": "ir35/ir35-chapter-8-and-chapter-10-explained",
      "front": "IR35 Chapter 8: when does the PSC account for the deemed employment payment?",
      "back": "At 5 April",
@@ -6029,7 +5890,7 @@
    ]
   },
   "ir35/managed-service-companies-and-msc-provider-liability": {
-   "hash": "717a133c105e2e2f",
+   "hash": "907f2819e53c64d7",
    "cards": [
     {
      "id": "ir35/managed-service-companies-and-msc-provider-liability#f1",
@@ -6058,14 +5919,6 @@
     {
      "id": "ir35/managed-service-companies-and-msc-provider-liability#f4",
      "lessonId": "ir35/managed-service-companies-and-msc-provider-liability",
-     "front": "MSC vs Chapter 10: which applies since Finance Act 2018 where the engagement is within Chapter 10?",
-     "back": "Chapter 10 applies; the engagement is taken out of Chapter 9 (MSC rules)",
-     "evidence": "Interaction with Chapter 10; Personal service company: Chapter 10 applies if the client is medium/large or public sector; Managed service company: Since Finance Act 2018, engagements within Chapter 10 are taken out of Chapter 9.",
-     "taxYear": "2026/27"
-    },
-    {
-     "id": "ir35/managed-service-companies-and-msc-provider-liability#f5",
-     "lessonId": "ir35/managed-service-companies-and-msc-provider-liability",
      "front": "PSC (Chapter 8): what allowance applies to the deemed employment payment calculation?",
      "back": "5% allowance",
      "evidence": "Tax result; Personal service company: Deemed employment payment calculated on the PSC's receipts (5% allowance); Managed service company: Payments to the worker treated as employment income, with the MSC as employer accounting for PAYE and NIC.",
@@ -6074,7 +5927,7 @@
    ]
   },
   "ir35/status-disputes-enquiries-and-penalties": {
-   "hash": "f0fc560338c98d25",
+   "hash": "887c78a4f54c365b",
    "cards": [
     {
      "id": "ir35/status-disputes-enquiries-and-penalties#f1",
@@ -6087,21 +5940,13 @@
     {
      "id": "ir35/status-disputes-enquiries-and-penalties#f2",
      "lessonId": "ir35/status-disputes-enquiries-and-penalties",
-     "front": "IR35: consequence if client misses the 45-day status disagreement deadline?",
-     "back": "Client becomes liable for the tax and NIC as deemed employer from that point",
-     "evidence": "If the client doesn't respond within 45 days, the client becomes liable for the tax and NIC (as the deemed employer) from that point, even if the engagement is later found to be outside IR35.",
-     "taxYear": "2026/27"
-    },
-    {
-     "id": "ir35/status-disputes-enquiries-and-penalties#f3",
-     "lessonId": "ir35/status-disputes-enquiries-and-penalties",
      "front": "Discovery assessment time limit: careless behaviour?",
      "back": "6 years",
      "evidence": "| Careless | 6 years |",
      "taxYear": "2026/27"
     },
     {
-     "id": "ir35/status-disputes-enquiries-and-penalties#f4",
+     "id": "ir35/status-disputes-enquiries-and-penalties#f3",
      "lessonId": "ir35/status-disputes-enquiries-and-penalties",
      "front": "Discovery assessment time limit: deliberate behaviour?",
      "back": "20 years",
@@ -6109,7 +5954,7 @@
      "taxYear": "2026/27"
     },
     {
-     "id": "ir35/status-disputes-enquiries-and-penalties#f5",
+     "id": "ir35/status-disputes-enquiries-and-penalties#f4",
      "lessonId": "ir35/status-disputes-enquiries-and-penalties",
      "front": "Discovery assessment time limit: ordinary behaviour (no careless or deliberate)?",
      "back": "4 years after the end of the relevant period",
@@ -6117,7 +5962,7 @@
      "taxYear": "2026/27"
     },
     {
-     "id": "ir35/status-disputes-enquiries-and-penalties#f6",
+     "id": "ir35/status-disputes-enquiries-and-penalties#f5",
      "lessonId": "ir35/status-disputes-enquiries-and-penalties",
      "front": "Inaccuracy penalties: careless, maximum and minimum with unprompted disclosure?",
      "back": "Maximum 30%; minimum 0%",
@@ -6125,7 +5970,7 @@
      "taxYear": "2026/27"
     },
     {
-     "id": "ir35/status-disputes-enquiries-and-penalties#f7",
+     "id": "ir35/status-disputes-enquiries-and-penalties#f6",
      "lessonId": "ir35/status-disputes-enquiries-and-penalties",
      "front": "Inaccuracy penalties: deliberate but not concealed, max and unprompted minimum?",
      "back": "Maximum 70%; minimum 20%",
@@ -6133,7 +5978,7 @@
      "taxYear": "2026/27"
     },
     {
-     "id": "ir35/status-disputes-enquiries-and-penalties#f8",
+     "id": "ir35/status-disputes-enquiries-and-penalties#f7",
      "lessonId": "ir35/status-disputes-enquiries-and-penalties",
      "front": "Inaccuracy penalties: deliberate and concealed, max and unprompted minimum?",
      "back": "Maximum 100%; minimum 30%",
@@ -7116,7 +6961,7 @@
    ]
   },
   "pensions/assessing-workers-and-postponement": {
-   "hash": "ad2cf7f7577ff877",
+   "hash": "a856459922343d9e",
    "cards": [
     {
      "id": "pensions/assessing-workers-and-postponement#f1",
@@ -7177,7 +7022,7 @@
    ]
   },
   "pensions/auto-enrolment-employer-duties": {
-   "hash": "31b56d1e7844f99f",
+   "hash": "b5d3184858ae9553",
    "cards": [
     {
      "id": "pensions/auto-enrolment-employer-duties#f1",
@@ -7222,7 +7067,7 @@
    ]
   },
   "pensions/contributions-opt-out-and-re-enrolment": {
-   "hash": "6d4cf1810b6e568d",
+   "hash": "17e1bace79aad8c5",
    "cards": [
     {
      "id": "pensions/contributions-opt-out-and-re-enrolment#f1",
@@ -7336,7 +7181,7 @@
    ]
   },
   "pensions/pension-tax-relief-net-pay-vs-relief-at-source": {
-   "hash": "7b321b226bfd4394",
+   "hash": "f11db7ea8bf01634",
    "cards": [
     {
      "id": "pensions/pension-tax-relief-net-pay-vs-relief-at-source#f1",
@@ -7442,7 +7287,7 @@
    ]
   },
   "pensions/pensions-for-owner-managed-companies": {
-   "hash": "324f7c18d3436fa5",
+   "hash": "19d7e6ec287190e4",
    "cards": [
     {
      "id": "pensions/pensions-for-owner-managed-companies#f1",
@@ -7455,21 +7300,13 @@
     {
      "id": "pensions/pensions-for-owner-managed-companies#f2",
      "lessonId": "pensions/pensions-for-owner-managed-companies",
-     "front": "Personal pension contributions: limit for tax relief?",
-     "back": "Higher of £3,600 and 100% of relevant UK earnings, within the annual allowance",
-     "evidence": "For personal contribution relief, the limit is the higher of £3,600 and 100% of the individual's relevant UK earnings in the tax year: broadly employment income (salary, bonuses, taxable benefits), self-employed profits and certain furnished holiday-let profits.",
-     "taxYear": "2026/27"
-    },
-    {
-     "id": "pensions/pensions-for-owner-managed-companies#f3",
-     "lessonId": "pensions/pensions-for-owner-managed-companies",
      "front": "Pensions: which income is not relevant UK earnings?",
      "back": "Dividends, interest and rental income",
      "evidence": "Dividends, interest and rental income are not relevant earnings.",
      "taxYear": "2026/27"
     },
     {
-     "id": "pensions/pensions-for-owner-managed-companies#f4",
+     "id": "pensions/pensions-for-owner-managed-companies#f3",
      "lessonId": "pensions/pensions-for-owner-managed-companies",
      "front": "Employer v personal pension contribution: corporation tax relief?",
      "back": "Employer: yes, on the company. Personal: no.",
@@ -7477,7 +7314,7 @@
      "taxYear": "2026/27"
     },
     {
-     "id": "pensions/pensions-for-owner-managed-companies#f5",
+     "id": "pensions/pensions-for-owner-managed-companies#f4",
      "lessonId": "pensions/pensions-for-owner-managed-companies",
      "front": "Pensions: what happens if inputs exceed the annual allowance with no carry forward?",
      "back": "An annual allowance charge arises on the member",
@@ -7485,7 +7322,7 @@
      "taxYear": "2026/27"
     },
     {
-     "id": "pensions/pensions-for-owner-managed-companies#f6",
+     "id": "pensions/pensions-for-owner-managed-companies#f5",
      "lessonId": "pensions/pensions-for-owner-managed-companies",
      "front": "Auto-enrolment: duties for a sole director?",
      "back": "None; a sole director never has AE duties",
@@ -7493,7 +7330,7 @@
      "taxYear": "2026/27"
     },
     {
-     "id": "pensions/pensions-for-owner-managed-companies#f7",
+     "id": "pensions/pensions-for-owner-managed-companies#f6",
      "lessonId": "pensions/pensions-for-owner-managed-companies",
      "front": "Employer pension for a family member: when is it likely disallowed?",
      "back": "When the family member does little or no work (salary too)",
@@ -7503,7 +7340,7 @@
    ]
   },
   "pensions/salary-sacrifice-for-pensions": {
-   "hash": "b2a1077ea2794b42",
+   "hash": "4e15700a78362a91",
    "cards": [
     {
      "id": "pensions/salary-sacrifice-for-pensions#f1",
@@ -7633,7 +7470,7 @@
    ]
   },
   "pensions/tpr-enforcement-and-penalties": {
-   "hash": "4a74923a6efb6d91",
+   "hash": "c12239a1b75e9243",
    "cards": [
     {
      "id": "pensions/tpr-enforcement-and-penalties#f1",
@@ -8948,7 +8785,7 @@
    ]
   },
   "practice/hmrc-enquiries-information-notices-and-time-limits": {
-   "hash": "33d5bd5bda99aeb5",
+   "hash": "ea5b53106d348347",
    "cards": [
     {
      "id": "practice/hmrc-enquiries-information-notices-and-time-limits#f1",

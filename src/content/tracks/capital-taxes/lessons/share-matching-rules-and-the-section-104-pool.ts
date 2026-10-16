@@ -190,6 +190,6 @@ In **February 2027** (tax year 2026/27) he sells **800 shares at £8.40**, payin
     { label: "TCGA 1992 s104 – share pooling", url: "https://www.legislation.gov.uk/ukpga/1992/12/section/104" },
     { label: "TCGA 1992 s106A – shares acquired within 30 days", url: "https://www.legislation.gov.uk/ukpga/1992/12/section/106A" },
     { label: "HMRC Capital Gains Manual: shares and securities", url: "https://www.gov.uk/hmrc-internal-manuals/capital-gains-manual/cg51500" },
-    { label: "Capital Gains Tax: shares – GOV.UK", url: "https://www.gov.uk/capital-gains-tax" },
+    { label: "Tax when you sell shares: selling shares in the same company – GOV.UK", url: "https://www.gov.uk/tax-sell-shares/same-company" },
   ],
 };

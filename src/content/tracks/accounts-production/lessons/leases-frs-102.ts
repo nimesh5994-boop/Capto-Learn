@@ -25,7 +25,7 @@ export const lesson: Lesson = {
       tone: "rule",
       title: "Exemptions a lessee can elect",
       md: `- **Short-term leases**: a lease term of **12 months or less** (with no purchase option).
-- **Low-value assets**: leases where the underlying asset is of low value when new (for example laptops, phones, small office furniture). FRS 102's version is designed so that the most significant leases still come on balance sheet.
+- **Low-value assets**: leases where the underlying asset is of low value when new (for example laptops, phones, small office furniture). Section 20 sets no value threshold, but it lists assets that are **not** low value, including **property and motor vehicles**, so the most significant leases still come on balance sheet.
 
 For exempt leases, the payments are expensed (normally straight line) as before.`,
     },
@@ -33,7 +33,7 @@ For exempt leases, the payments are expensed (normally straight line) as before.
       kind: "md",
       md: `### Measuring the lease
 
-**Lease liability** at commencement = **present value of the lease payments** not yet paid, discounted at the interest rate implicit in the lease or, if that can't be readily determined, the lessee's **incremental borrowing rate** (the FRC's lessee accounting factsheet explains the practical approaches available to smaller entities that don't have a ready borrowing rate).
+**Lease liability** at commencement = **present value of the lease payments** not yet paid, discounted at the interest rate implicit in the lease or, if that can't be readily determined, either the lessee's **incremental borrowing rate** or its **obtainable borrowing rate** (chosen lease by lease). The obtainable borrowing rate is a simplification for smaller entities: the rate the lessee would pay to borrow, over a similar term, an amount similar to the total undiscounted lease payments, for example from a bank quote.
 
 **ROU asset** at commencement = the lease liability + payments made at or before commencement + initial direct costs + estimated restoration costs − lease incentives received.
 
@@ -82,7 +82,7 @@ Year 1 charge to profit: £17,318 + £4,330 = **£21,648**, compared with rent o
       kind: "md",
       md: `### Transition
 
-On first applying the amendments, lessees generally don't restate comparatives. Instead, existing operating leases are brought on balance sheet at the **date of initial application** (the start of the first period beginning on or after 1 January 2026): typically with the liability measured at the present value of the **remaining** payments and the ROU asset by reference to that liability (adjusted for any prepaid or accrued rent). The FRC's staff factsheets on lessee accounting and initial application set out the transition options and practical expedients; check them before the first year end.
+On first applying the amendments, lessees generally don't restate comparatives. Instead, existing operating leases are brought on balance sheet at the **date of initial application** (the start of the first period beginning on or after 1 January 2026): the liability is measured at the present value of the **remaining** payments, discounted at the lessee's incremental or obtainable borrowing rate at that date, and the ROU asset equals that liability adjusted for any prepaid or accrued rent. The FRC's staff factsheets on lessee accounting and initial application set out the transition options and practical expedients; check them before the first year end.
 
 ### Tax
 

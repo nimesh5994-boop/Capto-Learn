@@ -418,7 +418,7 @@ export async function* runResearch(question: string, opts: { professional: boole
         yield { type: "stage", message: `Found a verified answer — confirmed its ${hit.sourcesChecked} official source${hit.sourcesChecked === 1 ? " is" : "s are"} unchanged…` };
         const answer: ResearchAnswer = {
           ...hit.entry.answer,
-          reuse: { libraryId: hit.entry.id, originalDate: hit.entry.createdAt.toISOString(), sourcesChecked: hit.sourcesChecked },
+          reuse: { libraryId: hit.entry.id, originalDate: hit.entry.createdAt.toISOString(), sourcesChecked: hit.sourcesChecked, ...(hit.approved ? { approvedBy: hit.approved.by, approvedAt: hit.approved.at } : {}) },
           relatedLessons: relatedLessons(question),
           tier: { level: 2, label: "Standard", reason: "Reused from your firm's verified answers" },
         };

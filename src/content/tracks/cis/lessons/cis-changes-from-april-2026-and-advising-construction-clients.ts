@@ -25,7 +25,7 @@ export const lesson: Lesson = {
       caption: "Changes to know (2026/27)",
       head: ["Change", "Date / status", "Who is affected", "Action"],
       rows: [
-        ["Nil returns reinstated: file a nil return for any month with no subcontractor payments unless HMRC was told in advance", "From **6 April 2026**", "Contractors", "Add to the compliance calendar; consider notifying HMRC of expected quiet periods"],
+        ["Nil returns reinstated: file a nil return for any month with no subcontractor payments unless HMRC has been notified of a period of inactivity (up to 6 months)", "From **6 April 2026**", "Mainstream contractors (deemed contractors must still tell HMRC)", "Add to the compliance calendar; consider notifying HMRC of expected quiet periods"],
         ["Payments to local authorities and public bodies as subcontractors are outside CIS", "From **6 April 2026**", "Contractors; public bodies", "Stop verifying and deducting; amend processes; check the list of bodies"],
         ["Supply-chain fraud: where a business knew or should have known its payments or CIS credits were connected with deliberate non-compliance, HMRC can raise a determination (20% of the payment or the CIS credit claimed), charge a 30% penalty (which can be transferred to an officer) and cancel GPS immediately, with a five-year bar on reapplying", "In force **6 April 2026** (HMRC manual CISR85010)", "Contractors and subcontractors", "Do due diligence on the supply chain and keep evidence of it; escalate any HMRC contact"],
         ["For comparison: VAT compliance has counted in the GPS compliance test since **6 April 2024** (CISR46040), so this is not a 2026 change", "In force since **6 April 2024**", "Subcontractors with GPS", "Monitor VAT filing and payment alongside PAYE/SA/CT"],
@@ -46,7 +46,7 @@ For a sole-trader subcontractor above the **£50,000** threshold (measured on **
 
 - **Cash flow:** compare the **cash cost** of each status: 30% unregistered, 20% registered, 0% GPS. A client at 20% with substantial expenses may wait months for a repayment.
 - **GPS:** worth considering for any qualifying business. Build a **compliance monitoring** routine to protect it, especially with the 2026 changes.
-- **Structure:** a **limited company** reclaims CIS through the EPS against PAYE/NIC (if it has PAYE) or through the CT return; a **sole trader** reclaims through Self Assessment. Compare the admin and tax outcomes before recommending a change, and remember that a change of structure means **re-verification** and possibly a new GPS application.
+- **Structure:** a **limited company** reclaims CIS through its **payroll scheme** (the EPS, against PAYE/NIC), with any year-end excess refunded or set against corporation tax due, but never by claiming it on the CT return; a **sole trader** reclaims through Self Assessment. Compare the admin and tax outcomes before recommending a change, and remember that a change of structure means **re-verification** and possibly a new GPS application.
 - **VAT and the reverse charge:** model the **cash-flow effect** of not collecting VAT from CIS contractor customers.
 
 ### Advising contractor clients
@@ -78,7 +78,7 @@ For a sole-trader subcontractor above the **£50,000** threshold (measured on **
       {
         kind: "md",
         md: `**Beacon.**
-- **Nil returns:** from 6 April 2026 a nil return is needed for the two months with no payments, unless HMRC had been notified in advance. **Past practice** of filing only in active months now creates **penalty exposure**. Set up the calendar and, for planned gaps, notify HMRC.
+- **Nil returns:** Beacon is a mainstream contractor, so from 6 April 2026 a nil return is needed for the two months with no payments, unless HMRC had been notified of a period of inactivity. **Past practice** of filing only in active months now creates **penalty exposure**. Set up the calendar and, for planned gaps, notify HMRC.
 - **Council:** from 6 April 2026 payments to the local authority as a subcontractor are **outside CIS**: no verification or deduction.
 - **Action list:** update the system, check that earlier-year returns (before the change) were correct, and consider a quarterly review of rates against HMRC's verification responses.
 
@@ -150,10 +150,10 @@ For a sole-trader subcontractor above the **£50,000** threshold (measured on **
     {
       kind: "mcq",
       id: "q-vat-gps",
-      prompt: "What compliance area is being added to the GPS compliance test?",
+      prompt: "Which tax's compliance has counted in the GPS compliance test since 6 April 2024?",
       options: ["VAT", "Capital gains tax", "Stamp duty", "Inheritance tax"],
       answer: 0,
-      explain: "VAT compliance (with protection for small non-VAT-registered businesses).",
+      explain: "VAT compliance has counted since 6 April 2024 (CISR46040), so it is not a 2026 change.",
     },
     {
       kind: "mcq",

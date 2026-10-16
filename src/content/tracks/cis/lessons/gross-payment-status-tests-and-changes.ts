@@ -49,9 +49,9 @@ For a company with **four** or more directors the £100,000 total will be the lo
 ### Applying and keeping the status
 
 - **Apply** online (or by the paper forms) as a sole trader, partnership or limited company. Providing **false information** can lead to penalties.
-- HMRC checks the three tests and **reviews status annually**. A business that has GPS keeps it only while it **continues to meet** the tests.
-- **Withdrawal:** HMRC can withdraw GPS if the business **fails the compliance test** (late returns or late payment) or if the business no longer meets the **business** or **turnover** tests. The business is then paid at **20%** (or 30% if details are mismatched) until it requalifies. Contractors are told through verification.
-- **Reapplying** is possible once the compliance problems are resolved.`,
+- HMRC checks the three tests and **reviews status annually**. A business that has GPS keeps it only while it **continues to meet** the tests. A limited company is reviewed as a company, not through its individual directors or shareholders.
+- **Withdrawal:** HMRC can withdraw GPS if the business **fails the compliance test** (late returns or late payment) or if the business no longer meets the **business** or **turnover** tests. HMRC first writes to say the business is about to fail and why; if its reasons aren't accepted, status is withdrawn after **90 days**, and there are **30 days** to appeal. The business is then paid at **20%** (or 30% if details are mismatched). Contractors are told through verification. Agreed time to pay with HMRC doesn't count against the business.
+- **Reapplying:** after GPS is cancelled the business must **wait a year** before reapplying (five years where it was cancelled under the 2026 supply-chain fraud rules, below).`,
     },
     {
       kind: "callout",
@@ -60,7 +60,7 @@ For a company with **four** or more directors the £100,000 total will be the lo
       md: `- **VAT compliance** has been part of the GPS **compliance test** since **6 April 2024** (CISR46040), so late VAT returns and payments now count alongside PAYE, Self Assessment and Corporation Tax.
 - **Supply-chain fraud (from 6 April 2026):** where a business **knew or should have known** that its payments or CIS credits were connected with deliberate non-compliance, HMRC can raise a determination, charge a **30% penalty** (which can be transferred to an officer) and **cancel GPS immediately**, with a **five-year bar** on reapplying (CISR85010).
 - **Payments to local authorities and public bodies** as subcontractors fall outside CIS from 6 April 2026.
-- **Nil returns** for contractors are reinstated from 6 April 2026 (see the returns lesson).
+- **Nil returns** for mainstream contractors are reinstated from 6 April 2026 (see the returns lesson).
 
 Check the **CIS reform manual and legislation** to confirm the final detail and dates before advising on a specific case.`,
     },
@@ -181,6 +181,8 @@ Check the **CIS reform manual and legislation** to confirm the final detail and 
   ],
   sources: [
     { label: "How to get gross payment status – GOV.UK", url: "https://www.gov.uk/what-you-must-do-as-a-cis-subcontractor/gross-payment-status" },
+    { label: "Gross payment status: annual review – GOV.UK", url: "https://www.gov.uk/what-you-must-do-as-a-cis-subcontractor/annual-review" },
+    { label: "CISR85010 – CIS fraud powers from 6 April 2026", url: "https://www.gov.uk/hmrc-internal-manuals/construction-industry-scheme-reform/cisr85010" },
     { label: "CISR44100 – turnover test: the threshold explained", url: "https://www.gov.uk/hmrc-internal-manuals/construction-industry-scheme-reform/cisr44100" },
     { label: "CISR43180 – gross payment or payment under deduction: turnover test failures", url: "https://www.gov.uk/hmrc-internal-manuals/construction-industry-scheme-reform/cisr43180" },
     { label: "Construction Industry Scheme reform – summary of responses", url: "https://www.gov.uk/government/consultations/construction-industry-scheme-reform/outcome/construction-industry-scheme-reform-summary-of-responses" },

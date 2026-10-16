@@ -26,7 +26,8 @@ export const lesson: Lesson = {
       title: "The client-led status disagreement process (Chapter 10)",
       md: `- If the **worker or the intermediary disagrees** with a client's status determination statement, they can ask the client to **review** it.
 - The client must **respond within 45 days** of the request. The response must either **uphold** the determination with reasons or **issue a new SDS**.
-- If the client **doesn't respond** within 45 days, the client becomes **liable for the tax and NIC** (as the deemed employer) from that point, even if the engagement is later found to be outside IR35.
+- If the client **doesn't respond** within 45 days, the client becomes **liable for the tax and NIC** (as the deemed employer) on further payments from that point, where the engagement is one to which the rules apply, regardless of whether it took reasonable care.
+- If the client concludes its SDS was wrong, it must withdraw it, issue a new SDS with reasons and say the date from which the new one applies.
 - The process runs **within the supply chain**. It is not an appeal to HMRC or to a tribunal.
 - The worker may keep a written record of the request and the date it was made.`,
     },
@@ -84,7 +85,7 @@ Rules for **PAYE and NIC determinations** have their own time limits and mechani
 
 **Step 3: analyse.** Re-run the hypothetical contract analysis for each year. The 2023/24 facts may be defensible, but the **management of Marlowe's staff in 2024/25** is a change that CEST should have been re-run for: the 2023 printout does not cover it.
 
-**Step 4: the exposure.** If both years were inside IR35: tax and NIC of £38,000 + £41,000 = **£79,000** plus interest. Penalties depend on behaviour: if **careless**, the maximum is **30%** (£23,700); if the failure was **deliberate and not concealed**, **70%** (£55,300). Careless is the likelier characterisation if the 2024/25 failure was simply a failure to review, and unprompted disclosure of the 2024/25 point could reduce it.
+**Step 4: the exposure.** If both years were inside IR35: tax and NIC of £38,000 + £41,000 = **£79,000** plus interest. Penalties depend on behaviour: if **careless**, the maximum is **30%** (£23,700); if the failure was **deliberate and not concealed**, **70%** (£55,300). Careless is the likelier characterisation if the 2024/25 failure was simply a failure to review. Because HMRC has already opened an enquiry into these engagements, any disclosure now is **prompted**: full co-operation can still reduce a careless penalty, but only to a minimum of **15%** (not 0%).
 
 **Step 5: strategy.** Decide whether to **defend** 2023/24 (strong facts) and **concede and negotiate** 2024/25, and provide a full, accurate response within the deadlines. Keep Jodie informed in writing, and consider an offer of a payment on account to limit interest.
 
@@ -125,7 +126,7 @@ Rules for **PAYE and NIC determinations** have their own time limits and mechani
       prompt: "A client doesn't respond to a status disagreement within 45 days. What is the consequence?",
       options: ["Nothing", "The client becomes liable for the tax and NIC on the engagement", "The worker is liable", "The engagement is automatically outside IR35"],
       answer: 1,
-      explain: "Failure to respond transfers the liability to the client.",
+      explain: "Failure to respond transfers the liability for further payments to the client (where the engagement is within the rules).",
     },
   ],
   quiz: [
@@ -172,6 +173,8 @@ Rules for **PAYE and NIC determinations** have their own time limits and mechani
   ],
   sources: [
     { label: "Off-payroll working for clients – GOV.UK", url: "https://www.gov.uk/guidance/off-payroll-working-for-clients" },
+    { label: "ESM10015 – client-led status disagreement process", url: "https://www.gov.uk/hmrc-internal-manuals/employment-status-manual/esm10015" },
+    { label: "CH82420 – unprompted and prompted disclosure", url: "https://www.gov.uk/hmrc-internal-manuals/compliance-handbook/ch82420" },
     { label: "Penalties: an overview for agents and advisers – GOV.UK", url: "https://www.gov.uk/guidance/penalties-an-overview-for-agents-and-advisers" },
     { label: "CH82470 – maximum and minimum penalties for each behaviour", url: "https://www.gov.uk/hmrc-internal-manuals/compliance-handbook/ch82470" },
     { label: "CH56100 – assessing time limits: Income Tax and Capital Gains Tax", url: "https://www.gov.uk/hmrc-internal-manuals/compliance-handbook/ch56100" },

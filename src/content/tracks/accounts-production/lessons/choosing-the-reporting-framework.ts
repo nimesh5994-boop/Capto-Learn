@@ -55,7 +55,7 @@ The regulations that raised the thresholds include transitional rules on applyin
       kind: "callout",
       tone: "warning",
       title: "Who can't use the micro-entity regime",
-      md: `Even if within the limits, the micro-entity regime isn't available to (among others): **charities**, investment undertakings, financial holding undertakings, credit institutions and insurance undertakings, and a company that is a **parent preparing group accounts** or a **subsidiary included in consolidated accounts**. Check before you roll a client forward on FRS 105.
+      md: `Even if within the limits, the micro-entity regime isn't available to (among others): **public companies**, **charities**, investment undertakings, financial holding undertakings, credit institutions and insurance undertakings, a **parent of a group that isn't small** (or of a small group that prepares group accounts), and a **subsidiary included in consolidated accounts**. Check before you roll a client forward on FRS 105.
 
 The small companies regime also excludes public companies, banks, insurers, e-money issuers and members of an **ineligible group**.`,
     },
@@ -212,7 +212,7 @@ But the shareholder holds 12% and the notice arrived in August 2026, more than o
     },
   ],
   sources: [
-    { label: "Companies House: preparing and filing Companies House accounts (size thresholds)", url: "https://www.gov.uk/government/publications/life-of-a-company-annual-requirements/life-of-a-company-part-1-accounts" },
+    { label: "Companies House: preparing and filing Companies House accounts (size thresholds)", url: "https://www.gov.uk/government/publications/filing-your-companies-house-accounts/life-of-a-company-part-1-accounts" },
     { label: "Audit exemption for private limited companies", url: "https://www.gov.uk/audit-exemptions-for-private-limited-companies" },
     { label: "Companies Act 2006 s382 – companies qualifying as small", url: "https://www.legislation.gov.uk/ukpga/2006/46/section/382" },
     { label: "Companies Act 2006 s477 – small companies: conditions for exemption from audit", url: "https://www.legislation.gov.uk/ukpga/2006/46/section/477" },

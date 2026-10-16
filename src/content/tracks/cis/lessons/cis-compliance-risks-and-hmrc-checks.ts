@@ -40,7 +40,7 @@ export const lesson: Lesson = {
       tone: "rule",
       title: "Consequences",
       md: `- **Under-deduction:** the contractor is generally **responsible for the tax that should have been deducted** and can be asked to pay it to HMRC, subject to HMRC's discretion where the contractor took reasonable care and the subcontractor's own tax was paid (check the CIS regulations and HMRC's guidance for the conditions).
-- **Late returns:** £100, then £200 and then £300 or 5% of the deductions (see the returns lesson).
+- **Late returns:** £100, then £200 at 2 months, then the greater of £300 or 5% of the deductions at 6 months and again at 12 months (see the returns lesson).
 - **Missing records or false declarations:** penalties of **up to £3,000** are possible, in addition to penalties for inaccuracies in returns and interest on unpaid tax.
 - **Employment status:** if a worker treated as a CIS subcontractor is in fact an **employee**, PAYE and NIC (including **employer NIC**) are due, with credit for the CIS deductions already paid. Penalties may apply, and a contractor that has not taken reasonable care is more exposed.
 - **Record keeping:** CIS records must be kept for at least **three years** after the end of the tax year.`,

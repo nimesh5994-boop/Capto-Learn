@@ -25,13 +25,13 @@ export const lesson: Lesson = {
       tone: "rule",
       title: "The calculation (FA 2004 s61; CIS340)",
       md: `1. Start with the **gross amount** of the contract payment **excluding VAT**.
-2. **Deduct the direct cost of materials** used (the **actual cost** to the subcontractor of materials that become part of the finished work, evidenced by invoices). It does **not** include any **profit margin** or **overheads** on the materials.
-3. The balance is the **amount liable to deduction** (labour, profit, plant and other costs).
+2. **Deduct the direct cost of materials**: the amount the subcontractor **actually paid** (evidenced by invoices) for materials, consumable stores, fuel (except fuel for travelling), **plant hire** and the cost of manufacturing or prefabricating materials (CIS340). It does **not** include any **profit margin** or **overheads**, and there is no notional deduction for plant the subcontractor **owns**.
+3. The balance is the **amount liable to deduction** (labour, profit and other costs).
 4. Apply the **rate**: **20%** (registered), **30%** (unregistered / unmatched) or **0%** (gross payment status).
 5. **Payment to the subcontractor** = invoice including VAT − deduction.
 6. The contractor pays the **deduction** to HMRC with its **monthly return**.
 
-**Travel, subsistence and accommodation** costs paid to a subcontractor **are included** in the amount liable to deduction (there is no exclusion), unless they are separately reimbursed as actual costs, in which case check HMRC's guidance.
+**Travel, subsistence and accommodation** costs paid to a subcontractor **are included** in the amount liable to deduction, whether the contractor reimburses the subcontractor or pays a nominated third party. The only exception is where the contractor lets the subcontractor use its **own facilities** (or pays a third party such as a hotel) and **does not pass the cost on** to the subcontractor (CISR15080).
 
 **VAT** is never part of the base. If the invoice includes VAT, take it out first. (The **domestic reverse charge** often means no VAT is charged: see a later lesson.)`,
     },
@@ -42,10 +42,10 @@ export const lesson: Lesson = {
       rows: [
         ["Labour charges", "Yes", "Main element"],
         ["Mark-up (profit) on materials", "Yes", "Only the **cost** of materials is excluded"],
-        ["Genuine cost of materials, evidenced", "No", "Must be shown on the invoice or supporting invoices"],
+        ["Genuine cost of materials", "No", "Ask for invoices or receipts; if there is no evidence, make a realistic estimate"],
         ["Travel and subsistence charged to the contractor", "Yes", "Included in the gross payment"],
         ["VAT (standard or reduced rate)", "No", "Excluded"],
-        ["Other items such as plant hire, fuel or consumables", "Check CIS340", "Only items that fall within the guidance's definition of the direct cost of materials can be excluded"],
+        ["Plant hire, consumables and fuel (not travel fuel), at cost", "No", "Treated as materials if the subcontractor actually paid for them; no deduction for plant the subcontractor owns"],
       ],
     },
     {
@@ -63,7 +63,7 @@ The contractor must also give the subcontractor a **payment and deduction statem
 
 ### Estimating and approximations
 
-If the **materials cost** is not shown, the contractor should **ask for evidence**. If none is provided, **the whole payment** is liable to deduction. Don't estimate a materials figure from a percentage: HMRC can challenge it.`,
+If the **materials cost** is not shown, the contractor should **ask for evidence** (for example, receipts showing the subcontractor paid for the materials directly). If the subcontractor has no evidence, GOV.UK says the contractor should **estimate the cost of the materials**. Make the estimate realistic and record how it was reached, not a flat percentage: if the materials figure looks excessive, HMRC can recover the under-deduction from the **contractor** (CIS340 3.13).`,
     },
     {
       kind: "callout",
@@ -78,7 +78,7 @@ If the **materials cost** is not shown, the contractor should **ask for evidence
   ],
   scenario: {
     title: "A payment to Joel Parks (20% rate)",
-    narrative: `Redfern Interiors Ltd receives an invoice from Joel Parks for work in the tax month 6 April to 5 May 2026. The invoice shows: **labour £2,000**, **materials at cost £800** (supporting invoices attached), and **VAT £560** (£2,800 × 20%) because Redfern is supplying an end user so the reverse charge does not apply. Joel is verified at the **standard 20%** rate.`,
+    narrative: `Redfern Interiors Ltd receives an invoice from Joel Parks for work in the tax month 6 April to 5 May 2026. The invoice shows: **labour £2,000**, **materials at cost £800** (supporting invoices attached), and **VAT £560** (£2,800 × 20%). The job is a refit of Redfern's own office, which it doesn't supply on, and Redfern has confirmed in writing that it is an **end user**, so the domestic reverse charge does not apply and Joel charges VAT normally. Joel is verified at the **standard 20%** rate.`,
     walkthrough: [
       {
         kind: "md",
@@ -164,9 +164,9 @@ If the **materials cost** is not shown, the contractor should **ask for evidence
       kind: "mcq",
       id: "q-materials",
       prompt: "What counts as 'materials' for the deduction base?",
-      options: ["Materials including the mark-up", "The genuine cost of materials incorporated, without profit margin", "Any goods on the invoice", "Hire charges"],
+      options: ["Materials including the mark-up", "The actual cost to the subcontractor of materials (and items such as consumables and plant hire), without profit margin", "Any goods on the invoice", "A share of the subcontractor's overheads"],
       answer: 1,
-      explain: "Only the actual cost, evidenced.",
+      explain: "Only the actual cost, evidenced. CIS340 treats consumables, fuel (not for travel) and plant hire as materials too.",
     },
     {
       kind: "mcq",
@@ -188,9 +188,9 @@ If the **materials cost** is not shown, the contractor should **ask for evidence
       kind: "mcq",
       id: "q-noevidence",
       prompt: "No evidence of materials cost is provided. What should the contractor do?",
-      options: ["Estimate 40%", "Deduct from the whole payment (excluding VAT)", "Ignore the materials", "Pay gross"],
+      options: ["Apply a flat 40% materials allowance", "Make a realistic, documented estimate of the materials cost", "Ignore the CIS deduction", "Pay gross"],
       answer: 1,
-      explain: "Without evidence, the whole payment is liable to deduction.",
+      explain: "GOV.UK says to estimate the cost of materials where there is no evidence. Keep the estimate realistic and documented: if it is excessive, HMRC can recover the under-deduction from the contractor.",
     },
   ],
   sources: [

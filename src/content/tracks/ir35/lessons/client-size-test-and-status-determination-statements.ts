@@ -57,11 +57,11 @@ HMRC's guidance (ESM10006A) says the higher thresholds apply to **financial year
       md: `A medium or large client (or public authority) that engages a worker through an intermediary must:
 
 1. **Take reasonable care** to decide whether the hypothetical contract would be one of employment. (HMRC's CEST tool or a documented analysis can support this. CEST is explored in a later lesson.)
-2. **Issue a status determination statement (SDS)** to the worker **and** the party it contracts with, **giving its conclusion and reasons**, **before the worker begins** the engagement (or when the contract is entered into).
+2. **Issue a status determination statement (SDS)** to the worker **and** the party it contracts with, **giving its conclusion and reasons**, **on or before the date any payment is made** for the services (in practice, ideally before the engagement starts).
 3. **Respond within 45 days** to a request from the worker or the intermediary to review the decision (a "client-led status disagreement process").
 4. **Pass the SDS down the chain**: each party in the chain must pass it on to the next party.
 
-If the client **doesn't** issue a proper SDS, or doesn't respond in time to a disagreement, it becomes responsible for the tax and NIC on the engagement itself, even if the engagement is later found to be outside IR35. The client is **responsible until it tells** the parties of its determination and the reasons.`,
+If the client **doesn't** issue a proper SDS, or doesn't respond in time to a disagreement, it becomes responsible for deducting the tax and NIC itself (as the deemed employer) on payments for an engagement that is within the rules (inside IR35), instead of the agency or other fee-payer, and regardless of whether it otherwise took reasonable care. The client is **responsible until it tells** the parties of its determination and the reasons.`,
     },
     {
       kind: "callout",
@@ -189,6 +189,8 @@ So on the old thresholds Larchfield is **medium/large**.
     { label: "ESM10006A – size threshold changes from 6 April 2025", url: "https://www.gov.uk/hmrc-internal-manuals/employment-status-manual/esm10006a" },
     { label: "ESM10006 – medium or large sized organisation", url: "https://www.gov.uk/hmrc-internal-manuals/employment-status-manual/esm10006" },
     { label: "Off-payroll working for clients – GOV.UK", url: "https://www.gov.uk/guidance/off-payroll-working-for-clients" },
+    { label: "ESM10012 – status determination statement", url: "https://www.gov.uk/hmrc-internal-manuals/employment-status-manual/esm10012" },
+    { label: "ESM10015 – client-led status disagreement process", url: "https://www.gov.uk/hmrc-internal-manuals/employment-status-manual/esm10015" },
     { label: "Companies Act 2006 s382 – companies qualifying as small", url: "https://www.legislation.gov.uk/ukpga/2006/46/section/382" },
   ],
 };

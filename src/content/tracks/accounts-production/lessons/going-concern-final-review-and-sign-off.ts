@@ -20,6 +20,7 @@ export const lesson: Lesson = {
       title: "Going concern (FRS 102 Section 3)",
       md: `Accounts are prepared on a going concern basis unless management intends to liquidate the company or cease trading, or has no realistic alternative but to do so. In assessing it, the directors look at least **12 months from the date the accounts are approved** (not from the year end).
 
+- For periods beginning on or after **1 January 2026**, accounts prepared on a going concern basis must **say so**, confirm that management has considered information about at least the next 12 months, and disclose any significant judgements made in the assessment (FRS 102 para 3.8A). Small companies using Section 1A must give this disclosure too (para 1AC.2C).
 - If there are **material uncertainties** that may cast significant doubt on the company's ability to continue, they must be **disclosed**.
 - If the company **isn't** a going concern, the going concern basis must not be used, and the basis actually used must be disclosed.
 
@@ -226,7 +227,7 @@ The director, Mark Lowther, says, "We're fine, we always are."`,
     { label: "FRC: FRS 102 (Section 3 Financial statement presentation – going concern)", url: "https://www.frc.org.uk/library/standards-codes-policy/accounting-and-reporting/uk-accounting-standards/frs-102/" },
     { label: "Companies Act 2006 s393 – accounts to give true and fair view", url: "https://www.legislation.gov.uk/ukpga/2006/46/section/393" },
     { label: "Companies Act 2006 s414 – approval and signing of accounts", url: "https://www.legislation.gov.uk/ukpga/2006/46/section/414" },
-    { label: "Companies House: preparing and filing Companies House accounts", url: "https://www.gov.uk/government/publications/life-of-a-company-annual-requirements/life-of-a-company-part-1-accounts" },
+    { label: "Companies House: preparing and filing Companies House accounts", url: "https://www.gov.uk/government/publications/filing-your-companies-house-accounts/life-of-a-company-part-1-accounts" },
     { label: "ICAEW: small and micro-entity reporting compared", url: "https://www.icaew.com/technical/corporate-reporting/uk-gaap/small-and-micro-entity-reporting/small-and-micro-entity-reporting-compared" },
   ],
 };

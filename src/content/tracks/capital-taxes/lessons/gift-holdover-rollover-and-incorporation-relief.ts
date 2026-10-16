@@ -25,8 +25,8 @@ export const lesson: Lesson = {
       caption: "The main deferral reliefs",
       head: ["Relief", "Applies to", "Mechanics", "Claim"],
       rows: [
-        ["Gift holdover (TCGA s165)", "Gifts (or sales at undervalue) of business assets: trading business assets, shares in an unlisted trading company or the donor's personal company, certain farm property", "Gain is held over: the donee's base cost is the market value less the held-over gain", "Joint claim by donor and donee within 4 years of the end of the tax year of the gift"],
-        ["Holdover for chargeable lifetime transfers (s260)", "Any asset given into a trust that is a chargeable lifetime transfer for IHT (for example into a discretionary trust)", "As above", "Joint claim by transferor and trustees, within 4 years"],
+        ["Gift holdover (TCGA s165)", "Gifts (or sales at undervalue) of business assets: trading business assets, shares in an unlisted trading company or the donor's personal company, certain farm property", "Gain is held over: the donee's base cost is the market value less the held-over gain", "Joint claim by donor and donee (by the donor alone where the donee is the trustees of a settlement) within 4 years of the end of the tax year of the gift"],
+        ["Holdover for chargeable lifetime transfers (s260)", "Any asset given into a trust that is a chargeable lifetime transfer for IHT (for example into a discretionary trust)", "As above", "Claim by the transferor alone where the gift is to trustees, within 4 years"],
         ["Rollover relief (s152)", "Replacing qualifying business assets (land and buildings, fixed plant and machinery and some other classes) with other qualifying assets", "Gain reduces the base cost of the new asset; if proceeds are not fully reinvested, the shortfall is chargeable", "Within 4 years of the end of the later of the disposal or acquisition tax year; replacement must be 1 year before to 3 years after the disposal"],
         ["Incorporation relief (s162)", "Transfer of a business as a going concern, with all its assets (other than cash), to a company wholly or partly in exchange for shares", "Gain reduces the base cost of the shares in proportion to the shares received", "**From 6 April 2026 a claim is required**: by the first anniversary of 31 January following the tax year of the transfer"],
       ],
@@ -144,7 +144,7 @@ A gain that is deferred can't also be taxed with BADR now. **Compare the two**: 
       prompt: "Who claims gift holdover relief?",
       options: ["The donee only", "The donor only", "Both donor and donee jointly", "HMRC"],
       answer: 2,
-      explain: "A joint claim is required.",
+      explain: "A joint claim is required for a gift to an individual. For a gift to the trustees of a settlement, the donor claims alone.",
     },
     {
       kind: "mcq",
@@ -175,7 +175,7 @@ A gain that is deferred can't also be taxed with BADR now. **Compare the two**: 
     { label: "CG65735 – claim for incorporation relief (transfers from 6 April 2026)", url: "https://www.gov.uk/hmrc-internal-manuals/capital-gains-manual/cg65735" },
     { label: "CG65730 – election for s162 not to apply (earlier transfers)", url: "https://www.gov.uk/hmrc-internal-manuals/capital-gains-manual/cg65730" },
     { label: "HS276 Incorporation Relief (2025 to 2026) – GOV.UK", url: "https://www.gov.uk/government/publications/incorporation-relief-hs276-self-assessment-helpsheet/hs276-incorporation-relief-2025-to-2026-roll-over-relief-on-transfer-of-a-business" },
-    { label: "HS295 Relief for gifts and similar transactions – GOV.UK", url: "https://www.gov.uk/government/publications/relief-for-gifts-and-similar-transactions-hs295-self-assessment-helpsheet" },
+    { label: "HS295 Relief for gifts and similar transactions (2026) – GOV.UK", url: "https://www.gov.uk/government/publications/relief-for-gifts-and-similar-transactions-hs295-self-assessment-helpsheet/hs295-relief-for-gifts-and-similar-transactions-2026" },
     { label: "TCGA 1992 s162 – roll-over relief on transfer of business", url: "https://www.legislation.gov.uk/ukpga/1992/12/section/162" },
   ],
 };

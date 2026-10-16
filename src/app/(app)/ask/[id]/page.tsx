@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { Bookmark, FileDown, FileText } from "lucide-react";
 import { notFound } from "next/navigation";
-import { and, eq, or } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
+import { canViewAnswer } from "@/lib/research/register";
 import { requirePermission } from "@/lib/auth/dal";
 import { getDb } from "@/lib/db/client";
 import { researchQueries, savedResearch } from "@/lib/db/schema";
@@ -9,6 +10,8 @@ import { AnswerView } from "@/components/ask/AnswerView";
 import { SaveAnswer } from "@/components/ask/SaveAnswer";
 import { RateAnswer } from "@/components/ask/RateAnswer";
 import { ShareToggle } from "@/components/ask/ShareToggle";
+import { ReviewPanel } from "@/components/ask/ReviewPanel";
+import { date } from "@/lib/format";
 import styles from "@/components/ask/ask.module.css";
 
 export default async function AnswerPage({ params }: { params: Promise<{ id: string }> }) {
@@ -19,8 +22,8 @@ export default async function AnswerPage({ params }: { params: Promise<{ id: str
   const [row] = await db
     .select()
     .from(researchQueries)
-    .where(and(eq(researchQueries.id, id), eq(researchQueries.organizationId, ctx.org.id), or(eq(researchQueries.userId, ctx.user.id), eq(researchQueries.shared, true))));
-  if (!row) notFound();
+    .where(and(eq(researchQueries.id, id), eq(researchQueries.organizationId, ctx.org.id)));
+  if (!row || !canViewAnswer(row, { orgId: ctx.org.id, userId: ctx.user.id, canRegister: ctx.can("research.register") })) notFound();
   const isMine = row.userId === ctx.user.id;
   const [saved] = row.answer
     ? await db
@@ -50,7 +53,20 @@ export default async function AnswerPage({ params }: { params: Promise<{ id: str
         )}
       </div>
       <div className={styles.layout}>
-        <div>
+        <div className="stack" style={{ gap: 12 }}>
+          {row.reviewStatus === "approved" && (
+            <div className="alert alert-info small">
+              <strong>Reviewed and approved</strong> by {row.reviewedByName ?? "a reviewer"}
+              {row.reviewedAt ? ` on ${date(row.reviewedAt)}` : ""}
+              {row.reviewNote ? `: ${row.reviewNote}` : "."}
+            </div>
+          )}
+          {row.reviewStatus === "changes" && (
+            <div className="alert alert-warning small">
+              <strong>A reviewer asked for changes</strong> ({row.reviewedByName ?? "reviewer"}
+              {row.reviewedAt ? `, ${date(row.reviewedAt)}` : ""}): {row.reviewNote}. Don&apos;t rely on this answer until it&apos;s re-researched or approved.
+            </div>
+          )}
           {row.answer ? (
             <AnswerView question={row.question} answer={row.answer} />
           ) : (
@@ -64,6 +80,9 @@ export default async function AnswerPage({ params }: { params: Promise<{ id: str
           )}
         </div>
         <aside className="stack" style={{ gap: 14 }}>
+          {row.answer && ctx.can("research.register") && (
+            <ReviewPanel id={row.id} initial={{ status: row.reviewStatus, by: row.reviewedByName, at: row.reviewedAt?.toISOString() ?? null, note: row.reviewNote }} />
+          )}
           {row.answer && <SaveAnswer id={row.id} question={row.question} initial={saved ?? null} />}
           {row.answer && isMine && <RateAnswer id={row.id} initial={row.helpful} />}
           {row.answer && isMine && <ShareToggle id={row.id} initial={row.shared} />}

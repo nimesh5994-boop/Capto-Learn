@@ -2,13 +2,15 @@
 
 import { retireLearned, retireLearnedFrom } from "@/lib/search/knowledge";
 
-import { and, eq, or } from "drizzle-orm";
+import { and, eq, isNull } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { getDb } from "@/lib/db/client";
-import { researchQueries, savedResearch } from "@/lib/db/schema";
+import { answerLibrary, researchQueries, savedResearch, type ResearchReviewStatus } from "@/lib/db/schema";
+import { audit, actorOf } from "@/lib/audit";
 import { authorize } from "@/lib/auth/dal";
 import { retireForBadRating } from "@/lib/research/library";
 import { cleanSavedFields, pinnedVersions } from "@/lib/research/saved";
+import { canViewAnswer } from "@/lib/research/register";
 
 /** A learner's thumbs up / down on an answer — feeds the platform's quality review. */
 export async function rateAnswer(id: string, helpful: boolean, note?: string): Promise<void> {
@@ -48,10 +50,10 @@ export async function saveAnswer(queryId: string, fields: SavedFields): Promise<
   const ctx = await authorize("research.use");
   const db = await getDb();
   const [q] = await db
-    .select({ question: researchQueries.question, answer: researchQueries.answer })
+    .select()
     .from(researchQueries)
-    .where(and(eq(researchQueries.id, queryId), eq(researchQueries.organizationId, ctx.org.id), or(eq(researchQueries.userId, ctx.user.id), eq(researchQueries.shared, true))));
-  if (!q?.answer) return { ok: false, error: "Only answered questions can be saved." };
+    .where(and(eq(researchQueries.id, queryId), eq(researchQueries.organizationId, ctx.org.id)));
+  if (!q?.answer || !canViewAnswer(q, { orgId: ctx.org.id, userId: ctx.user.id, canRegister: ctx.can("research.register") })) return { ok: false, error: "Only answered questions can be saved." };
   const f = cleanSavedFields(q.question, fields);
   const [row] = await db
     .insert(savedResearch)
@@ -68,4 +70,41 @@ export async function unsaveAnswer(queryId: string): Promise<void> {
   const db = await getDb();
   await db.delete(savedResearch).where(and(eq(savedResearch.queryId, queryId), eq(savedResearch.userId, ctx.user.id)));
   revalidatePath("/ask/saved");
+}
+
+const CHANGES_REASON = "Reviewer asked for changes";
+
+/**
+ * Records a reviewer's decision in the research register. Approved answers become visible to everyone in the
+ * firm and are preferred by the reuse bot; "needs changes" takes the answer out of reuse straight away.
+ */
+export async function reviewAnswer(queryId: string, status: ResearchReviewStatus | null, note?: string): Promise<{ ok: true } | { ok: false; error: string }> {
+  const ctx = await authorize("research.register", { write: true });
+  const db = await getDb();
+  const clean = (note ?? "").trim().slice(0, 2000) || null;
+  if (status === "changes" && !clean) return { ok: false, error: "Say what needs changing, so the person who asked can follow it up." };
+  const [row] = await db
+    .update(researchQueries)
+    .set(status ? { reviewStatus: status, reviewedById: ctx.user.id, reviewedByName: ctx.user.name, reviewedAt: new Date(), reviewNote: clean } : { reviewStatus: null, reviewedById: null, reviewedByName: null, reviewedAt: null, reviewNote: null })
+    .where(and(eq(researchQueries.id, queryId), eq(researchQueries.organizationId, ctx.org.id)))
+    .returning({ question: researchQueries.question, answer: researchQueries.answer });
+  if (!row?.answer) return { ok: false, error: "Only answered questions can be reviewed." };
+
+  if (status === "changes") {
+    await db
+      .update(answerLibrary)
+      .set({ retiredAt: new Date(), retiredReason: CHANGES_REASON })
+      .where(and(eq(answerLibrary.organizationId, ctx.org.id), eq(answerLibrary.originQueryId, queryId), isNull(answerLibrary.retiredAt)));
+  } else {
+    // Approving (or clearing) undoes only a retirement the review itself caused — never a source change.
+    await db
+      .update(answerLibrary)
+      .set({ retiredAt: null, retiredReason: null })
+      .where(and(eq(answerLibrary.organizationId, ctx.org.id), eq(answerLibrary.originQueryId, queryId), eq(answerLibrary.retiredReason, CHANGES_REASON)));
+  }
+  const what = status === "approved" ? "Approved" : status === "changes" ? "Asked for changes to" : "Cleared the review of";
+  await audit(actorOf(ctx), "research.reviewed", `${what} the Ask Capto answer "${row.question.slice(0, 120)}"${clean ? `: ${clean.slice(0, 200)}` : ""}`, { type: "research_query", id: queryId });
+  revalidatePath(`/ask/${queryId}`);
+  revalidatePath("/ask/register");
+  return { ok: true };
 }

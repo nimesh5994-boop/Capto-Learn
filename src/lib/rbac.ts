@@ -9,6 +9,7 @@
 export const PERMISSIONS = {
   "learning.view": { group: "Learning", label: "Take courses, exercises and quizzes" },
   "research.use": { group: "Learning", label: "Use Ask Capto (cited research assistant)" },
+  "research.register": { group: "Learning", label: "View the firm's research register and review answers", help: "See every Ask Capto question and document issued in the firm, and approve answers for reuse." },
   "progress.view_team": { group: "Team training", label: "See everyone's training progress", help: "Without this, people only see their own progress." },
   "assignments.manage": { group: "Team training", label: "Assign training and set due dates" },
   "interviews.manage": { group: "Recruitment", label: "Run interview tests for job applicants", help: "Create test links for candidates and see their results and integrity reports." },
@@ -38,7 +39,7 @@ export const BUILT_IN_ROLES: Record<BuiltInRole, { label: string; description: s
   manager: {
     label: "Training manager",
     description: "Learns, researches, assigns training and tracks the whole team's progress.",
-    permissions: ["learning.view", "research.use", "progress.view_team", "assignments.manage", "interviews.manage", "audit.view"],
+    permissions: ["learning.view", "research.use", "research.register", "progress.view_team", "assignments.manage", "interviews.manage", "audit.view"],
   },
   staff: {
     label: "Staff",

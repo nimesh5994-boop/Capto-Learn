@@ -34,7 +34,7 @@ export const lesson: Lesson = {
 8. **Deduct the employer NIC on the deemed payment itself.** The figure left after step 7 is treated as **including** that employer NIC. Work backwards: find the amount which, **plus employer NIC at 15% of it**, equals the step 7 figure. In other words **deemed payment = step 7 amount ÷ 1.15**.
 9. The result is the **deemed employment payment**, on which the PSC must account for **income tax** and **employee and employer NIC** (the employer NIC computed in step 8).
 
-The payment is treated as made on **5 April** (the end of the tax year). Report it on a **Full Payment Submission on or before 5 April**. If the exact figures aren't ready, put a provisional figure on that FPS, then report the final figures and pay any balancing tax and NIC **by 31 January** after the end of the tax year. Interest is charged on the late balance, but no penalty applies.`,
+The payment is treated as made on **5 April** (the end of the tax year). Report it on a **Full Payment Submission on or before 5 April**. If the exact figures aren't ready, put a provisional figure on that FPS, then report the final figures and pay any balancing tax and NIC **by 31 January** after the end of the tax year. Interest is charged on the late balance, but no late-filing penalty applies.`,
     },
     {
       kind: "md",
@@ -44,7 +44,7 @@ The payment is treated as made on **5 April** (the end of the tax year). Report 
 - **All relevant engagements** in the year are added together into **one** deemed payment, but engagements outside IR35 (or Chapter 10 engagements already taxed) are excluded.
 - The **5% allowance** is a fixed percentage; there are no further "running cost" deductions.
 - If the result is **nil or negative**, there is no deemed payment.
-- The deemed payment is **employment income** for tax, with the usual rates; employee NIC applies on an **annual earnings period** if the worker is a director or the rules apply from the start of the year.
+- The deemed payment is **employment income** for tax, with the usual rates; employee NIC is worked out on an **annual earnings period** whether or not the worker is a director, or on a **pro-rata** earnings period if the rules first apply part-way through the tax year.
 - A **director's** own salary and any **benefits** are included in step 7.
 
 ### Compare before and after
@@ -198,6 +198,7 @@ For a client considering whether to take a **salary** instead, compare the cost 
     { label: "How to calculate the deemed employment payment – GOV.UK", url: "https://www.gov.uk/guidance/how-to-calculate-the-deemed-employment-payment" },
     { label: "ESM8135 – how to calculate the deemed payment", url: "https://www.gov.uk/hmrc-internal-manuals/employment-status-manual/esm8135" },
     { label: "ESM8245 – how to account for the deemed employment payment", url: "https://www.gov.uk/hmrc-internal-manuals/employment-status-manual/esm8245" },
+    { label: "ESM8250 – settling the liability for the deemed payment", url: "https://www.gov.uk/hmrc-internal-manuals/employment-status-manual/esm8250" },
     { label: "ITEPA 2003 s54 – calculation of the deemed payment", url: "https://www.legislation.gov.uk/ukpga/2003/1/section/54" },
   ],
 };

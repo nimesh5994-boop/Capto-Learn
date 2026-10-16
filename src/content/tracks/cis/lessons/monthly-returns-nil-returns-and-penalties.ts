@@ -28,7 +28,7 @@ export const lesson: Lesson = {
         ["Monthly return (CIS300) to HMRC", "By the **19th** following the end of the tax month", "19 June"],
         ["Payment of deductions to HMRC", "By the **19th** (by post/other) or the **22nd** if paid electronically", "19 June / 22 June"],
         ["Payment and deduction statements to subcontractors", "Within 14 days of the end of the tax month (by the **19th**)", "19 June"],
-        ["Nil return (no payments to subcontractors)", "By the **19th** as for a normal return, unless you've told HMRC in advance", "19 June"],
+        ["Nil return (no payments to subcontractors)", "By the **19th** as for a normal return (mainstream contractors), unless you've notified HMRC of a period of inactivity", "19 June"],
       ],
     },
     {
@@ -41,13 +41,13 @@ export const lesson: Lesson = {
 - That each subcontractor has been **verified**.
 - That the **information is correct and complete**.
 
-The return can be filed online through the **CIS online service**, through commercial software or via an agent (a practice needs authority and the correct access). Contractors with the **Employer Payment Summary** use it to claim any **CIS deductions suffered** on their own income.`,
+The return can be filed online through the **CIS online service**, through commercial software or via an agent (a practice needs authority and the correct access). A **limited company** contractor that also suffers CIS deductions as a subcontractor claims them on its **Employer Payment Summary** (EPS), not on the CIS return.`,
     },
     {
       kind: "callout",
       tone: "rule",
       title: "Nil returns from 6 April 2026",
-      md: `From **6 April 2026** contractors must **file a nil return** for any month in which they **don't pay subcontractors**, **unless they have told HMRC in advance** that they won't be making payments. (This reinstates a requirement that had been removed in 2015.) A contractor that expects a quiet period should **notify HMRC** to avoid the return and its penalty risk; check HMRC's guidance for how long a notification lasts and how it is made. If you act for contractors, **add this to your compliance calendar** and your engagement letter.`,
+      md: `From **6 April 2026** **mainstream contractors** must **file a nil return** by the 19th for any month in which they **don't pay subcontractors**, **unless they have notified HMRC of a period of inactivity**. (This reinstates a requirement that had been removed in 2015.) A contractor that expects a quiet period can ask HMRC to make its scheme **inactive for up to 6 months**; if it pays a subcontractor during that time it files a return as normal and the inactive period ends. **Deemed contractors** are not legally required to file a nil return, but must still tell HMRC they paid no subcontractors or a penalty may arise (CIS340 section 4.5). If you act for contractors, **add this to your compliance calendar** and your engagement letter.`,
     },
     {
       kind: "table",
@@ -57,13 +57,14 @@ The return can be filed online through the **CIS online service**, through comme
         ["1 day late", "£100"],
         ["2 months late", "£200 (in addition)"],
         ["6 months late", "£300 or 5% of the CIS deductions on the return, whichever is higher"],
+        ["12 months late", "A further £300 or 5% of the CIS deductions, whichever is higher (more if information is deliberately withheld)"],
       ],
     },
     {
       kind: "md",
       md: `### Other points
 
-- **Late payment** of deductions: interest and possible surcharge or penalties under the PAYE-style late payment regime.
+- **Late payment** of deductions: interest, and penalties if amounts due are not paid on time and in full.
 - **Incorrect returns:** penalties for inaccuracies can apply if the return is wrong. Submitting a **false** declaration, or failing to keep records, can lead to penalties of **up to £3,000**.
 - **Amending a return:** submit an **amended return** for the tax month; the later return replaces the earlier one.
 - **Quarterly payments:** contractors whose average monthly payments to HMRC (PAYE, National Insurance, student loan and CIS deductions **together**) are expected to be **less than £1,500** may pay **quarterly**.
@@ -109,7 +110,7 @@ All three were verified before the first payment.`,
 
 **Step 2: pay.** The total deductions of **£850** are due by **22 June 2026** (electronic) using the CIS reference.
 
-**Step 3: statements.** Issue statements to Joel and Dev by 19 June. Sparkline needs a statement too (showing no deduction).
+**Step 3: statements.** Issue statements to Joel and Dev by 19 June. Sparkline was paid gross, so a statement isn't legally required, though giving one is good practice (CIS340 3.15).
 
 **Step 4: penalty exposure.** If the return were filed on 25 June, a **£100** penalty would arise automatically. If it were filed more than 2 months late, a further **£200**.
 

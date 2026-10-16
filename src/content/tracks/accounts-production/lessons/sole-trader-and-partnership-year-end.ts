@@ -203,7 +203,7 @@ In July 2025 he bought a new van for **£28,000** (not a car), also used 20% pri
     { label: "Basis period reform (HMRC policy paper)", url: "https://www.gov.uk/government/publications/basis-period-reform/basis-period-reform" },
     { label: "HMRC Business Income manual: tax year basis from 2024-25 (BIM81201)", url: "https://www.gov.uk/hmrc-internal-manuals/business-income-manual/bim81201" },
     { label: "Cash basis", url: "https://www.gov.uk/simpler-income-tax-cash-basis" },
-    { label: "Check if you're eligible for Making Tax Digital for Income Tax", url: "https://www.gov.uk/guidance/check-if-youre-eligible-for-making-tax-digital-for-income-tax" },
+    { label: "Check if you're eligible for Making Tax Digital for Income Tax", url: "https://www.gov.uk/guidance/find-out-if-and-when-you-need-to-use-making-tax-digital-for-income-tax" },
     { label: "Expenses if you're self-employed", url: "https://www.gov.uk/expenses-if-youre-self-employed" },
   ],
 };

@@ -42,7 +42,7 @@ Read the exact wording of s61B and ESM3510 before concluding that a particular c
         ["Test", "Hypothetical contract: would the worker be an employee of the client?", "Whether the company meets the s61B conditions: no status test"],
         ["Tax result", "Deemed employment payment calculated on the PSC's receipts (5% allowance)", "Payments to the worker treated as **employment income**, with the MSC as **employer** accounting for PAYE and NIC"],
         ["Who accounts for tax", "The PSC", "The MSC, and if it fails, certain other persons including the MSC provider can be pursued (s688A ITEPA)"],
-        ["Interaction with Chapter 10", "Chapter 10 applies if the client is medium/large or public sector", "Since Finance Act 2018, engagements within Chapter 10 are taken **out** of Chapter 9"],
+        ["Interaction with Chapter 10", "Chapter 10 applies if the client is medium/large or public sector", "Where both can apply, Chapter 10 takes precedence (public authorities from 6 April 2017; medium or large clients from 6 April 2021), so the engagement is taken **out** of Chapter 9"],
       ],
     },
     {
@@ -55,7 +55,7 @@ Read the exact wording of s61B and ESM3510 before concluding that a particular c
 
 ### Interaction with Chapter 10
 
-Where the client is within Chapter 10 (a public authority or medium or large private business) and the worker supplies services through an intermediary, **Chapter 10 takes priority** and the engagement is taken out of the MSC rules. For small clients, Chapter 9 can still apply to an MSC.`,
+Where the client is within Chapter 10 (a public authority or medium or large private business) and the worker supplies services through an intermediary, **Chapter 10 takes priority** and the engagement is taken out of the MSC rules. For small clients, Chapter 9 can still apply to an MSC, and where both Chapter 9 and Chapter 8 could apply, the **MSC rules take precedence** over Chapter 8.`,
     },
     {
       kind: "callout",
@@ -115,7 +115,7 @@ If a new client comes with such an arrangement, **don't assume it works**. Ask f
       prompt: "A worker supplies services through an intermediary to a large private company. Which chapter takes priority for that engagement?",
       options: ["Chapter 9 (MSC)", "Chapter 10 (off-payroll working)", "Chapter 8 (IR35)", "None"],
       answer: 1,
-      explain: "Engagements within Chapter 10 are taken out of Chapter 9 since Finance Act 2018.",
+      explain: "Where both can apply, Chapter 10 takes precedence over the MSC rules (from 6 April 2021 for medium or large private clients).",
     },
     {
       kind: "multi",
@@ -175,6 +175,7 @@ If a new client comes with such an arrangement, **don't assume it works**. Ask f
   ],
   sources: [
     { label: "ESM3510 – meaning of an MSC", url: "https://www.gov.uk/hmrc-internal-manuals/employment-status-manual/esm3510" },
+    { label: "ESM10004 – managed service companies and off-payroll working", url: "https://www.gov.uk/hmrc-internal-manuals/employment-status-manual/esm10004" },
     { label: "ITEPA 2003 Part 2 Chapter 9 – managed service companies", url: "https://www.legislation.gov.uk/ukpga/2003/1/part/2/chapter/9" },
     { label: "Social Security Contributions (Managed Service Companies) Regulations 2007", url: "https://www.legislation.gov.uk/uksi/2007/2070/made" },
     { label: "ITEPA 2003 s688A – recovery from other persons", url: "https://www.legislation.gov.uk/ukpga/2003/1/section/688A" },

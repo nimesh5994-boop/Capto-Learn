@@ -51,7 +51,7 @@ export const lesson: Lesson = {
       kind: "md",
       md: `### The claim
 
-BADR is **not automatic**. The individual must claim it **in writing** (usually on the Self Assessment return, SA108 and the BADR box) by **31 January, 12 months after the end of the tax year of the disposal**. For a 2026/27 disposal the deadline is **31 January 2029**. A late claim is not accepted without a statutory extension.
+BADR is **not automatic**. The individual must claim it **in writing** (usually on the Self Assessment return, SA108 and the BADR box) by the **first anniversary of the 31 January following the end of the tax year of the disposal**. For a 2026/27 disposal the deadline is **31 January 2029**. A late claim is not accepted without a statutory extension.
 
 ### How it fits into the computation
 
@@ -90,7 +90,7 @@ BADR gains are taxed at the BADR rate (18% in 2026/27) and are not subject to th
 
 **Step 4: tax without BADR (for comparison).** £387,000 × 24% = **£92,880**. The saving is **£23,220**.
 
-**Step 5: claim.** The claim must be made by **31 January 2029** (31 January 12 months after the end of 2026/27). Include it on the 2026/27 SA return. Tax is due on **31 January 2028**.
+**Step 5: claim.** The claim must be made by **31 January 2029** (the first anniversary of the 31 January following the end of 2026/27). Include it on the 2026/27 SA return. Tax is due on **31 January 2028**.
 
 **Step 6: record.** Keep the share register, evidence of directorship and employment, and the company's activities to evidence the trading status, and update Owen's lifetime-limit tracker: £390,000 used, **£610,000 remaining**.`,
       },

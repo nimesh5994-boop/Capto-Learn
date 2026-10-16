@@ -99,6 +99,13 @@
       "when": 1792127930072,
       "tag": "0013_saved_research",
       "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1792136449723,
+      "tag": "0014_research_register",
+      "breakpoints": true
     }
   ]
 }

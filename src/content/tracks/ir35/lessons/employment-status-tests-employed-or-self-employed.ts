@@ -17,7 +17,7 @@ export const lesson: Lesson = {
   body: [
     {
       kind: "md",
-      md: `Whether someone is **employed** or **self-employed** decides which tax and NIC rules apply: PAYE and Class 1 NIC for employees, Self Assessment with Class 2/Class 4 for the self-employed. It matters for your clients in three ways: **their own** status (a director's contract, a contractor), **their staff** (is the part-timer really self-employed?), and **the IR35 rules**, which ask the status question hypothetically. This lesson covers the foundation test; the rest of the track builds on it.`,
+      md: `Whether someone is **employed** or **self-employed** decides which tax and NIC rules apply: PAYE and Class 1 NIC for employees, Self Assessment with Class 4 NIC for the self-employed (Class 2 is no longer compulsory: it is treated as paid where profits are above the small profits threshold, and voluntary below it). It matters for your clients in three ways: **their own** status (a director's contract, a contractor), **their staff** (is the part-timer really self-employed?), and **the IR35 rules**, which ask the status question hypothetically. This lesson covers the foundation test; the rest of the track builds on it.`,
     },
     {
       kind: "callout",

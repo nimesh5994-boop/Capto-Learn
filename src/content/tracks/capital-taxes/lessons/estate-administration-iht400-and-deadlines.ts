@@ -91,7 +91,7 @@ For deaths before **6 April 2027** most unused pension funds are **outside the e
 
 **Step 5: loss on sale.** The shares were valued at £120,000 and sold for £90,000 within 12 months: a loss of **£30,000**. The executors can claim to substitute the sale price, reducing the estate to £1,110,000 and the chargeable estate to £110,000: IHT **£44,000**, a saving of **£12,000** (£30,000 × 40%). Where the IHT relief is claimed, the substituted value is also used for CGT, so the executors cannot claim a CGT loss on the same shares as well. Check the interaction before claiming.
 
-**Step 6: planning.** If one of the children wanted to redirect part of their inheritance to a charity within two years by deed of variation, it could reduce the IHT (and potentially qualify for the 36% rate if the charity gift exceeds 10% of the baseline amount).`,
+**Step 6: planning.** If one of the children wanted to redirect part of their inheritance to a charity within two years by deed of variation, it could reduce the IHT (and potentially qualify for the 36% rate if the charity gift is at least 10% of the baseline amount).`,
       },
     ],
   },

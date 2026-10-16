@@ -1,9 +1,9 @@
 import "server-only";
 import { betaZodOutputFormat } from "@anthropic-ai/sdk/helpers/beta/zod";
 import { z } from "zod";
-import { and, desc, eq, gt, isNull, sql } from "drizzle-orm";
+import { and, desc, eq, gt, isNull, or, sql } from "drizzle-orm";
 import { getDb } from "@/lib/db/client";
-import { answerLibrary, type LibraryEntry } from "@/lib/db/schema";
+import { answerLibrary, researchQueries, type LibraryEntry } from "@/lib/db/schema";
 import { anthropic, type Meter } from "./ai";
 import { govUkUpdatedAt } from "./govuk";
 import { storedVersions } from "@/lib/kb/search";
@@ -69,17 +69,24 @@ export async function sourcesUnchanged(sourceVersions: Record<string, string | n
 export interface LibraryHit {
   entry: LibraryEntry;
   sourcesChecked: number;
+  /** Set when a firm reviewer approved the original answer (research register). */
+  approved: { by: string; at: string } | null;
 }
 
 export async function findLibraryAnswer(orgId: string, question: string, restated: string, meter: Meter): Promise<LibraryHit | null> {
   const db = await getDb();
   const since = new Date(Date.now() - LIBRARY_MAX_AGE_DAYS * 86_400_000);
-  const entries = await db
-    .select()
+  const rows = await db
+    .select({ entry: answerLibrary, reviewStatus: researchQueries.reviewStatus, reviewedByName: researchQueries.reviewedByName, reviewedAt: researchQueries.reviewedAt })
     .from(answerLibrary)
-    .where(and(eq(answerLibrary.organizationId, orgId), isNull(answerLibrary.retiredAt), gt(answerLibrary.createdAt, since)))
+    .leftJoin(researchQueries, eq(researchQueries.id, answerLibrary.originQueryId))
+    // Never reuse an answer a reviewer asked to change.
+    .where(and(eq(answerLibrary.organizationId, orgId), isNull(answerLibrary.retiredAt), gt(answerLibrary.createdAt, since), or(isNull(researchQueries.reviewStatus), eq(researchQueries.reviewStatus, "approved"))))
     .orderBy(desc(answerLibrary.createdAt))
     .limit(400);
+  // Firm-approved answers go first, so the shortlist (and the same-question check) prefers them.
+  const review = new Map(rows.map((r) => [r.entry.id, r]));
+  const entries = [...rows].sort((a, b) => Number(b.reviewStatus === "approved") - Number(a.reviewStatus === "approved")).map((r) => r.entry);
   const candidates = shortlist(question, restated, entries);
   if (!candidates.length) return null;
 
@@ -100,7 +107,8 @@ export async function findLibraryAnswer(orgId: string, question: string, restate
   }
   const urls = Object.keys(entry.sourceVersions);
   await db.update(answerLibrary).set({ hits: sql`${answerLibrary.hits} + 1`, lastHitAt: new Date() }).where(eq(answerLibrary.id, entry.id));
-  return { entry, sourcesChecked: urls.length };
+  const r = review.get(entry.id);
+  return { entry, sourcesChecked: urls.length, approved: r?.reviewStatus === "approved" && r.reviewedByName ? { by: r.reviewedByName, at: (r.reviewedAt ?? new Date()).toISOString() } : null };
 }
 
 /** Saves a fresh answer for future reuse, if it meets the quality bar. */

@@ -30,7 +30,7 @@ export const lesson: Lesson = {
 - If the **donor pays** the tax, the transfer is **grossed up**: tax = **25%** of the net excess (20/80). If the **trustees pay**, tax is **20%** of the excess (and the trust is worth less).
 - If the **donor dies within seven years**, the CLT is re-calculated at the **death rate of 40%**, with **taper relief** if death is more than three years after the transfer and **credit for lifetime tax paid** (there is no refund if the lifetime tax was higher).
 - **Payment due:** for transfers **6 April to 30 September**, by **30 April** in the following year; for transfers **1 October to 5 April**, **six months after the end of the month** of the transfer. **Reporting** is on form **IHT100** (see HMRC's guidance for the reporting deadline).
-- **CGT:** because a CLT is a disposal, **gift holdover relief** (s260) is available for any asset given into a trust that is a CLT, so no CGT arises on the transfer if a joint claim is made.`,
+- **CGT:** because a CLT is a disposal, **gift holdover relief** (s260) is available for any asset given into a trust that is a CLT, so no CGT arises on the transfer if the settlor claims it (for a gift to trustees the claim is made by the transferor alone).`,
     },
     {
       kind: "table",
@@ -39,7 +39,7 @@ export const lesson: Lesson = {
       rows: [
         ["Bare trust", "Beneficiary is absolutely entitled (often a child); trustee holds as nominee", "Gift is a **PET**; assets are treated as the beneficiary's"],
         ["Discretionary trust", "Trustees decide who benefits and when", "**Relevant property**: CLT on entry; **10-year** and **exit** charges"],
-        ["Interest in possession trust (created in lifetime after 22 March 2006)", "A beneficiary has a right to income", "Generally **relevant property** too (except some, e.g. immediate post-death interests)"],
+        ["Interest in possession trust (created in lifetime after 22 March 2006)", "A beneficiary has a right to income", "Generally **relevant property** too (except some, e.g. a disabled person's interest; an immediate post-death interest can only arise under a will or intestacy)"],
         ["Immediate post-death interest (IPDI) trust", "Created by a will; life tenant has right to income", "Treated as the **life tenant's estate**; spouse exemption can apply"],
         ["Trust for a disabled person", "Special protections", "Gifts may be PETs; special rules reduce the charges"],
       ],
@@ -178,6 +178,7 @@ Lifetime transfers in the past seven years **reduce the NRB** available. Where a
     { label: "IHTM30153 – due date for payment: lifetime transfers chargeable when made", url: "https://www.gov.uk/hmrc-internal-manuals/inheritance-tax-manual/ihtm30153" },
     { label: "Inheritance Tax: trusts – GOV.UK", url: "https://www.gov.uk/trusts-taxes" },
     { label: "IHTA 1984 s7 – rates of tax", url: "https://www.legislation.gov.uk/ukpga/1984/51/section/7" },
+    { label: "HS295 Relief for gifts and similar transactions (2026) – GOV.UK", url: "https://www.gov.uk/government/publications/relief-for-gifts-and-similar-transactions-hs295-self-assessment-helpsheet/hs295-relief-for-gifts-and-similar-transactions-2026" },
     { label: "TCGA 1992 s260 – gifts on which IHT is chargeable", url: "https://www.legislation.gov.uk/ukpga/1992/12/section/260" },
   ],
 };

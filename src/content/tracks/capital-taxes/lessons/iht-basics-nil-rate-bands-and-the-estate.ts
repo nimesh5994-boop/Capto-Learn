@@ -43,7 +43,7 @@ export const lesson: Lesson = {
 - A **share of jointly-owned assets**: property held as **joint tenants** passes by survivorship but is still counted in the estate of the first to die (usually half).
 - The value of **gifts with reservation of benefit** (given away but still enjoyed by the donor).
 - **Life policies** not written in trust and in some cases **trust assets** in which the deceased had an interest in possession.
-- **Death-in-service benefits** from an employer scheme are normally outside the estate if they are paid under discretion.
+- **Death-in-service benefits** from an employer scheme are normally outside the estate if they are paid under discretion. From 6 April 2027, death-in-service benefits from registered pension schemes stay outside IHT whether the scheme is discretionary or not.
 - **Pension funds**: unused pension funds and most death benefits will be included for deaths on or after **6 April 2027**.
 - **Gifts made in the seven years before death** also affect the tax (next lesson).
 
@@ -90,7 +90,7 @@ Any **unused percentage** of the NRB and RNRB on the first death can be **transf
 **Step 2: nil-rate bands.**
 - Harold's NRB: **£325,000**.
 - Edith's unused NRB: **100% × £325,000 = £325,000** (transferred).
-- RNRB: the home (£620,000) passes to a direct descendant, so Harold's RNRB is **£175,000**. Edith's RNRB: she died in 2012, before the RNRB existed, but where an estate passes entirely to a spouse the unused RNRB percentage is treated as **100%**, so a further **£175,000** is available. (Check the RNRB transfer rules in detail for pre-2017 deaths.)
+- RNRB: the home (£620,000) passes to a direct descendant, so Harold's RNRB is **£175,000**. Edith's RNRB: she died in 2012, before the RNRB existed, so none of it could have been used and **100%** is available to transfer (whoever inherited her estate), unless her estate was worth more than £2 million and the taper applies. A further **£175,000** is available.
 - Total bands: £325,000 + £325,000 + £175,000 + £175,000 = **£1,000,000**.
 
 **Step 3: tax.** Estate £830,000 is below £1,000,000 bands, so **IHT = nil**.
@@ -199,6 +199,8 @@ Any **unused percentage** of the NRB and RNRB on the first death can be **transf
     { label: "Inheritance Tax thresholds and interest rates – GOV.UK", url: "https://www.gov.uk/government/publications/rates-and-allowances-inheritance-tax-thresholds-and-interest-rates/inheritance-tax-thresholds-and-interest-rates" },
     { label: "IHTM47020 – long-term UK residence test", url: "https://www.gov.uk/hmrc-internal-manuals/inheritance-tax-manual/ihtm47020" },
     { label: "Inheritance Tax Act 1984 s5 – estate", url: "https://www.legislation.gov.uk/ukpga/1984/51/section/5" },
+    { label: "Transferring unused residence nil rate band – GOV.UK", url: "https://www.gov.uk/guidance/inheritance-tax-transfer-of-threshold" },
+    { label: "Inheritance Tax on unused pension funds and death benefits – GOV.UK", url: "https://www.gov.uk/government/publications/inheritance-tax-unused-pension-funds-and-death-benefits/inheritance-tax-unused-pension-funds-and-death-benefits" },
     { label: "Inheritance Tax: main residence nil-rate band", url: "https://www.gov.uk/government/publications/inheritance-tax-main-residence-nil-rate-band-and-the-existing-nil-rate-band/inheritance-tax-main-residence-nil-rate-band-and-the-existing-nil-rate-band" },
   ],
 };

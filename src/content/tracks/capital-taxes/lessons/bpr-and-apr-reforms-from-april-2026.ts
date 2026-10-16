@@ -96,7 +96,7 @@ The **qualifying conditions** for BPR and APR (for example the **two-year owners
 
 **Step 7: payment.** The liability attributable to the business shares can be paid in **10 equal annual instalments interest-free**. Executors should consider that and the funds available.
 
-**Step 8: planning for the next client.** If Grace had a surviving spouse with an unused allowance, the survivor's total allowance could reach **£5 million**, which would have covered all £3.2 million at 100%, leaving only the £300,000 within the NRB: **nil IHT**.`,
+**Step 8: planning for the next client.** If Grace had instead been a widow whose late spouse's allowance was entirely unused, her total allowance could reach **£5 million**, which would have covered all £3.2 million at 100%, leaving only the £300,000 within the NRB: **nil IHT**.`,
       },
     ],
   },
