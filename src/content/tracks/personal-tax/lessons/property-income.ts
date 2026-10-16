@@ -80,13 +80,13 @@ The special **furnished holiday lettings (FHL)** regime was abolished from **6 A
 
 ### Losses
 
-A property loss is carried forward and set against **future profits of the same property business**. It can't normally be set against other income. Losses are lost if the business ceases, unless lettings restart within 3 years.`,
+A property loss is carried forward and set against **future profits of the same property business**. It can't normally be set against other income. Losses are lost when the business ceases. As a rule of thumb, HMRC won't normally treat a gap of less than 3 years between lettings as a cessation, but a longer gap usually means the old business (and its losses) has ended (PIM2510).`,
     },
     {
       kind: "callout",
       tone: "tip",
       title: "Look ahead: MTD and higher property rates",
-      md: `Gross rents count towards **qualifying income for Making Tax Digital for Income Tax** (more than £50,000 from April 2026, more than £30,000 from April 2027). Budget 2025 also announced separate property income tax rates of **22% / 42% / 47%** from **6 April 2027**. Flag both for landlord clients when planning their 2027/28 position.`,
+      md: `Gross rents count towards **qualifying income for Making Tax Digital for Income Tax** (more than £50,000 from April 2026, more than £30,000 from April 2027). Budget 2025 also announced separate property income tax rates of **22% / 42% / 47%** from **6 April 2027**, with the residential finance cost reduction then given at the 22% property basic rate. Flag both for landlord clients when planning their 2027/28 position.`,
     },
   ],
   scenario: {
@@ -246,6 +246,7 @@ He has no other income and no losses brought forward.`,
     { label: "Income Tax when you rent out a property: working out your rental income", url: "https://www.gov.uk/guidance/income-tax-when-you-rent-out-a-property-working-out-your-rental-income" },
     { label: "PIM2058 – residential finance costs: basic rate tax reduction", url: "https://www.gov.uk/hmrc-internal-manuals/property-income-manual/pim2058" },
     { label: "PIM1092 – cash basis for landlords", url: "https://www.gov.uk/hmrc-internal-manuals/property-income-manual/pim1092" },
+    { label: "PIM2510 – property business: when a business ceases", url: "https://www.gov.uk/hmrc-internal-manuals/property-income-manual/pim2510" },
     { label: "Abolition of the furnished holiday lettings tax regime", url: "https://www.gov.uk/government/publications/furnished-holiday-lettings-tax-regime-abolition/abolition-of-the-furnished-holiday-lettings-tax-regime" },
     { label: "Tax-free allowances on property and trading income", url: "https://www.gov.uk/guidance/tax-free-allowances-on-property-and-trading-income" },
     { label: "Rent a room in your home: the Rent a Room Scheme", url: "https://www.gov.uk/rent-room-in-your-home/the-rent-a-room-scheme" },

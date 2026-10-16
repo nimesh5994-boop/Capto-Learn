@@ -40,7 +40,7 @@ Payment dates don't change: 31 January and 31 July payments on account, and the 
       title: "Qualifying income",
       md: `**Qualifying income** is the total **gross** income from **self-employment** and **property**, before expenses, taken from the client's tax return for the relevant year. It includes:
 - turnover from all sole trades combined,
-- gross rents from UK and overseas property, including the client's **share** of jointly owned property income.
+- gross rents from UK property and, if the client was UK resident in the relevant year, overseas property, including the client's **share** of jointly owned property income.
 
 It **doesn't** include employment income, **a share of partnership profits**, dividends, interest, pensions, or transition profits from basis period reform.
 
@@ -55,7 +55,7 @@ Example: rents of £25,000 plus self-employed turnover of £27,000 gives qualify
 - no National Insurance number before the start of the tax year,
 - trustees (SA900) and personal representatives,
 - people unable to deal with HMRC who have a power of attorney or deputy in place (declared on the 2024/25 return),
-- for a limited period, people who claim certain reliefs or use certain pages, such as foster carers claiming qualifying care relief, those using averaging relief, or those filing the residence pages (SA109). These are deferred until at least April 2027, if declared on the 2024/25 return. Check HMRC's exemption guidance for the current list.
+- for 2026/27 only, people who claimed certain reliefs or used certain pages on their 2024/25 return, such as foster carers claiming qualifying care relief, those using averaging relief, or those filing the trust and estate pages (SA107) or residence pages (SA109). From 2027/28 they must join if their qualifying income is over the threshold. Some other groups (for example ministers of religion, or those claiming married couple's or blind person's allowance) are exempt beyond April 2027 with no date set yet. Check HMRC's exemption guidance for the current list.
 
 **On application:** the **digitally excluded**, where it isn't reasonable to use software because of age, health, disability, religious beliefs or location (no internet access). HMRC won't accept unfamiliarity with software, or extra cost, as reasons on their own.
 
@@ -86,7 +86,7 @@ Every business and property income source needs its own updates. A sole trader w
       title: "Penalties under MTD",
       md: `MTD clients move onto the **points-based** late submission regime: **one point** for each missed deadline (quarterly updates and the tax return), and a **£200 penalty** once they reach **4 points**, with another £200 for each further missed deadline. HMRC has said it **won't** charge penalties for late **quarterly updates** in 2026/27. Updates must still be sent before the tax return can be filed, and the return itself is penalised normally.
 
-Late payment penalties follow the VAT-style regime: 3% of tax unpaid at day 15, another 3% at day 30, and 10% a year from day 31. HMRC's guidance says these percentages rise to 4% and 4% for 2027/28.`,
+Late payment penalties follow the VAT-style regime: 3% of tax unpaid at day 15, another 3% at day 30, and 10% a year from day 31. In the client's **first year** of the new penalties, there's no penalty if the tax is paid within 30 days (this 30-day period is given only once). HMRC's guidance says the percentages rise to 4% and 4% for 2027/28, and that from April 2027 the new penalties will apply to everyone who files a personal Self Assessment return, not just MTD users.`,
     },
     {
       kind: "callout",
@@ -151,7 +151,7 @@ Late payment penalties follow the VAT-style regime: 3% of tax unpaid at day 15, 
       categories: ["Counts", "Doesn't count"],
       items: [
         { text: "Gross takings of a sole trader's café", answer: 0 },
-        { text: "Rent received from a flat in Spain", answer: 0, why: "Overseas property income counts." },
+        { text: "Rent received from a flat in Spain", answer: 0, why: "Overseas property income counts for a UK-resident client." },
         { text: "Share of profit from an LLP", answer: 1, why: "Partnership income is excluded." },
         { text: "Salary from employment", answer: 1 },
         { text: "Dividends from the client's own company", answer: 1 },

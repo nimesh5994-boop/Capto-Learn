@@ -3,7 +3,8 @@ import { redirect } from "next/navigation";
 import { and, desc, eq, or } from "drizzle-orm";
 import { requirePermission } from "@/lib/auth/dal";
 import { getDb } from "@/lib/db/client";
-import { researchQueries } from "@/lib/db/schema";
+import { researchQueries, savedResearch } from "@/lib/db/schema";
+import { termOverlap } from "@/lib/research/libraryRules";
 import { orgHasFeature, orgLimits } from "@/lib/plans";
 import { usage } from "@/lib/entitlements";
 import { dateTime } from "@/lib/format";
@@ -17,7 +18,7 @@ export default async function AskPage({ searchParams }: { searchParams: Promise<
   const ctx = await requirePermission("research.use");
   if (!orgHasFeature(ctx.org, "research")) redirect("/?denied=1");
   const db = await getDb();
-  const [mine, shared, use] = await Promise.all([
+  const [mine, shared, use, saved] = await Promise.all([
     db
       .select({ id: researchQueries.id, question: researchQueries.question, createdAt: researchQueries.createdAt, status: researchQueries.status })
       .from(researchQueries)
@@ -31,7 +32,15 @@ export default async function AskPage({ searchParams }: { searchParams: Promise<
       .orderBy(desc(researchQueries.createdAt))
       .limit(15),
     usage(db, ctx.org),
+    db
+      .select({ queryId: savedResearch.queryId, title: savedResearch.title, reference: savedResearch.reference, question: researchQueries.question, createdAt: savedResearch.createdAt })
+      .from(savedResearch)
+      .innerJoin(researchQueries, eq(researchQueries.id, savedResearch.queryId))
+      .where(and(eq(savedResearch.userId, ctx.user.id), eq(savedResearch.organizationId, ctx.org.id)))
+      .orderBy(desc(savedResearch.createdAt)),
   ]);
+  // Asking again something you've already saved? Point at the saved answer first: reopening it is free.
+  const alreadySaved = q && fresh !== "1" ? saved.filter((s) => Math.max(termOverlap(q, s.question), termOverlap(q, s.title)) >= 0.7).slice(0, 3) : [];
   const { maxResearchPerMonth } = orgLimits(ctx.org);
 
   return (
@@ -46,11 +55,40 @@ export default async function AskPage({ searchParams }: { searchParams: Promise<
         </div>
       </div>
       <div className={styles.layout}>
+        <div className="stack" style={{ gap: 12 }}>
+          {alreadySaved.length > 0 && (
+            <div className="alert alert-info small stack" style={{ gap: 4 }}>
+              <strong>You&apos;ve already saved an answer to this. Opening it is free:</strong>
+              {alreadySaved.map((s) => (
+                <Link key={s.queryId} href={`/ask/${s.queryId}`}>
+                  {s.title}
+                  {s.reference ? ` · ${s.reference}` : ""}
+                </Link>
+              ))}
+            </div>
+          )}
         <AskBox initial={q} canProfessional={orgHasFeature(ctx.org, "professionalSources")} fresh={fresh === "1"} autoStart={fresh === "1"} tier={tier === "standard" || tier === "expert" ? tier : "auto"} />
+        </div>
         <aside className="stack" style={{ gap: 14 }}>
           {maxResearchPerMonth !== null && (
             <div className="card card-pad small">
               <strong>{use.researchThisMonth}</strong> of {maxResearchPerMonth.toLocaleString("en-GB")} firm questions used this month.
+            </div>
+          )}
+          {saved.length > 0 && (
+            <div className="card card-pad">
+              <div className="row between small" style={{ marginBottom: 6 }}>
+                <span className="muted">Saved research</span>
+                <Link href="/ask/saved">See all {saved.length}</Link>
+              </div>
+              <nav className={styles.history}>
+                {saved.slice(0, 5).map((s) => (
+                  <Link key={s.queryId} href={`/ask/${s.queryId}`}>
+                    <span>{s.title.length > 90 ? `${s.title.slice(0, 90)}…` : s.title}</span>
+                    <span className="when">{s.reference || dateTime(s.createdAt)}</span>
+                  </Link>
+                ))}
+              </nav>
             </div>
           )}
           <div className="card card-pad">

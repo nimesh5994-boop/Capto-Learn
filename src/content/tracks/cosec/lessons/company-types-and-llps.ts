@@ -44,7 +44,7 @@ export const lesson: Lesson = {
 Limited liability protects the shareholders' personal assets from the **company's** debts. It does not stop directors being personally liable for their own conduct. Watch out for:
 
 - **Personal guarantees** given to banks and landlords, which are very common for small companies.
-- **Wrongful and fraudulent trading** (Insolvency Act 1986 ss213–214), where directors carry on trading when they knew, or ought to have concluded, that insolvent liquidation couldn't be avoided.
+- **Wrongful trading** (Insolvency Act 1986 s214), where directors carry on trading when they knew, or ought to have concluded, that there was no reasonable prospect of avoiding insolvent liquidation; and **fraudulent trading** (s213), where business is carried on with intent to defraud creditors (also a criminal offence).
 - **Overdrawn director's loan accounts**, which a liquidator will collect.
 - **Disqualification** for unfit conduct, and personal liability for acting while disqualified.
 - **Unlawful dividends**, which shareholders who knew (or should have known) must repay.`,
@@ -212,5 +212,6 @@ They ask you: *"Should we become a limited company or an LLP, and what's the act
     { label: "Companies Act 2006 s154 – companies required to have directors", url: "https://www.legislation.gov.uk/ukpga/2006/46/section/154" },
     { label: "Limited Liability Partnerships Act 2000", url: "https://www.legislation.gov.uk/ukpga/2000/12/contents" },
     { label: "Set up a business partnership (GOV.UK)", url: "https://www.gov.uk/set-up-business-partnership" },
+    { label: "Insolvency Service: director duties upon insolvency", url: "https://www.gov.uk/guidance/director-information-hub-director-duties-upon-insolvency" },
   ],
 };

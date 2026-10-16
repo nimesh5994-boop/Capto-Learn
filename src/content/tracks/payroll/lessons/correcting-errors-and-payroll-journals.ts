@@ -26,7 +26,7 @@ export const lesson: Lesson = {
       rows: [
         ["Wrong pay or deductions in the **current** tax year", "Correct the **year-to-date** figures in the next regular FPS (don't duplicate pay in the 'this period' fields)"],
         ["FPS sent with the **wrong payment date**", "Send an additional FPS with the correct date, pay in period of 0.00, unchanged year-to-date figures and late reporting reason **H** (correction to earlier submission), by the 19th of the tax month after the original"],
-        ["Wrong NIC category letter in the current year", "Report the correct letter on the next FPS"],
+        ["Wrong NIC category letter in the current year", "On the next FPS, report the incorrect letter with 0 in its NIC fields (apart from any NIC repayment or recovery in 'Employee's NICs this payment') and the correct letter with the correct year-to-date NIC"],
         ["Mistake in a **previous** tax year from 2020/21 onwards", "Send an **additional FPS** for that year with the correct year-to-date figures"],
         ["Mistake in a year before 2020/21", "Send an **Earlier Year Update (EYU)**"],
         ["EPS mistake (e.g. wrong recovery or EA claim)", "Send an EPS with the correct year-to-date figures for the year concerned"],

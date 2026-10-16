@@ -88,7 +88,7 @@ PSCs who are also directors provide their code in the 14 days starting the day a
       kind: "callout",
       tone: "tip",
       title: "Align it with the year end",
-      md: `Some practices file the CS01 early so that its date falls a fixed number of weeks after the accounts are approved, letting the shareholder review happen alongside the year-end pack. Remember that filing early resets the review period and may move the PSC window for director-PSCs, so tell the client.`,
+      md: `Some practices file the CS01 early so that its date falls a fixed number of weeks after the accounts are approved, letting the shareholder review happen alongside the year-end pack. Remember that filing early resets the review period, so tell the client. It doesn't move a director-PSC's 14-day verification window: Companies House says filing the confirmation statement early won't change those dates.`,
     },
   ],
   scenario: {

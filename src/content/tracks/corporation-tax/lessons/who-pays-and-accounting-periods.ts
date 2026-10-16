@@ -225,6 +225,7 @@ The office manager asks: *"Do we file one return or two, and when do we pay?"*`,
     { label: "HMRC Company Taxation Manual CTM01405 – accounting periods: apportionment", url: "https://www.gov.uk/hmrc-internal-manuals/company-taxation-manual/ctm01405" },
     { label: "HMRC Company Taxation Manual CTM01410 – accounting periods: commencement", url: "https://www.gov.uk/hmrc-internal-manuals/company-taxation-manual/ctm01410" },
     { label: "Set up your company for Corporation Tax", url: "https://www.gov.uk/limited-company-formation/set-up-your-company-for-corporation-tax" },
+    { label: "Corporation Tax: trading and non-trading (3-month notification)", url: "https://www.gov.uk/guidance/corporation-tax-trading-and-non-trading" },
     { label: "Company Tax Returns: overview", url: "https://www.gov.uk/company-tax-returns" },
   ],
 };

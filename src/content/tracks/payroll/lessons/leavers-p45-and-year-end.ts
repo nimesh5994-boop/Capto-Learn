@@ -44,7 +44,7 @@ Contracts can give more, and the irregular hours rules (12.07%) apply to irregul
       title: "Payments after the P45 has been issued",
       md: `If you have to pay a leaver again after issuing the P45 (a late bonus or overtime, say):
 - Deduct tax using code **0T on a week 1/month 1 basis**, whatever code they had before.
-- Work out NIC on the payment as earnings of the week (or month) in which it's paid, using the normal thresholds.
+- Work out NIC using the rates and thresholds in force when it's paid and the usual category letter. A **regular** payment (final salary, an expected bonus) uses the employee's **usual earnings period**. An **irregular** payment (accrued holiday pay, an unexpected bonus, backdated pay arrears) uses a **weekly** earnings period.
 - Report it on an FPS with the **original leaving date**, and **don't** issue a second P45.
 
 Payments in connection with termination (redundancy, compensation) follow different rules; see the termination payments lesson.`,
@@ -69,7 +69,7 @@ Payments in connection with termination (redundancy, compensation) follow differ
 - **Apply the new codes.** HMRC sends coding notices (P9) for individual employees and a **P9X** listing any general uplift of codes. If the personal allowance is unchanged (it's £12,570 for 2026/27), L codes carry forward unchanged unless HMRC issues a new code.
 - **Clear week 1/month 1 markers** and emergency bases so everyone starts the new year cumulatively, unless HMRC says otherwise.
 - **Update rates and thresholds** in the software (most commercial packages do this, but check the NIC thresholds and student loan thresholds match HMRC's table).
-- **Check for a week 53** (or 2-week 27, 4-week 14). If a weekly payday falls on 5 April (or 4 April in a leap year), there's a 53rd pay period. Tax for it is worked out on a week 1/month 1 basis using that period's free pay.`,
+- **Check for a week 53** (or 2-week 27, 4-week 14). If a weekly payday falls on 5 April (or on 4 or 5 April in a leap year), there's a 53rd pay period. Tax for it is worked out using a single period's free pay (the week 1 table), not cumulatively.`,
     },
     {
       kind: "callout",
@@ -106,7 +106,7 @@ The practice manager asks: *"What do we pay her in September, and how do we deal
       },
       {
         kind: "md",
-        md: `**5. The November overtime.** The P45 has been issued, so tax the £250 using **0T month 1**: no free pay, all at 20% = **£50.00** tax. NIC is worked out on the £250 as November's earnings: it's below the monthly primary threshold (£1,048), so no employee NIC, and below the £417 secondary threshold, so **no employer NIC** either. Report it on November's FPS with her original leaving date. No second P45.`,
+        md: `**5. The November overtime.** The P45 has been issued, so tax the £250 using **0T month 1**: no free pay, all at 20% = **£50.00** tax. For NIC, a late overtime claim is an **irregular** payment (backdated pay arrears), so it uses a **weekly** earnings period, not her usual monthly one. Employee NIC: (£250 − £242) × 8% = **£0.64**. Employer NIC: (£250 − £96) × 15% = **£23.10**. (Using the monthly thresholds by mistake would show no NIC at all.) Report it on November's FPS with her original leaving date. No second P45.`,
       },
       {
         kind: "table",
@@ -114,7 +114,7 @@ The practice manager asks: *"What do we pay her in September, and how do we deal
         head: ["Payment", "Gross", "Tax basis", "Reported"],
         rows: [
           ["September salary + 4 days' holiday", "£2,961.52", "1257L cumulative", "September FPS with leaving date"],
-          ["November overtime", "£250.00", "0T month 1: £50 tax", "November FPS, original leaving date"],
+          ["November overtime", "£250.00", "0T month 1: £50 tax; weekly earnings period for NIC (£0.64 employee, £23.10 employer)", "November FPS, original leaving date"],
         ],
       },
     ],
@@ -193,7 +193,7 @@ The practice manager asks: *"What do we pay her in September, and how do we deal
       prompt: "When does a week 53 arise for a weekly payroll?",
       options: [
         "Every year",
-        "When a weekly payday falls on 5 April (or 4 April in a leap year)",
+        "When a weekly payday falls on 5 April (or on 4 or 5 April in a leap year)",
         "Only for monthly payrolls",
         "When the employer has 53 employees",
       ],

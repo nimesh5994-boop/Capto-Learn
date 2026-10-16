@@ -94,7 +94,7 @@ For an AP of less than 12 months, both limits are reduced proportionately: **lim
   ],
   scenario: {
     title: "Two companies, one owner: Okafor Dental and Okafor Lettings",
-    narrative: `Dr Grace Okafor owns 100% of **Okafor Dental Ltd** and 100% of **Okafor Lettings Ltd**, which owns three buy-to-let flats. Both companies have a 31 March year end. A new junior has prepared Okafor Dental Ltd's computation for the year ended 31 March 2027, showing taxable total profits of **£70,000** and CT of £17,550 (25% less marginal relief using £250,000 as the upper limit). The dental company also received **£5,000** of dividends from a FTSE 100 shareholding.
+    narrative: `Dr Grace Okafor owns 100% of **Okafor Dental Ltd** and 100% of **Okafor Lettings Ltd**, which owns three buy-to-let flats. Both companies have a 31 March year end. A new junior has prepared Okafor Dental Ltd's computation for the year ended 31 March 2027, showing taxable total profits of **£70,000** and CT of £14,800 (25% less marginal relief using £250,000 as the upper limit). The dental company also received **£5,000** of dividends from a FTSE 100 shareholding.
 
 The manager's review note says: *"Check associates and augmented profits."*`,
     walkthrough: [
@@ -120,8 +120,8 @@ The manager's review note says: *"Check associates and augmented profits."*`,
       {
         kind: "callout",
         tone: "warning",
-        title: "Spot the arithmetic too",
-        md: `The junior's working note said £17,550, but 25% × £70,000 − 3/200 × £180,000 is £14,800. Two errors had partly cancelled out in the narrative. Always reperform the formula yourself.`,
+        title: "Both errors pointed the same way",
+        md: `The junior's arithmetic was right (25% × £70,000 − 3/200 × £180,000 = £14,800), but both inputs were wrong: the upper limit ignored the associated company, and augmented profits left out the dividend. Each error increased the marginal relief, so together they understated the tax by £2,000. Always check the inputs to the formula, not just the sum.`,
       },
     ],
   },

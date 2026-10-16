@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-16T05:01:56.508Z",
+ "generatedAt": "2026-10-16T07:34:13.030Z",
  "lessons": {
   "accounts-production/accruals-prepayments-deferred-income": {
    "hash": "a493181e37f009d4",
@@ -810,7 +810,7 @@
    ]
   },
   "bookkeeping/catch-up-bookkeeping": {
-   "hash": "c91c418c6f730d0b",
+   "hash": "ad74787969223c23",
    "cards": [
     {
      "id": "bookkeeping/catch-up-bookkeeping#f1",
@@ -970,7 +970,7 @@
    ]
   },
   "bookkeeping/cut-off-and-period-end-adjustments": {
-   "hash": "5ec4ba7d700cc21b",
+   "hash": "049961111d9dc242",
    "cards": [
     {
      "id": "bookkeeping/cut-off-and-period-end-adjustments#f1",
@@ -1023,34 +1023,10 @@
    ]
   },
   "bookkeeping/directors-loan-account-coding": {
-   "hash": "3fe1c8ab16e656c0",
+   "hash": "1271abaf5764367a",
    "cards": [
     {
      "id": "bookkeeping/directors-loan-account-coding#f1",
-     "lessonId": "bookkeeping/directors-loan-account-coding",
-     "front": "s455 tax: charge rate on loans to participators made on/after 6 April 2022?",
-     "back": "33.75% of the amount outstanding",
-     "evidence": "the company pays an extra charge of 33.75% of the amount outstanding (32.5% for loans made before 6 April 2022).",
-     "taxYear": "2026/27"
-    },
-    {
-     "id": "bookkeeping/directors-loan-account-coding#f2",
-     "lessonId": "bookkeeping/directors-loan-account-coding",
-     "front": "s455 tax: rate for loans made before 6 April 2022?",
-     "back": "32.5%",
-     "evidence": "the company pays an extra charge of 33.75% of the amount outstanding (32.5% for loans made before 6 April 2022).",
-     "taxYear": "2026/27"
-    },
-    {
-     "id": "bookkeeping/directors-loan-account-coding#f3",
-     "lessonId": "bookkeeping/directors-loan-account-coding",
-     "front": "s455: when is a director's loan outstanding enough to trigger the charge?",
-     "back": "Still outstanding 9 months after the end of the accounting period",
-     "evidence": "If a close company has lent money to a participator (e.g. a director-shareholder) and the loan is still outstanding 9 months after the end of the accounting period, the company pays an extra charge of 33.75% of the amount outstanding (32.5% for loans made before 6 April 2022).",
-     "taxYear": "2026/27"
-    },
-    {
-     "id": "bookkeeping/directors-loan-account-coding#f4",
      "lessonId": "bookkeeping/directors-loan-account-coding",
      "front": "s455 tax: when is it due?",
      "back": "9 months and 1 day after the year end, with corporation tax",
@@ -1058,7 +1034,7 @@
      "taxYear": "2026/27"
     },
     {
-     "id": "bookkeeping/directors-loan-account-coding#f5",
+     "id": "bookkeeping/directors-loan-account-coding#f2",
      "lessonId": "bookkeeping/directors-loan-account-coding",
      "front": "Director's loan: beneficial loan BIK threshold?",
      "back": "Combined loans over £10,000 at any time in the tax year (interest below official rate)",
@@ -1066,7 +1042,7 @@
      "taxYear": "2026/27"
     },
     {
-     "id": "bookkeeping/directors-loan-account-coding#f6",
+     "id": "bookkeeping/directors-loan-account-coding#f3",
      "lessonId": "bookkeeping/directors-loan-account-coding",
      "front": "Director's loan: bed-and-breakfasting rule thresholds?",
      "back": "Repayment of £5,000+ followed within 30 days by new borrowing of £5,000+",
@@ -1190,7 +1166,7 @@
    ]
   },
   "bookkeeping/month-end-routine": {
-   "hash": "dabbfca57ec986db",
+   "hash": "22ec5562ef9e3072",
    "cards": [
     {
      "id": "bookkeeping/month-end-routine#f1",
@@ -1398,18 +1374,10 @@
    ]
   },
   "bookkeeping/sales-and-purchase-ledgers": {
-   "hash": "4725e12e29cb1e34",
+   "hash": "91403f21327b9561",
    "cards": [
     {
      "id": "bookkeeping/sales-and-purchase-ledgers#f1",
-     "lessonId": "bookkeeping/sales-and-purchase-ledgers",
-     "front": "VAT: maximum value of a simplified invoice issued by a retailer?",
-     "back": "Up to £250 including VAT",
-     "evidence": "A retailer can issue a simplified invoice for supplies of up to £250 including VAT, showing less detail (the customer's name isn't needed).",
-     "taxYear": "2026/27"
-    },
-    {
-     "id": "bookkeeping/sales-and-purchase-ledgers#f2",
      "lessonId": "bookkeeping/sales-and-purchase-ledgers",
      "front": "Late payment: when is a business payment late if no date is agreed?",
      "back": "30 days after the later of receipt of invoice and delivery of goods/service",
@@ -1417,7 +1385,7 @@
      "taxYear": "2026/27"
     },
     {
-     "id": "bookkeeping/sales-and-purchase-ledgers#f3",
+     "id": "bookkeeping/sales-and-purchase-ledgers#f2",
      "lessonId": "bookkeeping/sales-and-purchase-ledgers",
      "front": "Business-to-business payment terms: usual expected maximum?",
      "back": "60 days, unless longer terms are fair to both",
@@ -1425,7 +1393,7 @@
      "taxYear": "2026/27"
     },
     {
-     "id": "bookkeeping/sales-and-purchase-ledgers#f4",
+     "id": "bookkeeping/sales-and-purchase-ledgers#f3",
      "lessonId": "bookkeeping/sales-and-purchase-ledgers",
      "front": "Purchase ledger: what date should a bill be entered with?",
      "back": "The invoice date, not the payment date",
@@ -1433,7 +1401,7 @@
      "taxYear": "2026/27"
     },
     {
-     "id": "bookkeeping/sales-and-purchase-ledgers#f5",
+     "id": "bookkeeping/sales-and-purchase-ledgers#f4",
      "lessonId": "bookkeeping/sales-and-purchase-ledgers",
      "front": "Bookkeeping: how to record a deposit received with no invoice yet?",
      "back": "As a credit (prepayment/overpayment) on the customer's account, allocated when invoiced",
@@ -1441,7 +1409,7 @@
      "taxYear": "2026/27"
     },
     {
-     "id": "bookkeeping/sales-and-purchase-ledgers#f6",
+     "id": "bookkeeping/sales-and-purchase-ledgers#f5",
      "lessonId": "bookkeeping/sales-and-purchase-ledgers",
      "front": "Remittance advice missing for one payment covering several invoices: what to do?",
      "back": "Ask, or allocate to oldest first and note the assumption",
@@ -1496,7 +1464,7 @@
    ]
   },
   "bookkeeping/vat-coding-in-the-bookkeeping": {
-   "hash": "b313016ea84efe38",
+   "hash": "6f41262e11c197b8",
    "cards": [
     {
      "id": "bookkeeping/vat-coding-in-the-bookkeeping#f1",
@@ -2784,7 +2752,7 @@
    ]
   },
   "corporation-tax/chargeable-gains-in-companies": {
-   "hash": "7164cd95e55e66f5",
+   "hash": "bf57606271d98c07",
    "cards": [
     {
      "id": "corporation-tax/chargeable-gains-in-companies#f1",
@@ -2899,7 +2867,7 @@
    ]
   },
   "corporation-tax/computing-taxable-trading-profit": {
-   "hash": "685aa1ddf774244c",
+   "hash": "bd362d04968462e6",
    "cards": [
     {
      "id": "corporation-tax/computing-taxable-trading-profit#f1",
@@ -3296,7 +3264,7 @@
    ]
   },
   "corporation-tax/rates-and-marginal-relief": {
-   "hash": "d06cdb6457184186",
+   "hash": "903111b520a6bdd8",
    "cards": [
     {
      "id": "corporation-tax/rates-and-marginal-relief#f1",
@@ -3572,52 +3540,45 @@
    ]
   },
   "cosec/companies-house-powers-fees-and-agents": {
-   "hash": "29c03cc8c4f888ca",
+   "hash": "31db66e6b4f12b18",
    "cards": [
     {
      "id": "cosec/companies-house-powers-fees-and-agents#f1",
-     "lessonId": "cosec/companies-house-powers-fees-and-agents",
-     "front": "Companies House: maximum civil financial penalty for Companies Act offences?",
-     "back": "Up to £10,000, as an alternative to prosecution",
-     "evidence": "Power: Financial penalties; What it means in practice: Civil penalties of up to £10,000 for Companies Act offences, as an alternative to prosecution.."
-    },
-    {
-     "id": "cosec/companies-house-powers-fees-and-agents#f2",
      "lessonId": "cosec/companies-house-powers-fees-and-agents",
      "front": "Companies House fee: online confirmation statement (first in payment period)?",
      "back": "£50 online / software (£110 on paper)",
      "evidence": "Filing: Confirmation statement (first in the payment period); Online / software: £50; Paper: £110."
     },
     {
-     "id": "cosec/companies-house-powers-fees-and-agents#f3",
+     "id": "cosec/companies-house-powers-fees-and-agents#f2",
      "lessonId": "cosec/companies-house-powers-fees-and-agents",
      "front": "Companies House fee: standard online incorporation?",
      "back": "£100 online/software (£124 paper)",
      "evidence": "Filing: Incorporation; Online / software: £100; Paper: £124."
     },
     {
-     "id": "cosec/companies-house-powers-fees-and-agents#f4",
+     "id": "cosec/companies-house-powers-fees-and-agents#f3",
      "lessonId": "cosec/companies-house-powers-fees-and-agents",
      "front": "ACSP: time limit to report changes to the ACSP's details?",
      "back": "Within 14 days",
      "evidence": "- Ongoing duties: report changes to the ACSP's details within 14 days, respond to information requests, and keep records of identity checks for 7 years."
     },
     {
-     "id": "cosec/companies-house-powers-fees-and-agents#f5",
+     "id": "cosec/companies-house-powers-fees-and-agents#f4",
      "lessonId": "cosec/companies-house-powers-fees-and-agents",
      "front": "ACSP: how long must records of identity checks be kept?",
      "back": "7 years",
      "evidence": "- Ongoing duties: report changes to the ACSP's details within 14 days, respond to information requests, and keep records of identity checks for 7 years."
     },
     {
-     "id": "cosec/companies-house-powers-fees-and-agents#f6",
+     "id": "cosec/companies-house-powers-fees-and-agents#f5",
      "lessonId": "cosec/companies-house-powers-fees-and-agents",
      "front": "Companies House: when did ACSP registration open?",
      "back": "18 March 2025",
      "evidence": "Authorised Corporate Service Providers (ACSPs): - ACSP registration opened on 18 March 2025."
     },
     {
-     "id": "cosec/companies-house-powers-fees-and-agents#f7",
+     "id": "cosec/companies-house-powers-fees-and-agents#f6",
      "lessonId": "cosec/companies-house-powers-fees-and-agents",
      "front": "Companies House: earliest date agents must be ACSPs and presenters verified?",
      "back": "No earlier than November 2027, with at least 6 months' notice",
@@ -3626,7 +3587,7 @@
    ]
   },
   "cosec/company-types-and-llps": {
-   "hash": "ca6266dc0bcea270",
+   "hash": "8c8c75933f4734a5",
    "cards": [
     {
      "id": "cosec/company-types-and-llps#f1",
@@ -3669,18 +3630,11 @@
      "front": "Company numbers: prefix for an England and Wales LLP versus a Scottish LLP?",
      "back": "OC for England and Wales LLP; SO for Scottish LLP",
      "evidence": "Company numbers show where the entity is registered: 8 digits for England and Wales, SC for Scotland, NI for Northern Ireland, OC for an England and Wales LLP, SO for a Scottish LLP."
-    },
-    {
-     "id": "cosec/company-types-and-llps#f7",
-     "lessonId": "cosec/company-types-and-llps",
-     "front": "Which Insolvency Act 1986 sections cover wrongful and fraudulent trading?",
-     "back": "ss213–214",
-     "evidence": "Wrongful and fraudulent trading (Insolvency Act 1986 ss213–214), where directors carry on trading when they knew, or ought to have concluded, that insolvent liquidation couldn't be avoided."
     }
    ]
   },
   "cosec/confirmation-statement": {
-   "hash": "ddd304da39ca4254",
+   "hash": "f800a72771d48d25",
    "cards": [
     {
      "id": "cosec/confirmation-statement#f1",
@@ -3734,7 +3688,7 @@
    ]
   },
   "cosec/dividend-paperwork": {
-   "hash": "6fffedd7d9b7a9ba",
+   "hash": "b712e3a71f03a47e",
    "cards": [
     {
      "id": "cosec/dividend-paperwork#f1",
@@ -3849,7 +3803,7 @@
    ]
   },
   "cosec/identity-verification": {
-   "hash": "cf03a6a714650824",
+   "hash": "91ce18b163f85736",
    "cards": [
     {
      "id": "cosec/identity-verification#f1",
@@ -3888,13 +3842,6 @@
     },
     {
      "id": "cosec/identity-verification#f6",
-     "lessonId": "cosec/identity-verification",
-     "front": "Companies House: maximum financial penalty for Companies Act offences?",
-     "back": "£10,000 (available since October 2024)",
-     "evidence": "Companies House can mark the register to show that a person's identity hasn't been verified, and since October 2024 it has been able to impose financial penalties of up to £10,000 for Companies Act offences as an alternative to prosecution."
-    },
-    {
-     "id": "cosec/identity-verification#f7",
      "lessonId": "cosec/identity-verification",
      "front": "ACSP registration with Companies House: when did it open?",
      "back": "18 March 2025",
@@ -4274,7 +4221,7 @@
    ]
   },
   "cosec/strike-off-liquidation-and-restoration": {
-   "hash": "fc3d463315224b7b",
+   "hash": "0309a22734a58856",
    "cards": [
     {
      "id": "cosec/strike-off-liquidation-and-restoration#f1",
@@ -4293,33 +4240,26 @@
     {
      "id": "cosec/strike-off-liquidation-and-restoration#f3",
      "lessonId": "cosec/strike-off-liquidation-and-restoration",
-     "front": "DS01 voluntary strike-off: filing fee online and on paper?",
-     "back": "£13 online, £18 on paper",
-     "evidence": "2. File DS01, signed by the director(s) (a majority if more than two). Fee £13 online, £18 on paper."
-    },
-    {
-     "id": "cosec/strike-off-liquidation-and-restoration#f4",
-     "lessonId": "cosec/strike-off-liquidation-and-restoration",
      "front": "DS01: earliest strike-off after the first Gazette notice if no objection?",
      "back": "No earlier than 2 months after the notice",
      "evidence": "5. If no objection, the company is struck off no earlier than 2 months after the notice, and a second Gazette notice confirms dissolution."
     },
     {
-     "id": "cosec/strike-off-liquidation-and-restoration#f5",
+     "id": "cosec/strike-off-liquidation-and-restoration#f4",
      "lessonId": "cosec/strike-off-liquidation-and-restoration",
      "front": "Voluntary strike-off: look-back period for ineligibility (trading, name change)?",
      "back": "3 months",
      "evidence": "A company can't apply if, in the last 3 months, it has:"
     },
     {
-     "id": "cosec/strike-off-liquidation-and-restoration#f6",
+     "id": "cosec/strike-off-liquidation-and-restoration#f5",
      "lessonId": "cosec/strike-off-liquidation-and-restoration",
      "front": "Administrative restoration (RT01): who can apply?",
      "back": "A former director or member",
      "evidence": "| Who applies | A former director or member | Wide range of interested persons (e.g. former directors, members, creditors) |"
     },
     {
-     "id": "cosec/strike-off-liquidation-and-restoration#f7",
+     "id": "cosec/strike-off-liquidation-and-restoration#f6",
      "lessonId": "cosec/strike-off-liquidation-and-restoration",
      "front": "What happens to a dissolved company's remaining property?",
      "back": "Passes to the Crown as bona vacantia (s1012)",
@@ -4328,7 +4268,7 @@
    ]
   },
   "directors/alphabet-shares-waivers-and-settlements": {
-   "hash": "66123b4238526a1b",
+   "hash": "c7db1a7a4af6ef95",
    "cards": [
     {
      "id": "directors/alphabet-shares-waivers-and-settlements#f1",
@@ -4365,7 +4305,7 @@
    ]
   },
   "directors/anti-bed-and-breakfasting-rules": {
-   "hash": "02dd688a2a53a5db",
+   "hash": "1873b7153ea70a29",
    "cards": [
     {
      "id": "directors/anti-bed-and-breakfasting-rules#f1",
@@ -4377,14 +4317,6 @@
     },
     {
      "id": "directors/anti-bed-and-breakfasting-rules#f2",
-     "lessonId": "directors/anti-bed-and-breakfasting-rules",
-     "front": "Anti-bed and breakfasting: do the rules apply to benefits as well as loans?",
-     "back": "Yes, both rules also apply to benefits (s464A)",
-     "evidence": "Both rules also apply to benefits (s464A), not only loans.",
-     "taxYear": "2026/27"
-    },
-    {
-     "id": "directors/anti-bed-and-breakfasting-rules#f3",
      "lessonId": "directors/anti-bed-and-breakfasting-rules",
      "front": "CT600A: how to treat a matched repayment when claiming s458 relief?",
      "back": "Exclude the matched amount; no s458 relief to that extent",
@@ -4439,7 +4371,7 @@
    ]
   },
   "directors/closing-a-company-mvl-badr-and-the-taar": {
-   "hash": "49523a0f1cea309b",
+   "hash": "2fa620b862d3c7d4",
    "cards": [
     {
      "id": "directors/closing-a-company-mvl-badr-and-the-taar#f1",
@@ -4460,21 +4392,13 @@
     {
      "id": "directors/closing-a-company-mvl-badr-and-the-taar#f3",
      "lessonId": "directors/closing-a-company-mvl-badr-and-the-taar",
-     "front": "BADR on shares: shareholding and voting rights required?",
-     "back": "At least 5% of ordinary share capital with 5% of voting rights, plus officer or employee",
-     "evidence": "For BADR on shares: the individual must be an officer or employee and hold at least 5% of the ordinary share capital with 5% of the voting rights, in a trading company (or holding company of a trading group), throughout the 2 years before the cessation of the business.",
-     "taxYear": "2026/27"
-    },
-    {
-     "id": "directors/closing-a-company-mvl-badr-and-the-taar#f4",
-     "lessonId": "directors/closing-a-company-mvl-badr-and-the-taar",
      "front": "BADR liquidation: time limit for distribution after cessation?",
      "back": "Within 3 years after cessation",
      "evidence": "The distribution must be made within 3 years after the cessation.",
      "taxYear": "2026/27"
     },
     {
-     "id": "directors/closing-a-company-mvl-badr-and-the-taar#f5",
+     "id": "directors/closing-a-company-mvl-badr-and-the-taar#f4",
      "lessonId": "directors/closing-a-company-mvl-badr-and-the-taar",
      "front": "MVL: declaration of solvency requires company to pay debts within what period?",
      "back": "12 months",
@@ -4482,7 +4406,7 @@
      "taxYear": "2026/27"
     },
     {
-     "id": "directors/closing-a-company-mvl-badr-and-the-taar#f6",
+     "id": "directors/closing-a-company-mvl-badr-and-the-taar#f5",
      "lessonId": "directors/closing-a-company-mvl-badr-and-the-taar",
      "front": "CGT 2026/27: rates on ordinary gains and annual exempt amount?",
      "back": "18% / 24%; annual exempt amount £3,000",
@@ -4490,7 +4414,7 @@
      "taxYear": "2026/27"
     },
     {
-     "id": "directors/closing-a-company-mvl-badr-and-the-taar#f7",
+     "id": "directors/closing-a-company-mvl-badr-and-the-taar#f6",
      "lessonId": "directors/closing-a-company-mvl-badr-and-the-taar",
      "front": "Winding-up TAAR: condition C time period for same or similar trade?",
      "back": "Within 2 years after the distribution",
@@ -4547,7 +4471,7 @@
    ]
   },
   "directors/directors-loan-account-basics": {
-   "hash": "4a42c10d94e085b0",
+   "hash": "423b3aa64e451789",
    "cards": [
     {
      "id": "directors/directors-loan-account-basics#f1",
@@ -4587,7 +4511,7 @@
    ]
   },
   "directors/dividends-legality-and-paperwork": {
-   "hash": "36624b7262afe8ed",
+   "hash": "574f1020dccaa846",
    "cards": [
     {
      "id": "directors/dividends-legality-and-paperwork#f1",
@@ -4717,7 +4641,7 @@
    ]
   },
   "directors/s455-charge-and-s458-relief": {
-   "hash": "74183e56983ba83b",
+   "hash": "80e897b0a7673a1f",
    "cards": [
     {
      "id": "directors/s455-charge-and-s458-relief#f1",
@@ -4754,14 +4678,6 @@
     {
      "id": "directors/s455-charge-and-s458-relief#f5",
      "lessonId": "directors/s455-charge-and-s458-relief",
-     "front": "s458 relief: time limit to claim?",
-     "back": "4 years from end of the accounting period in which relief arises",
-     "evidence": "Claim time limit: 4 years from the end of the accounting period in which the relief arises.",
-     "taxYear": "2026/27"
-    },
-    {
-     "id": "directors/s455-charge-and-s458-relief#f6",
-     "lessonId": "directors/s455-charge-and-s458-relief",
      "front": "s458: when is refund paid if loan repaid after the deadline?",
      "back": "9 months and 1 day after the end of the period of repayment, with no interest",
      "evidence": "Repayment after the deadline: the tax paid is refunded, but only 9 months and 1 day after the end of the accounting period in which the repayment was made. HMRC pays no interest on the delay.",
@@ -4770,7 +4686,7 @@
    ]
   },
   "directors/salary-vs-dividend-planning": {
-   "hash": "aa06c518a2ba6e36",
+   "hash": "3e09f5cad1f013b4",
    "cards": [
     {
      "id": "directors/salary-vs-dividend-planning#f1",
@@ -4831,7 +4747,7 @@
    ]
   },
   "directors/writing-off-a-directors-loan": {
-   "hash": "4386305491ad1823",
+   "hash": "d4706cb07e3e3a20",
    "cards": [
     {
      "id": "directors/writing-off-a-directors-loan#f1",
@@ -5169,7 +5085,7 @@
    ]
   },
   "foundations/control-account-reconciliations": {
-   "hash": "c6c25582df41551f",
+   "hash": "9ef60f8796caa923",
    "cards": [
     {
      "id": "foundations/control-account-reconciliations#f1",
@@ -5377,7 +5293,7 @@
    ]
   },
   "foundations/introduction-to-limited-company-accounts": {
-   "hash": "ca4e92bd0cf01574",
+   "hash": "c7e406be363a7c14",
    "cards": [
     {
      "id": "foundations/introduction-to-limited-company-accounts#f1",
@@ -5492,26 +5408,10 @@
    ]
   },
   "foundations/irrecoverable-debts-and-allowances": {
-   "hash": "fc77b0726ccef52b",
+   "hash": "7b8446a22dd43f0c",
    "cards": [
     {
      "id": "foundations/irrecoverable-debts-and-allowances#f1",
-     "lessonId": "foundations/irrecoverable-debts-and-allowances",
-     "front": "VAT bad debt relief: minimum time before a claim can be made?",
-     "back": "6 months from the later of payment due date and date of supply",
-     "evidence": "3. At least 6 months have passed since the later of the date payment was due and the date of the supply.",
-     "taxYear": "2026/27"
-    },
-    {
-     "id": "foundations/irrecoverable-debts-and-allowances#f2",
-     "lessonId": "foundations/irrecoverable-debts-and-allowances",
-     "front": "VAT bad debt relief: time limit for making the claim?",
-     "back": "Within 4 years and 6 months of the later of due date and supply date",
-     "evidence": "4. The claim is made within 4 years and 6 months of that later date.",
-     "taxYear": "2026/27"
-    },
-    {
-     "id": "foundations/irrecoverable-debts-and-allowances#f3",
      "lessonId": "foundations/irrecoverable-debts-and-allowances",
      "front": "VAT bad debt relief: where is the claim made on the VAT return?",
      "back": "Box 4, for the period in which the conditions are first met",
@@ -5519,7 +5419,7 @@
      "taxYear": "2026/27"
     },
     {
-     "id": "foundations/irrecoverable-debts-and-allowances#f4",
+     "id": "foundations/irrecoverable-debts-and-allowances#f2",
      "lessonId": "foundations/irrecoverable-debts-and-allowances",
      "front": "VAT bad debt relief: can a cash accounting scheme client claim it?",
      "back": "No - no output VAT was ever paid on the unpaid invoice",
@@ -5527,7 +5427,7 @@
      "taxYear": "2026/27"
     },
     {
-     "id": "foundations/irrecoverable-debts-and-allowances#f5",
+     "id": "foundations/irrecoverable-debts-and-allowances#f3",
      "lessonId": "foundations/irrecoverable-debts-and-allowances",
      "front": "Income tax: is a general provision (e.g. 2% of all debtors) deductible?",
      "back": "No - HMRC does not allow general provisions (BIM42701)",
@@ -5535,7 +5435,7 @@
      "taxYear": "2026/27"
     },
     {
-     "id": "foundations/irrecoverable-debts-and-allowances#f6",
+     "id": "foundations/irrecoverable-debts-and-allowances#f4",
      "lessonId": "foundations/irrecoverable-debts-and-allowances",
      "front": "Accounting entry for an increase in the allowance for doubtful debts?",
      "back": "Dr Irrecoverable debts expense, Cr Allowance for doubtful debts",
@@ -5543,7 +5443,7 @@
      "taxYear": "2026/27"
     },
     {
-     "id": "foundations/irrecoverable-debts-and-allowances#f7",
+     "id": "foundations/irrecoverable-debts-and-allowances#f5",
      "lessonId": "foundations/irrecoverable-debts-and-allowances",
      "front": "Debt recovered after VAT bad debt relief claimed: VAT treatment?",
      "back": "Repay the corresponding VAT to HMRC as output tax",
@@ -5553,7 +5453,7 @@
    ]
   },
   "foundations/partnership-appropriation-basics": {
-   "hash": "b8954fd0e6365aad",
+   "hash": "80dc3b3e9cd58720",
    "cards": [
     {
      "id": "foundations/partnership-appropriation-basics#f1",
@@ -6410,7 +6310,7 @@
    ]
   },
   "payroll/correcting-errors-and-payroll-journals": {
-   "hash": "fef2e8c3e2a92aa4",
+   "hash": "2dd7aa4a0d458cf4",
    "cards": [
     {
      "id": "payroll/correcting-errors-and-payroll-journals#f1",
@@ -6654,7 +6554,7 @@
    ]
   },
   "payroll/leavers-p45-and-year-end": {
-   "hash": "604296526ad75a75",
+   "hash": "79c7ae9783550d47",
    "cards": [
     {
      "id": "payroll/leavers-p45-and-year-end#f1",
@@ -6853,7 +6753,7 @@
    ]
   },
   "payroll/rti-reporting-and-paying-hmrc": {
-   "hash": "162d153dd168d1ad",
+   "hash": "7f92b688a91a080c",
    "cards": [
     {
      "id": "payroll/rti-reporting-and-paying-hmrc#f1",
@@ -6901,14 +6801,6 @@
      "front": "RTI: FPS deadline for casual staff under £96 a week with no P45?",
      "back": "Within 7 days of paying",
      "evidence": "- Pay that genuinely can't be calculated in advance (e.g. piecework) and casual staff paid under £96 a week with no P45: within 7 days of paying.",
-     "taxYear": "2026/27"
-    },
-    {
-     "id": "payroll/rti-reporting-and-paying-hmrc#f7",
-     "lessonId": "payroll/rti-reporting-and-paying-hmrc",
-     "front": "RTI: no penalty for a new employer's first FPS if sent within?",
-     "back": "30 days of first paying someone",
-     "evidence": "or for a new employer whose first FPS is sent within 30 days of first paying someone.",
      "taxYear": "2026/27"
     }
    ]
@@ -7065,18 +6957,10 @@
    ]
   },
   "payroll/student-and-postgraduate-loans": {
-   "hash": "c23de9bd9f2736db",
+   "hash": "12ddd9c80deb1f11",
    "cards": [
     {
      "id": "payroll/student-and-postgraduate-loans#f1",
-     "lessonId": "payroll/student-and-postgraduate-loans",
-     "front": "Student loan 2026/27: Plan 2 annual repayment threshold and rate?",
-     "back": "£29,385 a year (£2,448.75 monthly); 9%",
-     "evidence": "Plan: Plan 2; Who typically has it: English/Welsh students who started from Sept 2012 to July 2023; Annual: £29,385; Monthly: £2,448.75; Weekly: £565.09; Rate: 9%.",
-     "taxYear": "2026/27"
-    },
-    {
-     "id": "payroll/student-and-postgraduate-loans#f2",
      "lessonId": "payroll/student-and-postgraduate-loans",
      "front": "Student loan 2026/27: Plan 5 monthly threshold and rate?",
      "back": "£2,083.33 a month (£25,000 a year); 9%",
@@ -7084,7 +6968,7 @@
      "taxYear": "2026/27"
     },
     {
-     "id": "payroll/student-and-postgraduate-loans#f3",
+     "id": "payroll/student-and-postgraduate-loans#f2",
      "lessonId": "payroll/student-and-postgraduate-loans",
      "front": "Postgraduate loan 2026/27: annual threshold and deduction rate?",
      "back": "£21,000 a year (£1,750.00 monthly); 6%",
@@ -7092,7 +6976,7 @@
      "taxYear": "2026/27"
     },
     {
-     "id": "payroll/student-and-postgraduate-loans#f4",
+     "id": "payroll/student-and-postgraduate-loans#f3",
      "lessonId": "payroll/student-and-postgraduate-loans",
      "front": "Student loan 2026/27: Plan 4 monthly threshold and who has it?",
      "back": "£2,816.25 a month (£33,795 a year); Scottish students",
@@ -7100,7 +6984,7 @@
      "taxYear": "2026/27"
     },
     {
-     "id": "payroll/student-and-postgraduate-loans#f5",
+     "id": "payroll/student-and-postgraduate-loans#f4",
      "lessonId": "payroll/student-and-postgraduate-loans",
      "front": "Student loan: how is the calculated deduction rounded?",
      "back": "Round down to the whole pound",
@@ -7108,7 +6992,7 @@
      "taxYear": "2026/27"
     },
     {
-     "id": "payroll/student-and-postgraduate-loans#f6",
+     "id": "payroll/student-and-postgraduate-loans#f5",
      "lessonId": "payroll/student-and-postgraduate-loans",
      "front": "Student loan: when can an employer stop deductions?",
      "back": "Only on HMRC stop notice (SL2 or PGL2), or when the employee leaves",
@@ -7116,15 +7000,7 @@
      "taxYear": "2026/27"
     },
     {
-     "id": "payroll/student-and-postgraduate-loans#f7",
-     "lessonId": "payroll/student-and-postgraduate-loans",
-     "front": "Student loan: which plan to use if a starter doesn't know theirs?",
-     "back": "Plan 1 until HMRC says otherwise",
-     "evidence": "(ask which plan; if they don't know, use Plan 1 until HMRC tells you otherwise);",
-     "taxYear": "2026/27"
-    },
-    {
-     "id": "payroll/student-and-postgraduate-loans#f8",
+     "id": "payroll/student-and-postgraduate-loans#f6",
      "lessonId": "payroll/student-and-postgraduate-loans",
      "front": "Student loan: how are two student loan plans deducted?",
      "back": "One 9% deduction using the lowest threshold of the plans",
@@ -7134,18 +7010,10 @@
    ]
   },
   "payroll/termination-payments": {
-   "hash": "f3031e4a507793a5",
+   "hash": "770df397d87de91e",
    "cards": [
     {
      "id": "payroll/termination-payments#f1",
-     "lessonId": "payroll/termination-payments",
-     "front": "Termination payments: how much of a s401 award is exempt?",
-     "back": "First £30,000 (lifetime figure per employment)",
-     "evidence": "4. The rest of the award is a section 401 payment: the first £30,000 is exempt; tax the excess through payroll. The £30,000 is a lifetime figure per employment (aggregated with payments from associated employers for the same termination).",
-     "taxYear": "2026/27"
-    },
-    {
-     "id": "payroll/termination-payments#f2",
      "lessonId": "payroll/termination-payments",
      "front": "Termination payments: Class 1A NIC rate and base?",
      "back": "15% on the s401 excess over £30,000",
@@ -7153,7 +7021,7 @@
      "taxYear": "2026/27"
     },
     {
-     "id": "payroll/termination-payments#f3",
+     "id": "payroll/termination-payments#f2",
      "lessonId": "payroll/termination-payments",
      "front": "Termination payments: how and when is Class 1A paid?",
      "back": "Via RTI, with PAYE for the month of payment, not on the P11D(b)",
@@ -7161,7 +7029,7 @@
      "taxYear": "2026/27"
     },
     {
-     "id": "payroll/termination-payments#f4",
+     "id": "payroll/termination-payments#f3",
      "lessonId": "payroll/termination-payments",
      "front": "PENP formula (ITEPA 2003 s402D)?",
      "back": "PENP = (BP × D ÷ P) − T",
@@ -7169,7 +7037,7 @@
      "taxYear": "2026/27"
     },
     {
-     "id": "payroll/termination-payments#f5",
+     "id": "payroll/termination-payments#f4",
      "lessonId": "payroll/termination-payments",
      "front": "Termination payment made after the P45 is issued: how is tax operated?",
      "back": "Tax with 0T on week 1/month 1 basis; FPS with original leaving date; no new P45",
@@ -7177,7 +7045,7 @@
      "taxYear": "2026/27"
     },
     {
-     "id": "payroll/termination-payments#f6",
+     "id": "payroll/termination-payments#f5",
      "lessonId": "payroll/termination-payments",
      "front": "PENP: what happens if the formula gives a negative result?",
      "back": "PENP is nil",
@@ -7993,7 +7861,7 @@
    ]
   },
   "personal-tax/fig-regime-and-foreign-income": {
-   "hash": "4052e7fd90ee7dd0",
+   "hash": "9359131370e26591",
    "cards": [
     {
      "id": "personal-tax/fig-regime-and-foreign-income#f1",
@@ -8107,7 +7975,7 @@
    ]
   },
   "personal-tax/income-tax-computation": {
-   "hash": "b76bd033ee100685",
+   "hash": "5b027165beeb863b",
    "cards": [
     {
      "id": "personal-tax/income-tax-computation#f1",
@@ -8229,7 +8097,7 @@
    ]
   },
   "personal-tax/mtd-for-income-tax": {
-   "hash": "34ef60c3b34d9c7d",
+   "hash": "727232cf5276287e",
    "cards": [
     {
      "id": "personal-tax/mtd-for-income-tax#f1",
@@ -8343,7 +8211,7 @@
    ]
   },
   "personal-tax/property-income": {
-   "hash": "cc61a2487c1ed4c1",
+   "hash": "cd13dcf05bff747c",
    "cards": [
     {
      "id": "personal-tax/property-income#f1",
@@ -8388,14 +8256,6 @@
     {
      "id": "personal-tax/property-income#f6",
      "lessonId": "personal-tax/property-income",
-     "front": "Property losses: when are they lost on cessation?",
-     "back": "Lost if business ceases, unless lettings restart within 3 years",
-     "evidence": "Losses are lost if the business ceases, unless lettings restart within 3 years.",
-     "taxYear": "2026/27"
-    },
-    {
-     "id": "personal-tax/property-income#f7",
-     "lessonId": "personal-tax/property-income",
      "front": "MTD for Income Tax: qualifying income thresholds?",
      "back": "Over £50,000 from April 2026; over £30,000 from April 2027",
      "evidence": "Gross rents count towards qualifying income for Making Tax Digital for Income Tax (more than £50,000 from April 2026, more than £30,000 from April 2027).",
@@ -8404,7 +8264,7 @@
    ]
   },
   "personal-tax/sa-timetable-payments-and-penalties": {
-   "hash": "9b07237e39986a9b",
+   "hash": "0b526d8511ec0f25",
    "cards": [
     {
      "id": "personal-tax/sa-timetable-payments-and-penalties#f1",
@@ -10161,7 +10021,7 @@
    ]
   },
   "vat/flat-rate-scheme": {
-   "hash": "a5abddcbba63f5d2",
+   "hash": "57ec8d743ec5ff47",
    "cards": [
     {
      "id": "vat/flat-rate-scheme#f1",
@@ -10406,7 +10266,7 @@
    ]
   },
   "vat/land-property-and-togc": {
-   "hash": "20b9cb612f863034",
+   "hash": "61a6bd425eea2e39",
    "cards": [
     {
      "id": "vat/land-property-and-togc#f1",
@@ -10435,21 +10295,13 @@
     {
      "id": "vat/land-property-and-togc#f4",
      "lessonId": "vat/land-property-and-togc",
-     "front": "VAT property: what is a major interest?",
-     "back": "The freehold or a lease of more than 21 years (20 in Scotland)",
-     "evidence": "Notes: A major interest is the freehold or a lease of more than 21 years (20 in Scotland).",
-     "taxYear": "2026/27"
-    },
-    {
-     "id": "vat/land-property-and-togc#f5",
-     "lessonId": "vat/land-property-and-togc",
      "front": "VAT: liability of freehold sale of a new commercial building?",
      "back": "Standard-rated (compulsory) if less than 3 years from completion",
      "evidence": "Transaction: Freehold sale of a new commercial building (less than 3 years from completion); Liability: Standard-rated; Notes: Compulsory; the option to tax isn't needed.",
      "taxYear": "2026/27"
     },
     {
-     "id": "vat/land-property-and-togc#f6",
+     "id": "vat/land-property-and-togc#f5",
      "lessonId": "vat/land-property-and-togc",
      "front": "TOGC of let property where seller opted: what must the buyer do and by when?",
      "back": "Opt to tax and notify HMRC by time of supply; tell seller option won't be disapplied",
@@ -10457,7 +10309,7 @@
      "taxYear": "2026/27"
     },
     {
-     "id": "vat/land-property-and-togc#f7",
+     "id": "vat/land-property-and-togc#f6",
      "lessonId": "vat/land-property-and-togc",
      "front": "VAT: which form lets a TOGC buyer take over the seller's VAT number?",
      "back": "Form VAT68",
@@ -10581,7 +10433,7 @@
    ]
   },
   "vat/partial-exemption-and-capital-goods-scheme": {
-   "hash": "06362186fe443ef1",
+   "hash": "b2c856701d09bc97",
    "cards": [
     {
      "id": "vat/partial-exemption-and-capital-goods-scheme#f1",
@@ -10695,7 +10547,7 @@
    ]
   },
   "vat/registration-and-deregistration": {
-   "hash": "99d858fd0706909b",
+   "hash": "80cd86277643fce1",
    "cards": [
     {
      "id": "vat/registration-and-deregistration#f1",

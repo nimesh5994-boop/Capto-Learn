@@ -27,7 +27,7 @@ export const lesson: Lesson = {
         ["Salary, overtime and commission to the leaving date; holiday pay in lieu", "Earnings: taxed in full", "Class 1"],
         ["Contractual payment in lieu of notice (PILON), or a payment the employee was contractually entitled to", "Earnings: taxed in full", "Class 1"],
         ["Post-employment notice pay (PENP): basic pay for any unworked notice, even if the PILON isn't contractual", "Earnings: taxed in full", "Class 1"],
-        ["Statutory redundancy pay, and genuine non-contractual compensation for loss of office (the rest of the 'relevant termination award')", "Section 401: first **£30,000** exempt, excess taxable", "Class 1A at 15% on the excess over £30,000"],
+        ["Genuine non-contractual compensation for loss of office (the 'relevant termination award' left after PENP), plus statutory redundancy pay (which is outside the relevant termination award but shares the threshold)", "Section 401: first **£30,000** exempt, excess taxable", "Class 1A at 15% on the excess over £30,000"],
         ["Payments on death, injury or disability; employer contributions to a registered pension scheme; legal fees paid direct to the employee's solicitor under a settlement agreement", "Exempt", "None"],
       ],
     },
@@ -49,9 +49,9 @@ Where the pay period is a **month** and the unworked notice is a whole number of
       md: `### Order of working
 
 1. Pay all **contractual** amounts as normal earnings.
-2. Take the **relevant termination award**: the non-contractual payments (compensation, ex gratia, statutory redundancy).
-3. Work out **PENP** and treat it as earnings (it comes out of the relevant termination award).
-4. The rest of the award is a **section 401** payment: the first **£30,000** is exempt; tax the excess through payroll. The £30,000 is a lifetime figure per employment (aggregated with payments from associated employers for the same termination).
+2. Take the **relevant termination award**: the non-contractual payments (compensation, ex gratia). **Statutory redundancy pay is not part of it**, so PENP can never come out of statutory redundancy pay.
+3. Work out **PENP** and treat it as earnings (it comes out of the relevant termination award, and can't exceed it).
+4. The rest of the award, **plus any statutory redundancy pay**, is a **section 401** payment: the first **£30,000** is exempt; tax the excess through payroll. The £30,000 is a lifetime figure per employment (aggregated with payments from associated employers for the same termination).
 5. Class 1A NIC at **15%** on the s401 excess over £30,000, reported through RTI and paid with the PAYE for the month in which the termination payment was made, not on the P11D(b) in July.`,
     },
     {
@@ -92,11 +92,11 @@ Everything is paid in the October payroll before the P45 is issued.`,
         kind: "md",
         md: `**1. Contractual earnings.** Salary to 15 October and the £1,200 holiday pay: normal earnings, tax and Class 1 NIC.
 
-**2. Relevant termination award.** Non-contractual payments: statutory redundancy £8,000 + compensation £38,000 = **£46,000**.
+**2. Relevant termination award.** The £38,000 compensation. The £8,000 statutory redundancy pay is **outside** the relevant termination award, so it can't be turned into PENP.
 
-**3. PENP.** Monthly pay, whole months of unworked notice: £4,500 × 3 − T (£0, no contractual PILON) = **£13,500**. Treated as earnings: tax and Class 1 NIC.
+**3. PENP.** Monthly pay, whole months of unworked notice: £4,500 × 3 − T (£0, no contractual PILON) = **£13,500**, which is less than the £38,000 award. Treated as earnings: tax and Class 1 NIC.
 
-**4. Section 401 payment.** £46,000 − £13,500 = **£32,500**. First £30,000 exempt; **£2,500** taxable through payroll.
+**4. Section 401 payment.** (£38,000 − £13,500) + £8,000 statutory redundancy = £24,500 + £8,000 = **£32,500**. First £30,000 exempt; **£2,500** taxable through payroll.
 
 **5. Class 1A.** £2,500 × 15% = **£375**, paid with the October PAYE (by 22 November 2026).
 
@@ -135,11 +135,11 @@ Everything is paid in the October payroll before the P45 is issued.`,
       kind: "numeric",
       id: "s401-taxable",
       prompt:
-        "An employee receives a non-contractual termination package of £52,000 (including statutory redundancy). PENP has been calculated as £10,000. How much of the package is taxable as a section 401 payment?",
+        "An employee receives a non-contractual termination package of £52,000: £6,000 statutory redundancy pay and £46,000 ex gratia compensation. PENP has been calculated as £10,000. How much of the package is taxable as a section 401 payment?",
       answer: 12000,
       unit: "£",
-      explain: "Deduct PENP (taxed as earnings) from the relevant termination award; the first £30,000 of the remainder is exempt.",
-      working: "£52,000 − £10,000 PENP = £42,000 s401 award\n\n£42,000 − £30,000 = **£12,000** taxable",
+      explain: "PENP (taxed as earnings) comes out of the relevant termination award (the £46,000 compensation; statutory redundancy is outside it). The rest of the award plus the statutory redundancy pay share the £30,000 threshold.",
+      working: "Relevant termination award £46,000 − £10,000 PENP = £36,000\n\nAdd statutory redundancy £6,000 = £42,000 s401 total\n\n£42,000 − £30,000 = **£12,000** taxable",
     },
     {
       kind: "numeric",

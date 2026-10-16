@@ -451,6 +451,29 @@ export const researchQueries = pgTable(
 );
 
 /**
+ * A learner's saved Ask Capto answers ("Saved research"): reopened free, titled and labelled for a client or job,
+ * and exportable as a Word or PDF report. `sourceVersions` pins each official source's last-updated date at save
+ * time, so the list can flag answers whose guidance has changed since.
+ */
+export const savedResearch = pgTable(
+  "saved_research",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    organizationId: uuid("organization_id").notNull().references(() => organizations.id, { onDelete: "cascade" }),
+    userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+    queryId: uuid("query_id").notNull().references(() => researchQueries.id, { onDelete: "cascade" }),
+    title: text("title").notNull(),
+    /** Client name, job or file reference — free text, shown on the report. */
+    reference: text("reference").notNull().default(""),
+    note: text("note").notNull().default(""),
+    sourceVersions: jsonb("source_versions").$type<Record<string, string | null>>().notNull().default({}),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [uniqueIndex("saved_research_user_query_idx").on(t.userId, t.queryId), index("saved_research_org_idx").on(t.organizationId, t.createdAt)]
+);
+
+/**
  * Ask Capto answer library — verified answers a firm can reuse instead of paying for fresh research.
  * Firm-scoped: questions can contain client facts, so answers are never shared across firms.
  * `sourceVersions` pins each cited page's GOV.UK last-updated date; if any page has changed since, the entry

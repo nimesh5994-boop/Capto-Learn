@@ -69,7 +69,9 @@ If income has dropped, the client can claim to reduce POAs (online or on form **
 
 For clients filing under the existing SA rules, late payment penalties are **5% of the tax unpaid at 30 days, 6 months and 12 months** after the due date. These apply to balancing payments, not to POAs. **Interest** runs on all late payments (including POAs) from the due date; since 6 April 2025 the late payment rate is **Bank of England base rate + 4%**.
 
-**Making Tax Digital for Income Tax** clients (mandated from April 2026 — see the MTD lesson) move onto the new regime: penalty **points** for late quarterly updates and returns (£200 penalty at 4 points), and late payment penalties of **3%** of tax unpaid at day 15, another 3% at day 30, then 10% a year from day 31 for 2026/27 liabilities.`,
+**Making Tax Digital for Income Tax** clients (mandated from April 2026 — see the MTD lesson) move onto the new regime from the year they join: penalty **points** for late quarterly updates and returns (£200 penalty at 4 points), and late payment penalties of **3%** of tax unpaid at day 15, another 3% at day 30, then 10% a year from day 31 for 2026/27 liabilities. In a client's first year of the new penalties nothing is charged if the tax is paid within 30 days. For 2027/28 the two percentages rise to **4%**.
+
+The old rules above still apply to 2026/27 and earlier years for clients outside MTD. HMRC's guidance says that **from April 2027** the new penalties will apply to everyone who files a personal Self Assessment return, so expect the old fixed penalties to fall away for 2027/28 onwards.`,
     },
     {
       kind: "callout",

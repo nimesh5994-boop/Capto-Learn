@@ -29,7 +29,7 @@ Always establish the liability **before** contracts are exchanged. On a property
         ["Sale or lease of an older commercial building (more than 3 years old)", "Exempt", "Standard-rated if the seller or landlord has opted to tax"],
         ["Freehold sale of a **new** commercial building (less than 3 years from completion)", "Standard-rated", "Compulsory; the option to tax isn't needed"],
         ["Letting of residential property", "Exempt", "The option to tax can't apply to dwellings"],
-        ["First sale or long lease (major interest) of a new dwelling by the person who built it", "Zero-rated", "A major interest is the freehold or a lease of more than 21 years (20 in Scotland)"],
+        ["First sale or long lease (major interest) of a new dwelling by the person who built it", "Zero-rated", "A major interest is the freehold or a lease of more than 21 years (in Scotland, the owner's interest or a lease of 20 years or more)"],
         ["Hotel and holiday accommodation, car parking, storage, sports facilities, timber and fishing rights", "Standard-rated", "Specific exceptions to the exemption"],
         ["Sale of a let property as a business", "Outside the scope if it's a TOGC", "Strict conditions apply: see below"],
       ],
@@ -178,7 +178,7 @@ Tregear's solicitor asks whether VAT of £250,000 will be added to the price. If
       prompt: "A developer that built a new block of flats in England grants a 15-year lease of one flat. What's the VAT liability?",
       options: ["Zero-rated: first grant by the builder", "Exempt: a lease of 21 years or less isn't a major interest", "Standard-rated", "Outside the scope"],
       answer: 1,
-      explain: "Zero-rating needs a major interest: the freehold or a lease of more than 21 years (20 in Scotland). A 15-year lease of a dwelling is exempt.",
+      explain: "Zero-rating needs a major interest: the freehold or a lease of more than 21 years (in Scotland, 20 years or more). A 15-year lease of a dwelling is exempt.",
     },
   ],
   quiz: [

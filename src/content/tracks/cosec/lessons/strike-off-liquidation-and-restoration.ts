@@ -44,7 +44,7 @@ export const lesson: Lesson = {
       md: `### The DS01 process
 
 1. **Before applying**: collect debts, pay all creditors (including HMRC), file the final CT return, close the PAYE scheme and deregister for VAT, close the bank account once the final distribution is made, and file any outstanding accounts and confirmation statements.
-2. **File DS01**, signed by the director(s) (a majority if more than two). Fee **£13 online, £18 on paper**.
+2. **File DS01**, signed by a majority of the company's directors (so both, if there are two). Fee **£13 online, £18 on paper**.
 3. **Within 7 days**, send a copy to every **member, creditor, employee, pension scheme manager or trustee** and any **director who didn't sign** (s1006). Anyone who becomes one of these later must also get a copy within 7 days (s1007). Failing to do this is a criminal offence.
 4. Companies House publishes a **first notice in The Gazette**. Anyone can object, typically a creditor or HMRC.
 5. If no objection, the company is struck off **no earlier than 2 months** after the notice, and a second Gazette notice confirms **dissolution**.
@@ -84,7 +84,7 @@ A dissolved company can be brought back to the register. Restoration has retrosp
       kind: "callout",
       tone: "tip",
       title: "Pre-strike-off checklist for your file",
-      md: `Final accounts to the cessation date; final CT600 with "final return" ticked; PAYE scheme closed and P45s issued; VAT deregistration and final return; all creditors paid (including your own fee!); director's loan account cleared; final distribution calculated against s1030A; bank account closed; copies of DS01 sent within 7 days with proof of posting; records retained (the company's records must normally be kept for 6 years for HMRC, and Companies House recommends keeping them after dissolution).`,
+      md: `Final accounts to the cessation date; final CT600 with "final return" ticked; PAYE scheme closed and P45s issued; VAT deregistration and final return; all creditors paid (including your own fee!); director's loan account cleared; final distribution calculated against s1030A; bank account closed; copies of DS01 sent within 7 days with proof of posting; records retained (GOV.UK says to keep the company's business records, such as bank statements, invoices and receipts, for 7 years after it is struck off, plus any employers' liability insurance policy if it had employees).`,
     },
   ],
   scenario: {
@@ -171,7 +171,7 @@ After the final accounts and CT, the company's only asset is **£23,600** in the
     {
       kind: "mcq",
       id: "q-ds01-3months",
-      prompt: "A company stopped trading on 15 July 2026. What is the earliest date it can apply for voluntary strike-off?",
+      prompt: "A company's last day of trading was 14 July 2026. What is the earliest date it can apply for voluntary strike-off?",
       options: ["15 July 2026", "15 August 2026", "15 October 2026", "15 January 2027"],
       answer: 2,
       explain: "It can't apply if it has traded in the previous 3 months.",

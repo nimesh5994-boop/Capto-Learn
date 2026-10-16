@@ -30,7 +30,7 @@ export const lesson: Lesson = {
     },
     {
       kind: "table",
-      caption: "ECCTA powers in force since 4 March 2024",
+      caption: "ECCTA powers in force since 4 March 2024 (financial penalties from 2 May 2024)",
       head: ["Power", "What it means in practice"],
       rows: [
         ["**Query** information", "The registrar can require a person to provide information to check a filing or something already on the register. Failing to comply without reasonable excuse is an offence."],
@@ -40,7 +40,7 @@ export const lesson: Lesson = {
         ["Stronger **name** checks", "Names intended to facilitate fraud, or that mislead (e.g. suggesting a connection to a foreign government), can be rejected or ordered to change."],
         ["**Registered office** and **email** rules", "The registered office must be an appropriate address (not a PO box). Every company must have a registered email address."],
         ["**Data sharing** and cross-checking", "Information can be shared with law enforcement and other government departments, and checked against other data."],
-        ["**Financial penalties**", "Civil penalties of up to £10,000 for Companies Act offences, as an alternative to prosecution."],
+        ["**Financial penalties**", "From 2 May 2024: civil penalties for Companies Act offences, as an alternative to prosecution. The statutory cap is £10,000; Companies House's published tariff runs from £250 to £2,000 per penalty, depending on seriousness and repeat offending."],
       ],
     },
     {
@@ -211,7 +211,7 @@ At the same time the managing partner asks you to cost the firm's Companies Hous
       prompt: "What is the maximum civil financial penalty Companies House can impose for a Companies Act offence?",
       options: ["£1,000", "£5,000", "£10,000", "£25,000"],
       answer: 2,
-      explain: "Up to £10,000, as an alternative to prosecution.",
+      explain: "Up to £10,000 (the statutory cap), as an alternative to prosecution. In practice Companies House's published tariff is £250 to £2,000 per penalty.",
     },
     {
       kind: "mcq",

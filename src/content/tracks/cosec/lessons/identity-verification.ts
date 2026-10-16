@@ -52,7 +52,7 @@ On success they receive a **Companies House personal code** (11 characters). The
       kind: "md",
       md: `### What happens if someone doesn't verify
 
-ECCTA makes it an offence for a person to act as a director without having their identity verified, and the company and its officers can also commit offences. Companies House can mark the register to show that a person's identity hasn't been verified, and since October 2024 it has been able to impose **financial penalties of up to £10,000** for Companies Act offences as an alternative to prosecution. A confirmation statement can't be filed for an existing director without the verification statement being made.`,
+ECCTA makes it an offence for a person to act as a director without having their identity verified, and the company and its officers can also commit offences. Companies House can mark the register to show that a person's identity hasn't been verified, and since 2 May 2024 it has been able to impose **financial penalties** (statutory cap £10,000; published tariff £250 to £2,000) for Companies Act offences as an alternative to prosecution. A confirmation statement can't be filed for an existing director without the verification statement being made.`,
     },
     {
       kind: "md",
@@ -206,7 +206,7 @@ It is now early October 2026. None of them has verified. Graham says, "We've got
       prompt: "What's the maximum financial penalty Companies House can impose for a Companies Act offence under ECCTA?",
       options: ["£1,000", "£5,000", "£10,000", "Unlimited"],
       answer: 2,
-      explain: "Since October 2024 the registrar can impose financial penalties of up to £10,000 as an alternative to prosecution.",
+      explain: "Since 2 May 2024 the registrar can impose financial penalties of up to £10,000 (the statutory cap) as an alternative to prosecution.",
     },
   ],
   sources: [

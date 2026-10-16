@@ -57,7 +57,8 @@ Accounts prepared under UK GAAP are the starting point (s46): tax follows the ac
         ["Staff entertainment (party, team meals)", "No adjustment", "Allowable; possible benefit for employees"],
         ["Gifts to customers: food, drink, tobacco or vouchers, or over £50 a person a year", "Add back", "Treated as entertaining"],
         ["Gifts carrying a conspicuous business advert, ≤ £50 a person a year, not food/drink/tobacco/vouchers", "No adjustment", "Specific exception"],
-        ["Fines and penalties (company's own, including HMRC penalties and late payment interest on tax)", "Add back", "Not incurred for the trade / specifically disallowed"],
+        ["Fines and penalties (company's own, including HMRC penalties)", "Add back", "Not incurred for the trade / specifically disallowed"],
+        ["Interest on late-paid corporation tax", "Add back; deduct as a non-trading loan relationship debit", "Not a trading expense, but relieved as a loan relationship debit (interest on late-paid PAYE and NIC isn't deductible at all)"],
         ["Political donations", "Add back", "Not for the trade"],
         ["Charitable donations", "Add back; deduct as a qualifying charitable donation from total profits", "Relieved separately"],
         ["Legal fees on buying a capital asset or a new lease", "Add back", "Capital"],
@@ -255,7 +256,7 @@ Capital allowances for the year have been computed at **£58,000**.`,
     { label: "CTA 2009 s1288: unpaid remuneration", url: "https://www.legislation.gov.uk/ukpga/2009/4/section/1288" },
     { label: "BIM45000: Business entertainment and gifts", url: "https://www.gov.uk/hmrc-internal-manuals/business-income-manual/bim45000" },
     { label: "BIM35000: Capital/revenue divide (contents)", url: "https://www.gov.uk/hmrc-internal-manuals/business-income-manual/bim35000" },
-    
+    { label: "BIM45740: Interest on late-paid tax", url: "https://www.gov.uk/hmrc-internal-manuals/business-income-manual/bim45740" },
     { label: "Marginal Relief for Corporation Tax (GOV.UK)", url: "https://www.gov.uk/guidance/corporation-tax-marginal-relief" },
   ],
 };

@@ -25,7 +25,7 @@ export const lesson: Lesson = {
       head: ["Plan", "Who typically has it", "Annual", "Monthly", "Weekly", "Rate"],
       rows: [
         ["Plan 1", "English/Welsh students who started before Sept 2012; Northern Ireland students", "£26,900", "£2,241.66", "£517.30", "9%"],
-        ["Plan 2", "English/Welsh students who started from Sept 2012 to July 2023", "£29,385", "£2,448.75", "£565.09", "9%"],
+        ["Plan 2", "English students who started from Sept 2012 to July 2023; Welsh students who started from Sept 2012", "£29,385", "£2,448.75", "£565.09", "9%"],
         ["Plan 4", "Scottish students", "£33,795", "£2,816.25", "£649.90", "9%"],
         ["Plan 5", "English students starting from Aug 2023 (repayments from April 2026)", "£25,000", "£2,083.33", "£480.76", "9%"],
         ["Postgraduate loan (PGL)", "Master's or doctoral loans (England and Wales)", "£21,000", "£1,750.00", "£403.84", "6%"],
@@ -47,7 +47,7 @@ Deductions are **non-cumulative**: each pay period stands alone. A month with a 
       md: `### Starting and stopping
 
 **Start** deductions when:
-- a new starter's **P45** shows "Y" in the student loan or postgraduate loan box (ask which plan; if they don't know, use Plan 1 until HMRC tells you otherwise);
+- a new starter's **P45** shows "Y" in the student loan or postgraduate loan box (ask which plan; if they can't tell you, use **Plan 5** until HMRC sends an SL1; if they have more than one plan, use the one with the lowest threshold until the SL1 arrives);
 - the **starter checklist** says they have a loan and haven't finished repaying (it asks them which plan and about postgraduate loans); or
 - HMRC sends a **start notice**: **SL1** (student loan) or **PGL1** (postgraduate loan), effective from the next payday on or after the date on the notice.
 
@@ -85,7 +85,7 @@ In December, all three receive a **£1,000 bonus**.`,
     walkthrough: [
       {
         kind: "md",
-        md: `**Plan types.** Ali started in September 2023 in England, so he's **Plan 5** (courses starting from 1 August 2023). If he genuinely didn't know, the default would be Plan 1 until HMRC confirms, but here the start date tells you. Hannah is a Scottish student: **Plan 4**. Josh: **Plan 2 + PGL**.
+        md: `**Plan types.** Ali started in September 2023 in England, so he's **Plan 5** (courses starting from 1 August 2023). If he genuinely couldn't tell you, HMRC's default is Plan 5 until an SL1 arrives, which here happens to match what the start date tells you. Hannah is a Scottish student: **Plan 4**. Josh: **Plan 2 + PGL**.
 
 **Earnings for the calculation.** NIC earnings: the pension under a net pay arrangement **doesn't** reduce them, so use **£2,900** (and £3,900 in December).`,
       },

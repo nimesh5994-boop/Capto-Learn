@@ -89,7 +89,7 @@ In practice: an overdrawn reserve is often corrected by reclassifying the excess
 | Revaluation reserve (office revalued) | 25,000 |
 | Share premium | 9,900 |
 
-Lena asks: *"We've got £70k-odd in reserves, can we take a £60,000 final dividend?"* Trading since July has been at roughly break-even.`,
+Lena asks: *"We've got about £66k in reserves, can we take a £60,000 final dividend?"* Trading since July has been at roughly break-even.`,
     walkthrough: [
       {
         kind: "md",

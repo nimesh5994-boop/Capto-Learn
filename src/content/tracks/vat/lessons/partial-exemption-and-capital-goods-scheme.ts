@@ -80,6 +80,8 @@ Partial exemption fixes recovery on the return in which the cost is incurred. Fo
 | Aircraft, ships, boats and other vessels | £50,000 or more | 5 intervals |
 | Computers and computer equipment acquired **on or after** 29 July 2026 | **No longer CGS items** | — |
 
+If the business holds an interest in land or a building with **less than 10 years** to run, the adjustment period is shortened to the complete years of the interest plus 1, with a minimum of 3 intervals (Notice 706/2 section 6.3).
+
 Each interval is normally the partial exemption year. The first interval has no adjustment, because the original claim is made in the normal way.
 
 **Annual adjustment for each later interval:**

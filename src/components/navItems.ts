@@ -3,6 +3,7 @@ import {
   Activity,
   BellRing,
   BookOpenCheck,
+  Bookmark,
   Building2,
   Compass,
   Layers,
@@ -36,6 +37,7 @@ export type NavKey =
   | "search"
   | "updates"
   | "ask"
+  | "saved"
   | "team"
   | "interviews"
   | "admin.users"
@@ -61,7 +63,8 @@ export const NAV_ITEMS: Record<NavKey, { href: string; label: string; icon: Luci
   coach: { href: "/coach", label: "My coach", icon: MessageCircleHeart },
   search: { href: "/search", label: "Guidance search", icon: Search },
   updates: { href: "/updates", label: "HMRC updates", icon: BellRing },
-  ask: { href: "/ask", label: "Ask Capto", icon: MessageSquareQuote },
+  ask: { href: "/ask", label: "Ask Capto", icon: MessageSquareQuote, exact: true },
+  saved: { href: "/ask/saved", label: "Saved research", icon: Bookmark },
   team: { href: "/team", label: "Team training", icon: ClipboardCheck, exact: true },
   interviews: { href: "/team/interviews", label: "Interview tests", icon: UserCheck },
   "admin.users": { href: "/admin/users", label: "Users", icon: UsersRound },

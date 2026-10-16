@@ -72,7 +72,7 @@ Turnover is normally based on invoices issued, but the client can choose a cash-
 - more than 2% but **less than £1,000 a year** (£250 for a quarterly return).
 
 If so, it must use **16.5%** for that period. **Relevant goods** must be used exclusively for the business and exclude:
-- capital expenditure,
+- capital expenditure goods **of any value** (HMRC treats electronic devices such as laptops and phones as capital expenditure),
 - food and drink for the business or its staff,
 - vehicles, vehicle parts and fuel (unless the business provides transport services),
 - **any services** (rent, software subscriptions, accountancy, phone contracts). Only goods count.
@@ -114,9 +114,9 @@ Mei asks: *"Which rate should we use this quarter, and are we still better off o
     walkthrough: [
       {
         kind: "md",
-        md: `**Step 1: relevant goods.** Ink and paper (£48) and the monitor (£180) are goods used exclusively for the business. The monitor is equipment, but it costs well under £2,000, so it isn't a capital asset that would be reclaimed separately. Count it. Food for meetings is excluded, and **services don't count at all**. Relevant goods: £48 + £180 = **£228**.
+        md: `**Step 1: relevant goods.** Ink and paper (£48) are goods used exclusively for the business, so they count. The monitor (£180) doesn't: relevant goods exclude **capital expenditure goods of any value**, and HMRC treats electronic equipment such as laptops, phones and monitors as capital expenditure, even though it's well under the £2,000 limit for reclaiming VAT outside the scheme. Food for meetings is excluded, and **services don't count at all**. Relevant goods: **£48**.
 
-**Step 2: the test.** 2% × £25,200 = £504. £228 is less than £504, so Kestrel is a **limited cost business** for this quarter. (It's also below the £250 quarterly figure.)
+**Step 2: the test.** 2% × £25,200 = £504. £48 is less than £504, so Kestrel is a **limited cost business** for this quarter. (It's also below the £250 quarterly figure.)
 
 **Step 3: VAT due.** £25,200 × 16.5% = **£4,158**.`,
       },
@@ -174,7 +174,7 @@ The VAT on the services was estimated at 1/6 of £900 = £150, assuming all thos
       kind: "numeric",
       id: "lct-test",
       prompt:
-        "An accountancy practice on the FRS has VAT-inclusive turnover of £42,000 for the quarter. It bought £700 of goods including VAT (stationery, toner and a scanner, all used only in the business) and £3,500 of services. Using the limited cost trader test, what flat rate VAT is due for the quarter? (Accountancy sector rate: 14.5%.)",
+        "An accountancy practice on the FRS has VAT-inclusive turnover of £42,000 for the quarter. It bought £700 of goods including VAT (stationery, toner and printer paper, all used only in the business) and £3,500 of services. Using the limited cost trader test, what flat rate VAT is due for the quarter? (Accountancy sector rate: 14.5%.)",
       answer: 6930,
       unit: "£",
       explain:

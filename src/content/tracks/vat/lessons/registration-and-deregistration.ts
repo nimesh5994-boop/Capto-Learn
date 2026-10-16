@@ -118,7 +118,7 @@ On deregistration the business makes a **deemed supply** of the stock and assets
       kind: "callout",
       tone: "tip",
       title: "Check the deregistration charge before advising",
-      md: `When a client asks to deregister voluntarily, estimate the deemed supply first. A business holding £30,000 of stock would have to pay £6,000 on its final return, which may outweigh the benefit of deregistering. At 20%, assets with a VAT-inclusive value up to **£6,000** stay within the £1,000 de minimis.`,
+      md: `When a client asks to deregister voluntarily, estimate the deemed supply first. A business holding £30,000 of stock would have to pay £6,000 on its final return, which may outweigh the benefit of deregistering. At 20%, stock and assets with a total net (VAT-exclusive) value up to **£5,000** stay within the £1,000 de minimis.`,
     },
   ],
   scenario: {

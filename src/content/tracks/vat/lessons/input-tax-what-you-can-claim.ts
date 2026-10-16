@@ -5,6 +5,7 @@ export const lesson: Lesson = {
   title: "Input tax: what a client can and can't claim",
   level: "practitioner",
   minutes: 35,
+  taxYear: "2026/27",
   summary:
     "The everyday 'can I claim the VAT on this?' question — the four conditions for recovery, the blocked items (entertainment, cars, directors' homes), and how to handle mixed business and private use.",
   objectives: [

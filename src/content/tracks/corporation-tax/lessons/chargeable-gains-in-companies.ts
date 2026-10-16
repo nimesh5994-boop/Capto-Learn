@@ -70,7 +70,7 @@ Capital losses are set against chargeable gains of the **same** accounting perio
       title: "Substantial shareholding exemption (SSE)",
       md: `A gain (or loss) on a company's disposal of shares is **exempt** if:
 - the investing company has held at least **10%** of the ordinary shares for a continuous **12-month period** in the **6 years** before the sale; and
-- the company being sold is a **trading company** or the holding company of a trading group (throughout the 12 months and immediately after the sale).
+- the company being sold is a **trading company** or the holding company of a trading group throughout the qualifying period. Since 1 April 2017 it only has to qualify **immediately after** the sale as well in limited cases, mainly where the buyer is **connected** with the seller.
 
 Since April 2017 the investing company itself doesn't need to be trading. SSE is automatic: no claim. It means a trading group can usually sell a trading subsidiary free of tax, and losses on such sales are not allowable either.`,
     },
@@ -85,7 +85,7 @@ Since April 2017 the investing company itself doesn't need to be trading. SSE is
     title: "Brookfield Print Ltd sells its factory",
     narrative: `**Brookfield Print Ltd** (Leeds) has a 31 March year end. In **November 2026** it sells its factory for **£850,000**, paying agent's and legal fees of **£12,000**. The factory was bought in **March 2006** for **£320,000** and extended in **June 2012** at a cost of **£80,000**.
 
-Indexation factors (to December 2017): March 2006 **0.415**; June 2012 **0.150**.
+Indexation factors (to December 2017): March 2006 **0.426**; June 2012 **0.150**.
 
 In **August 2027** the company plans to buy a larger factory for **£780,000**.`,
     walkthrough: [
@@ -99,9 +99,9 @@ In **August 2027** the company plans to buy a larger factory for **£780,000**.`
           ["Less cost (March 2006)", "(320,000)"],
           ["Less enhancement (June 2012 extension)", "(80,000)"],
           ["Unindexed gain", "438,000"],
-          ["Less indexation: £320,000 × 0.415", "(132,800)"],
+          ["Less indexation: £320,000 × 0.426", "(136,320)"],
           ["Less indexation: £80,000 × 0.150", "(12,000)"],
-          ["**Chargeable gain**", "**293,200**"],
+          ["**Chargeable gain**", "**289,680**"],
         ],
       },
       {
@@ -109,8 +109,8 @@ In **August 2027** the company plans to buy a larger factory for **£780,000**.`
         md: `**Rollover relief.** The new factory (August 2027) is bought within 3 years of the sale and both are qualifying assets used in the trade.
 
 - Proceeds not reinvested: £850,000 − £780,000 = **£70,000**, chargeable in the year to 31 March 2027.
-- Gain rolled over: £293,200 − £70,000 = **£223,200**.
-- Base cost of the new factory: £780,000 − £223,200 = **£556,800**.
+- Gain rolled over: £289,680 − £70,000 = **£219,680**.
+- Base cost of the new factory: £780,000 − £219,680 = **£560,320**.
 
 The purchase (August 2027) should complete before the tax for the year to 31 March 2027 is due (1 January 2028), so the claim can go on that year's return. If the purchase were still pending when the return was filed, the company could make a **provisional claim** declaring its intention to reinvest; if it then failed to reinvest in time, the claim would be withdrawn and interest would run on the extra tax.`,
       },
@@ -121,11 +121,11 @@ The purchase (August 2027) should complete before the tax for the year to 31 Mar
       kind: "numeric",
       id: "basic-gain",
       prompt:
-        "A company sells a warehouse in January 2027 for £600,000 (selling costs £9,000). It bought the warehouse in May 2010 for £280,000 (legal fees on purchase £5,000). The indexation factor from May 2010 to December 2017 is 0.237. What is the chargeable gain?",
-      answer: 238455,
+        "A company sells a warehouse in January 2027 for £600,000 (selling costs £9,000). It bought the warehouse in May 2010 for £280,000 (legal fees on purchase £5,000). The indexation factor from May 2010 to December 2017 is 0.244. What is the chargeable gain?",
+      answer: 236460,
       unit: "£",
       explain: "Incidental costs of acquisition form part of the cost and are indexed with it.",
-      working: "£600,000 − £9,000 − £285,000 = £306,000\n\nIndexation: £285,000 × 0.237 = £67,545\n\nGain: £306,000 − £67,545 = **£238,455**",
+      working: "£600,000 − £9,000 − £285,000 = £306,000\n\nIndexation: £285,000 × 0.244 = £69,540\n\nGain: £306,000 − £69,540 = **£236,460**",
     },
     {
       kind: "numeric",
@@ -238,6 +238,8 @@ The purchase (August 2027) should complete before the tax for the year to 31 Mar
     { label: "CG17200: Indexation allowance – introduction", url: "https://www.gov.uk/hmrc-internal-manuals/capital-gains-manual/cg17200" },
     { label: "CG60250: Rollover relief – introduction", url: "https://www.gov.uk/hmrc-internal-manuals/capital-gains-manual/cg60250" },
     { label: "CG53000: Substantial shareholdings exemption – introduction", url: "https://www.gov.uk/hmrc-internal-manuals/capital-gains-manual/cg53000" },
+    { label: "CG53104: SSE – the investee company requirements", url: "https://www.gov.uk/hmrc-internal-manuals/capital-gains-manual/cg53104" },
+    { label: "Indexation allowance – December 2017 factors (GOV.UK)", url: "https://www.gov.uk/government/publications/corporation-tax-on-chargeable-gains-indexation-allowance-2017/indexation-allowance-december-2017" },
     { label: "TCGA 1992 s152: rollover relief", url: "https://www.legislation.gov.uk/ukpga/1992/12/section/152" },
   ],
 };

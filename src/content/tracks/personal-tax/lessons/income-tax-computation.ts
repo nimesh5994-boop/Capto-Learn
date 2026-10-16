@@ -82,7 +82,7 @@ The personal allowance is set against **non-savings income first**, then savings
       kind: "callout",
       tone: "tip",
       title: "Scottish taxpayers",
-      md: `If the client is a Scottish taxpayer, non-savings income uses the Scottish rates and bands (six bands from 19% to 48% in 2026/27). The personal allowance and taper are the same. There's a dedicated lesson on this.`,
+      md: `If the client is a Scottish taxpayer, non-savings income uses the Scottish rates and bands (six bands from 19% to 48% in 2026/27). The personal allowance and taper are the same, and savings and dividend income still use the UK rates and bands. This track works in the England, Wales and Northern Ireland rates throughout.`,
     },
   ],
   scenario: {

@@ -38,7 +38,7 @@ Foreign income goes on the **foreign pages (SA106)**, converted to sterling at t
 
 **Who qualifies:** an individual who is UK resident under the SRT for a tax year that falls within their **first 4 tax years of UK residence** after at least **10 consecutive tax years of non-UK residence**. Nationality and former domicile are irrelevant.
 
-**What it does:** qualifying **foreign income and gains** arising in a claim year (from 6 April 2025) are **not taxed in the UK**, and can be brought into the UK with no further charge. Claims are made **year by year** and **source by source** on the **SA109** pages. Years not claimed are lost. They can't be carried forward beyond the 4-year window.
+**What it does:** qualifying **foreign income and gains** arising in a claim year (from 6 April 2025) are **not taxed in the UK**, and can be brought into the UK with no further charge. Claims are made **year by year** and **source by source**: the claim is made on the **SA109** pages, and the amount relieved for each source goes on the relevant supplementary pages (the **SA106** foreign pages for most foreign income). Years not claimed are lost. They can't be carried forward beyond the 4-year window.
 
 **What it doesn't cover:** **foreign employment income**. That has a separate **overseas workday relief** election with its own limits. UK income is taxed as normal.
 
@@ -111,7 +111,7 @@ She asks whether she should claim the FIG regime.`,
         md: `A FIG claim saves her **£2,972** for 2026/27, even after losing the personal allowance and the foreign tax credit. She still pays the £6,000 Italian tax under either option, because Italy taxes the Milan property in any case.
 
 **Points to note on file:**
-- Claim on the SA109 for the Milan rental source. The deadline for 2026/27 is 31 January 2029.
+- Claim on the SA109, with the relieved Milan rental income shown on the SA106 foreign pages. The deadline for 2026/27 is 31 January 2029.
 - With a claim, her ANI still includes the relieved foreign income for the HICBC.
 - Recalculate every year. If her salary rises or the rent falls, the answer may change. She has 3 more years available (2027/28 to 2029/30).`,
       },

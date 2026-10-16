@@ -84,7 +84,7 @@ Your payroll software's P32 report (employer payment record) shows this calculat
     },
     {
       kind: "md",
-      md: `- **No penalty** for the **first** late filing in a tax year, if the FPS is late but every payment on it is **within 3 days** of payday (although HMRC may still act on persistent 3-day lateness), or for a new employer whose first FPS is sent within **30 days** of first paying someone.
+      md: `- **No late filing penalty** where: it's the employer's **first** failure in the tax year (this doesn't apply to annual schemes); the FPS is late but every payment on it is **within 3 days** of payday (although HMRC may still act on persistent 3-day lateness); or a new employer sends its first FPS within **30 days** of first paying someone.
 - **Late payment penalties** are based on the number of late payments ("defaults") in the tax year. The **first** late payment doesn't count as a default. Then the penalty is **1%** of the late amounts for 1–3 defaults, **2%** for 4–6, **3%** for 7–9 and **4%** for 10 or more. A further **5%** applies if an amount is still unpaid after **6 months**, and another 5% after **12 months**.
 - **Interest** runs on late payments from the due date, on top of any penalty.`,
     },

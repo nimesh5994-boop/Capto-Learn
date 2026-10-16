@@ -121,11 +121,11 @@ A company **must still keep a register of members** (shareholders) at its regist
     {
       kind: "numeric",
       id: "tm01-deadline",
-      prompt: "A director resigned on 3 November 2026. Counting the resignation date as day 1, how many days does the company have to file TM01?",
+      prompt: "A director resigned on 3 November 2026. Within how many days of the resignation must the company file TM01?",
       answer: 14,
       unit: "days",
       explain: "Changes to directors must be notified to Companies House within 14 days.",
-      working: "The deadline is **14 days**, so file by 16 November 2026.",
+      working: "The deadline is **14 days** after the resignation, so file by 17 November 2026.",
     },
     {
       kind: "mcq",
