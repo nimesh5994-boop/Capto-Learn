@@ -38,12 +38,16 @@ export const GLOSSARY: Concept[] = [
   // Bookkeeping & accounts
   { name: "payroll journals", aliases: ["payroll journal", "payroll journals", "wages journal", "post payroll", "posting payroll"], topics: ["bookkeeping", "payroll"], general: true },
   { name: "journal entry", aliases: ["journals", "journal entries", "journal entry", "journal", "post a journal", "journal posting", "posting journals", "manual journal", "nominal journal"], topics: ["bookkeeping", "foundations"] , general: true, pin: { lead: "The journal is for entries", also: ["Every journal should have a narrative", "A journal without a narrative"] } },
-  { name: "double entry", aliases: ["debits and credits", "debit and credit", "double-entry", "double entry", "debit and credit", "debits and credits", "dr and cr", "debit credit"], topics: ["foundations", "bookkeeping"] , general: true, pin: { lead: "Double-entry bookkeeping is simply" } },
+  { name: "double entry", aliases: ["debits and credits", "debit and credit", "double-entry", "double entry", "debit and credit", "debits and credits", "dr and cr", "debit credit"], topics: ["foundations", "bookkeeping"] , general: true, pin: { lead: "Double-entry bookkeeping is simply", also: ["Every transaction is recorded as at least one debit and at least one credit"] } },
   { name: "trial balance", aliases: ["trial balances", "trial balance", "tb"], topics: ["foundations", "accounts-production"] , general: true, pin: { lead: "A trial balance (TB) is a list" } },
   { name: "bank reconciliation", aliases: ["bank reconciliation", "bank rec", "reconcile the bank", "reconciling bank"], topics: ["bookkeeping", "foundations"] , general: true, pin: { lead: "A bank reconciliation explains" } },
   { name: "suspense account", aliases: ["suspense account", "suspense"], topics: ["bookkeeping"] , general: true, pin: { lead: "When a trial balance doesn't balance and you can't find" } },
-  { name: "accruals", aliases: ["accrual", "accruals", "accrued expense", "accrued income"], official: ["accruals basis"], topics: ["foundations", "accounts-production"], pin: { lead: "Adjustment: Accrued expense (accrual);" } },
-  { name: "prepayments", aliases: ["prepayment", "prepayments", "prepaid", "deferred income"], topics: ["foundations", "accounts-production"], pin: { lead: "A prepayment is the part that relates to next year" } },
+  { name: "accruals", aliases: ["accrual", "accruals", "accrued expense"], official: ["accruals basis"], topics: ["foundations", "accounts-production"], pin: { lead: "Adjustment: Accrued expense (accrual);" } },
+  { name: "prepayments", aliases: ["prepayment", "prepayments", "prepaid"], topics: ["foundations", "accounts-production"], pin: { lead: "Adjustment: Prepaid expense (prepayment);" } },
+  // Income-side timing adjustments: the journal runs the opposite way to the expense-side ones above, so they
+  // must not share their pinned answers (deferred income is Dr Sales, Cr Deferred income; not a prepayment).
+  { name: "accrued income", aliases: ["accrued income"], topics: ["foundations", "accounts-production"], general: true, pin: { lead: "Adjustment: Accrued income;" } },
+  { name: "deferred income", aliases: ["deferred income", "income in advance"], topics: ["foundations", "accounts-production"], general: true, pin: { lead: "Adjustment: Deferred income;" } },
   { name: "depreciation", aliases: ["depreciation", "depreciate", "straight line", "reducing balance"], topics: ["foundations", "accounts-production"], pin: { lead: "Depreciation is the way that cost is charged" } },
   { name: "fixed assets", aliases: ["fixed asset", "fixed assets", "tangible assets", "fixed asset register", "capitalise"], topics: ["accounts-production", "foundations"] },
   { name: "year-end adjustments", aliases: ["year end", "year-end", "year end adjustments", "closing entries"], topics: ["accounts-production", "foundations"] },
@@ -102,7 +106,7 @@ export const GLOSSARY: Concept[] = [
   { name: "capital allowances", aliases: ["capital allowances", "annual investment allowance", "aia", "full expensing", "writing down allowance", "wda"], topics: ["corporation-tax", "personal-tax"], pin: { lead: "For most plant and machinery the Annual Investment Allowance (AIA) gives 100% relief" } },
   { name: "corporation tax return", aliases: ["ct600", "corporation tax return", "ct return", "corporation tax deadline", "pay corporation tax"], topics: ["corporation-tax"] },
   { name: "losses", aliases: ["trading loss", "trading losses", "loss relief", "carry back", "carry forward"], topics: ["corporation-tax", "personal-tax"] },
-  { name: "R&D relief", aliases: ["r&d", "r and d", "research and development", "rdec", "merged scheme", "ride", "r&d intensive"], official: ["research and development relief"], topics: ["rd"] },
+  { name: "R&D relief", aliases: ["r&d", "r and d", "research and development", "rdec", "merged scheme", "eris", "enhanced r&d intensive support", "r&d intensive"], official: ["research and development relief"], topics: ["rd"] },
 
   // Personal & capital taxes
   { name: "Self Assessment", aliases: ["self assessment", "sa100", "tax return", "personal tax return", "utr", "register for self assessment"], topics: ["personal-tax"] },
