@@ -181,7 +181,8 @@ export function journalFor(u: Understanding, lessons: InstantLesson[]): InstantA
       return { kind: "lesson", answer: lines[i], excerpt: [...entry, ...note], lesson: { id: l.id, title: l.title, trackTitle: l.trackTitle }, basis: `Worked journal from the lesson “${l.title}”` };
     }
     const line = lines.find((x) => hasAny(x, terms) && /\bDr\b/.test(x) && /\bCr\b/.test(x) && x.length < 400);
-    if (line) return { kind: "lesson", answer: line, excerpt: [], lesson: { id: l.id, title: l.title, trackTitle: l.trackTitle }, basis: `Double entry from the lesson “${l.title}”` };
+    // A table row whose first column is a bare row number ("#" heading, lost in plain text) reads ": 7; Debit: …".
+    if (line) return { kind: "lesson", answer: line.replace(/^\s*:\s*\d+\s*;\s*/, ""), excerpt: [], lesson: { id: l.id, title: l.title, trackTitle: l.trackTitle }, basis: `Double entry from the lesson “${l.title}”` };
   }
   return null;
 }

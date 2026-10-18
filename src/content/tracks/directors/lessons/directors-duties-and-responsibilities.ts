@@ -48,7 +48,7 @@ Duties and liabilities attach to all three. The title "managing director", "fina
       kind: "md",
       md: `### Where the duties bite in the work you do
 
-- **Loans to and from the director.** A loan from the company to a director is a transaction in which the director has a personal interest (s175, s177). For a private company, the Act's general requirement for member approval of loans to directors (ss197–214) is largely a public-company rule, but the articles and the conflict duties still apply, and the tax code (s455, beneficial loans) punishes the loan irrespective of approval. Record the approval.
+- **Loans to and from the director.** A loan from the company to a director is a transaction in which the director has a personal interest (s175, s177). Under s197 a loan by **any** company, private or public, to one of its directors (or a director of its holding company) needs **member approval** by resolution, unless an exception applies: for example loans up to **£10,000** in aggregate (s207) or funding of up to £50,000 for expenditure on the company's business (s204). Only the extended rules on quasi-loans, credit transactions and loans to connected persons (ss198–201) are limited to public companies and companies associated with them. So an overdrawn loan account above £10,000 may need shareholder approval even in a one-person company, as well as compliance with the articles and the conflict duties. The tax code (s455, beneficial loans) applies to the loan whether or not it was approved. Record the approval.
 - **Dividends.** A dividend may only be paid out of **distributable profits** (CA 2006 Part 23). Paying one that the accounts don't support is a breach of duty (s171, s174) and the member who knew it was unlawful must repay it (s847).
 - **Remuneration.** A director can't simply decide their own pay without regard to the company's position (s172) and must declare their interest (s177).
 - **Insolvency.** Once insolvency is likely, the director must have regard to the interests of **creditors** (s172(3), *BTI v Sequana* [2022] UKSC 25). Paying a dividend or clearing a director's loan at that point is high-risk.`,
@@ -57,7 +57,7 @@ Duties and liabilities attach to all three. The title "managing director", "fina
       kind: "callout",
       tone: "warning",
       title: "The accountant's own position",
-      md: `You are not the company's director, and you don't carry the s171–177 duties. But you do owe your own professional duties (competence, integrity, and under PCRT not assisting with tax avoidance that has no reasonable basis). If a client instructs you to draw up a dividend you know the company can't lawfully pay, or to disguise a personal expense as business cost, say so in writing and record the response.`,
+      md: `You are not the company's director, and you don't carry the s171–177 duties. But you do owe your own professional duties (competence, integrity, and, under PCRT and HMRC's Standard for Agents, not creating, encouraging or promoting tax planning that is contrary to the clear intention of Parliament or is highly artificial or contrived and exploits shortcomings in the legislation). If a client instructs you to draw up a dividend you know the company can't lawfully pay, or to disguise a personal expense as business cost, say so in writing and record the response.`,
     },
     {
       kind: "callout",
@@ -189,6 +189,8 @@ Duties and liabilities attach to all three. The title "managing director", "fina
     { label: "Companies Act 2006 Part 10 Chapter 2 – general duties of directors", url: "https://www.legislation.gov.uk/ukpga/2006/46/part/10/chapter/2" },
     { label: "Companies Act 2006 s250 – 'director'", url: "https://www.legislation.gov.uk/ukpga/2006/46/section/250" },
     { label: "Guidance for directors – Companies House", url: "https://www.gov.uk/guidance/being-a-company-director" },
+    { label: "GOV.UK: Fact sheet – director's loan accounts (shareholder approval)", url: "https://www.gov.uk/government/publications/fact-sheet-directors-loan-accounts/fact-sheet-directors-loan-accounts" },
+    { label: "HMRC: The Standard for Agents (tax planning, section 4.4.3)", url: "https://www.gov.uk/government/publications/hmrc-the-standard-for-agents/the-hmrc-standard-for-agents" },
     { label: "BTI 2014 LLC v Sequana SA [2022] UKSC 25", url: "https://www.bailii.org/uk/cases/UKSC/2022/25.html" },
   ],
 };

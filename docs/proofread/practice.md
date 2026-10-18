@@ -43,3 +43,8 @@ POCA ss327–330/333A/342; DAML 7 working days and 31-day moratorium, with exten
 ## Clean
 
 **6 of 12** lessons checked with no issues: aml-framework, sars-mlro-tipping-off-and-daml, ethics-fundamental-principles, engagement-letters, gdpr-for-accountancy-practices and failure-to-prevent-fraud. `index.ts` is also clean. The 6 lessons with fixes are hmrc-enquiries, pcrt, customer-due-diligence, hmrc-agent-authorisation, penalties and tribunal.
+
+## Resolution (final pass)
+
+- Hana scenario under the old SA penalty regime: **Left**. GOV.UK (https://www.gov.uk/guidance/penalties-for-making-tax-digital-for-income-tax) still says only "from April 2027". No official page found that says whether that means the 2027/28 year or deadlines after April 2027. The lesson's treatment of a 2025/26 return is the very probable reading, and there is no authoritative basis to change it.
+- "Only one agent per service": **Left**. The hedged wording ("may only be able to deal with one") is not wrong, and HMRC practice varies by service, so no single official statement would justify a change.

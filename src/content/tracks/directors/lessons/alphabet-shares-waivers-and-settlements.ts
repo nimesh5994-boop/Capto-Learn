@@ -167,7 +167,7 @@ Important lessons: (1) the outcome turned on the shares being **ordinary shares 
       prompt: "Dividends on shares given by a parent to an unmarried minor child are treated as the parent's income if they exceed…",
       options: ["£100 a year", "£1,000 a year", "£500 a year", "Never"],
       answer: 0,
-      explain: "The £100 limit applies per parent-gift (s629).",
+      explain: "ITTOIA 2005 s629: the £100 limit is tested per child, per parent, on the total income in the tax year from all that parent's settlements on that child. Once it is exceeded, the whole amount (not just the excess) is taxed on the parent.",
     },
     {
       kind: "mcq",

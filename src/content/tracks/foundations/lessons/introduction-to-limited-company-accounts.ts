@@ -20,7 +20,7 @@ export const lesson: Lesson = {
       md: `The bookkeeping for a limited company is the same double entry you've used for sole traders. What changes is the **legal framework** around it. A company is a separate legal person, owned by its **shareholders** and run by its **directors** (often the same people in a small company, but legally two different roles). That leads to five big differences:
 
 1. **No capital account or drawings.** Owners' funds are split into **share capital** (what shareholders paid for their shares) and **reserves**, mainly **retained earnings** (accumulated profits not yet distributed).
-2. **Directors' salaries are an expense.** A director is an employee of the company. Their salary and employer's NIC go through payroll and the income statement.
+2. **Directors' salaries are an expense.** A director is an **office holder** of the company (and may also be an employee if they have a contract of employment). Either way, their salary is taxed like an employee's: the salary and the employer's NIC go through payroll and are expenses in the income statement.
 3. **Dividends are not an expense.** They're a distribution of profit to shareholders, deducted from retained earnings, and can only be paid out of **distributable profits**.
 4. **The company pays corporation tax**, so there's a tax charge in the income statement and a tax liability in the balance sheet.
 5. **Statutory accounts are required** under the Companies Act 2006, in a prescribed format, filed at Companies House.`,
@@ -243,6 +243,7 @@ Sam asks: *"How much more can I take as a dividend?"*`,
     { label: "Companies House – Preparing and filing Companies House accounts", url: "https://www.gov.uk/government/publications/filing-your-companies-house-accounts/life-of-a-company-part-1-accounts" },
     { label: "HMRC – Rates and allowances for Corporation Tax", url: "https://www.gov.uk/government/publications/rates-and-allowances-corporation-tax/rates-and-allowances-corporation-tax" },
     { label: "GOV.UK – Pay your Corporation Tax bill", url: "https://www.gov.uk/pay-corporation-tax" },
+    { label: "GOV.UK – Employment status: office holder (company directors)", url: "https://www.gov.uk/employment-status/office-holder" },
     { label: "FRC – FRS 102", url: "https://www.frc.org.uk/library/standards-codes-policy/accounting-and-reporting/uk-accounting-standards/frs-102/" },
   ],
 };

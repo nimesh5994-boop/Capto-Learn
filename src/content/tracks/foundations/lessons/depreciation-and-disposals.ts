@@ -88,7 +88,7 @@ A profit or loss on disposal is really just a correction of past depreciation: i
       kind: "callout",
       tone: "tip",
       title: "Depreciation and tax",
-      md: `Depreciation and profits or losses on disposal are **not** allowable or taxable for income tax or corporation tax. They're added back (or deducted) in the tax computation, and **capital allowances** are given instead. So don't agonise over the tax effect of a depreciation policy: it has none. Do keep the fixed asset register tidy, because it drives the capital allowance computation and balancing adjustments.`,
+      md: `Depreciation and profits or losses on disposal are **not** allowable or taxable for income tax or corporation tax. They're added back (or deducted) in the tax computation, and **capital allowances** are given instead. So for tangible fixed assets, don't agonise over the tax effect of a depreciation policy: it has none. (Companies' intangible fixed assets are different: their amortisation is generally deductible following the accounts, which is outside this lesson.) Do keep the fixed asset register tidy, because it drives the capital allowance computation and balancing adjustments.`,
     },
   ],
   scenario: {
@@ -200,7 +200,7 @@ Profit: £3,800 − £3,200 = **£600**`,
       ],
       answer: 1,
       explain:
-        "Depreciation is cost allocation under the accruals concept, not valuation. It has no tax effect at all; capital allowances apply instead. It applies to all accounts prepared under FRS 102 or FRS 105, audited or not.",
+        "Depreciation is cost allocation under the accruals concept, not valuation. For tangible fixed assets it has no tax effect; capital allowances apply instead. It applies to all accounts prepared under FRS 102 or FRS 105, audited or not.",
     },
   ],
   quiz: [
@@ -263,5 +263,6 @@ Profit: £3,800 − £3,200 = **£600**`,
     { label: "HMRC Business Income Manual BIM31060 – property, plant and equipment", url: "https://www.gov.uk/hmrc-internal-manuals/business-income-manual/bim31060" },
     { label: "HMRC Capital Allowances Manual CA20006 – plant and machinery allowances: outline", url: "https://www.gov.uk/hmrc-internal-manuals/capital-allowances-manual/ca20006" },
     { label: "GOV.UK – Annual Investment Allowance", url: "https://www.gov.uk/capital-allowances/annual-investment-allowance" },
+    { label: "HMRC CIRD12755 – intangible assets: accounts-based relief for amortisation", url: "https://www.gov.uk/hmrc-internal-manuals/corporate-intangibles-research-and-development-manual/cird12755" },
   ],
 };

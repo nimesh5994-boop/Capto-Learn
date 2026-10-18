@@ -53,12 +53,12 @@ If an LLP carries on business with **only one member** for more than **6 months*
       kind: "md",
       md: `### The members' agreement and the default rules
 
-There's no requirement for a written members' agreement, but without one the **default rules** in the LLP Regulations 2001 (reg 7) apply. Among them:
+There's no requirement for a written members' agreement, but without one the **default rules** in the LLP Regulations 2001 (regs 7 and 8) apply. Among them:
 
 - members share **capital and profits equally**;
 - every member may take part in management;
 - no member is entitled to **remuneration** for acting in the business;
-- no majority can **expel** a member;
+- no majority can **expel** a member unless the members have expressly agreed a power to do so (reg 8);
 - ordinary matters are decided by a majority, but a change in the nature of the business needs unanimity.
 
 These defaults rarely reflect what the members intended, especially "share profits equally" and "no expulsion". Always ask to see the agreement, and recommend one if there isn't.`,
@@ -223,6 +223,7 @@ For the year ended 30 April 2026 the profit available for discretionary division
   sources: [
     { label: "Limited Liability Partnerships Act 2000 s8 – designated members", url: "https://www.legislation.gov.uk/ukpga/2000/12/section/8" },
     { label: "Limited Liability Partnerships Regulations 2001 reg 7 – default provisions", url: "https://www.legislation.gov.uk/uksi/2001/1090/regulation/7" },
+    { label: "Limited Liability Partnerships Regulations 2001 reg 8 – expulsion", url: "https://www.legislation.gov.uk/uksi/2001/1090/regulation/8" },
     { label: "Companies House: preparing and filing LLP accounts", url: "https://www.gov.uk/government/publications/limited-liability-partnership-accounts-guidance/llp-accounts" },
     { label: "Companies House fees", url: "https://www.gov.uk/government/publications/companies-house-fees/companies-house-fees" },
     { label: "HMRC Partnership manual: the salaried member guidance (PM251000)", url: "https://www.gov.uk/hmrc-internal-manuals/partnership-manual/pm251000" },

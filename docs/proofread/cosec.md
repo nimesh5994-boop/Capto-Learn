@@ -44,3 +44,7 @@ Scope: `src/content/tracks/cosec/index.ts` and all 15 lessons. Every theory bloc
 ## Clean
 
 8 of 15 lessons needed no changes: accounts-deadlines-and-changing-year-end, dormant-companies, incorporating-a-company, llp-compliance (one SUSPECT citation only), people-with-significant-control, share-allotments-and-share-classes, share-buy-backs, share-transfers-and-stamp-duty. `index.ts` is also clean.
+
+## Resolution (final pass)
+
+- LLP default rules "reg 7": **Fixed** to "regs 7 and 8". The expulsion bullet now cites reg 8 and its express-agreement exception, and a reg 8 source is added. `lessons/llp-compliance.ts:56, 61, 226`. Source: reg 7 contents (Part VI) and reg 8 as a separate expulsion provision, via the legislation.gov.uk index at https://legislation.gov.uk/uksi/2001/1090/part/VI/made (direct fetch is bot-blocked).

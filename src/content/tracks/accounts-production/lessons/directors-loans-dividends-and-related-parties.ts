@@ -32,7 +32,7 @@ s455 tax is due at the same time as the corporation tax (9 months and 1 day afte
     {
       kind: "callout",
       tone: "warning",
-      title: "'Bed and breakfasting' (CTA 2010 s464C)",
+      title: "'Bed and breakfasting' (CTA 2010 s464ZA)",
       md: `Repaying the loan just before the deadline and re-borrowing straight afterwards doesn't work:
 - **30-day rule**: if repayments of **£5,000 or more** are followed within **30 days** by new loans of £5,000 or more, the repayment is matched with the new borrowing, not the old loan.
 - **Arrangements rule**: where the balance is **£15,000 or more** and there were arrangements to re-borrow at the time of repayment, the repayment is ignored.
@@ -210,13 +210,14 @@ Grace plans to repay £20,000 from her savings in June 2027, then "take it back 
       prompt: "Is a repayment of an overdrawn DLA by crediting a lawful dividend caught by the bed and breakfasting rules?",
       options: ["Yes, always", "No: repayments by dividend or bonus taxed on the director aren't caught", "Only if over £15,000", "Only within 30 days of the year end"],
       answer: 1,
-      explain: "s464C excludes repayments that give rise to an income tax charge on the participator, such as dividends or bonuses.",
+      explain: "s464ZA(6) excludes repayments that give rise to an income tax charge on the participator, such as dividends or bonuses.",
     },
   ],
   sources: [
     { label: "HMRC Company Taxation manual: loans to participators (CTM61505)", url: "https://www.gov.uk/hmrc-internal-manuals/company-taxation-manual/ctm61505" },
     { label: "Director's loans: overview", url: "https://www.gov.uk/directors-loans" },
-    { label: "Corporation Tax Act 2010 s464C – repayments and new loans (bed and breakfasting)", url: "https://www.legislation.gov.uk/ukpga/2010/4/section/464C" },
+    { label: "CTM61630 – bed and breakfasting 30-day rule (CTA 2010 s464ZA(1))", url: "https://www.gov.uk/hmrc-internal-manuals/company-taxation-manual/ctm61630" },
+    { label: "CTM61642 – exclusion for repayments chargeable to income tax (s464ZA(6))", url: "https://www.gov.uk/hmrc-internal-manuals/company-taxation-manual/ctm61642" },
     { label: "Companies Act 2006 s413 – advances and credits granted to directors", url: "https://www.legislation.gov.uk/ukpga/2006/46/section/413" },
     { label: "FRC: FRS 102 (September 2024 edition, paras 1AC.35–1AC.36 small entity related party and director advance disclosures)", url: "https://www.frc.org.uk/library/standards-codes-policy/accounting-and-reporting/uk-accounting-standards/frs-102/" },
     { label: "HMRC Company Taxation manual: dividends, distributions and company law (CTM15205)", url: "https://www.gov.uk/hmrc-internal-manuals/company-taxation-manual/ctm15205" },

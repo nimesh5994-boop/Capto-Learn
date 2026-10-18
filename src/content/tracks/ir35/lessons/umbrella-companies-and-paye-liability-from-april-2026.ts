@@ -37,7 +37,7 @@ Check HMRC's detailed guidance (ESM2410 and ESM2420, and the "PAYE changes for t
       kind: "md",
       md: `### How an umbrella calculates pay
 
-The agency pays the umbrella the **assignment rate** (plus VAT). From that, the umbrella takes its **margin** and the **employer costs** it must pay out of the rate (employer NIC at 15% above the secondary threshold, employer pension contributions, the Apprenticeship Levy where applicable and holiday pay). What is left is the **gross pay** subject to PAYE and employee NIC. Workers must receive a **payslip** and a **reconciliation** showing how gross pay is arrived at from the assignment rate.
+The agency pays the umbrella the **assignment rate** (plus VAT). From that, the umbrella takes its **margin** and the **employer costs** it must pay out of the rate (employer NIC at 15% above the secondary threshold, employer pension contributions, the Apprenticeship Levy where applicable and holiday pay). What is left is the **gross pay** subject to PAYE and employee NIC. Workers must receive a **payslip**, and the agency must give them a **Key Information Document** setting out the rates, deductions and fees and how they affect pay. HMRC's good practice guidance also expects the umbrella to provide a **reconciliation** statement showing how gross and net pay are arrived at from the assignment rate.
 
 ### Due diligence by agencies and end clients
 
@@ -192,6 +192,7 @@ Check: employer NIC = 15% × £2,937.36 = £440.60; employer pension = 3% × £2
     { label: "Umbrella company market – changes to Income Tax rules to tackle non-compliance", url: "https://www.gov.uk/government/publications/paye-changes-for-the-umbrella-company-market/umbrella-company-market-changes-to-income-tax-rules-to-tackle-non-compliance" },
     { label: "Working through an umbrella company – GOV.UK", url: "https://www.gov.uk/guidance/working-through-an-umbrella-company" },
     { label: "Responsibilities for employment businesses working with umbrella companies", url: "https://www.gov.uk/guidance/responsibilities-for-employment-businesses-working-with-umbrella-companies" },
+    { label: "Examples of good practice for umbrella companies – GOV.UK (HMRC)", url: "https://www.gov.uk/guidance/examples-of-good-practice-for-umbrella-companies-in-the-temporary-labour-market" },
     { label: "ESM2420 – umbrella companies legislation: joint and several liability", url: "https://www.gov.uk/hmrc-internal-manuals/employment-status-manual/esm2420" },
   ],
 };

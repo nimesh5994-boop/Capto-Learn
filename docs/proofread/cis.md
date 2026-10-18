@@ -54,3 +54,8 @@ Yesterday's fixes, confirmed as reading correctly:
 ## Clean
 
 1 of 10 lessons needed no changes: `cis-bookkeeping-and-reconciliations` (all postings, the reconciliation and the exercises are correct). The track `index.ts` is also clean. `cis-compliance-risks-and-hmrc-checks` had only the one-line penalty extension.
+
+## Resolution (final pass)
+
+- Fire protection vs alarms/security: **Fixed**. The "within" cell now says fire protection means systems protecting the fabric (e.g. sprinklers). The "outside" cell adds security systems (burglar alarms, CCTV, PA) and warning-only fire alarms. `lessons/cis-scope-contractors-subcontractors-and-construction-operations.ts:42`; sources added. Sources: https://www.gov.uk/hmrc-internal-manuals/construction-industry-scheme-reform/cisr14160, https://www.gov.uk/hmrc-internal-manuals/construction-industry-scheme-reform/cisr14290.
+- Reverse charge invoice "rate and amount": **Fixed**. It now says show the amount of VAT due under the reverse charge (or the rate if the amount can't be shown), not added to the amount charged. The scenario at :87 shows both, which is still compliant, so it is unchanged. `lessons/vat-domestic-reverse-charge-and-cis.ts:43`. Source: https://www.gov.uk/guidance/vat-reverse-charge-technical-guide.

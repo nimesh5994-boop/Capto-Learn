@@ -57,7 +57,7 @@ The PSC receives the invoice **net of tax and employee NIC**. HMRC guidance for 
       title: "Practical traps",
       md: `- **VAT.** Don't deduct tax and NIC from the VAT-inclusive total.
 - **Employer NIC deducted from the PSC's payment.** It's the fee-payer's own cost: contracts (and rates) must reflect this, which many agencies have addressed by lowering the rate offered.
-- **Wrong period.** Calculate NIC on the right earnings period. A director-worker uses an annual period; others use the pay period.
+- **Wrong period.** Calculate NIC on the right earnings period. The usual earnings-period rules apply, based on when the fee-payer actually pays (not the invoice date): if it pays monthly, the period is monthly even if two invoices are paid in one month (ESM10019).
 - **No RTI indicator.** Failing to flag the off-payroll worker can cause HMRC queries.
 - **Materials deduction unsupported.** Keep invoices that identify genuine materials separately.`,
     },

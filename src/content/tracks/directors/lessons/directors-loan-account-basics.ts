@@ -61,7 +61,7 @@ If the director lends money to the company, the balance sits as a credit on the 
 2. Is it **over £10,000 at any time** in the tax year? If so, a beneficial loan benefit in kind (P11D and Class 1A NIC) may arise. This is covered in the beneficial loans lesson.
 3. Can it be cleared before **9 months and 1 day after the year end**? Options: declare a dividend (if reserves exist), vote a bonus (with PAYE and NIC), or the director repays cash. Each has a different cost.
 4. Watch for **bed and breakfasting**: repaying just before the deadline and borrowing again straight afterwards will not remove the s455 charge. This is covered in a later lesson.
-5. Show the DLA balance in the accounts (Companies Act 2006 ss412–413 disclosure of advances and credits to directors).`,
+5. Show the DLA balance in the accounts (Companies Act 2006 s413 disclosure of advances and credits to directors).`,
     },
     {
       kind: "journal",
@@ -193,7 +193,7 @@ Tom's £2,000 payment into the company reduces what he owes, so it **credits** h
       prompt: "Where must balances on directors' loan accounts normally be disclosed?",
       options: ["Only on the CT600", "In the notes to the accounts under the Companies Act advances and credits rules", "Not at all for small companies", "Only on the P11D"],
       answer: 1,
-      explain: "CA 2006 ss412–413 require disclosure of advances, credits and guarantees with directors, including for small companies.",
+      explain: "CA 2006 s413 requires disclosure of advances, credits and guarantees with directors, including for small companies.",
     },
     {
       kind: "mcq",

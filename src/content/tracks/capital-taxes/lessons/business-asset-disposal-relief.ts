@@ -55,7 +55,7 @@ BADR is **not automatic**. The individual must claim it **in writing** (usually 
 
 ### How it fits into the computation
 
-BADR gains are taxed at the BADR rate (18% in 2026/27) and are not subject to the 18/24% split for ordinary gains. The annual exempt amount (£3,000) can be set against the gains the taxpayer chooses, so set it against the gain taxed at the highest rate. **Gains above the £1 million lifetime limit** are taxed at the normal 18%/24% rates.
+BADR gains are taxed at the BADR rate (18% in 2026/27) and are not subject to the 18/24% split for ordinary gains. But they still **use up any unused basic rate band first**, before other gains, so a BADR gain can push the taxpayer's ordinary gains into the 24% rate. The annual exempt amount (£3,000) can be set against the gains the taxpayer chooses, so set it against the gain taxed at the highest rate. **Gains above the £1 million lifetime limit** are taxed at the normal 18%/24% rates.
 
 ### Typical problems
 
@@ -191,6 +191,7 @@ BADR gains are taxed at the BADR rate (18% in 2026/27) and are not subject to th
   ],
   sources: [
     { label: "Business Asset Disposal Relief – GOV.UK", url: "https://www.gov.uk/business-asset-disposal-relief" },
+    { label: "Business Asset Disposal Relief: work out your tax (basic rate band order) – GOV.UK", url: "https://www.gov.uk/business-asset-disposal-relief/work-out-your-tax" },
     { label: "HS275 Business Asset Disposal Relief (2026) – GOV.UK", url: "https://www.gov.uk/government/publications/entrepreneurs-relief-hs275-self-assessment-helpsheet/hs275-business-asset-disposal-relief-2026" },
     { label: "CG63955 – BADR: broad outline", url: "https://www.gov.uk/hmrc-internal-manuals/capital-gains-manual/cg63955" },
     { label: "CG64174 – BADR rates from April 2025 and 2026: anti-forestalling", url: "https://www.gov.uk/hmrc-internal-manuals/capital-gains-manual/cg64174" },

@@ -26,7 +26,7 @@ export const lesson: Lesson = {
       head: ["Situation", "Report to HMRC?"],
       rows: [
         ["Estate **below the nil-rate band** (£325,000) with **no chargeable gifts** in the previous 7 years above the limits", "**Excepted estate**: no IHT400; details given on the probate application"],
-        ["Gross estate **up to £650,000** where a **transferred nil-rate band** doubles the threshold (both bands available)", "Excepted estate; the transfer is claimed in the probate application (form IHT217 is not used for deaths on or after 1 January 2022)"],
+        ["Gross estate up to the nil-rate band **plus the transferred unused nil-rate band** of a spouse or civil partner who died first (at most **£650,000**, where all of the first NRB was unused). For deaths on or after 1 January 2022 only **some** of the first NRB need have been unused: with 80% unused the limit is £325,000 + £260,000 = £585,000. The first estate must also qualify: long-term UK resident (or UK domiciled, for deaths before 6 April 2025), only will/intestacy and joint property, foreign assets no more than £100,000, no APR/BPR, and no settled property, gifts with reservation or chargeable lifetime transfers", "Excepted estate; the transfer is claimed in the probate application (form IHT217 is not used for deaths on or after 1 January 2022)"],
         ["Estate where the **spouse/civil partner and charity exemptions** reduce the chargeable estate below the NRB, **gross value up to £3 million**", "Excepted (exempt) estate: no IHT400 (the spouse exemption only counts where both spouses have always been long-term UK resident or UK domiciled)"],
         ["Estate with **foreign assets** over the limits, trusts, **gifts** that exceed limits, or **tax to pay**", "**IHT400** (with supplementary pages) required"],
         ["A **claim to transfer** a deceased spouse's unused NRB or RNRB with an estate that isn't excepted", "IHT400 with **IHT402** (NRB), and **IHT435** plus **IHT436** (RNRB and the transferred RNRB)"],
@@ -182,6 +182,9 @@ For deaths before **6 April 2027** most unused pension funds are **outside the e
   sources: [
     { label: "Tell HMRC the value of the estate – GOV.UK", url: "https://www.gov.uk/valuing-estate-of-someone-who-died/tell-hmrc-estate-value" },
     { label: "IHTM06013 – excepted estates: exempt excepted estates", url: "https://www.gov.uk/hmrc-internal-manuals/inheritance-tax-manual/ihtm06013" },
+    { label: "IHTM06024 – excepted estates: nil rate band increased by a transfer claim", url: "https://www.gov.uk/hmrc-internal-manuals/inheritance-tax-manual/ihtm06024" },
+    { label: "IHTM06025 – excepted estates: making the transfer claim (probate form, no IHT217 from 2022)", url: "https://www.gov.uk/hmrc-internal-manuals/inheritance-tax-manual/ihtm06025" },
+    { label: "IHTM06026 – excepted estates: examples where transferable nil rate band applies", url: "https://www.gov.uk/hmrc-internal-manuals/inheritance-tax-manual/ihtm06026" },
     { label: "IHT402 – claim to transfer unused nil rate band", url: "https://assets.publishing.service.gov.uk/media/67eba2faba01abac8e9fe9af/IHT402.pdf" },
     { label: "Work out and apply the residence nil rate band – GOV.UK", url: "https://www.gov.uk/guidance/inheritance-tax-residence-nil-rate-band" },
     { label: "IHTA 1984 s142 – alteration of dispositions taking effect on death", url: "https://www.legislation.gov.uk/ukpga/1984/51/section/142" },

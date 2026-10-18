@@ -40,7 +40,7 @@ An **end user** is a VAT- and CIS-registered business that doesn't make onward s
 
 ### The invoice
 
-An invoice for a reverse charge supply must show the **normal VAT invoice details** and the **VAT rate** and the **amount of VAT** that the customer must account for, and must include a statement such as:
+An invoice for a reverse charge supply must show the **normal VAT invoice details** and the **amount of VAT** that the customer must account for under the reverse charge (or, if the amount can't be shown, the **VAT rate**), without adding that VAT to the amount charged, and must include a statement such as:
 
 - *"Reverse charge: Customer to pay the VAT to HMRC"*, or
 - *"Reverse charge: VAT Act 1994 Section 55A applies"*.

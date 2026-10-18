@@ -46,3 +46,8 @@ Scope: `src/content/tracks/bookkeeping/index.ts` and all 16 lessons. I re-did al
 ## Clean
 
 9 of 16 lessons were checked with no issues: setting-up-a-client-file, bank-feeds-and-bank-rules, coding-transactions-correctly, credit-notes-refunds-and-overpayments, aged-debtors-and-creditors, petty-cash-and-expense-claims, loans-and-hire-purchase, payroll-journals, management-accounts-pack. review-checklist-and-red-flags is also clean apart from its SUSPECT wording point. `index.ts` is clean.
+
+## Resolution (final pass)
+
+- GOV.UK "Director's loans – if you owe your company money" still shows 33.75%: **Left**. The lesson's rates follow CTM61505 (35.75% from 6 April 2026), which is cited alongside it, and the GOV.UK link is kept only for the 9-month and £10,000 benefit points. Its out-of-date rate is HMRC's page problem, not a lesson error.
+- Crestwood "employer NIC and PAYE together": **Fixed** wording to "PAYE, employee NIC and employer NIC payable to HMRC together". The figure and the logic are unchanged. `lessons/review-checklist-and-red-flags.ts:84`. Basis: what goes in the monthly PAYE/NIC liability (wording only, no rule changed).

@@ -37,16 +37,18 @@ Main exclusions: companies controlled by non-close companies (e.g. a subsidiary 
       head: ["Rule", "Effect", "Where covered"],
       rows: [
         ["Loans to participators (CTA 2010 s455)", "Tax charge on loans outstanding 9 months and 1 day after the AP end: **35.75%** for loans made on or after 6 April 2026 (33.75% for loans made from 6 April 2022 to 5 April 2026); repaid when the loan is repaid (s458)", "*Directors, DLA & profit extraction* track"],
-        ["Benefits to participators who aren't employees or directors (s1064)", "Cost of the benefit treated as a **distribution** (not deductible for the company; taxed as dividend income)", "Below"],
+        ["Benefits to participators or their associates that aren't taxable as employment income (s1064; s1065 excludes employment benefits)", "Cost of the benefit treated as a **distribution** (not deductible for the company; taxed as dividend income)", "Below"],
         ["Close investment-holding companies (s18N)", "Main rate 25% on all profits, no small profits rate or marginal relief", "Property income lesson"],
-        ["Trading losses on cessation, IHT on transfers by the company", "Various anti-avoidance rules", "Advanced tax"],
+        ["Transfers of value by the company (IHTA 1984 s94)", "For inheritance tax, the transfer is apportioned to the participators as if each had made their share of it", "Advanced tax"],
       ],
     },
     {
       kind: "callout",
       tone: "warning",
       title: "Benefits to non-working shareholders",
-      md: `If a family company pays for a car or holiday for a shareholder who **doesn't work** for the company (say, an adult child who holds shares), it isn't a benefit in kind because there's no employment. In a close company it's a **distribution**: not deductible for CT and taxed on the shareholder as dividend income. If the person is a director or employee, the normal benefit-in-kind rules apply instead.`,
+      md: `If a close company pays for a car or holiday for a participator (or an associate of one) and the benefit isn't taxable as employment income on anyone, it's a **distribution** (s1064): not deductible for CT and taxed on the participator as dividend income.
+
+Check the employment link first. s1065 takes benefits taxable as employment income out of s1064. A director is an office holder taxed under the benefits code, and a benefit the company provides for a member of a director's or employee's **family or household** (spouse or civil partner, children and their spouses, parents, dependants) is treated as provided by reason of the employment and taxed on the director or employee (ITEPA 2003 s201; EIM20504). So in a typical family company, a holiday for the director's adult son is a **benefit in kind on the director** (P11D or payrolled, Class 1A NIC for the company), not a distribution. The distribution rule bites where nobody connected to the benefit is an employee or director: for example a benefit for a non-working shareholder whose family has no-one employed by the company, or for an associate (such as a sibling) who isn't in an employee's family or household.`,
     },
     {
       kind: "md",
@@ -100,7 +102,9 @@ If, as the bookkeeper's question suggests, the company has been paying the full 
       },
       {
         kind: "md",
-        md: `**4. Zayn's holiday.** Zayn isn't a participator himself, but he's an **associate** (child) of Imran and Nadia. A benefit provided to an associate of a participator counts as provided to the participator, so the £3,600 is treated as a **distribution** to his parents: add it back in the CT computation, and it's taxable on them as dividend income. Advise the client to stop, or to have Zayn's holiday paid out of a declared dividend instead.`,
+        md: `**4. Zayn's holiday.** Zayn isn't a participator himself, but he's an **associate** (child) of Imran and Nadia, so at first sight s1064 could make the £3,600 a distribution. But Zayn is also a member of **Imran's family**, and Imran is a director. A benefit the company provides for a director's family is treated as provided by reason of the employment and is taxed on Imran under the benefits code (ITEPA 2003 s201; EIM20504). Because it is taxable as employment income, s1065 takes it **out of** the distribution rules.
+
+So: report the £3,600 as a benefit in kind for Imran (P11D, or payroll it), and the company pays **Class 1A NIC** on it. As an employment cost it is normally deductible for CT. If Imran would rather not pay income tax on a benefit at his marginal rate, the alternative is for him to pay for the holiday himself out of a lawful dividend or salary.`,
       },
     ],
   },
@@ -203,7 +207,7 @@ If, as the bookkeeper's question suggests, the company has been paying the full 
     {
       kind: "mcq",
       id: "q-distribution",
-      prompt: "A close company pays the private school fees of a non-working shareholder's child. How is it treated?",
+      prompt: "A close company pays the private school fees of a non-working shareholder's child. Neither parent is a director or employee of the company. How is it treated?",
       options: [
         "Benefit in kind on a P11D",
         "Distribution: not deductible for the company, taxed on the shareholder as a dividend",
@@ -211,7 +215,7 @@ If, as the bookkeeper's question suggests, the company has been paying the full 
         "Exempt",
       ],
       answer: 1,
-      explain: "Benefits to participators (or their associates) who aren't employees are distributions in a close company.",
+      explain: "A benefit for a participator or associate that isn't taxable as employment income is a distribution in a close company (s1064). If a parent were a director or employee, the fees would be a benefit in kind on that parent instead (ITEPA s201; s1065).",
     },
   ],
   sources: [
@@ -220,6 +224,9 @@ If, as the bookkeeper's question suggests, the company has been paying the full 
     { label: "CTM61505: Loans to participators – general", url: "https://www.gov.uk/hmrc-internal-manuals/company-taxation-manual/ctm61505" },
     { label: "Corporation Tax: return of Income Tax on company payments (CT61)", url: "https://www.gov.uk/government/publications/corporation-tax-return-of-income-tax-on-company-payments-ct61" },
     { label: "COM23135: Companies deducting income tax from certain payments (CT61)", url: "https://www.gov.uk/hmrc-internal-manuals/cotax-manual/com23135" },
+    { label: "EIM20504: benefits provided for an employee's family or household", url: "https://www.gov.uk/hmrc-internal-manuals/employment-income-manual/eim20504" },
+    { label: "CTM60600: extended meaning of distribution – directors' and employees' benefits", url: "https://www.gov.uk/hmrc-internal-manuals/company-taxation-manual/ctm60600" },
+    { label: "IHTM04068: transfer of value by a close company", url: "https://www.gov.uk/hmrc-internal-manuals/inheritance-tax-manual/ihtm04068" },
     { label: "CTA 2010 s439: close company", url: "https://www.legislation.gov.uk/ukpga/2010/4/section/439" },
   ],
 };

@@ -47,3 +47,7 @@ Validator: `✓ accounts-production: 3 modules, 13 lessons, 121 questions`. `npx
 ## Clean
 
 7 of 13 lessons needed no fact changes: year-end process and working papers; accruals, prepayments and deferred income; fixed assets and depreciation; stock and WIP; provisions, contingencies and post balance sheet events; deferred tax basics; sole trader and partnership year end (URL fix only). `index.ts` is clean.
+
+## Resolution (final pass)
+
+- B&B citation s464C: **Fixed** to s464ZA to match the directors track and the current CTM. Title now "CTA 2010 s464ZA", quiz explain cites s464ZA(6), and the legislation.gov.uk s464C source is replaced by CTM61630 and CTM61642. `lessons/directors-loans-dividends-and-related-parties.ts:35, 213, 219–220`. Sources: https://www.gov.uk/hmrc-internal-manuals/company-taxation-manual/ctm61630 (cites CTA10/S464ZA(1)), https://www.gov.uk/hmrc-internal-manuals/company-taxation-manual/ctm61642.

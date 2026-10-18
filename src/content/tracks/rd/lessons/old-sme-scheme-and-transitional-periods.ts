@@ -178,6 +178,7 @@ An **SME** had to use the old RDEC, not the SME scheme, for:
     { label: "HMRC CIRD manual: SME scheme claims and time limits (CIRD81800)", url: "https://www.gov.uk/hmrc-internal-manuals/corporate-intangibles-research-and-development-manual/cird81800" },
     { label: "HMRC CIRD manual: total aid to project €7.5m or less (CIRD81160)", url: "https://www.gov.uk/hmrc-internal-manuals/corporate-intangibles-research-and-development-manual/cird81160" },
     { label: "HMRC CIRD manual: SME payable tax credit and PAYE cap (CIRD90600)", url: "https://www.gov.uk/hmrc-internal-manuals/corporate-intangibles-research-and-development-manual/cird90600" },
+    { label: "HMRC CIRD manual: R&D intensity condition, periods ending on or after 1 April 2023 (CIRD123000)", url: "https://www.gov.uk/hmrc-internal-manuals/corporate-intangibles-research-and-development-manual/cird123000" },
     { label: "HMRC CIRD manual: pre-notification of claims (CIRD183000)", url: "https://www.gov.uk/hmrc-internal-manuals/corporate-intangibles-research-and-development-manual/cird183000" },
   ],
 };

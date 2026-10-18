@@ -89,7 +89,7 @@ Companies must keep statements of stock held at the year end and the stocktakes 
 
 1. **40 solar water features** included at cost of **£150** each. After a bad season they're now priced at **£130**, and the centre pays a **£10** per unit delivery charge on each one sold.
 2. **100 bags of compost** at **£6** each cost were water-damaged in a leak and will be thrown away.
-3. A delivery of bedding plants costing **£2,000** arrived on 30 March, after the count had been done on 29 March. The supplier invoice is posted in March purchases.
+3. A delivery of bedding plants costing **£2,000** arrived on 30 March, after the count had been done on 29 March. The supplier invoice is posted in March purchases. Dev confirms none of them were sold before the year end.
 
 Opening inventory at 1 April 2025 was **£41,200**; purchases for the year (including the bedding plants) were **£186,400**; sales were **£286,000**.`,
     walkthrough: [
@@ -99,7 +99,7 @@ Opening inventory at 1 April 2025 was **£41,200**; purchases for the year (incl
 
 **Compost:** NRV is nil. Write down **£600**.
 
-**Bedding plants:** the invoice is in purchases, so the stock must be included too, otherwise cost of sales is overstated by £2,000. Add **£2,000**.`,
+**Bedding plants:** the invoice is in purchases, so the stock must be included too, otherwise cost of sales is overstated by £2,000. Add **£2,000**. (In a real roll-forward from the count date to the year end you would also deduct the cost of any goods sold between the two dates.)`,
       },
       {
         kind: "table",

@@ -59,3 +59,10 @@ Could not be fetched (legislation.gov.uk) or not found on the HMRC pages I check
 ## Clean
 
 3 of 11 lessons were checked with no changes: directors-duties-and-responsibilities (apart from the SUSPECT items), beneficial-loan-benefit-in-kind, and employer-pension-contributions-as-extraction. `index.ts` is also clean.
+
+## Resolution (final pass)
+
+- s197 "largely a public-company rule": **Fixed**. Now says member approval under s197 applies to loans by any company, subject to exceptions (s207 £10,000 aggregate; s204 £50,000 company-business expenditure), and only ss198–201 are limited to public/associated companies. `lessons/directors-duties-and-responsibilities.ts:51`; source added at :192. Sources: https://www.gov.uk/government/publications/fact-sheet-directors-loan-accounts/fact-sheet-directors-loan-accounts (Insolvency Service: shareholder approval needed for director's loans of £10,000+); CA 2006 explanatory notes https://www.legislation.gov.uk/ukpga/2006/46/notes/division/8/3 (via search index; s197 applies to private companies).
+- ss412–413 citation: **Fixed** to s413 only (s412 is directors' remuneration; s413 is advances, credits and guarantees). `lessons/directors-loan-account-basics.ts:64, 196`. Source: https://www.legislation.gov.uk/ukpga/2006/46/section/413 (already cited at :215; text confirmed via search index).
+- PCRT "no reasonable basis": **Fixed**. Now uses the actual standard (not creating, encouraging or promoting planning contrary to the clear intention of Parliament or highly artificial/contrived and exploiting shortcomings). `lessons/directors-duties-and-responsibilities.ts:60`; source added at :193. Source: https://www.gov.uk/government/publications/hmrc-the-standard-for-agents/the-hmrc-standard-for-agents (section 4.4.3, which mirrors PCRT).
+- s629 £100 "per parent-gift": **Fixed**. Now: tested per child, per parent, on total income from all that parent's settlements; once exceeded, the whole amount is taxed on the parent. `lessons/alphabet-shares-waivers-and-settlements.ts:170`. Source: https://www.gov.uk/hmrc-internal-manuals/trusts-settlements-and-estates-manual/tsem4310 (Examples 18 and 19).

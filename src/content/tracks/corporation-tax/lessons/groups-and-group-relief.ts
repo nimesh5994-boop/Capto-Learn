@@ -37,7 +37,7 @@ export const lesson: Lesson = {
 - **Non-trading loan relationship deficits**, **UK property business losses**, **excess management expenses** and **excess qualifying charitable donations**: only the amount **exceeding the surrendering company's own total profits** of the period.
 - **Capital losses can't be group relieved** (but see gains groups below).
 
-The **claimant** sets group relief against its **TTP**, after deducting its own current-year losses and losses brought forward (whether or not it actually claims them), but before any loss carried back from a later period. The amount claimed can't exceed the claimant's available profits.`,
+The **claimant** sets group relief against its **TTP**, after deducting its own reliefs for the same and earlier periods, but before any loss carried back from a later period. Its own **current-year trading loss and excess capital allowances** are deducted whether or not it actually claims them. Other reliefs, including its own **losses brought forward**, reduce the available profits only to the extent they are actually claimed or set off automatically (CTM80400). Post-April 2017 losses carried forward against total profits (s45A) need a claim, and the company can choose how much to claim. The amount claimed can't exceed the claimant's available profits.`,
     },
     {
       kind: "callout",
@@ -143,10 +143,10 @@ The group FD asks: *"Where should the Kitchens loss go?"*`,
       kind: "numeric",
       id: "claimant-own-losses",
       prompt:
-        "A claimant company has trading profits of £150,000 in its year to 31 March 2027 and its own trading loss brought forward of £30,000. A fellow group member wants to surrender a current-year trading loss of £200,000. What is the maximum group relief the claimant can take?",
+        "A claimant company has trading profits of £150,000 in its year to 31 March 2027 and its own trading loss brought forward of £30,000, which it claims in full against those profits. A fellow group member wants to surrender a current-year trading loss of £200,000. What is the maximum group relief the claimant can take?",
       answer: 120000,
       unit: "£",
-      explain: "Group relief is set against the claimant's profits after deducting its own brought-forward losses (treated as used first, whether claimed or not).",
+      explain: "Group relief can't exceed the claimant's total profits after reliefs it actually claims (or that are set off automatically) for the same and earlier periods (CTA 2010 s137; CTM80400). Its own current-year trading loss would be deducted even if not claimed, but a brought-forward loss reduces the limit only to the extent it is claimed.",
       working: "£150,000 − £30,000 = **£120,000**",
     },
     {
@@ -231,6 +231,7 @@ The group FD asks: *"Where should the Kitchens loss go?"*`,
   sources: [
     { label: "CTA 2010 Part 5: group relief (s99 onwards)", url: "https://www.legislation.gov.uk/ukpga/2010/4/part/5" },
     { label: "CTM80000: Groups and consortia (Company Taxation Manual)", url: "https://www.gov.uk/hmrc-internal-manuals/company-taxation-manual/ctm80000" },
+    { label: "CTM80400: Group relief – claimant company's available total profits", url: "https://www.gov.uk/hmrc-internal-manuals/company-taxation-manual/ctm80400" },
     { label: "CG45000: Groups of companies (Capital Gains Manual)", url: "https://www.gov.uk/hmrc-internal-manuals/capital-gains-manual/cg45000" },
     { label: "TCGA 1992 s171A: notional transfers within a group", url: "https://www.legislation.gov.uk/ukpga/1992/12/section/171A" },
     { label: "CTM03925: Marginal relief, FY2023 onwards", url: "https://www.gov.uk/hmrc-internal-manuals/company-taxation-manual/ctm03925" },

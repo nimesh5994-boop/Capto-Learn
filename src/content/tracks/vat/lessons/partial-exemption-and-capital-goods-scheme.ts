@@ -94,7 +94,7 @@ A positive answer is extra input tax for the client. A negative answer is repaya
       kind: "callout",
       tone: "rule",
       title: "The 29 July 2026 changes (Revenue and Customs Brief 7 (2026))",
-      md: `From **29 July 2026** the land and buildings threshold rose from £250,000 to **£600,000**, and computers and computer equipment were removed from the scheme. Items already in the CGS under the old rules **stay in it** until the end of their adjustment periods, so older buildings and computers still need their adjustments. HMRC's guidance says the new rules apply only where no capital expenditure on the item was incurred before 29 July 2026. Check carefully for projects that started before that date.`,
+      md: `From **29 July 2026** the land and buildings threshold rose from £250,000 to **£600,000**, and computers and computer equipment were removed from the scheme. Items already in the CGS under the old rules **stay in it** until the end of their adjustment periods, so older buildings and computers still need their adjustments. HMRC's policy paper on the change (*Simplification of the Capital Goods Scheme*, July 2026) says the new threshold and the removal of computers apply only where the owner incurred no capital expenditure on the item before 29 July 2026. Check carefully for projects that started before that date.`,
     },
     {
       kind: "md",
@@ -270,6 +270,7 @@ Residual recoverable: 78% × £8,000 = **£6,240**. Exempt share of residual: £
     { label: "Partial exemption (VAT Notice 706)", url: "https://www.gov.uk/guidance/partial-exemption-vat-notice-706" },
     { label: "Capital Goods Scheme (VAT Notice 706/2)", url: "https://www.gov.uk/guidance/capital-goods-scheme-notice-7062" },
     { label: "Revenue and Customs Brief 7 (2026): Changes to the VAT Capital Goods Scheme", url: "https://www.gov.uk/government/publications/revenue-and-customs-brief-7-2026-changes-to-the-vat-capital-goods-scheme/changes-to-the-vat-capital-goods-scheme" },
+    { label: "HMRC policy paper: Simplification of the Capital Goods Scheme (July 2026)", url: "https://www.gov.uk/government/publications/capital-goods-scheme-simplification/simplification-of-the-capital-goods-scheme" },
     { label: "HMRC VAT Partial Exemption Guidance manual", url: "https://www.gov.uk/hmrc-internal-manuals/vat-partial-exemption-guidance" },
     { label: "VAT Act 1994 s26 – input tax allowable", url: "https://www.legislation.gov.uk/ukpga/1994/23/section/26" },
   ],

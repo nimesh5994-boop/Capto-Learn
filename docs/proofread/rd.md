@@ -45,3 +45,7 @@ Confirmed as correct:
 - old SME and old RDEC rates
 - the 2020–21 error and fraud figures of 16.7% and 24.4%
 - PCRT revised version from 1 January 2026
+
+## Resolution (final pass)
+
+- 14.5% R&D-intensive rate in a 1 Jan–31 Dec 2023 period: **Left (confirmed correct)**. CIRD123000 says FA 2024 lets R&D-intensive SMEs claim 14.5% (40% intensity) for accounting periods that end on or after 1 April 2023 and begin before 1 April 2024, so the lesson and the GOV.UK SME page are right. CIRD127000's table is a summary heading, not a conflict. Added CIRD123000 as a source at `lessons/old-sme-scheme-and-transitional-periods.ts:181`. Source: https://www.gov.uk/hmrc-internal-manuals/corporate-intangibles-research-and-development-manual/cird123000.

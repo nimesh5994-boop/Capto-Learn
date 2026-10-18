@@ -43,3 +43,10 @@ Scope: `src/content/tracks/foundations/index.ts` and all 16 lessons. I re-did al
 ## Clean
 
 10 of 16 lessons had no issues: accounts-and-the-accounting-equation, books-of-prime-entry-and-ledgers, the-trial-balance, accruals-and-prepayments, capital-vs-revenue-expenditure, depreciation-and-disposals, inventory-valuation-and-closing-stock, bank-reconciliations, suspense-accounts-and-correcting-errors and incomplete-records. Some of these have SUSPECT notes above, but none needed an edit. `index.ts` is also clean.
+
+## Resolution (final pass)
+
+- "A director is an employee": **Fixed**. A director is now described as an office holder (an employee too if there is a contract of employment), with salary taxed like an employee's through payroll. `lessons/introduction-to-limited-company-accounts.ts:23`; source added at :246. Source: https://www.gov.uk/employment-status/office-holder.
+- MLR reporting duty: **Fixed**. The reporting duty now comes from POCA 2002 (report to the nominated officer, who decides on a SAR to the NCA), and MLR 2017 requires the nominated officer and internal procedures. `lessons/incomplete-records.ts:77`; source added. Source: https://www.gov.uk/hmrc-internal-manuals/anti-money-laundering-guidance-for-supervised-businesses/amlg11100.
+- Depreciation "no tax effect at all": **Fixed** by limiting the statement to tangible fixed assets and noting that companies' intangible amortisation generally follows the accounts. `lessons/depreciation-and-disposals.ts:91, 203`; source added. Source: https://www.gov.uk/hmrc-internal-manuals/corporate-intangibles-research-and-development-manual/cird12755.
+- Bedding plants roll-forward: **Fixed** as a clarity point, not a rule change. The narrative now says none were sold before the year end, and the walkthrough notes that a real roll-forward deducts sales between the count and the year end. `lessons/inventory-valuation-and-closing-stock.ts:92, 102`. No external source needed (stock-count arithmetic).

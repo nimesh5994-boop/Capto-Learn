@@ -46,3 +46,8 @@ Scope: `src/content/tracks/capital-taxes/index.ts` and all 11 lessons. Every num
 ## Clean
 
 4 of 11 lessons had no issues and were not edited: `cgt-computation-rates-and-annual-exempt-amount`, `property-gains-prr-lettings-and-60-day-reporting`, `lifetime-gifts-pets-taper-relief-and-exemptions`, `cgt-losses-spouses-and-separation` (separation window and CG65300 reference confirmed). `index.ts` is also clean.
+
+## Resolution (final pass)
+
+- IHT excepted estate "(both bands available)": **Fixed**. Now says the limit is the NRB plus the transferred unused NRB (at most £650,000). For deaths from 1 January 2022 only some of the first NRB need be unused (e.g. 80% unused gives £585,000), and the first-estate conditions are listed. The point that IHT217 isn't used from 1 January 2022 is confirmed. `lessons/estate-administration-iht400-and-deadlines.ts:29`; sources added at :185–187. Sources: https://www.gov.uk/hmrc-internal-manuals/inheritance-tax-manual/ihtm06024, https://www.gov.uk/hmrc-internal-manuals/inheritance-tax-manual/ihtm06025 (claim on the probate form; IHT217 only for deaths before 1 January 2022), https://www.gov.uk/hmrc-internal-manuals/inheritance-tax-manual/ihtm06026 (Example 5, £585,000).
+- BADR and the basic rate band: **Fixed**. Added that BADR gains use any unused basic rate band first, before other gains, so they can push ordinary gains to 24%. `lessons/business-asset-disposal-relief.ts:58`; source added at :194. Source: https://www.gov.uk/business-asset-disposal-relief/work-out-your-tax (steps 4–5).

@@ -59,7 +59,9 @@ The customer should **tell the supplier in writing** that it's an end user or in
       kind: "callout",
       tone: "tip",
       title: "The 5% disregard",
-      md: `If a supply mixes reverse charge services with other items, and the reverse charge element is **5% or less** of the total value, the whole supply can be treated under normal VAT rules. This applies only where the customer has notified end user or intermediary status. Both parties should agree it at the start, based on the contract value rather than invoice by invoice.`,
+      md: `If a supply mixes reverse charge services with other items, and the reverse charge element is **5% or less** of the total value, the reverse charge element can be disregarded and the whole supply treated under normal VAT rules. It is optional and applies only to a **single supply** where **both** supplier and customer agree from the start of the contract, based on the overall contract value rather than invoice by invoice. It does **not** apply where the predominant element of the single supply is **zero-rated** (for example a new-build block of flats with a small commercial element). No end user or intermediary notification is needed for this disregard.
+
+A separate 5% rule helps end users: a customer that is mainly an end user but re-supplies a small part (under 5% by value) of the services it receives can still give its supplier an end user notification (VATREVCON33200).`,
     },
     {
       kind: "md",
@@ -67,7 +69,7 @@ The customer should **tell the supplier in writing** that it's an end user or in
 
 The supplier's invoice must:
 - say that the reverse charge applies, for example **"Reverse charge: customer to pay the VAT to HMRC"** or "VAT Act 1994 Section 55A applies",
-- show the VAT rate and the amount of VAT that the customer must account for, but **not add it to the amount payable**.
+- show the amount of VAT that the customer must account for (or, if the amount can't be shown, the VAT rate), but **not add it to the amount payable**.
 
 | Box | Supplier (subcontractor) | Customer (contractor) |
 |---|---|---|
@@ -241,6 +243,8 @@ Brightmoor hasn't given any end-user notification. Jess Cole asks: *"Which of th
     { label: "VAT reverse charge technical guide", url: "https://www.gov.uk/guidance/vat-reverse-charge-technical-guide" },
     { label: "How to use the VAT reverse charge if you supply building and construction services", url: "https://www.gov.uk/guidance/how-to-use-the-vat-reverse-charge-if-you-supply-building-and-construction-services" },
     { label: "How to use the VAT reverse charge if you buy building and construction services", url: "https://www.gov.uk/guidance/how-to-use-the-vat-reverse-charge-if-you-buy-building-and-construction-services" },
+    { label: "VATREVCON25000 – supplies where the reverse charge element is a minor part (5% disregard)", url: "https://www.gov.uk/hmrc-internal-manuals/vat-reverse-charge-for-building-and-construction-services-manual/vatrevcon25000" },
+    { label: "VATREVCON33200 – 5% disregard for end users", url: "https://www.gov.uk/hmrc-internal-manuals/vat-reverse-charge-for-building-and-construction-services-manual/vatrevcon33200" },
     { label: "VAT Act 1994 s55A", url: "https://www.legislation.gov.uk/ukpga/1994/23/section/55A" },
   ],
 };

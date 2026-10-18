@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-16T14:35:04.385Z",
+ "generatedAt": "2026-10-18T12:46:58.842Z",
  "lessons": {
   "accounts-production/accruals-prepayments-deferred-income": {
    "hash": "a493181e37f009d4",
@@ -156,7 +156,7 @@
    ]
   },
   "accounts-production/directors-loans-dividends-and-related-parties": {
-   "hash": "dc763f1a5c08b639",
+   "hash": "60e47deeb891423c",
    "cards": [
     {
      "id": "accounts-production/directors-loans-dividends-and-related-parties#f1",
@@ -1306,7 +1306,7 @@
    ]
   },
   "bookkeeping/review-checklist-and-red-flags": {
-   "hash": "6419c66256e6c054",
+   "hash": "43f78f9a5427153a",
    "cards": [
     {
      "id": "bookkeeping/review-checklist-and-red-flags#f1",
@@ -1557,7 +1557,7 @@
    ]
   },
   "capital-taxes/business-asset-disposal-relief": {
-   "hash": "02f47c1a1eb23371",
+   "hash": "bec085a4512ca8fa",
    "cards": [
     {
      "id": "capital-taxes/business-asset-disposal-relief#f1",
@@ -1801,7 +1801,7 @@
    ]
   },
   "capital-taxes/estate-administration-iht400-and-deadlines": {
-   "hash": "7421156da91d8944",
+   "hash": "23bca4652062535d",
    "cards": [
     {
      "id": "capital-taxes/estate-administration-iht400-and-deadlines#f1",
@@ -1853,14 +1853,6 @@
     },
     {
      "id": "capital-taxes/estate-administration-iht400-and-deadlines#f7",
-     "lessonId": "capital-taxes/estate-administration-iht400-and-deadlines",
-     "front": "IHT: gross estate limit for excepted estate with transferred NRB?",
-     "back": "Up to £650,000",
-     "evidence": "Gross estate up to £650,000 where a transferred nil-rate band doubles the threshold (both bands available)",
-     "taxYear": "2026/27"
-    },
-    {
-     "id": "capital-taxes/estate-administration-iht400-and-deadlines#f8",
      "lessonId": "capital-taxes/estate-administration-iht400-and-deadlines",
      "front": "IHT: pension funds treated as in the estate from when?",
      "back": "Deaths on or after 6 April 2027",
@@ -2230,7 +2222,7 @@
    ]
   },
   "cis/cis-scope-contractors-subcontractors-and-construction-operations": {
-   "hash": "39f9d40a74b2095c",
+   "hash": "328c9ec87d169658",
    "cards": [
     {
      "id": "cis/cis-scope-contractors-subcontractors-and-construction-operations#f1",
@@ -2431,7 +2423,7 @@
    ]
   },
   "cis/vat-domestic-reverse-charge-and-cis": {
-   "hash": "16e8d57355c3c2a3",
+   "hash": "94bab46889ae3416",
    "cards": [
     {
      "id": "cis/vat-domestic-reverse-charge-and-cis#f1",
@@ -2689,7 +2681,7 @@
    ]
   },
   "corporation-tax/close-companies-and-ct61": {
-   "hash": "24b52168da71c1aa",
+   "hash": "3f2c822ad1ca12a4",
    "cards": [
     {
      "id": "corporation-tax/close-companies-and-ct61#f1",
@@ -2872,7 +2864,7 @@
    ]
   },
   "corporation-tax/groups-and-group-relief": {
-   "hash": "9dd7379c8063ae1f",
+   "hash": "64a0f7b2c8d7b59a",
    "cards": [
     {
      "id": "corporation-tax/groups-and-group-relief#f1",
@@ -3780,7 +3772,7 @@
    ]
   },
   "cosec/llp-compliance": {
-   "hash": "82cb977d077ddc14",
+   "hash": "fa9c054206616137",
    "cards": [
     {
      "id": "cosec/llp-compliance#f1",
@@ -4307,7 +4299,7 @@
    ]
   },
   "directors/directors-duties-and-responsibilities": {
-   "hash": "e2f0f47d144f92fd",
+   "hash": "b3dc011f69692eea",
    "cards": [
     {
      "id": "directors/directors-duties-and-responsibilities#f1",
@@ -4354,7 +4346,7 @@
    ]
   },
   "directors/directors-loan-account-basics": {
-   "hash": "423b3aa64e451789",
+   "hash": "24700f8991fc2bb9",
    "cards": [
     {
      "id": "directors/directors-loan-account-basics#f1",
@@ -4383,13 +4375,6 @@
      "front": "Which statute may challenge a director repaying a credit DLA when insolvent?",
      "back": "Preference, Insolvency Act 1986 s239",
      "evidence": "A director should never repay themselves from a credit DLA while the company is insolvent or near to it: it may be challenged as a preference (Insolvency Act 1986 s239)."
-    },
-    {
-     "id": "directors/directors-loan-account-basics#f5",
-     "lessonId": "directors/directors-loan-account-basics",
-     "front": "DLA: Companies Act 2006 sections requiring disclosure of director advances and credits?",
-     "back": "ss412–413",
-     "evidence": "5. Show the DLA balance in the accounts (Companies Act 2006 ss412–413 disclosure of advances and credits to directors)."
     }
    ]
   },
@@ -5022,7 +5007,7 @@
    ]
   },
   "foundations/depreciation-and-disposals": {
-   "hash": "a2bd67fac5f7ed6b",
+   "hash": "c5fc073df7e33afe",
    "cards": [
     {
      "id": "foundations/depreciation-and-disposals#f1",
@@ -5122,7 +5107,7 @@
    ]
   },
   "foundations/incomplete-records": {
-   "hash": "e64dca5967276773",
+   "hash": "eced7c7ab193b017",
    "cards": [
     {
      "id": "foundations/incomplete-records#f1",
@@ -5176,7 +5161,7 @@
    ]
   },
   "foundations/introduction-to-limited-company-accounts": {
-   "hash": "c7e406be363a7c14",
+   "hash": "7b19e38a5dcb5b24",
    "cards": [
     {
      "id": "foundations/introduction-to-limited-company-accounts#f1",
@@ -5237,7 +5222,7 @@
    ]
   },
   "foundations/inventory-valuation-and-closing-stock": {
-   "hash": "79a71cdfc6c7ca66",
+   "hash": "b05bbb027b0643f2",
    "cards": [
     {
      "id": "foundations/inventory-valuation-and-closing-stock#f1",
@@ -5804,7 +5789,7 @@
    ]
   },
   "ir35/fee-payer-duties-and-deemed-direct-payments": {
-   "hash": "16d2d49eb6983de2",
+   "hash": "acd6c8aa385bd702",
    "cards": [
     {
      "id": "ir35/fee-payer-duties-and-deemed-direct-payments#f1",
@@ -5844,14 +5829,6 @@
      "front": "IR35 Ch10: how must the fee-payer flag the worker on RTI?",
      "back": "Off-payroll worker subject to the rules indicator on the Full Payment Submission",
      "evidence": "Report through RTI (Full Payment Submission) and indicate the worker as an \"off-payroll worker subject to the rules\" using the RTI indicator.",
-     "taxYear": "2026/27"
-    },
-    {
-     "id": "ir35/fee-payer-duties-and-deemed-direct-payments#f6",
-     "lessonId": "ir35/fee-payer-duties-and-deemed-direct-payments",
-     "front": "IR35 Ch10: which NIC earnings period applies to a director-worker?",
-     "back": "An annual period (others use the pay period)",
-     "evidence": "A director-worker uses an annual period; others use the pay period.",
      "taxYear": "2026/27"
     }
    ]
@@ -5988,7 +5965,7 @@
    ]
   },
   "ir35/umbrella-companies-and-paye-liability-from-april-2026": {
-   "hash": "02c795a879e91f9f",
+   "hash": "392e13de91d8d666",
    "cards": [
     {
      "id": "ir35/umbrella-companies-and-paye-liability-from-april-2026#f1",
@@ -9699,7 +9676,7 @@
    ]
   },
   "vat/domestic-reverse-charge-construction": {
-   "hash": "4f95ea51960e041b",
+   "hash": "cb30977728244672",
    "cards": [
     {
      "id": "vat/domestic-reverse-charge-construction#f1",
@@ -9728,29 +9705,13 @@
     {
      "id": "vat/domestic-reverse-charge-construction#f4",
      "lessonId": "vat/domestic-reverse-charge-construction",
-     "front": "VAT DRC: what is the 5% disregard?",
-     "back": "If reverse charge element is 5% or less of total value, whole supply can be treated under normal VAT rules",
-     "evidence": "If a supply mixes reverse charge services with other items, and the reverse charge element is 5% or less of the total value, the whole supply can be treated under normal VAT rules.",
-     "taxYear": "2026/27"
-    },
-    {
-     "id": "vat/domestic-reverse-charge-construction#f5",
-     "lessonId": "vat/domestic-reverse-charge-construction",
      "front": "VAT DRC: who is an end user?",
      "back": "A VAT- and CIS-registered business that doesn't sell the construction services on",
      "evidence": "an end user: a VAT- and CIS-registered business that doesn't sell the construction services on (for example, a property developer or a business having its own premises refitted), or",
      "taxYear": "2026/27"
     },
     {
-     "id": "vat/domestic-reverse-charge-construction#f6",
-     "lessonId": "vat/domestic-reverse-charge-construction",
-     "front": "VAT DRC: how must a supplier's invoice show the VAT?",
-     "back": "State reverse charge applies; show VAT rate and amount, but don't add it to the amount payable",
-     "evidence": "show the VAT rate and the amount of VAT that the customer must account for, but not add it to the amount payable.",
-     "taxYear": "2026/27"
-    },
-    {
-     "id": "vat/domestic-reverse-charge-construction#f7",
+     "id": "vat/domestic-reverse-charge-construction#f5",
      "lessonId": "vat/domestic-reverse-charge-construction",
      "front": "VAT DRC: treatment of reverse charge sales for Flat Rate Scheme users?",
      "back": "Excluded from flat rate turnover",
@@ -10217,7 +10178,7 @@
    ]
   },
   "vat/partial-exemption-and-capital-goods-scheme": {
-   "hash": "b2c856701d09bc97",
+   "hash": "6624b60e7981d511",
    "cards": [
     {
      "id": "vat/partial-exemption-and-capital-goods-scheme#f1",

@@ -74,7 +74,7 @@ Small cash businesses often bank some takings and spend the rest: on stock, wage
       kind: "callout",
       tone: "warning",
       title: "When the numbers don't make sense",
-      md: `If reconstructed drawings are implausibly low (say £2,000 a year for a family of four with no other income), takings are probably being under-recorded. That's a tax risk HMRC actively looks for using business economics benchmarks. Don't just accept the figures: ask the client how they lived, document their answers, and raise any concern with your manager. Under the Money Laundering Regulations, a suspicion of undeclared income can trigger reporting duties.`,
+      md: `If reconstructed drawings are implausibly low (say £2,000 a year for a family of four with no other income), takings are probably being under-recorded. That's a tax risk HMRC actively looks for using business economics benchmarks. Don't just accept the figures: ask the client how they lived, document their answers, and raise any concern with your manager. A suspicion of undeclared income can also trigger anti-money laundering reporting duties: under the Proceeds of Crime Act 2002 you must report it to your firm's nominated officer, who decides whether to make a suspicious activity report to the National Crime Agency. The Money Laundering Regulations 2017 require the firm to have the nominated officer and internal reporting procedures in place.`,
     },
     {
       kind: "callout",
@@ -251,5 +251,6 @@ Stolen: £14,000 − £9,500 = **£4,500**`,
     { label: "GOV.UK – How long to keep your records (self-employed)", url: "https://www.gov.uk/self-employed-records/how-long-to-keep-your-records" },
     { label: "HMRC Enquiry Manual EM3000 – examining accounts: records which may identify risks", url: "https://www.gov.uk/hmrc-internal-manuals/enquiry-manual/em3000" },
     { label: "GOV.UK – Money Laundering Regulations: your responsibilities", url: "https://www.gov.uk/guidance/money-laundering-regulations-your-responsibilities" },
+    { label: "HMRC AMLG11100 – Reporting suspicious activity (POCA 2002 and the Terrorism Act 2000)", url: "https://www.gov.uk/hmrc-internal-manuals/anti-money-laundering-guidance-for-supervised-businesses/amlg11100" },
   ],
 };

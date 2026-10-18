@@ -81,7 +81,7 @@ Accountancy firms have obligations under the Money Laundering Regulations and th
   ],
   scenario: {
     title: "Reviewing Crestwood Dental Lab Ltd's year-end file",
-    narrative: `A semi-senior has finished the bookkeeping for **Crestwood Dental Lab Ltd** (VAT registered, monthly payroll of about **£15,500** gross, employer NIC and PAYE together usually around **£5,800** a month) for the year ended **30 June 2026**. Extracts from the trial balance, with last year:
+    narrative: `A semi-senior has finished the bookkeeping for **Crestwood Dental Lab Ltd** (VAT registered, monthly payroll of about **£15,500** gross, PAYE, employee NIC and employer NIC payable to HMRC together usually around **£5,800** a month) for the year ended **30 June 2026**. Extracts from the trial balance, with last year:
 
 | Account | 2026 | 2025 |
 |---|---:|---:|
