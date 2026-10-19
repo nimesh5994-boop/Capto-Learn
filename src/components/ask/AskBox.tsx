@@ -18,7 +18,7 @@ type Tier = "auto" | "standard" | "expert";
 const TIERS: { key: Tier; label: string; hint: string }[] = [
   { key: "auto", label: "Auto", hint: "Starts with an instant answer and goes up a level only when the question needs it" },
   { key: "standard", label: "Full answer", hint: "Always write a cited answer from HMRC guidance and Capto lessons" },
-  { key: "expert", label: "Expert research", hint: "Our most thorough model plus the professional bodies' guidance — for judgement-heavy questions" },
+  { key: "expert", label: "Expert research", hint: "A thorough answer covering conditions, exceptions and pitfalls, plus the professional bodies' guidance — for judgement-heavy questions" },
 ];
 
 export function AskBox({ initial, canProfessional, fresh = false, autoStart = false, tier: initialTier = "auto" }: { initial?: string; canProfessional: boolean; fresh?: boolean; autoStart?: boolean; tier?: Tier }) {

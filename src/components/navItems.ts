@@ -2,6 +2,9 @@
 import {
   Activity,
   BellRing,
+  Target,
+  Calculator,
+  Percent,
   BookOpenCheck,
   Bookmark,
   Building2,
@@ -37,6 +40,8 @@ export type NavKey =
   | "skillsCheck"
   | "search"
   | "updates"
+  | "rates"
+  | "calculators"
   | "ask"
   | "saved"
   | "register"
@@ -52,6 +57,7 @@ export type NavKey =
   | "platform.invitations"
   | "platform.content"
   | "platform.knowledge"
+  | "platform.benchmark"
   | "platform.team"
   | "platform.roles";
 
@@ -65,6 +71,8 @@ export const NAV_ITEMS: Record<NavKey, { href: string; label: string; icon: Luci
   coach: { href: "/coach", label: "My coach", icon: MessageCircleHeart },
   search: { href: "/search", label: "Guidance search", icon: Search },
   updates: { href: "/updates", label: "HMRC updates", icon: BellRing },
+  rates: { href: "/rates", label: "Rates & allowances", icon: Percent },
+  calculators: { href: "/calculators", label: "Calculators", icon: Calculator },
   ask: { href: "/ask", label: "Ask Capto", icon: MessageSquareQuote, exact: true },
   saved: { href: "/ask/saved", label: "Saved research", icon: Bookmark },
   register: { href: "/ask/register", label: "Research register", icon: ClipboardList },
@@ -80,6 +88,7 @@ export const NAV_ITEMS: Record<NavKey, { href: string; label: string; icon: Luci
   "platform.invitations": { href: "/platform/invitations", label: "Firm invitations", icon: Mail },
   "platform.content": { href: "/reviewer", label: "Review centre", icon: BookOpenCheck },
   "platform.knowledge": { href: "/platform/knowledge", label: "Knowledge base", icon: Database },
+  "platform.benchmark": { href: "/platform/benchmark", label: "Accuracy benchmark", icon: Target },
   "platform.team": { href: "/platform/team", label: "Platform team", icon: ShieldCheck },
   "platform.roles": { href: "/platform/roles", label: "Platform roles", icon: UserCog },
 };

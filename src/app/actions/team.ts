@@ -225,12 +225,13 @@ const ProfileSchema = z.object({
   name: z.string().trim().min(1, { error: "Enter your name." }).max(120),
   jobTitle: z.string().trim().max(120).transform((v) => v || null),
   phone: z.string().trim().max(40).transform((v) => v || null),
+  qualifications: z.string().trim().max(120).transform((v) => v || null),
 });
 
 export async function updateMyProfile(_: FormState, formData: FormData): Promise<FormState> {
   try {
     const ctx = await authorize(null);
-    const parsed = ProfileSchema.safeParse({ jobTitle: "", phone: "", ...Object.fromEntries(formData) });
+    const parsed = ProfileSchema.safeParse({ jobTitle: "", phone: "", qualifications: "", ...Object.fromEntries(formData) });
     if (!parsed.success) return { error: parsed.error.issues[0]?.message };
     const db = await getDb();
     await db.update(users).set(parsed.data).where(eq(users.id, ctx.user.id));

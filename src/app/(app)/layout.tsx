@@ -18,7 +18,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   const learn: NavKey[] = ["dashboard"];
   if (can("learning.view")) learn.push("learn", "review", "flashcards", "skillsCheck", "progress", "coach");
   const research: NavKey[] = [];
-  if (can("learning.view")) research.push("search", "updates");
+  if (can("learning.view")) research.push("search", "rates", "calculators", "updates");
   if (can("research.use") && orgHasFeature(org, "research")) research.push("ask", "saved");
   if (can("research.register") && orgHasFeature(org, "research")) research.push("register");
   const manage: NavKey[] = [];
@@ -35,7 +35,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   const platform: NavKey[] = [];
   if (ctx.platformCan("platform.firms.view")) platform.push("platform.firms");
   if (ctx.platformCan("platform.firms.invite")) platform.push("platform.invitations");
-  if (ctx.platformCan("platform.content.review")) platform.push("platform.knowledge");
+  if (ctx.platformCan("platform.content.review")) platform.push("platform.knowledge", "platform.benchmark");
   if (ctx.isPlatformAdmin) platform.push("platform.team", "platform.roles");
 
   const groups: NavGroup[] = [

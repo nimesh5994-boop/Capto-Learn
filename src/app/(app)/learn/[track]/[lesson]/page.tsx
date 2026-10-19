@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { FACT_CHECKED } from "@/content/editorial";
 import { notFound } from "next/navigation";
 import { BadgeCheck, CheckCircle2, ChevronRight, ClipboardList, Clock, ExternalLink, GraduationCap, Landmark, Layers, MessageSquareQuote, Sparkles, Target } from "lucide-react";
 import { requirePermission } from "@/lib/auth/dal";
@@ -173,7 +174,9 @@ export default async function LessonPage({ params, searchParams }: { params: Pro
             <div className={styles.reviewedBanner}>
               <BadgeCheck size={16} color="var(--success)" />
               <span>
-                Reviewed by {review?.reviewerName ?? "a qualified reviewer"} on {date(review?.reviewedAt)}.
+                Reviewed by {review?.reviewerName ?? "a qualified reviewer"}
+                {review?.reviewerCredentials ? ` (${review.reviewerCredentials})` : ""} on {date(review?.reviewedAt)}
+                {lesson.taxYear ? ` · law as at ${lesson.taxYear}` : ""}. <Link href="/editorial">How we check content</Link>
               </span>
             </div>
           ) : (
@@ -187,6 +190,7 @@ export default async function LessonPage({ params, searchParams }: { params: Pro
               <p>
                 This lesson was written from HMRC and GOV.UK guidance. Until a qualified reviewer signs it off, check figures against the official sources listed at the end before relying on them for
                 client work, and use &ldquo;Report a problem&rdquo; if anything looks wrong.
+                {lesson.taxYear ? ` Prepared for ${lesson.taxYear}.` : ""} Its facts were last checked against GOV.UK and HMRC guidance in our {FACT_CHECKED} accuracy pass. <Link href="/editorial">How we check content</Link>
               </p>
             </details>
           )}

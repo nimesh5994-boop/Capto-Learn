@@ -51,6 +51,8 @@ export const users = pgTable("users", {
   name: text("name").notNull(),
   jobTitle: text("job_title"),
   phone: text("phone"),
+  /** Professional qualifications, e.g. "CTA, ACA" — shown when this person signs off content. */
+  qualifications: text("qualifications"),
   passwordHash: text("password_hash").notNull(),
   role: text("role").$type<Role>().notNull().default("staff"),
   /** When set, this custom role's permissions replace the built-in role's. */
@@ -258,6 +260,8 @@ export const contentReviews = pgTable("content_reviews", {
   contentHash: text("content_hash"),
   reviewerUserId: uuid("reviewer_user_id").references(() => users.id, { onDelete: "set null" }),
   reviewerName: text("reviewer_name"),
+  /** The reviewer's qualifications at the time of sign-off (e.g. "CTA, ACA"). */
+  reviewerCredentials: text("reviewer_credentials"),
   notes: text("notes"),
   reviewedAt: timestamp("reviewed_at", { withTimezone: true }),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
@@ -273,6 +277,7 @@ export const contentReviewEvents = pgTable(
     contentHash: text("content_hash").notNull(),
     reviewerUserId: uuid("reviewer_user_id").references(() => users.id, { onDelete: "set null" }),
     reviewerName: text("reviewer_name"),
+    reviewerCredentials: text("reviewer_credentials"),
     notes: text("notes"),
     /** Checklist items the reviewer confirmed (see REVIEW_CHECKLIST). */
     checklist: jsonb("checklist").$type<string[]>().notNull().default([]),
@@ -478,6 +483,39 @@ export const researchExports = pgTable(
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [index("research_exports_org_idx").on(t.organizationId, t.createdAt), index("research_exports_query_idx").on(t.queryId)]
+);
+
+export type BenchmarkVerdict = "correct" | "partial" | "wrong";
+
+/**
+ * Accuracy benchmark: real practice questions with model answers set by qualified reviewers. Ask Capto answers
+ * them fresh and a reviewer grades each answer; the latest score is published on the editorial page.
+ */
+export const benchmarkQuestions = pgTable("benchmark_questions", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  question: text("question").notNull(),
+  modelAnswer: text("model_answer").notNull(),
+  /** Course slug the question belongs to. */
+  area: text("area").notNull(),
+  createdByName: text("created_by_name").notNull(),
+  active: boolean("active").notNull().default(true),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const benchmarkResults = pgTable(
+  "benchmark_results",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    questionId: uuid("question_id").notNull().references(() => benchmarkQuestions.id, { onDelete: "cascade" }),
+    queryId: uuid("query_id").references(() => researchQueries.id, { onDelete: "set null" }),
+    verdict: text("verdict").$type<BenchmarkVerdict>(),
+    note: text("note"),
+    gradedByName: text("graded_by_name"),
+    gradedByCredentials: text("graded_by_credentials"),
+    gradedAt: timestamp("graded_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index("benchmark_results_question_idx").on(t.questionId, t.createdAt)]
 );
 
 /**

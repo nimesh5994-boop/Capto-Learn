@@ -113,6 +113,20 @@
       "when": 1792439931827,
       "tag": "0015_weekly_digest",
       "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1792440290466,
+      "tag": "0016_trust_layer",
+      "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1792440548355,
+      "tag": "0017_benchmark",
+      "breakpoints": true
     }
   ]
 }

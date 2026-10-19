@@ -16,6 +16,7 @@ import { recallLearned } from "@/lib/search/knowledge";
 import { loadDocuments, rankDocuments } from "@/lib/kb/search";
 import { rankPassages, selectPassages, splitPassages, verifyQuote } from "./passages";
 import { MODELS } from "./pricing";
+import { draftLimits, PROFESSIONAL_RESERVE_MICROS } from "./costBudget";
 import type { AnswerPoint, AnswerStep, ProfessionalNote, ResearchAnswer, ResearchSource } from "./types";
 
 /*
@@ -180,17 +181,18 @@ function relatedLessons(question: string) {
 }
 
 async function professionalNote(question: string, meter: Meter): Promise<ProfessionalNote | null> {
-  const res = await anthropic().beta.messages.create({
-    model: MODELS.sonnet,
-    max_tokens: 4000,
-    ...FALLBACK,
-    output_config: { effort: "low" },
+  // Kept inside the cost ceiling's reserve: the cheapest model, one search, a short summary. Haiku takes the basic
+  // web search tool and no server-side refusal fallback (a refusal just means no note).
+  const res = await anthropic().messages.create({
+    model: MODELS.haikuLatest,
+    // Room for its (on-by-default) thinking as well as the short summary; at Haiku 5.5 prices this is ~0.1p.
+    max_tokens: 2000,
     system:
       "Search the UK professional bodies' websites for guidance relevant to the question and summarise what they say in 3–6 sentences for an accountancy practitioner. Only report what the search results say. If nothing relevant is found, reply exactly: NONE.",
-    tools: [{ type: "web_search_20260209", name: "web_search", max_uses: 3, allowed_domains: PROFESSIONAL_DOMAINS }],
+    tools: [{ type: "web_search_20250305", name: "web_search", max_uses: 1, allowed_domains: PROFESSIONAL_DOMAINS }],
     messages: [{ role: "user", content: question }],
   });
-  meter.add(MODELS.sonnet, res);
+  meter.add(MODELS.haikuLatest, res);
   if (res.stop_reason === "refusal") return null;
   const links = new Map<string, { url: string; title: string; citedText: string }>();
   let summary = "";
@@ -229,24 +231,38 @@ export function verifyDraft(out: z.infer<typeof AnswerSchema>, textById: Map<str
 }
 
 /** One cited answer from `model`, with every quote verified against the full page text. */
-async function draftAnswer(model: string, userContent: string, textById: Map<string, string>, meter: Meter): Promise<Drafted> {
-  const res = await anthropic().beta.messages.parse({
+async function draftAnswer(model: string, userContent: string, textById: Map<string, string>, meter: Meter, maxTokens: number, thorough = false): Promise<Drafted> {
+  // Plain create + our own parse (not .parse()), so the call is always metered — even when an answer is cut off
+  // by the cost ceiling's length limit, which .parse() would throw on before we could record what it cost.
+  const res = await anthropic().beta.messages.create({
     model,
-    max_tokens: 16000,
+    // Set by the cost ceiling (lib/research/costBudget.ts); includes the model's thinking.
+    max_tokens: maxTokens,
     ...FALLBACK,
-    output_config: { effort: "medium", format: betaZodOutputFormat(AnswerSchema) },
+    // Low effort for every answer: within the 5p ceiling, more thinking crowds out the answer itself (measured: medium
+    // ran a long DLA answer out of room; low gave 10/10 verified points at 3.7p). Expert questions get their extra
+    // thoroughness from the instruction below instead.
+    output_config: { effort: "low", format: betaZodOutputFormat(AnswerSchema) },
     system: [{ type: "text", text: ANSWER_SYSTEM, cache_control: { type: "ephemeral" } }],
-    messages: [{ role: "user", content: userContent }],
+    messages: [{ role: "user", content: thorough ? `${userContent}\n\nThis is a judgement-heavy question: cover the conditions, exceptions, anti-avoidance and practical pitfalls the sources set out, and say clearly where the client's facts would change the answer.` : userContent }],
   });
   meter.add(res.model, res);
-  const out = res.parsed_output;
-  if (res.stop_reason === "refusal" || !out) return null;
-  return verifyDraft(out, textById, res.model);
+  if (res.stop_reason === "refusal" || res.stop_reason === "max_tokens") {
+    if (res.stop_reason === "max_tokens") console.warn(`[research] answer hit the ${maxTokens}-token limit`);
+    return null;
+  }
+  const text = res.content.map((b) => (b.type === "text" ? b.text : "")).join("");
+  let json: unknown;
+  try {
+    json = JSON.parse(text);
+  } catch {
+    return null;
+  }
+  const parsed = AnswerSchema.safeParse(json);
+  if (!parsed.success) return null;
+  return verifyDraft(parsed.data, textById, res.model);
 }
 
-// Escalate only when the cheaper model's quotes don't check out. Low confidence on its own means the
-// sources found don't cover the point — a stronger model can't fix that, so it isn't worth paying for twice.
-const needsEscalation = (d: NonNullable<Drafted>) => d.unverifiedShare > 0.2 || d.points.length < 2;
 
 /** Step 1: the cheap planner (searches, restatement, complexity). */
 export async function planQuestion(question: string, meter: Meter): Promise<Plan | null> {
@@ -284,7 +300,7 @@ async function lessonSources(queryText: string, max = 2): Promise<{ id: string; 
 }
 
 /** Step 2: sources for a planned question — official knowledge base first, live GOV.UK as a fallback, plus our best-matching lessons. */
-export async function gatherSources(question: string, plan: Plan, onStage: (m: string) => void = () => {}): Promise<Gathered | "no_pages" | "no_passages"> {
+export async function gatherSources(question: string, plan: Plan, onStage: (m: string) => void = () => {}, sourceChars = 32_000): Promise<Gathered | "no_pages" | "no_passages"> {
   const today = new Date().toISOString().slice(0, 10);
   const searches = plan.searches.slice(0, 5);
   onStage("Searching Capto's stored copy of HMRC and Companies House guidance…");
@@ -313,7 +329,7 @@ export async function gatherSources(question: string, plan: Plan, onStage: (m: s
     ...lessons.map((l, i) => ({ id: `L${i + 1}`, kind: "lesson" as const, url: `/learn/${l.id}`, title: l.title, publisher: l.reviewed ? "Capto Learn lesson · reviewed" : "Capto Learn lesson · AI draft, not yet reviewed", updatedAt: null })),
   ];
   const textById = new Map<string, string>([...pages.map((p, i) => [`S${i + 1}`, p.text] as [string, string]), ...lessons.map((l, i) => [`L${i + 1}`, l.text] as [string, string])]);
-  const passages = selectPassages(rankPassages([...textById].map(([sourceId, text]) => ({ sourceId, text })), queryText));
+  const passages = selectPassages(rankPassages([...textById].map(([sourceId, text]) => ({ sourceId, text })), queryText), sourceChars);
   if (!passages.length) return "no_passages";
   const sourceBlock = sources
     .filter((s) => passages.some((p) => p.sourceId === s.id))
@@ -427,10 +443,17 @@ export async function* runResearch(question: string, opts: { professional: boole
       }
     }
 
-    const professional = opts.professional || tier === "expert" ? professionalNote(plan.restated_question, meter).catch(() => null) : Promise.resolve(null);
+    // Cost ceiling: work out, before spending, how much source text and answer length fit under 5p in total.
+    const wantProfessional = opts.professional || tier === "expert";
+    const limits = draftLimits(MODELS.sonnet, meter.usage.micros, wantProfessional ? PROFESSIONAL_RESERVE_MICROS : 0);
+    if (!limits) {
+      yield { type: "error", message: "Ask Capto couldn't answer this within the per-question cost limit. Try a shorter, more specific question.", usage: meter.usage };
+      return;
+    }
+    const professional = wantProfessional ? professionalNote(plan.restated_question, meter).catch(() => null) : Promise.resolve(null);
 
     const stages: string[] = [];
-    const gathered = await gatherSources(question, plan, (m) => stages.push(m));
+    const gathered = await gatherSources(question, plan, (m) => stages.push(m), limits.sourceChars);
     for (const m of stages) yield { type: "stage", message: m };
     lap("gathered sources");
     if (gathered === "no_pages") {
@@ -442,34 +465,22 @@ export async function* runResearch(question: string, opts: { professional: boole
       return;
     }
 
-    // 3. Answer on the routed model; escalate a weak Sonnet answer to Opus.
-    let route: Route = plan.complexity === "simple" && tier !== "expert" ? "sonnet" : "opus";
-    yield {
-      type: "stage",
-      message: route === "sonnet" ? "Level 2 · writing a cited answer…" : tier === "expert" ? "Level 3 · expert research with our most thorough model…" : "Level 3 · complex question — using our most thorough model…",
-    };
-    let draft = await draftAnswer(route === "sonnet" ? MODELS.sonnet : MODELS.opus, gathered.userContent, gathered.textById, meter);
-    if (route === "sonnet" && (!draft || needsEscalation(draft))) {
-      yield { type: "stage", message: "Double-checking with our most thorough model…" };
-      const second = await draftAnswer(MODELS.opus, gathered.userContent, gathered.textById, meter);
-      if (second && (!draft || second.unverifiedShare <= draft.unverifiedShare)) draft = second;
-      route = "sonnet>opus";
-    }
+    // 3. Answer. Every question is written by the same strong model within the cost ceiling: no automatic switch to
+    // the most expensive model and no paying twice. Points whose quotes don't check out are shown as unverified.
+    const route: Route = "sonnet";
+    const expert = tier === "expert" || (tier === "auto" && plan.complexity !== "simple");
+    yield { type: "stage", message: expert ? "Level 3 · thorough cited answer for a judgement-heavy question…" : "Level 2 · writing a cited answer…" };
+    const draft = await draftAnswer(MODELS.sonnet, gathered.userContent, gathered.textById, meter, limits.maxTokens, expert);
     if (!draft) {
       yield { type: "error", message: "Ask Capto couldn't produce an answer for that question. Try rewording it.", usage: meter.usage };
       return;
     }
     lap(`answered (${route})`);
     yield { type: "stage", message: "Checking every quote against the source…" };
-    const answer = buildAnswer(question, plan, gathered.sources, draft, { professional: await professional, escalated: route === "sonnet>opus" });
-    answer.tier =
-      route === "sonnet"
-        ? { level: 2, label: "Standard", reason: "Everyday question — cited answer from official guidance and lessons" }
-        : {
-            level: 3,
-            label: "Expert",
-            reason: tier === "expert" ? "You asked for expert research" : route === "sonnet>opus" ? "Escalated: the first draft's quotes didn't all check out" : "Judgement-heavy question — routed to our most thorough model",
-          };
+    const answer = buildAnswer(question, plan, gathered.sources, draft, { professional: await professional });
+    answer.tier = expert
+      ? { level: 3, label: "Expert", reason: tier === "expert" ? "You asked for expert research" : "Judgement-heavy question — a thorough answer covering conditions, exceptions and edge cases" }
+      : { level: 2, label: "Standard", reason: "Everyday question — cited answer from official guidance and lessons" };
     yield { type: "done", answer, usage: meter.usage, route, restated: plan.restated_question };
   } catch (err) {
     console.error("[research]", err);

@@ -34,7 +34,9 @@ export function AuthShell({ children }: { children: React.ReactNode }) {
             </li>
           </ul>
         </div>
-        <p className={styles.brandFoot}>Contains public sector information licensed under the Open Government Licence v3.0.</p>
+        <p className={styles.brandFoot}>
+          Contains public sector information licensed under the Open Government Licence v3.0. <a href="/editorial" style={{ color: "inherit", textDecoration: "underline" }}>Editorial standards</a>
+        </p>
       </aside>
       <main className={styles.formSide}>{children}</main>
     </div>

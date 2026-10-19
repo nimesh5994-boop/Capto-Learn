@@ -17,6 +17,8 @@ import { getDb } from "@/lib/db/client";
 import { researchQueries, topicBriefs } from "@/lib/db/schema";
 import { and, desc, eq, isNotNull } from "drizzle-orm";
 import { termOverlap } from "@/lib/research/libraryRules";
+import { currentTaxYear, ratesFor, TAX_YEARS } from "@/content/rates";
+import { matchRates } from "@/content/rates/match";
 import styles from "@/components/ask/ask.module.css";
 
 export const metadata = { title: "Guidance search" };
@@ -80,6 +82,9 @@ export default async function GuidanceSearchPage({ searchParams }: { searchParam
           .map((x) => x.b)
       : [];
   const canAsk = ctx.can("research.use") && orgHasFeature(ctx.org, "research");
+  // A question after a figure ("VAT registration threshold") gets it straight from the checked rates table.
+  const rateYear = ratesFor(currentTaxYear()) ?? TAX_YEARS[0];
+  const rateHits = query ? matchRates(query, rateYear) : [];
   // The firm's own reviewed research: approved answers to the same question, free to open and download.
   const firmAnswers =
     canAsk && query && u && u.keywords.length >= 2
@@ -134,6 +139,31 @@ export default async function GuidanceSearchPage({ searchParams }: { searchParam
       {query && (
         <div className={styles.layout} style={{ marginTop: 14 }}>
           <div className="stack" style={{ gap: 12 }}>
+            {rateHits.length > 0 && (
+              <article className={`card ${styles.instant}`}>
+                <div className={styles.kicker}>
+                  <Sparkles size={13} /> Rates and allowances {rateYear.taxYear}
+                </div>
+                {rateHits.map(({ item, section }) => (
+                  <div key={item.id} className="row between" style={{ gap: 10, flexWrap: "wrap" }}>
+                    <span>
+                      <span className="small muted">{section} · </span>
+                      {item.label}
+                    </span>
+                    <span className="row" style={{ gap: 8 }}>
+                      <strong>{item.value}</strong>
+                      <a href={item.source.url} target="_blank" rel="noopener noreferrer" className="small">
+                        GOV.UK <ExternalLink size={11} />
+                      </a>
+                    </span>
+                  </div>
+                ))}
+                <Link href={`/rates?q=${encodeURIComponent(query)}`} className="small">
+                  See the full rates table
+                </Link>
+              </article>
+            )}
+
             {instant && (
               <article className={`card ${styles.instant}`}>
                 <div className={styles.kicker}>

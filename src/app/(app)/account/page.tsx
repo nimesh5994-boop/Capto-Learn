@@ -47,6 +47,10 @@ export default async function AccountPage() {
             <label htmlFor="phone">Phone</label>
             <input id="phone" name="phone" defaultValue={user.phone ?? ""} autoComplete="tel" />
           </div>
+          <div>
+            <label htmlFor="qualifications">Professional qualifications</label>
+            <input id="qualifications" name="qualifications" defaultValue={user.qualifications ?? ""} placeholder="e.g. CTA, ACA" />
+          </div>
         </div>
       </SettingsForm>
 

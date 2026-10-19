@@ -7,12 +7,16 @@ export const MODELS = {
   opus: "claude-opus-5-5",
   sonnet: "claude-sonnet-5-5",
   haiku: "claude-haiku-4-5",
+  /** Current-generation Haiku: used where cost matters most (the professional-bodies search). */
+  haikuLatest: "claude-haiku-5-5",
 } as const;
 
 const PRICES: Record<string, { input: number; output: number }> = {
   [MODELS.opus]: { input: 4, output: 20 },
   [MODELS.sonnet]: { input: 2, output: 10 },
   [MODELS.haiku]: { input: 1, output: 5 },
+  // Prompts up to 100K tokens (ours are far smaller).
+  [MODELS.haikuLatest]: { input: 0.1, output: 0.5 },
 };
 
 /** Web search server-tool price: $10 per 1,000 searches. */
@@ -37,3 +41,9 @@ export function costMicros(model: string, u: UsageLike | null | undefined): numb
 }
 
 export const formatUsd = (micros: number) => `$${(micros / 1_000_000).toFixed(micros < 10_000 ? 4 : 3)}`;
+
+/** List price per million tokens for a model (unknown models priced as Opus, so estimates never under-read). */
+export function priceOf(model: string): { input: number; output: number } {
+  const key = Object.keys(PRICES).find((k) => model.startsWith(k)) ?? MODELS.opus;
+  return PRICES[key];
+}

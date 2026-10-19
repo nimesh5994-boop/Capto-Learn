@@ -83,6 +83,9 @@ export async function setLessonReview(lessonId: string, input: { status: string;
     if (parsed.data.status === "reviewed" && checklist.length < CHECKLIST_KEYS.length)
       throw new AccessError("Tick every item on the checklist before signing off.");
     if (parsed.data.status === "needs_changes" && !parsed.data.notes) throw new AccessError("Say what needs changing in the notes.");
+    // Sign-off is shown to learners with the reviewer's qualifications, so they must be on file first.
+    const credentials = ctx.user.qualifications?.trim() || null;
+    if (parsed.data.status === "reviewed" && !credentials) throw new AccessError("Add your professional qualifications (e.g. CTA, ACA) under My account → Profile before signing off.");
     const db = await getDb();
     const row = {
       lessonId,
@@ -90,12 +93,13 @@ export async function setLessonReview(lessonId: string, input: { status: string;
       contentHash: lessonHash(ref.lesson),
       reviewerUserId: ctx.user.id,
       reviewerName: ctx.user.name,
+      reviewerCredentials: credentials,
       notes: parsed.data.notes || null,
       reviewedAt: new Date(),
       updatedAt: new Date(),
     };
     await db.insert(contentReviews).values(row).onConflictDoUpdate({ target: contentReviews.lessonId, set: row });
-    await db.insert(contentReviewEvents).values({ lessonId, status: row.status, contentHash: row.contentHash, reviewerUserId: ctx.user.id, reviewerName: ctx.user.name, notes: row.notes, checklist });
+    await db.insert(contentReviewEvents).values({ lessonId, status: row.status, contentHash: row.contentHash, reviewerUserId: ctx.user.id, reviewerName: ctx.user.name, reviewerCredentials: credentials, notes: row.notes, checklist });
     revalidatePath("/platform/content");
     revalidatePath("/reviewer", "layout");
     revalidatePath("/learn", "layout");
