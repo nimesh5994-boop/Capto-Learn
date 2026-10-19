@@ -1,5 +1,6 @@
 "use server";
 
+import { tracks } from "@/content";
 import { revalidatePath } from "next/cache";
 import { and, eq, ne, sql } from "drizzle-orm";
 import * as z from "zod";
@@ -360,4 +361,20 @@ export async function decideJoinRequest(id: string, approve: boolean): Promise<T
     await audit(actorOf(ctx), "team.join_approved", `Approved ${req.name} <${req.email}> via the join link`);
     return { ok: true, message: `${req.name} can now sign in.` };
   });
+}
+
+/** My weekly "what changed" email: on/off and which courses' topics to follow (empty = the courses I've studied). */
+export async function saveMyDigest(_: FormState, formData: FormData): Promise<FormState> {
+  try {
+    const ctx = await authorize(null);
+    const valid = new Set(tracks().map((t) => t.slug));
+    const topics = formData.getAll("topics").map(String).filter((t) => valid.has(t));
+    const db = await getDb();
+    await db.update(users).set({ digestEnabled: formData.get("digestEnabled") === "on", digestTopics: topics }).where(eq(users.id, ctx.user.id));
+    revalidatePath("/account");
+    return { success: "Weekly update settings saved." };
+  } catch (err) {
+    if (err instanceof AccessError) return { error: err.message };
+    throw err;
+  }
 }

@@ -59,6 +59,10 @@ export const users = pgTable("users", {
   /** Software-operator role (see PLATFORM_ROLES in lib/rbac.ts). Only valid for users of the internal Capto workspace. */
   platformRole: text("platform_role"),
   lastLoginAt: timestamp("last_login_at", { withTimezone: true }),
+  /** Weekly "what changed" email: on by default; topics are course slugs (empty = the courses they've studied). */
+  digestEnabled: boolean("digest_enabled").notNull().default(true),
+  digestTopics: jsonb("digest_topics").$type<string[]>().notNull().default([]),
+  digestSentAt: timestamp("digest_sent_at", { withTimezone: true }),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 

@@ -1,5 +1,6 @@
 import { requireUser } from "@/lib/auth/dal";
-import { changeMyPassword, updateMyProfile } from "@/app/actions/team";
+import { changeMyPassword, saveMyDigest, updateMyProfile } from "@/app/actions/team";
+import { tracks } from "@/content";
 import { SettingsForm } from "@/components/SettingsForm";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { PLATFORM_PERMISSIONS, PLATFORM_ROLES, permissionGroups } from "@/lib/rbac";
@@ -63,6 +64,25 @@ export default async function AccountPage() {
             <label htmlFor="confirmPassword">Confirm new password</label>
             <input id="confirmPassword" name="confirmPassword" type="password" autoComplete="new-password" required />
           </div>
+        </div>
+      </SettingsForm>
+
+      <SettingsForm
+        action={saveMyDigest}
+        title="Weekly update email"
+        description="Every Monday: saved or approved answers whose guidance has changed, lessons whose sources changed, and HMRC and Companies House updates in your topics. Nothing is sent in a quiet week."
+        submitLabel="Save"
+      >
+        <label className="row" style={{ gap: 8, fontWeight: 500, color: "var(--text)" }}>
+          <input type="checkbox" name="digestEnabled" defaultChecked={user.digestEnabled} /> Send me the weekly update
+        </label>
+        <div className="small muted">Topics to follow (leave all unticked to follow the courses you&apos;ve studied):</div>
+        <div className="grid-3">
+          {tracks().map((t) => (
+            <label key={t.slug} className="row" style={{ gap: 6, fontWeight: 400, color: "var(--text)" }}>
+              <input type="checkbox" name="topics" value={t.slug} defaultChecked={user.digestTopics.includes(t.slug)} /> {t.title}
+            </label>
+          ))}
         </div>
       </SettingsForm>
 

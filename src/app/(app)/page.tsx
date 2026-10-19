@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { desc, eq, and } from "drizzle-orm";
-import { ArrowRight, BookOpenCheck, CalendarClock, ChevronRight, Compass, GraduationCap, MessageSquareQuote, PlayCircle, Repeat } from "lucide-react";
+import { ArrowRight, BellRing, Bookmark, BookOpenCheck, CalendarClock, ChevronRight, Compass, GraduationCap, MessageSquareQuote, PlayCircle, Repeat } from "lucide-react";
 import { requireUser } from "@/lib/auth/dal";
 import { getDb } from "@/lib/db/client";
 import { researchQueries } from "@/lib/db/schema";
@@ -12,6 +12,7 @@ import { dueCount } from "@/lib/learning/daily";
 import { latestSkillChecks, retakeDue } from "@/lib/learning/skillCheck";
 import { reviewState } from "@/lib/learning/reviewQueue";
 import { categoryOf } from "@/lib/learning/catalogue";
+import { buildDigest } from "@/lib/alerts/digest";
 import { date, dateTime } from "@/lib/format";
 import { CourseGlyph } from "@/components/learn/bits";
 import styles from "./dashboard.module.css";
@@ -25,7 +26,7 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
   const db = await getDb();
   const canLearn = can("learning.view");
   const canAsk = can("research.use") && orgHasFeature(org, "research");
-  const [progress, myAssignments, recent, reviewDue, checks, toReview] = await Promise.all([
+  const [progress, myAssignments, recent, reviewDue, checks, toReview, changes] = await Promise.all([
     myProgress(user.id),
     openAssignments(org.id, [user.id]),
     canAsk
@@ -39,6 +40,8 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
     dueCount(user.id),
     latestSkillChecks([user.id]),
     ctx.platformCan("platform.content.review") ? reviewState().then((s) => s.filter((i) => i.todo).length) : Promise.resolve(0),
+    // What changed in the last week in the official guidance behind this person's work (same as the weekly email).
+    buildDigest({ userId: user.id, orgId: org.id, chosenTopics: user.digestTopics, canRegister: canAsk && can("research.register") }, new Date(Date.now() - 7 * 86_400_000)),
   ]);
 
   const overall = overallStats(progress);
@@ -80,6 +83,36 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
       cta: "Open",
       warn: v.overdue,
     })),
+    canAsk && changes.saved.length > 0 && {
+      href: "/ask/saved",
+      icon: Bookmark,
+      title: "Saved research to check",
+      text: `${changes.saved.length} saved answer${changes.saved.length === 1 ? "" : "s"} rel${changes.saved.length === 1 ? "ies" : "y"} on guidance that changed this week`,
+      cta: "Check",
+      warn: true,
+    },
+    changes.approved.length > 0 && {
+      href: "/ask/register?review=approved",
+      icon: Bookmark,
+      title: "Approved answers to re-review",
+      text: `${changes.approved.length} approved firm answer${changes.approved.length === 1 ? "" : "s"} now ha${changes.approved.length === 1 ? "s" : "ve"} a changed source`,
+      cta: "Review",
+      warn: true,
+    },
+    canLearn && changes.lessons.length > 0 && {
+      href: `/learn/${changes.lessons[0].id}`,
+      icon: BellRing,
+      title: "Lessons with updated sources",
+      text: `${changes.lessons.slice(0, 2).map((l) => l.title).join(", ")}${changes.lessons.length > 2 ? ` and ${changes.lessons.length - 2} more` : ""}`,
+      cta: "Open",
+    },
+    canLearn && changes.guidanceTotal > 0 && {
+      href: "/updates?days=7",
+      icon: BellRing,
+      title: "HMRC updates in your topics",
+      text: `${changes.guidanceTotal} official page${changes.guidanceTotal === 1 ? "" : "s"} changed this week`,
+      cta: "See",
+    },
     toReview > 0 && {
       href: "/reviewer",
       icon: BookOpenCheck,
