@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-18T12:46:58.842Z",
+ "generatedAt": "2026-10-19T19:51:58.224Z",
  "lessons": {
   "accounts-production/accruals-prepayments-deferred-income": {
    "hash": "a493181e37f009d4",
@@ -1007,23 +1007,55 @@
     {
      "id": "bookkeeping/directors-loan-account-coding#f1",
      "lessonId": "bookkeeping/directors-loan-account-coding",
-     "front": "s455 tax: when is it due?",
-     "back": "9 months and 1 day after the year end, with corporation tax",
-     "evidence": "It's due with the corporation tax, 9 months and 1 day after the year end.",
+     "front": "s455 tax: rate on loans made on or after 6 April 2026?",
+     "back": "35.75%",
+     "evidence": "35.75% for loans made on or after 6 April 2026, 33.75% for loans made from 6 April 2022 to 5 April 2026, and 32.5% for loans made before 6 April 2022.",
      "taxYear": "2026/27"
     },
     {
      "id": "bookkeeping/directors-loan-account-coding#f2",
      "lessonId": "bookkeeping/directors-loan-account-coding",
-     "front": "Director's loan: beneficial loan BIK threshold?",
-     "back": "Combined loans over £10,000 at any time in the tax year (interest below official rate)",
-     "evidence": "If the director's combined loans from the company exceed £10,000 at any time in the tax year and interest is charged at less than HMRC's official rate, there's a taxable benefit to report on the P11D, with Class 1A NIC for the company.",
+     "front": "s455 tax: rate on loans made 6 April 2022 to 5 April 2026?",
+     "back": "33.75%",
+     "evidence": "35.75% for loans made on or after 6 April 2026, 33.75% for loans made from 6 April 2022 to 5 April 2026, and 32.5% for loans made before 6 April 2022.",
      "taxYear": "2026/27"
     },
     {
      "id": "bookkeeping/directors-loan-account-coding#f3",
      "lessonId": "bookkeeping/directors-loan-account-coding",
-     "front": "Director's loan: bed-and-breakfasting rule thresholds?",
+     "front": "s455 tax: rate on loans made before 6 April 2022?",
+     "back": "32.5%",
+     "evidence": "35.75% for loans made on or after 6 April 2026, 33.75% for loans made from 6 April 2022 to 5 April 2026, and 32.5% for loans made before 6 April 2022.",
+     "taxYear": "2026/27"
+    },
+    {
+     "id": "bookkeeping/directors-loan-account-coding#f4",
+     "lessonId": "bookkeeping/directors-loan-account-coding",
+     "front": "s455: when does a close company's loan trigger the charge?",
+     "back": "Loan still outstanding 9 months after the end of the accounting period",
+     "evidence": "If a close company has lent money to a participator (e.g. a director-shareholder) and the loan is still outstanding 9 months after the end of the accounting period, the company pays an extra charge on the amount outstanding at a rate that depends on when the loan was made:",
+     "taxYear": "2026/27"
+    },
+    {
+     "id": "bookkeeping/directors-loan-account-coding#f5",
+     "lessonId": "bookkeeping/directors-loan-account-coding",
+     "front": "s455 tax: when is it due?",
+     "back": "With the corporation tax, 9 months and 1 day after the year end",
+     "evidence": "It's due with the corporation tax, 9 months and 1 day after the year end.",
+     "taxYear": "2026/27"
+    },
+    {
+     "id": "bookkeeping/directors-loan-account-coding#f6",
+     "lessonId": "bookkeeping/directors-loan-account-coding",
+     "front": "Director's loan: beneficial loan BIK threshold?",
+     "back": "Combined loans over £10,000 at any time in the tax year (with interest below the official rate)",
+     "evidence": "If the director's combined loans from the company exceed £10,000 at any time in the tax year and interest is charged at less than HMRC's official rate, there's a taxable benefit to report on the P11D, with Class 1A NIC for the company.",
+     "taxYear": "2026/27"
+    },
+    {
+     "id": "bookkeeping/directors-loan-account-coding#f7",
+     "lessonId": "bookkeeping/directors-loan-account-coding",
+     "front": "DLA bed and breakfasting: what triggers the matching rule?",
      "back": "Repayment of £5,000+ followed within 30 days by new borrowing of £5,000+",
      "evidence": "Where repayments of £5,000 or more are followed within 30 days by new borrowing of £5,000 or more, the repayment is matched against the new loan, not the old one.",
      "taxYear": "2026/27"
@@ -2071,7 +2103,7 @@
     {
      "id": "capital-taxes/share-matching-rules-and-the-section-104-pool#f1",
      "lessonId": "capital-taxes/share-matching-rules-and-the-section-104-pool",
-     "front": "CGT: how is cost of shares sold from a section 104 pool calculated?",
+     "front": "CGT: how is the cost of shares sold from a section 104 pool calculated?",
      "back": "Pool cost × (shares sold ÷ pool shares)",
      "evidence": "On a disposal from the pool, the cost of the shares sold is a proportion of the pooled cost: pool cost × (shares sold ÷ pool shares).",
      "taxYear": "2026/27"
@@ -2079,25 +2111,25 @@
     {
      "id": "capital-taxes/share-matching-rules-and-the-section-104-pool#f2",
      "lessonId": "capital-taxes/share-matching-rules-and-the-section-104-pool",
-     "front": "CGT shares: where do buying costs and selling costs go?",
-     "back": "Buying costs go into the pool; selling costs reduce proceeds",
+     "front": "CGT: how are share purchase and sale costs treated?",
+     "back": "Purchase costs go into the pool; selling costs reduce proceeds",
      "evidence": "Adding costs in the wrong place: costs of buying go into the pool; costs of selling reduce the proceeds.",
      "taxYear": "2026/27"
     },
     {
      "id": "capital-taxes/share-matching-rules-and-the-section-104-pool#f3",
      "lessonId": "capital-taxes/share-matching-rules-and-the-section-104-pool",
-     "front": "CGT: does a 'bed and ISA' repurchase trigger the 30-day rule?",
-     "back": "No; a repurchase inside an ISA or pension isn't an acquisition for matching",
+     "front": "CGT 30-day rule: is a repurchase inside an ISA or pension matched?",
+     "back": "No, it is not an acquisition for CGT matching (allows 'bed and ISA')",
      "evidence": "A repurchase made inside an ISA or pension isn't an acquisition for CGT matching purposes, because those holdings sit in a separate tax environment.",
      "taxYear": "2026/27"
     },
     {
      "id": "capital-taxes/share-matching-rules-and-the-section-104-pool#f4",
      "lessonId": "capital-taxes/share-matching-rules-and-the-section-104-pool",
-     "front": "CGT: are A and B ordinary shares in one company one holding?",
-     "back": "No; each class is a separate holding",
-     "evidence": "Wrongly treating different classes (A and B ordinary shares) as one holding.",
+     "front": "CGT 2026/27: annual exempt amount for individuals (per the lesson)?",
+     "back": "£3,000",
+     "evidence": "This is within the £3,000 annual exempt amount if there are no other gains, so no tax.",
      "taxYear": "2026/27"
     }
    ]
@@ -2153,33 +2185,49 @@
     {
      "id": "cis/cis-changes-from-april-2026-and-advising-construction-clients#f1",
      "lessonId": "cis/cis-changes-from-april-2026-and-advising-construction-clients",
-     "front": "CIS: treatment of payments to local authorities and public bodies as subcontractors from 6 April 2026?",
-     "back": "Outside CIS: no verification or deduction",
-     "evidence": "Change: Payments to local authorities and public bodies as subcontractors are outside CIS; Date / status: From 6 April 2026; Who is affected: Contractors; public bodies; Action: Stop verifying and deducting; amend processes; check the list of bodies.",
+     "front": "CIS: nil returns reinstated from 6 April 2026 - when needed?",
+     "back": "Any month with no subcontractor payments, unless HMRC told of inactivity (up to 6 months)",
+     "evidence": "Change: Nil returns reinstated: file a nil return for any month with no subcontractor payments unless HMRC has been notified of a period of inactivity (up to 6 months); Date / status: From 6 April 2026; Who is affected: Mainstream contractors (deemed contractors must still tell HMRC); Action: Add to the compliance calendar; consider notifying HMRC of expected quiet periods.",
      "taxYear": "2026/27"
     },
     {
      "id": "cis/cis-changes-from-april-2026-and-advising-construction-clients#f2",
      "lessonId": "cis/cis-changes-from-april-2026-and-advising-construction-clients",
-     "front": "CIS: deduction rates by subcontractor status?",
-     "back": "30% unregistered, 20% registered, 0% GPS",
-     "evidence": "- Cash flow: compare the cash cost of each status: 30% unregistered, 20% registered, 0% GPS. A client at 20% with substantial expenses may wait months for a repayment.",
+     "front": "CIS: how are payments to local authorities and public bodies treated from 6 April 2026?",
+     "back": "Outside CIS: no verification or deduction",
+     "evidence": "Change: Payments to local authorities and public bodies as subcontractors are outside CIS; Date / status: From 6 April 2026; Who is affected: Contractors; public bodies; Action: Stop verifying and deducting; amend processes; check the list of bodies.",
      "taxYear": "2026/27"
     },
     {
      "id": "cis/cis-changes-from-april-2026-and-advising-construction-clients#f3",
      "lessonId": "cis/cis-changes-from-april-2026-and-advising-construction-clients",
-     "front": "MTD for Income Tax: income threshold for mandation from 6 April 2026, and later thresholds?",
-     "back": "Over £50,000; over £30,000 from April 2027; over £20,000 from April 2028",
-     "evidence": "Change: Making Tax Digital for Income Tax: sole traders and landlords with qualifying income over £50,000 must join; Date / status: From 6 April 2026 (then over £30,000 from April 2027 and over £20,000 from April 2028); Who is affected: Sole-trader subcontractors; Action: Check eligibility; digital records and quarterly updates; reconcile CIS deductions.",
+     "front": "CIS supply-chain fraud rules: determination, penalty and GPS consequence?",
+     "back": "20% determination; 30% penalty; GPS cancelled, five-year bar on reapplying",
+     "evidence": "HMRC can raise a determination (20% of the payment or the CIS credit claimed), charge a 30% penalty (which can be transferred to an officer) and cancel GPS immediately, with a five-year bar on reapplying",
      "taxYear": "2026/27"
     },
     {
      "id": "cis/cis-changes-from-april-2026-and-advising-construction-clients#f4",
      "lessonId": "cis/cis-changes-from-april-2026-and-advising-construction-clients",
-     "front": "CIS contractor: by what day of the month must payments be made (annual review check)?",
-     "back": "The 22nd",
-     "evidence": "2. Were all monthly returns (including nil returns) filed on time? Were all payments made by the 22nd?",
+     "front": "MTD for Income Tax: income thresholds and start dates?",
+     "back": "Over £50,000 from 6 April 2026; over £30,000 from April 2027; over £20,000 from April 2028",
+     "evidence": "Making Tax Digital for Income Tax: sole traders and landlords with qualifying income over £50,000 must join; Date / status: From 6 April 2026 (then over £30,000 from April 2027 and over £20,000 from April 2028)",
+     "taxYear": "2026/27"
+    },
+    {
+     "id": "cis/cis-changes-from-april-2026-and-advising-construction-clients#f5",
+     "lessonId": "cis/cis-changes-from-april-2026-and-advising-construction-clients",
+     "front": "CIS: deduction rates by subcontractor status?",
+     "back": "30% unregistered, 20% registered, 0% GPS",
+     "evidence": "Cash flow: compare the cash cost of each status: 30% unregistered, 20% registered, 0% GPS.",
+     "taxYear": "2026/27"
+    },
+    {
+     "id": "cis/cis-changes-from-april-2026-and-advising-construction-clients#f6",
+     "lessonId": "cis/cis-changes-from-april-2026-and-advising-construction-clients",
+     "front": "CIS: since when has VAT compliance counted in the GPS compliance test?",
+     "back": "6 April 2024",
+     "evidence": "For comparison: VAT compliance has counted in the GPS compliance test since 6 April 2024 (CISR46040), so this is not a 2026 change",
      "taxYear": "2026/27"
     }
    ]
@@ -2190,13 +2238,21 @@
     {
      "id": "cis/cis-compliance-risks-and-hmrc-checks#f1",
      "lessonId": "cis/cis-compliance-risks-and-hmrc-checks",
-     "front": "CIS: how long must CIS records be kept?",
-     "back": "At least three years after the end of the tax year",
-     "evidence": "- Record keeping: CIS records must be kept for at least three years after the end of the tax year.",
+     "front": "CIS: penalty for late monthly returns at 6 and 12 months?",
+     "back": "Greater of £300 or 5% of the deductions, at 6 months and again at 12 months",
+     "evidence": "- Late returns: £100, then £200 at 2 months, then the greater of £300 or 5% of the deductions at 6 months and again at 12 months (see the returns lesson).",
      "taxYear": "2026/27"
     },
     {
      "id": "cis/cis-compliance-risks-and-hmrc-checks#f2",
+     "lessonId": "cis/cis-compliance-risks-and-hmrc-checks",
+     "front": "CIS: first two fixed penalties for a late monthly return?",
+     "back": "£100, then £200 at 2 months",
+     "evidence": "- Late returns: £100, then £200 at 2 months, then the greater of £300 or 5% of the deductions at 6 months and again at 12 months (see the returns lesson).",
+     "taxYear": "2026/27"
+    },
+    {
+     "id": "cis/cis-compliance-risks-and-hmrc-checks#f3",
      "lessonId": "cis/cis-compliance-risks-and-hmrc-checks",
      "front": "CIS: maximum penalty for missing records or false declarations?",
      "back": "Up to £3,000",
@@ -2204,18 +2260,26 @@
      "taxYear": "2026/27"
     },
     {
-     "id": "cis/cis-compliance-risks-and-hmrc-checks#f3",
+     "id": "cis/cis-compliance-risks-and-hmrc-checks#f4",
      "lessonId": "cis/cis-compliance-risks-and-hmrc-checks",
-     "front": "CIS: who is generally liable if too little tax is deducted?",
-     "back": "The contractor",
+     "front": "CIS: how long must records be kept?",
+     "back": "At least three years after the end of the tax year",
+     "evidence": "- Record keeping: CIS records must be kept for at least three years after the end of the tax year.",
+     "taxYear": "2026/27"
+    },
+    {
+     "id": "cis/cis-compliance-risks-and-hmrc-checks#f5",
+     "lessonId": "cis/cis-compliance-risks-and-hmrc-checks",
+     "front": "CIS: who is generally responsible for under-deducted tax?",
+     "back": "The contractor (subject to HMRC discretion)",
      "evidence": "Risk: Wrong rate of deduction; Who bears it: Contractor (liable for the under-deduction); Typical cause: Not verifying; ignoring HMRC's response; using a stale rate; Control: Verify before first payment; keep evidence; check rate changes.",
      "taxYear": "2026/27"
     },
     {
-     "id": "cis/cis-compliance-risks-and-hmrc-checks#f4",
+     "id": "cis/cis-compliance-risks-and-hmrc-checks#f6",
      "lessonId": "cis/cis-compliance-risks-and-hmrc-checks",
-     "front": "CIS: nil returns requirement from 6 April 2026?",
-     "back": "Nil returns are reinstated",
+     "front": "CIS: when were nil returns reinstated?",
+     "back": "6 April 2026",
      "evidence": "Risk: Late or missing monthly returns; Who bears it: Contractor; Typical cause: No diary; nil returns forgotten (reinstated from 6 April 2026); Control: Compliance calendar; nil-return notification.",
      "taxYear": "2026/27"
     }
@@ -2227,33 +2291,49 @@
     {
      "id": "cis/cis-scope-contractors-subcontractors-and-construction-operations#f1",
      "lessonId": "cis/cis-scope-contractors-subcontractors-and-construction-operations",
-     "front": "CIS: deduction rate if a subcontractor is not registered?",
-     "back": "30%",
-     "evidence": "Subcontractors don't have to register, but the deduction is higher (30%) if they don't.",
+     "front": "CIS: spend that makes a non-construction business a deemed contractor?",
+     "back": "Over £3 million on construction operations in any rolling 12-month period",
+     "evidence": "A deemed contractor is a business that isn't mainly in construction but whose expenditure on construction operations exceeds £3 million in any rolling 12-month period (HMRC's CIS340 guidance).",
      "taxYear": "2026/27"
     },
     {
      "id": "cis/cis-scope-contractors-subcontractors-and-construction-operations#f2",
      "lessonId": "cis/cis-scope-contractors-subcontractors-and-construction-operations",
-     "front": "CIS: how are payments to employees on construction sites treated?",
-     "back": "Within PAYE, not CIS",
-     "evidence": "Payments to employees (even on construction sites) are within PAYE, not CIS.",
+     "front": "CIS: deduction rate if subcontractor is not registered?",
+     "back": "30%",
+     "evidence": "Subcontractors don't have to register, but the deduction is higher (30%) if they don't.",
      "taxYear": "2026/27"
     },
     {
      "id": "cis/cis-scope-contractors-subcontractors-and-construction-operations#f3",
      "lessonId": "cis/cis-scope-contractors-subcontractors-and-construction-operations",
-     "front": "CIS: what is a subcontractor with gross payment status paid?",
-     "back": "Gross, with no deductions",
-     "evidence": "Subcontractors can get paid gross (no deductions) if they have gross payment status.",
+     "front": "CIS: how are payments under a mixed construction/excluded contract treated?",
+     "back": "All payments under the contract are within CIS, even if invoiced separately",
+     "evidence": "Mixed contracts: if a single contract includes both construction and excluded work, all payments under that contract are within CIS, even if the excluded work is invoiced separately (CIS340 Appendix A).",
      "taxYear": "2026/27"
     },
     {
      "id": "cis/cis-scope-contractors-subcontractors-and-construction-operations#f4",
      "lessonId": "cis/cis-scope-contractors-subcontractors-and-construction-operations",
-     "front": "CIS: from 6 April 2026, how are payments to public bodies as subcontractors treated?",
+     "front": "CIS: when does a property investor become a mainstream contractor?",
+     "back": "As soon as it starts developing property; no £3 million threshold",
+     "evidence": "Forgetting that a landlord or property investor that starts developing property becomes a mainstream contractor, with no £3 million threshold.",
+     "taxYear": "2026/27"
+    },
+    {
+     "id": "cis/cis-scope-contractors-subcontractors-and-construction-operations#f5",
+     "lessonId": "cis/cis-scope-contractors-subcontractors-and-construction-operations",
+     "front": "CIS: payments to public bodies as subcontractors from 6 April 2026?",
      "back": "Outside the scope of CIS",
      "evidence": "Public bodies: from 6 April 2026, payments to local authorities and other public bodies as subcontractors are outside the scope of CIS.",
+     "taxYear": "2026/27"
+    },
+    {
+     "id": "cis/cis-scope-contractors-subcontractors-and-construction-operations#f6",
+     "lessonId": "cis/cis-scope-contractors-subcontractors-and-construction-operations",
+     "front": "CIS: is VAT included in the deduction base?",
+     "back": "No, the deduction excludes VAT",
+     "evidence": "Applying CIS to VAT (the deduction excludes VAT).",
      "taxYear": "2026/27"
     }
    ]
@@ -2407,17 +2487,41 @@
     {
      "id": "cis/subcontractor-statements-and-reclaiming-cis-deductions#f1",
      "lessonId": "cis/subcontractor-statements-and-reclaiming-cis-deductions",
+     "front": "CIS: deadline for contractor to give subcontractor a payment and deduction statement?",
+     "back": "By the 19th of the month following the tax month",
+     "evidence": "The contractor must give the subcontractor a statement by the 19th of the month following the tax month, showing the gross payment, materials cost, amount liable to deduction and the deduction.",
+     "taxYear": "2026/27"
+    },
+    {
+     "id": "cis/subcontractor-statements-and-reclaiming-cis-deductions#f2",
+     "lessonId": "cis/subcontractor-statements-and-reclaiming-cis-deductions",
+     "front": "CIS: how does a sole trader subcontractor claim deductions suffered?",
+     "back": "On the Self Assessment return (self-employment pages, CIS deductions suffered box)",
+     "evidence": "On the Self Assessment return (the self-employment pages: the CIS deductions suffered box).",
+     "taxYear": "2026/27"
+    },
+    {
+     "id": "cis/subcontractor-statements-and-reclaiming-cis-deductions#f3",
+     "lessonId": "cis/subcontractor-statements-and-reclaiming-cis-deductions",
      "front": "CIS: deduction rate for an unregistered subcontractor?",
      "back": "30%",
      "evidence": "An unregistered subcontractor suffers 30% deductions, which may exceed their eventual tax liability, creating a large repayment and a long wait.",
      "taxYear": "2026/27"
     },
     {
-     "id": "cis/subcontractor-statements-and-reclaiming-cis-deductions#f2",
+     "id": "cis/subcontractor-statements-and-reclaiming-cis-deductions#f4",
      "lessonId": "cis/subcontractor-statements-and-reclaiming-cis-deductions",
-     "front": "CIS: how does a sole trader subcontractor reclaim deductions suffered?",
-     "back": "On the Self Assessment return (self-employment pages); excess is repaid",
-     "evidence": "On the Self Assessment return (the self-employment pages: the CIS deductions suffered box).",
+     "front": "CIS: when are excess company CIS credits repaid in-year?",
+     "back": "Only in liquidation or administration; otherwise carried forward within the tax year",
+     "evidence": "If the CIS credit exceeds those liabilities, the excess carries forward to later months within the same tax year (no in-year repayment, except in liquidation or administration).",
+     "taxYear": "2026/27"
+    },
+    {
+     "id": "cis/subcontractor-statements-and-reclaiming-cis-deductions#f5",
+     "lessonId": "cis/subcontractor-statements-and-reclaiming-cis-deductions",
+     "front": "CIS: how is a limited company's unused CIS balance dealt with after year end?",
+     "back": "Refunded on a repayment claim, or set against corporation tax due",
+     "evidence": "Any balance left at the end of the tax year is refunded on a repayment claim, or can be set against corporation tax due.",
      "taxYear": "2026/27"
     }
    ]
@@ -2428,32 +2532,48 @@
     {
      "id": "cis/vat-domestic-reverse-charge-and-cis#f1",
      "lessonId": "cis/vat-domestic-reverse-charge-and-cis",
-     "front": "VAT reverse charge (CIS): which VAT rates does it apply to?",
-     "back": "Standard (20%) or reduced (5%) rate; zero-rated supplies are outside",
-     "evidence": "- The supply is at the standard (20%) or reduced (5%) rate (zero-rated supplies, such as new-build dwellings, are outside).",
-     "taxYear": "2026/27"
-    },
-    {
-     "id": "cis/vat-domestic-reverse-charge-and-cis#f2",
-     "lessonId": "cis/vat-domestic-reverse-charge-and-cis",
-     "front": "VAT domestic reverse charge: when did it start?",
+     "front": "VAT domestic reverse charge: date it started for construction supplies?",
      "back": "1 March 2021",
      "evidence": "Since 1 March 2021, many VAT-registered construction subcontractors don't charge VAT to their VAT-registered contractor customers.",
      "taxYear": "2026/27"
     },
     {
+     "id": "cis/vat-domestic-reverse-charge-and-cis#f2",
+     "lessonId": "cis/vat-domestic-reverse-charge-and-cis",
+     "front": "Domestic reverse charge (construction): which VAT rates does it apply to?",
+     "back": "Standard (20%) and reduced (5%); not zero-rated",
+     "evidence": "- The supply is at the standard (20%) or reduced (5%) rate (zero-rated supplies, such as new-build dwellings, are outside).",
+     "taxYear": "2026/27"
+    },
+    {
      "id": "cis/vat-domestic-reverse-charge-and-cis#f3",
      "lessonId": "cis/vat-domestic-reverse-charge-and-cis",
-     "front": "Reverse charge invoice: required wording?",
-     "back": "\"Reverse charge: Customer to pay the VAT to HMRC\" or \"Reverse charge: VAT Act 1994 Section 55A applies\"",
-     "evidence": "- \"Reverse charge: Customer to pay the VAT to HMRC\", or\n- \"Reverse charge: VAT Act 1994 Section 55A applies\".",
+     "front": "Reverse charge: what is an end user?",
+     "back": "A VAT- and CIS-registered business that doesn't make onward supplies of the construction services it buys",
+     "evidence": "An end user is a VAT- and CIS-registered business that doesn't make onward supplies of the construction services it buys (for example a property owner, landlord or retailer who commissions work for its own premises).",
      "taxYear": "2026/27"
     },
     {
      "id": "cis/vat-domestic-reverse-charge-and-cis#f4",
      "lessonId": "cis/vat-domestic-reverse-charge-and-cis",
-     "front": "CIS with reverse charge: how is the CIS deduction calculated?",
-     "back": "Amount excluding VAT, less materials, times the CIS rate",
+     "front": "Reverse charge: if a qualifying end user doesn't confirm status in writing, what applies?",
+     "back": "The supplier must use the reverse charge",
+     "evidence": "Notification is optional: if a customer that meets the conditions doesn't confirm its status in writing, the supplier must use the reverse charge.",
+     "taxYear": "2026/27"
+    },
+    {
+     "id": "cis/vat-domestic-reverse-charge-and-cis#f5",
+     "lessonId": "cis/vat-domestic-reverse-charge-and-cis",
+     "front": "Reverse charge invoice: example statement wording required?",
+     "back": "\"Reverse charge: Customer to pay the VAT to HMRC\" or \"Reverse charge: VAT Act 1994 Section 55A applies\"",
+     "evidence": "- \"Reverse charge: Customer to pay the VAT to HMRC\", or\n- \"Reverse charge: VAT Act 1994 Section 55A applies\".",
+     "taxYear": "2026/27"
+    },
+    {
+     "id": "cis/vat-domestic-reverse-charge-and-cis#f6",
+     "lessonId": "cis/vat-domestic-reverse-charge-and-cis",
+     "front": "Reverse charge: how is the CIS deduction base affected?",
+     "back": "Unaffected: amount excluding VAT, less materials, apply the rate",
      "evidence": "- The CIS deduction base is unaffected: take the amount excluding VAT, deduct materials, apply the rate.",
      "taxYear": "2026/27"
     }
@@ -4148,33 +4268,49 @@
     {
      "id": "directors/alphabet-shares-waivers-and-settlements#f1",
      "lessonId": "directors/alphabet-shares-waivers-and-settlements",
-     "front": "Settlements: minor children rule - section and de minimis limit?",
-     "back": "s629; parent's income unless £100 or less a year",
-     "evidence": "Minor children: for unmarried minor children, income from shares given by a parent is always treated as the parent's (s629), whether or not the gift is outright, unless the income is £100 or less a year.",
+     "front": "Settlements legislation: exception for gifts between spouses or civil partners?",
+     "back": "s626: s624 doesn't apply to an outright gift between spouses or civil partners (with conditions)",
+     "evidence": "s626 (exception): s624 doesn't apply to an outright gift between spouses or civil partners, unless the gift doesn't carry a right to the whole of the income from the property given, or the property is wholly or substantially a right to income.",
      "taxYear": "2026/27"
     },
     {
      "id": "directors/alphabet-shares-waivers-and-settlements#f2",
      "lessonId": "directors/alphabet-shares-waivers-and-settlements",
-     "front": "Dividend waiver: when must it be executed to be effective?",
-     "back": "By deed, before the dividend is declared (right arises); usually 12 months",
-     "evidence": "For a waiver to be effective it must be a deed, executed before the right to the dividend arises (before it is declared), and normally for a limited period (often 12 months).",
+     "front": "Settlements legislation: when is s626 spouse exception lost?",
+     "back": "No right to whole income from the property, or property wholly or substantially a right to income",
+     "evidence": "s626 (exception): s624 doesn't apply to an outright gift between spouses or civil partners, unless the gift doesn't carry a right to the whole of the income from the property given, or the property is wholly or substantially a right to income.",
      "taxYear": "2026/27"
     },
     {
      "id": "directors/alphabet-shares-waivers-and-settlements#f3",
      "lessonId": "directors/alphabet-shares-waivers-and-settlements",
-     "front": "Dividend tax rates from 6 April 2026: basic and higher, and allowance?",
-     "back": "10.75% basic, 35.75% higher; £500 allowance",
-     "evidence": "Keep an eye on the dividend rates (10.75% basic, 35.75% higher from 6 April 2026) and the £500 allowance",
+     "front": "Settlements legislation: minor children rule on parent-gifted shares?",
+     "back": "Income treated as parent's (s629) unless £100 or less a year",
+     "evidence": "Minor children: for unmarried minor children, income from shares given by a parent is always treated as the parent's (s629), whether or not the gift is outright, unless the income is £100 or less a year.",
      "taxYear": "2026/27"
     },
     {
      "id": "directors/alphabet-shares-waivers-and-settlements#f4",
      "lessonId": "directors/alphabet-shares-waivers-and-settlements",
-     "front": "Jones v Garnett (Arctic Systems): why did the taxpayer win?",
-     "back": "Outright gift exception applied: wife held an ordinary share with full rights",
-     "evidence": "The House of Lords agreed there was a \"settlement\" (the arrangement) but held the outright-gift exception applied: she had been given an ordinary share with the full rights attached, not a right to income only.",
+     "front": "Dividend waiver: requirements for it to be effective?",
+     "back": "A deed, executed before the right to the dividend arises (before declaration), normally for a limited period",
+     "evidence": "For a waiver to be effective it must be a deed, executed before the right to the dividend arises (before it is declared), and normally for a limited period (often 12 months).",
+     "taxYear": "2026/27"
+    },
+    {
+     "id": "directors/alphabet-shares-waivers-and-settlements#f5",
+     "lessonId": "directors/alphabet-shares-waivers-and-settlements",
+     "front": "Dividend tax rates from 6 April 2026 (basic/higher) and allowance?",
+     "back": "10.75% basic, 35.75% higher; £500 dividend allowance",
+     "evidence": "6. Keep an eye on the dividend rates (10.75% basic, 35.75% higher from 6 April 2026) and the £500 allowance: shifting dividends into a second shareholder's lower band is still worth about 25 percentage points on income above the higher-rate threshold, but the saving on basic-rate income is now smaller.",
+     "taxYear": "2026/27"
+    },
+    {
+     "id": "directors/alphabet-shares-waivers-and-settlements#f6",
+     "lessonId": "directors/alphabet-shares-waivers-and-settlements",
+     "front": "Dividend waiver after the dividend is declared: effect?",
+     "back": "Just a gift of a debt",
+     "evidence": "A waiver after the dividend is declared is just a gift of a debt.",
      "taxYear": "2026/27"
     }
    ]
@@ -4185,17 +4321,41 @@
     {
      "id": "directors/anti-bed-and-breakfasting-rules#f1",
      "lessonId": "directors/anti-bed-and-breakfasting-rules",
-     "front": "30-day rule: how much of the repayment is matched?",
-     "back": "The lower of the repayment and the new loan/benefits",
-     "evidence": "The repayment is then matched against the new loan. Relief under s458 is denied on the lower of the two amounts, so s455 tax is payable on that matched sum as if the original loan hadn't been repaid.",
+     "front": "Anti-B&B: how much is matched under the 30-day rule?",
+     "back": "The lower of the repayment and the new loan",
+     "evidence": "Relief under s458 is denied on the lower of the two amounts, so s455 tax is payable on that matched sum as if the original loan hadn't been repaid.",
      "taxYear": "2026/27"
     },
     {
      "id": "directors/anti-bed-and-breakfasting-rules#f2",
      "lessonId": "directors/anti-bed-and-breakfasting-rules",
-     "front": "CT600A: how to treat a matched repayment when claiming s458 relief?",
-     "back": "Exclude the matched amount; no s458 relief to that extent",
-     "evidence": "Where matching applies, the repayment gives no s458 relief to the extent matched, so the s455 tax on the original loan stays payable.",
+     "front": "Anti-B&B arrangements rule: loan balance and new loan thresholds?",
+     "back": "£15,000+ outstanding before repayment; arranged new loans of £5,000+",
+     "evidence": "If the loan outstanding immediately before the repayment is £15,000 or more, and at that time there are arrangements (any understanding or scheme, formal or not) under which the participator will receive £5,000 or more of new loans to replace some or all of the amount repaid, the repayment is matched with the new loans.",
+     "taxYear": "2026/27"
+    },
+    {
+     "id": "directors/anti-bed-and-breakfasting-rules#f3",
+     "lessonId": "directors/anti-bed-and-breakfasting-rules",
+     "front": "Anti-B&B arrangements rule: is there a time limit on re-borrowing?",
+     "back": "No 30-day limit; planned re-borrowing 6 months later can be caught",
+     "evidence": "There is no 30-day limit: a re-borrowing 6 months later can still be caught if it was planned.",
+     "taxYear": "2026/27"
+    },
+    {
+     "id": "directors/anti-bed-and-breakfasting-rules#f4",
+     "lessonId": "directors/anti-bed-and-breakfasting-rules",
+     "front": "Anti-B&B: which repayments fall outside the matching rules?",
+     "back": "Repayments giving rise to income tax, e.g. dividend or bonus credited to the DLA",
+     "evidence": "But the matching rules don't apply to a repayment that itself gives rise to an income tax charge on the participator (s464ZA(6)): a dividend or bonus (taxed through PAYE) credited to the DLA is outside both rules.",
+     "taxYear": "2026/27"
+    },
+    {
+     "id": "directors/anti-bed-and-breakfasting-rules#f5",
+     "lessonId": "directors/anti-bed-and-breakfasting-rules",
+     "front": "Anti-B&B: when is the dividend/bonus exclusion lost?",
+     "back": "If paid out in cash and the cash is paid back in",
+     "evidence": "If it is paid out in cash and the cash is paid back in, the exclusion is lost.",
      "taxYear": "2026/27"
     }
    ]
@@ -4353,27 +4513,41 @@
      "lessonId": "directors/directors-loan-account-basics",
      "front": "DLA: when does a s455 charge arise on an overdrawn balance?",
      "back": "If unpaid 9 months and 1 day after the year end",
-     "evidence": "Tax consequence: s455 charge if unpaid 9 months and 1 day after the year end; beneficial loan BIK if over £10,000.."
+     "evidence": "Tax consequence: s455 charge if unpaid 9 months and 1 day after the year end; beneficial loan BIK if over £10,000."
     },
     {
      "id": "directors/directors-loan-account-basics#f2",
      "lessonId": "directors/directors-loan-account-basics",
-     "front": "DLA: overdrawn balance size that triggers beneficial loan BIK?",
+     "front": "Overdrawn DLA: balance above which beneficial loan BIK may arise?",
      "back": "Over £10,000",
-     "evidence": "Tax consequence: s455 charge if unpaid 9 months and 1 day after the year end; beneficial loan BIK if over £10,000.."
+     "evidence": "Tax consequence: s455 charge if unpaid 9 months and 1 day after the year end; beneficial loan BIK if over £10,000."
     },
     {
      "id": "directors/directors-loan-account-basics#f3",
      "lessonId": "directors/directors-loan-account-basics",
-     "front": "Director's loan to company: tax deducted at source on yearly interest paid?",
+     "front": "Director's loan to company: tax deducted at source from yearly interest paid?",
      "back": "20% (basic rate), accounted for on form CT61 each quarter",
      "evidence": "If it is paid, the company deducts income tax at 20% (basic rate) at source if it is yearly interest paid to an individual, accounts for it on form CT61 each quarter, and the director declares it as savings income."
     },
     {
      "id": "directors/directors-loan-account-basics#f4",
      "lessonId": "directors/directors-loan-account-basics",
-     "front": "Which statute may challenge a director repaying a credit DLA when insolvent?",
-     "back": "Preference, Insolvency Act 1986 s239",
+     "front": "DLA: what does a credit balance mean?",
+     "back": "The company owes the director; no tax consequence on the balance itself",
+     "evidence": "Balance: Credit (liability); Meaning: The company owes the director; Who owes whom: Company → director; Tax consequence: None on the balance itself."
+    },
+    {
+     "id": "directors/directors-loan-account-basics#f5",
+     "lessonId": "directors/directors-loan-account-basics",
+     "front": "Overdrawn DLA: options to clear it before the s455 deadline?",
+     "back": "Declare a dividend (if reserves exist), vote a bonus (PAYE and NIC), or director repays cash",
+     "evidence": "Options: declare a dividend (if reserves exist), vote a bonus (with PAYE and NIC), or the director repays cash."
+    },
+    {
+     "id": "directors/directors-loan-account-basics#f6",
+     "lessonId": "directors/directors-loan-account-basics",
+     "front": "Which Act section lets a liquidator challenge a director repaying themselves from a credit DLA when insolvent?",
+     "back": "Insolvency Act 1986 s239 (preference)",
      "evidence": "A director should never repay themselves from a credit DLA while the company is insolvent or near to it: it may be challenged as a preference (Insolvency Act 1986 s239)."
     }
    ]
@@ -5649,7 +5823,7 @@
     {
      "id": "ir35/chapter-8-deemed-employment-payment#f1",
      "lessonId": "ir35/chapter-8-deemed-employment-payment",
-     "front": "IR35 Ch8 deemed payment: step 1 flat allowance for PSC running costs?",
+     "front": "IR35 Ch8 deemed payment: flat allowance deducted from PSC receipts (step 1)?",
      "back": "5% of payments and benefits received (excluding VAT)",
      "evidence": "Take all payments and benefits received by the PSC in the tax year for relevant engagements (excluding VAT) and deduct 5% (a flat allowance for the PSC's running costs).",
      "taxYear": "2026/27"
@@ -5665,15 +5839,31 @@
     {
      "id": "ir35/chapter-8-deemed-employment-payment#f3",
      "lessonId": "ir35/chapter-8-deemed-employment-payment",
-     "front": "IR35 Ch8: are dividends deductible in the deemed payment calculation?",
-     "back": "No; they are paid from post-tax profit and are outside it",
-     "evidence": "Dividends are not a deduction. They are paid from post-tax profit and are outside the calculation.",
+     "front": "IR35 Ch8: deadline for final figures and balancing tax and NIC?",
+     "back": "31 January after the end of the tax year",
+     "evidence": "If the exact figures aren't ready, put a provisional figure on that FPS, then report the final figures and pay any balancing tax and NIC by 31 January after the end of the tax year.",
      "taxYear": "2026/27"
     },
     {
      "id": "ir35/chapter-8-deemed-employment-payment#f4",
      "lessonId": "ir35/chapter-8-deemed-employment-payment",
-     "front": "IR35 Ch8: if the calculation result is nil or negative?",
+     "front": "IR35 Ch8: penalty position on late balancing payment of deemed payment tax/NIC?",
+     "back": "Interest is charged on the late balance; no late-filing penalty",
+     "evidence": "Interest is charged on the late balance, but no late-filing penalty applies.",
+     "taxYear": "2026/27"
+    },
+    {
+     "id": "ir35/chapter-8-deemed-employment-payment#f5",
+     "lessonId": "ir35/chapter-8-deemed-employment-payment",
+     "front": "IR35 Ch8 deemed payment: are dividends deductible in the calculation?",
+     "back": "No; they are paid from post-tax profit and are outside the calculation",
+     "evidence": "Dividends are not a deduction. They are paid from post-tax profit and are outside the calculation.",
+     "taxYear": "2026/27"
+    },
+    {
+     "id": "ir35/chapter-8-deemed-employment-payment#f6",
+     "lessonId": "ir35/chapter-8-deemed-employment-payment",
+     "front": "IR35 Ch8: what happens if the calculation result is nil or negative?",
      "back": "There is no deemed payment",
      "evidence": "If the result is nil or negative, there is no deemed payment.",
      "taxYear": "2026/27"
@@ -5839,30 +6029,51 @@
     {
      "id": "ir35/ir35-chapter-8-and-chapter-10-explained#f1",
      "lessonId": "ir35/ir35-chapter-8-and-chapter-10-explained",
-     "front": "IR35: when did the intermediaries legislation start?",
+     "front": "IR35: when was the intermediaries legislation introduced?",
      "back": "April 2000",
      "evidence": "IR35 is the shorthand for the intermediaries legislation, introduced in April 2000."
     },
     {
      "id": "ir35/ir35-chapter-8-and-chapter-10-explained#f2",
      "lessonId": "ir35/ir35-chapter-8-and-chapter-10-explained",
-     "front": "Off-payroll working rules: start dates for public and private sector?",
+     "front": "Off-payroll rules: when did they start for public and private sectors?",
      "back": "April 2017 (public sector); April 2021 (private sector)",
      "evidence": "Since April 2017 (public sector) and April 2021 (private sector), the off-payroll working rules have moved the responsibility for deciding status to the client in many cases."
     },
     {
      "id": "ir35/ir35-chapter-8-and-chapter-10-explained#f3",
      "lessonId": "ir35/ir35-chapter-8-and-chapter-10-explained",
-     "front": "IR35 Chapter 8: allowance in the deemed payment calculation?",
-     "back": "5% allowance on the PSC's receipts, plus deductions",
-     "evidence": "Amount charged; Chapter 8 (intermediaries legislation, 'IR35'): A deemed payment calculated on the PSC's receipts with a 5% allowance and deductions; Chapter 10 (off-payroll working rules): The fee-payer's payment to the PSC, less VAT and (in some cases) expenses."
+     "front": "IR35: which ITEPA 2003 sections contain Chapter 8 and Chapter 10?",
+     "back": "Chapter 8: ss48–61; Chapter 10: ss61K–61X",
+     "evidence": "Legislation; Chapter 8 (intermediaries legislation, 'IR35'): ITEPA 2003 ss48–61; Chapter 10 (off-payroll working rules): ITEPA 2003 ss61K–61X."
     },
     {
      "id": "ir35/ir35-chapter-8-and-chapter-10-explained#f4",
      "lessonId": "ir35/ir35-chapter-8-and-chapter-10-explained",
-     "front": "IR35 Chapter 8: when does the PSC account for the deemed employment payment?",
-     "back": "At 5 April",
+     "front": "IR35 Chapter 8: what allowance applies to the PSC's receipts in the deemed payment?",
+     "back": "5% allowance (plus deductions)",
+     "evidence": "Amount charged; Chapter 8 (intermediaries legislation, 'IR35'): A deemed payment calculated on the PSC's receipts with a 5% allowance and deductions; Chapter 10 (off-payroll working rules): The fee-payer's payment to the PSC, less VAT and (in some cases) expenses."
+    },
+    {
+     "id": "ir35/ir35-chapter-8-and-chapter-10-explained#f5",
+     "lessonId": "ir35/ir35-chapter-8-and-chapter-10-explained",
+     "front": "IR35: what is a personal service company's material interest test?",
+     "back": "More than 5% of ordinary share capital (or right to more than 5% of distributions)",
+     "evidence": "A personal service company (PSC) is an intermediary company in which the worker has a material interest: broadly more than 5% of the ordinary share capital (or the right to more than 5% of distributions), or the worker receives payments or benefits directly from the company that aren't employment income and can reasonably be taken to be remuneration for the services."
+    },
+    {
+     "id": "ir35/ir35-chapter-8-and-chapter-10-explained#f6",
+     "lessonId": "ir35/ir35-chapter-8-and-chapter-10-explained",
+     "front": "IR35 Chapter 8: when does the PSC account for tax and NIC?",
+     "back": "Through a deemed employment payment at 5 April",
      "evidence": "Who accounts for tax and NIC; Chapter 8 (intermediaries legislation, 'IR35'): The PSC, through a deemed employment payment at 5 April; Chapter 10 (off-payroll working rules): The fee-payer (client or agency), through deemed direct payments each time the worker is paid."
+    },
+    {
+     "id": "ir35/ir35-chapter-8-and-chapter-10-explained#f7",
+     "lessonId": "ir35/ir35-chapter-8-and-chapter-10-explained",
+     "front": "Off-payroll rules: which clients fall under Chapter 10?",
+     "back": "Public authority, or medium or large private sector client (or UK-connected overseas client)",
+     "evidence": "Applies when the client is…; Chapter 8 (intermediaries legislation, 'IR35'): A small private sector client (and some overseas clients); Chapter 10 (off-payroll working rules): A public authority, or a medium or large private sector client (or a UK-connected overseas client)."
     }
    ]
   },
@@ -5872,33 +6083,41 @@
     {
      "id": "ir35/managed-service-companies-and-msc-provider-liability#f1",
      "lessonId": "ir35/managed-service-companies-and-msc-provider-liability",
-     "front": "MSC: how many s61B(1) conditions must be met for a company to be an MSC?",
-     "back": "All four conditions",
+     "front": "MSC rules: how many s61B(1) conditions must be met for a company to be an MSC?",
+     "back": "All four",
      "evidence": "HMRC guidance (ESM3510) explains that a company is an MSC only if all four conditions of s61B(1) are met.",
      "taxYear": "2026/27"
     },
     {
      "id": "ir35/managed-service-companies-and-msc-provider-liability#f2",
      "lessonId": "ir35/managed-service-companies-and-msc-provider-liability",
-     "front": "MSC rules: which ITEPA 2003 provisions contain them?",
-     "back": "ITEPA 2003 Part 2 Chapter 9 (ss61A–61J)",
-     "evidence": "Parliament dealt with these arrangements separately from the IR35 rules in ITEPA 2003 Part 2 Chapter 9 (ss61A–61J), with the aim of making the worker's payments subject to PAYE and NIC and making the provider a target for recovery.",
+     "front": "MSC rules: which ITEPA 2003 provision lets HMRC recover unpaid PAYE/NIC from the MSC provider and others?",
+     "back": "s688A ITEPA",
+     "evidence": "Liability transfer (s688A ITEPA): if the MSC doesn't account for the PAYE and NIC, HMRC can recover them from other persons, including the MSC provider, and in some cases from those who control or benefit from the MSC (such as directors or associates).",
      "taxYear": "2026/27"
     },
     {
      "id": "ir35/managed-service-companies-and-msc-provider-liability#f3",
      "lessonId": "ir35/managed-service-companies-and-msc-provider-liability",
-     "front": "MSC: which ITEPA section lets HMRC recover unpaid PAYE from persons other than the MSC?",
-     "back": "s688A ITEPA (liability transfer)",
-     "evidence": "Liability transfer (s688A ITEPA): if the MSC doesn't account for the PAYE and NIC, HMRC can recover them from other persons, including the MSC provider, and in some cases from those who control or benefit from the MSC (such as directors or associates).",
+     "front": "MSC v Chapter 10: which takes precedence where both can apply, and from when?",
+     "back": "Chapter 10: public authorities from 6 April 2017; medium/large clients from 6 April 2021",
+     "evidence": "Where both can apply, Chapter 10 takes precedence (public authorities from 6 April 2017; medium or large clients from 6 April 2021), so the engagement is taken out of Chapter 9.",
      "taxYear": "2026/27"
     },
     {
      "id": "ir35/managed-service-companies-and-msc-provider-liability#f4",
      "lessonId": "ir35/managed-service-companies-and-msc-provider-liability",
-     "front": "PSC (Chapter 8): what allowance applies to the deemed employment payment calculation?",
+     "front": "IR35 PSC deemed employment payment: what allowance is applied to PSC receipts (Chapter 8)?",
      "back": "5% allowance",
      "evidence": "Tax result; Personal service company: Deemed employment payment calculated on the PSC's receipts (5% allowance); Managed service company: Payments to the worker treated as employment income, with the MSC as employer accounting for PAYE and NIC.",
+     "taxYear": "2026/27"
+    },
+    {
+     "id": "ir35/managed-service-companies-and-msc-provider-liability#f5",
+     "lessonId": "ir35/managed-service-companies-and-msc-provider-liability",
+     "front": "MSC v Chapter 8: which rules take precedence where both could apply?",
+     "back": "The MSC rules (Chapter 9) take precedence over Chapter 8",
+     "evidence": "For small clients, Chapter 9 can still apply to an MSC, and where both Chapter 9 and Chapter 8 could apply, the MSC rules take precedence over Chapter 8.",
      "taxYear": "2026/27"
     }
    ]
@@ -9147,22 +9366,36 @@
     {
      "id": "rd/consumables-software-data-and-cloud#f1",
      "lessonId": "rd/consumables-software-data-and-cloud",
-     "front": "R&D: from when must software, consumables, data and cloud costs be paid to qualify?",
+     "front": "R&D relief: from when are data licences and cloud costs qualifying?",
      "back": "Accounting periods beginning on or after 1 April 2023",
-     "evidence": "For accounting periods beginning on or after 1 April 2023, software, consumables, data licences and cloud costs (like staffing costs and EPWs) must actually have been paid to qualify."
+     "evidence": "Category: Data licences; What qualifies: Licences for datasets used directly in the R&D (APs beginning on or after 1 April 2023); Key restriction: Must directly contribute to resolving the uncertainty (qualifying indirect activities don't count)."
     },
     {
      "id": "rd/consumables-software-data-and-cloud#f2",
      "lessonId": "rd/consumables-software-data-and-cloud",
-     "front": "R&D: capital expenditure on plant and machinery - what relief applies?",
-     "back": "R&D allowances at 100% in year of spend, not an R&D credit",
-     "evidence": "Instead it may qualify for research and development allowances (RDAs) at 100% in the year of spend (CAA 2001 Part 6)."
+     "front": "R&D relief: when must software, consumables, data and cloud costs be paid?",
+     "back": "APs beginning on or after 1 April 2023: must actually have been paid; unpaid accruals don't count until paid",
+     "evidence": "For accounting periods beginning on or after 1 April 2023, software, consumables, data licences and cloud costs (like staffing costs and EPWs) must actually have been paid to qualify."
     },
     {
      "id": "rd/consumables-software-data-and-cloud#f3",
      "lessonId": "rd/consumables-software-data-and-cloud",
-     "front": "R&D: what % of externally provided worker payments qualifies (unconnected)?",
-     "back": "65% of staff provider payments",
+     "front": "R&D consumables: when are they excluded?",
+     "back": "Where they become part of an item produced in the R&D that is sold or transferred in the ordinary course of business",
+     "evidence": "Since 1 April 2015, the cost of consumables is excluded where they become part of an item produced in the R&D that is then sold or transferred in the ordinary course of business (CTA 2009 s1126A; see CIRD136000 for the merged scheme and ERIS, CIRD82300 for the old schemes)."
+    },
+    {
+     "id": "rd/consumables-software-data-and-cloud#f4",
+     "lessonId": "rd/consumables-software-data-and-cloud",
+     "front": "R&D: what rate of relief do R&D allowances (RDAs) give on capital spend?",
+     "back": "100% in the year of spend",
+     "evidence": "Instead it may qualify for research and development allowances (RDAs) at 100% in the year of spend (CAA 2001 Part 6)."
+    },
+    {
+     "id": "rd/consumables-software-data-and-cloud#f5",
+     "lessonId": "rd/consumables-software-data-and-cloud",
+     "front": "R&D: what percentage of externally provided worker payments qualifies (unconnected)?",
+     "back": "65%",
      "evidence": "Category: Externally provided workers; What qualifies: 65% (unconnected) of staff provider payments; Key restriction: UK PAYE condition."
     }
    ]

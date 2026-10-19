@@ -5,6 +5,7 @@
  *
  *   npx tsx scripts/flashcards.mts submit [--all]   lessons without cards (or whose text changed); --all redoes everything
  *   npx tsx scripts/flashcards.mts collect          writes cards once the batch has finished (safe to re-run)
+ *   npx tsx scripts/flashcards.mts now --thin       redrafts only lessons left with fewer than 5 cards
  *   npx tsx scripts/flashcards.mts salvage          no AI, free: after a lesson is edited, keeps the cards whose evidence is
  *                                                   still word-for-word in the new text and drops the rest
  */
@@ -131,7 +132,10 @@ function save(file: CardFile) {
  * Direct mode: full price (about twice the batch cost) but done in minutes. Cancels any waiting batch first.
  * Saves as it goes, so it can be stopped and re-run; lessons with up-to-date cards are skipped.
  */
-async function now(all: boolean) {
+/** Lessons left with fewer cards than this (e.g. after a fact-check dropped some) are redrafted by "now --thin". */
+const THIN = 5;
+
+async function now(all: boolean, thin = false) {
   if (fs.existsSync(STATE)) {
     const { batchId } = JSON.parse(fs.readFileSync(STATE, "utf8")) as { batchId: string };
     await client().messages.batches.cancel(batchId).catch(() => {});
@@ -139,7 +143,7 @@ async function now(all: boolean) {
     console.log(`Cancelled waiting batch ${batchId}.`);
   }
   const file = load();
-  const todo = allLessons().filter((r) => all || file.lessons[r.id]?.hash !== lessonTextHash(r.lesson));
+  const todo = allLessons().filter((r) => all || file.lessons[r.id]?.hash !== lessonTextHash(r.lesson) || (thin && (file.lessons[r.id]?.cards.length ?? 0) < THIN));
   let kept = 0;
   let micros = 0;
   let done = 0;
@@ -207,6 +211,6 @@ function salvage() {
 const [cmd, flag] = process.argv.slice(2);
 if (cmd === "submit") await submit(flag === "--all");
 else if (cmd === "collect") await collect();
-else if (cmd === "now") await now(flag === "--all");
+else if (cmd === "now") await now(flag === "--all", flag === "--thin");
 else if (cmd === "salvage") salvage();
 else console.log("Usage: flashcards.mts submit [--all] | collect | now [--all] | salvage");
