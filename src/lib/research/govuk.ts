@@ -72,8 +72,14 @@ interface ContentItem {
     parts?: { title?: string; body?: string; slug?: string }[];
     introductory_paragraph?: string;
     more_information?: string;
+    /** Publications (policy papers, TIINs, Briefs) keep their text in HTML attachments. */
+    attachments?: { attachment_type?: string; url?: string; title?: string }[];
   };
 }
+
+/** Most HTML attachments followed per publication, and a cap on the text kept (Budget documents are huge). */
+const MAX_ATTACHMENTS = 3;
+const MAX_TEXT = 400_000;
 
 function publisherFor(item: ContentItem): string {
   const type = item.document_type ?? "";
@@ -92,7 +98,16 @@ export async function fetchGovUkDocument(path: string): Promise<FetchResult> {
   if (!item) return { status: "error" };
   const d = item.details ?? {};
   const html = [d.introductory_paragraph, d.body, ...(d.parts ?? []).map((p) => `<h2>${p.title ?? ""}</h2>${p.body ?? ""}`), d.more_information].filter(Boolean).join("\n");
-  const text = htmlToText(html);
+  let text = htmlToText(html);
+  // A publication's summary is short; its substance (e.g. a tax information and impact note) is in the attachment.
+  const htmlAttachments = (d.attachments ?? []).filter((a) => a.attachment_type === "html" && a.url?.startsWith("/")).slice(0, MAX_ATTACHMENTS);
+  for (const a of htmlAttachments) {
+    const r = await govUkFetch(`${BASE}/api/content${a.url}`);
+    const sub = r?.ok ? ((await r.json().catch(() => null)) as ContentItem | null) : null;
+    const body = sub?.details?.body;
+    if (body) text += `\n\n## ${a.title ?? sub?.title ?? "Attachment"}\n\n${htmlToText(body)}`;
+  }
+  if (text.length > MAX_TEXT) text = text.slice(0, MAX_TEXT);
   if (text.length < 80) return { status: "empty", title: item.title ?? path, updatedAt: item.public_updated_at ?? null };
   return { status: "ok", page: { url: `${BASE}${path}`, title: item.title ?? path, publisher: publisherFor(item), text, updatedAt: item.public_updated_at ?? null } };
 }

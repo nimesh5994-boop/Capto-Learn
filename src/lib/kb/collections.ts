@@ -70,6 +70,10 @@ export const GUIDANCE_ORGS: ManualDef[] = [
   // guidance category, but hold the plain-English thresholds, rates and deadlines practitioners look up most.
   { slug: "hmrc-mainstream", label: "HMRC GOV.UK guides and answers", query: "filter_organisations=hm-revenue-customs&filter_format=guide&filter_format=answer" },
   { slug: "companies-house-mainstream", label: "Companies House GOV.UK guides and answers", query: "filter_organisations=companies-house&filter_format=guide&filter_format=answer" },
+  // What's coming: Budget measures, tax information and impact notes (TIINs), technical notes and Revenue and
+  // Customs Briefs are HMRC policy papers; HM Treasury publishes the Budget documents. From 2024 onwards.
+  { slug: "hmrc-policy-papers", label: "HMRC policy papers (Budget measures, TIINs, technical notes, Revenue and Customs Briefs)", query: "filter_organisations=hm-revenue-customs&filter_content_store_document_type=policy_paper&filter_public_timestamp=from:2024-01-01" },
+  { slug: "hmt-tax-policy", label: "HM Treasury tax policy papers (Budget documents)", query: "filter_organisations=hm-treasury&filter_content_store_document_type=policy_paper&filter_public_timestamp=from:2024-01-01&q=tax" },
 ];
 
 /** A full re-check of every collection happens at most this often (the "weekly sync"). */
