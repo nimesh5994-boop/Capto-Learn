@@ -75,7 +75,9 @@ export const GLOSSARY: Concept[] = [
   { name: "cash accounting scheme", aliases: ["cash accounting", "cash accounting scheme"], topics: ["vat"] },
   { name: "partial exemption", aliases: ["partially exempt", "partial exempt", "exempt and taxable supplies", "partial exemption", "exempt input tax", "de minimis"], topics: ["vat"] },
   { name: "reverse charge", aliases: ["reverse charge", "domestic reverse charge", "drc"], official: ["VAT domestic reverse charge"], topics: ["vat", "cis"], pin: { lead: "Under the reverse charge the customer, not the supplier, accounts for the VAT.", also: ["The supplier invoices without charging VAT.", "The customer declares output tax on its own VAT return"] } },
-  { name: "VAT return", aliases: ["vat return", "vat returns", "making tax digital", "mtd"], topics: ["vat"] },
+  { name: "VAT return", aliases: ["vat return", "vat returns", "mtd for vat", "mtd vat", "making tax digital for vat"], topics: ["vat"] },
+  // Plain "MTD" is ambiguous: VAT has been under MTD since 2019 and Income Tax since April 2026, so point at both.
+  { name: "Making Tax Digital", aliases: ["making tax digital", "mtd"], official: ["Making Tax Digital"], topics: ["personal-tax", "vat"] },
   { name: "zero-rated and exempt supplies", aliases: ["zero rated", "zero-rated", "exempt", "exemption", "standard rated", "reduced rate"], topics: ["vat"] },
   { name: "business entertainment", aliases: ["entertainment", "client entertaining", "staff party", "staff entertainment"], official: ["business entertainment input tax"], topics: ["vat", "corporation-tax"] },
 

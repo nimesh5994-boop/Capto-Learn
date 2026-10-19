@@ -5,6 +5,7 @@
  */
 import { Lexer, type Token, type Tokens } from "marked";
 import type { ResearchAnswer } from "./types";
+import { answerText, findStatuteRefs } from "./statuteRefs";
 
 export interface Run {
   text: string;
@@ -271,6 +272,15 @@ export function buildReport(question: string, answer: ResearchAnswer, meta: Repo
       { kind: "h3", text: `[${s.id}] ${s.title}` },
       { kind: "p", tone: "muted", runs: [{ text: `${s.publisher}${s.updatedAt ? ` · last updated ${fmtDate(s.updatedAt)}` : ""} · ` }, { text: link, link }] },
       ...cited.filter((c) => c.sourceId === s.id).map((c): Block => ({ kind: "quote", text: c.quote, source: `[${s.id}]`, verified: c.verified }))
+    );
+  }
+
+  const statutes = findStatuteRefs(answerText(answer));
+  if (statutes.length) {
+    out.push(
+      { kind: "h3", text: "Legislation referred to" },
+      { kind: "p", tone: "muted", runs: [{ text: "Links to legislation.gov.uk. Check the version in force for the period concerned." }] },
+      { kind: "list", ordered: false, items: statutes.map((r) => [{ text: r.label, link: r.url }]) }
     );
   }
 

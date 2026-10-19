@@ -4,6 +4,7 @@ import type { AnswerLevel, Citation, ResearchAnswer, ResearchSource } from "@/li
 import { renderMarkdown } from "@/lib/markdown";
 import { date } from "@/lib/format";
 import { DepthSwitch } from "./DepthSwitch";
+import { answerText, findStatuteRefs } from "@/lib/research/statuteRefs";
 import styles from "./ask.module.css";
 
 const CONFIDENCE = {
@@ -59,6 +60,7 @@ export function AnswerView({ question, answer }: { question: string; answer: Res
   for (const p of answer.points) counts[legacy ? "essentials" : levelOf(p.level)]++;
   const official = answer.sources.filter((s) => s.kind !== "lesson");
   const lessons = answer.sources.filter((s) => s.kind === "lesson");
+  const statutes = findStatuteRefs(answerText(answer));
   const ask = (suffix: string) => `/ask?q=${encodeURIComponent(`${question} — ${suffix}`)}`;
 
   return (
@@ -276,6 +278,24 @@ export function AnswerView({ question, answer }: { question: string; answer: Res
           ))}
         </ul>
       </section>
+
+      {statutes.length > 0 && (
+        <section className="card card-pad stack" style={{ gap: 8 }}>
+          <h3 style={{ margin: 0 }}>Legislation referred to</h3>
+          <p className="small faint" style={{ margin: 0 }}>
+            Opens the provision on legislation.gov.uk. Check the version in force for the period you&apos;re advising on.
+          </p>
+          <ul className="small" style={{ margin: 0, paddingLeft: 18 }}>
+            {statutes.map((r) => (
+              <li key={r.url}>
+                <a href={r.url} target="_blank" rel="noopener noreferrer">
+                  {r.label} <ExternalLink size={11} />
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       {answer.relatedLessons.length > 0 && (
         <section className="card card-pad stack" style={{ gap: 8 }}>
