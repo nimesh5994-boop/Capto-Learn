@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { useId, type ReactNode } from "react";
 import { rate } from "@/content/rates";
 import { gbp } from "@/lib/calc/common";
 import { parseMoney } from "@/lib/calc/parse";
@@ -158,5 +158,41 @@ export function FiguresCard({ title, rows, children }: { title: string; rows: [s
       </div>
       {children}
     </section>
+  );
+}
+
+/** Plain labelled input (text or date), styled like the shared fields. */
+export function PlainField({
+  label,
+  value,
+  onChange,
+  type = "text",
+  help,
+  error,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  type?: "text" | "date";
+  help?: ReactNode;
+  error?: string;
+}) {
+  const id = useId();
+  const described = [error ? `${id}-err` : "", help ? `${id}-help` : ""].filter(Boolean).join(" ") || undefined;
+  return (
+    <div className={`${styles.field} ${error ? styles.invalid : ""}`}>
+      <label htmlFor={id}>{label}</label>
+      <input id={id} type={type} autoComplete="off" value={value} onChange={(e) => onChange(e.target.value)} aria-invalid={!!error} aria-describedby={described} />
+      {error && (
+        <div id={`${id}-err`} className={styles.fieldError}>
+          {error}
+        </div>
+      )}
+      {help && (
+        <div id={`${id}-help`} className={styles.help}>
+          {help}
+        </div>
+      )}
+    </div>
   );
 }

@@ -3,3 +3,4 @@ export * from "./targets";
 export * from "./saPayments";
 export * from "./selfEmployed";
 export * from "./property";
+export * from "./partnership";

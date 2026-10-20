@@ -62,6 +62,12 @@ export interface PersonalTaxInput {
   property?: PropertyInput;
   /** Other non-savings income: state and private pensions, taxable benefits, other income. */
   otherNonSavings?: number;
+  /**
+   * Transition profit from basis period reform taxed in this year (BIM81310). Taxed as trading income, but
+   * excluded from net income, so from adjusted net income for the HICBC; the tax on it is worked out with it
+   * included, so it can still taper the personal allowance (BIM81320).
+   */
+  transitionProfit?: number;
   savings?: number;
   dividends?: number;
   /** Reliefs deducted from total income (e.g. trade loss relief against general income, qualifying loan interest). */
@@ -91,6 +97,7 @@ function normalise(i: PersonalTaxInput): N {
     trading: i.trading,
     property: i.property,
     otherNonSavings: i.otherNonSavings ?? 0,
+    transitionProfit: i.transitionProfit ?? 0,
     savings: i.savings ?? 0,
     dividends: i.dividends ?? 0,
     reliefs: i.reliefs ?? 0,
@@ -120,7 +127,11 @@ export interface PersonalTaxResult extends CalcResult {
   netIncome: number;
   grossGiftAid: number;
   grossPension: number;
+  /** Adjusted net income (ITA 2007 s58), excluding any transition profit: the measure for the HICBC. */
   adjustedNetIncome: number;
+  /** Adjusted net income including transition profit: the measure for the personal allowance taper (BIM81320 notional calculation). */
+  allowanceIncome: number;
+  transitionProfit: number;
   /** Personal allowance after the taper and any marriage allowance transfer out (excludes blind person's allowance). */
   personalAllowance: number;
   blindPersonsAllowance: number;
@@ -178,6 +189,7 @@ export function validatePersonalTax(input: PersonalTaxInput): string[] {
   requireNonNegative(e, "Employment income", i.employment);
   requireNonNegative(e, "Net pay pension contributions", i.netPayPension);
   requireNonNegative(e, "Other non-savings income", i.otherNonSavings);
+  requireNonNegative(e, "Transition profit", i.transitionProfit);
   requireNonNegative(e, "Savings income", i.savings);
   requireNonNegative(e, "Dividends", i.dividends);
   requireNonNegative(e, "Reliefs", i.reliefs);
@@ -354,7 +366,8 @@ function compute(i: N, propertyAllowance: boolean, allowMarriageRetry: boolean):
   const pr = i.property ? propertyOutcome(R, i.property, propertyAllowance) : undefined;
   if (pr) working.push(...pr.lines);
   if (i.otherNonSavings) working.push({ label: "Other non-savings income (pensions, benefits, other)", amount: i.otherNonSavings });
-  const nsGross = employmentNet + (tr?.profit ?? 0) + (pr?.profit ?? 0) + i.otherNonSavings;
+  if (i.transitionProfit) working.push({ label: "Transition profit taxed this year (basis period reform, BIM81310)", amount: i.transitionProfit });
+  const nsGross = employmentNet + (tr?.profit ?? 0) + (pr?.profit ?? 0) + i.otherNonSavings + i.transitionProfit;
   if (i.savings) working.push({ label: "Savings income (interest)", amount: i.savings });
   if (i.dividends) working.push({ label: "Dividend income", amount: i.dividends });
   const totalIncome = nsGross + i.savings + i.dividends;
@@ -387,9 +400,14 @@ function compute(i: N, propertyAllowance: boolean, allowMarriageRetry: boolean):
   const grossPension = r2(i.rasPensionNet / (1 - rasRate / 100));
   const extension = grossGiftAid + grossPension;
   const ani = netIncome - extension;
+  // Transition profit after reliefs (reliefs taken from other non-savings income first) is left out of
+  // net income for adjusted net income purposes (BIM81320); the HICBC uses that measure (ITA 2007 s58).
+  const transitionNet = Math.max(0, i.transitionProfit - Math.max(0, reliefNS - (nsGross - i.transitionProfit)));
+  const aniStatutory = ani - transitionNet;
   if (grossGiftAid) working.push({ label: `Gift Aid paid ${gbp(i.giftAidNet)} grossed up at ${pctLabel(gaRate)}`, amount: grossGiftAid, rateId: "it.basic-rate", kind: "memo" });
   if (grossPension) working.push({ label: `Relief-at-source pension ${gbp(i.rasPensionNet)} grossed up at ${pctLabel(rasRate)}`, amount: grossPension, rateId: rasRateId, kind: "memo" });
   if (extension) working.push({ label: "Adjusted net income (net income less gross Gift Aid and pension)", amount: r2(ani), kind: "memo" });
+  if (transitionNet) working.push({ label: "Adjusted net income excluding transition profit (used for the Child Benefit charge)", amount: r2(aniStatutory), kind: "memo" });
 
   // ── Allowances ──────────────────────────────────────────────────────────
   const pa0 = R.gbp("it.personal-allowance");
@@ -583,16 +601,16 @@ function compute(i: N, propertyAllowance: boolean, allowMarriageRetry: boolean):
     const upper = R.gbp("it.hicbc-upper");
     // 1% for every £step of ANI above the threshold; step = (upper − threshold) ÷ 100 (£200 for these years).
     const step = (upper - threshold) / 100;
-    if (ani > threshold) {
+    if (aniStatutory > threshold) {
       // s681C(3): the percentage and the charge are each rounded down to a whole number.
-      hicbcPercent = Math.min(100, Math.floor((ani - threshold) / step + 1e-9));
+      hicbcPercent = Math.min(100, Math.floor((aniStatutory - threshold) / step + 1e-9));
       hicbc = Math.floor((i.childBenefit * hicbcPercent) / 100 + 1e-9);
     }
     working.push({
       label:
-        ani > threshold
-          ? `High Income Child Benefit Charge: ${hicbcPercent}% (1% per complete ${gbp(step)} of ANI ${gbp(ani)} over ${gbp(threshold)}) × ${gbp(i.childBenefit)}`
-          : `High Income Child Benefit Charge: ANI ${gbp(ani)} not over ${gbp(threshold)}`,
+        aniStatutory > threshold
+          ? `High Income Child Benefit Charge: ${hicbcPercent}% (1% per complete ${gbp(step)} of ANI ${gbp(aniStatutory)} over ${gbp(threshold)}) × ${gbp(i.childBenefit)}`
+          : `High Income Child Benefit Charge: ANI ${gbp(aniStatutory)} not over ${gbp(threshold)}`,
       amount: hicbc,
       rateId: "it.hicbc-threshold",
     });
@@ -649,7 +667,9 @@ function compute(i: N, propertyAllowance: boolean, allowMarriageRetry: boolean):
     netIncome: r2(netIncome),
     grossGiftAid,
     grossPension,
-    adjustedNetIncome: r2(ani),
+    adjustedNetIncome: r2(aniStatutory),
+    allowanceIncome: r2(ani),
+    transitionProfit: i.transitionProfit,
     personalAllowance: r2(pa),
     blindPersonsAllowance: bpa,
     allowancesUsed: r2(allowancesUsed),

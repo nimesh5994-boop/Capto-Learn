@@ -18,6 +18,13 @@ import {
   selfEmployedTax,
   solveMinPennies,
   validatePersonalTax,
+  incomeCutForAniCap,
+  partnershipTax,
+  pensionForAniCap,
+  transitionSchedule,
+  validatePartnership,
+  type PartnershipInput,
+  type PartnerTerms,
   type PersonalTaxInput,
   type PropertyInput,
   type TradingInput,
@@ -434,3 +441,237 @@ describe("validation", () => {
 function r2(x: number) {
   return Math.round(x * 100) / 100;
 }
+
+// ── Partnerships ────────────────────────────────────────────────────────────
+
+describe("partnershipTax: allocation", () => {
+  const terms = (salary: number, capital: number, share: number): PartnerTerms => ({ salary, capital, share });
+  const firm = (profit: number, t: PartnerTerms[], extra: Partial<PartnershipInput> = {}, rate = 0): PartnershipInput => ({
+    taxYear: Y,
+    method: "days",
+    periods: [{ start: "2026-04-01", end: "2027-03-31", profit }],
+    arrangements: [{ from: "", interestRate: rate, terms: t }],
+    partners: t.map((_, j) => ({ name: `P${j + 1}` })),
+    ...extra,
+  });
+  const third = 100 / 3;
+
+  it("personal-tax/partnership-income › Fenwick & Shah: Anna £85,000, Ravi £43,000", () => {
+    const r = partnershipTax(firm(128000, [terms(20000, 40000, 60), terms(0, 20000, 40)], {}, 5));
+    expect(r.partners.map((p) => p.taxYearShare)).toEqual([85000, 43000]);
+    expect(r.firmTaxYearProfit).toBe(128000); // 31 March year end treated as 5 April (BIM81210)
+    // Anna: £37,700 × 20% + £34,730 × 40% = £21,432; Class 4 £2,262 + £34,730 × 2% = £2,956.60.
+    expect(r.partners[0].result.incomeTax.tax).toBe(21432);
+    expect(r.partners[0].result.class4.total).toBe(2956.6);
+  });
+  it("personal-tax/partnership-income › partner-share: B £39,800 (A £80,200)", () => {
+    const r = partnershipTax(firm(120000, [terms(20000, 40000, 60), terms(0, 20000, 40)], {}, 5));
+    expect(r.partners.map((p) => p.taxYearShare)).toEqual([80200, 39800]);
+  });
+  it("accounts-production/sole-trader-and-partnership-year-end › partnership-allocation: Ann £58,200", () => {
+    expect(partnershipTax(firm(90000, [terms(10000, 40000, 60), terms(0, 20000, 40)], {}, 5)).partners[0].taxYearShare).toBe(58200);
+  });
+  it("foundations/partnership-appropriation-basics › residual-share: B £34,500 (A £45,500)", () => {
+    const r = partnershipTax(firm(80000, [terms(10000, 50000, 50), terms(0, 25000, 50)], {}, 4));
+    expect(r.partners.map((p) => p.taxYearShare)).toEqual([45500, 34500]);
+  });
+  it("personal-tax/partnership-income › ratio-change (E joins 1 October; by months): C £81,000", () => {
+    const input: PartnershipInput = {
+      ...firm(180000, [terms(0, 0, 50), terms(0, 0, 50), terms(0, 0, 0)]),
+      method: "months",
+      arrangements: [
+        { from: "", interestRate: 0, terms: [terms(0, 0, 50), terms(0, 0, 50), terms(0, 0, 0)] },
+        { from: "2026-10-01", interestRate: 0, terms: [terms(0, 0, 40), terms(0, 0, 40), terms(0, 0, 20)] },
+      ],
+    };
+    const r = partnershipTax(input);
+    expect(r.partners.map((p) => p.taxYearShare)).toEqual([81000, 81000, 18000]);
+    // By days (HMRC's default): 183 and 182 days.
+    const d = partnershipTax({ ...input, method: "days" });
+    expect(d.partners[0].taxYearShare).toBe(81024.66);
+    expect(d.partners[2].taxYearShare).toBe(17950.68);
+  });
+  it("edge: a partner joining on the first day or the last day", () => {
+    const base = firm(180000, [terms(0, 0, 50), terms(0, 0, 50), terms(0, 0, 0)]);
+    const join = (from: string) =>
+      partnershipTax({
+        ...base,
+        arrangements: [
+          { from: "", interestRate: 0, terms: [terms(0, 0, 50), terms(0, 0, 50), terms(0, 0, 0)] },
+          { from, interestRate: 0, terms: [terms(0, 0, 40), terms(0, 0, 40), terms(0, 0, 20)] },
+        ],
+      });
+    expect(join("2026-04-01").partners[2].taxYearShare).toBe(36000);
+    expect(join("2027-03-31").partners[2].taxYearShare).toBe(98.63); // 20% × £180,000 × 1/365
+  });
+
+  // HMRC Partnership Manual PM163060: https://www.gov.uk/hmrc-internal-manuals/partnership-manual/pm163060
+  it("PM163060 example 1: no reallocation (£3,700 / £3,700 / £1,500)", () => {
+    const r = partnershipTax(firm(8900, [terms(2200, 0, third), terms(2200, 0, third), terms(0, 0, third)]));
+    expect(r.periods[0].reallocated).toBe(false);
+    expect(r.partners.map((p) => p.taxYearShare)).toEqual([3700, 3700, 1500]);
+  });
+  it("PM163060 example 2: Cassandra's notional loss of £500 reallocated → £4,450 / £4,450 / nil", () => {
+    const r = partnershipTax(firm(8900, [terms(5200, 0, third), terms(5200, 0, third), terms(0, 0, third)]));
+    expect(r.periods[0].notional.map(r2)).toEqual([4700, 4700, -500]);
+    expect(r.periods[0].reallocated).toBe(true);
+    expect(r.partners.map((p) => p.taxYearShare)).toEqual([4450, 4450, 0]);
+  });
+  it("PM163060 example 3: overall loss £1,600 → nil / (£533) / (£1,067)", () => {
+    const r = partnershipTax(firm(-1600, [terms(4400, 0, 25), terms(0, 0, 25), terms(0, 0, 50)]));
+    expect(r.periods[0].notional.map(r2)).toEqual([2900, -1500, -3000]);
+    expect(r.partners.map((p) => Math.round(p.taxYearShare))).toEqual([0, -533, -1067]);
+    expect(r.partners[2].loss).toBe(1066.67);
+    expect(r.partners[2].result.tax).toBe(0);
+    expect(r.partners[2].result.notes[0]).toMatch(/trading loss/);
+  });
+  it("edge: zero profit with salaries → every share nil", () => {
+    const r = partnershipTax(firm(0, [terms(10000, 0, 50), terms(0, 0, 50)]));
+    expect(r.partners.map((p) => p.taxYearShare)).toEqual([0, 0]);
+  });
+  it("edge: overall loss shared in ratio", () => {
+    const r = partnershipTax(firm(-10000, [terms(0, 0, 50), terms(0, 0, 50)]));
+    expect(r.partners.map((p) => p.taxYearShare)).toEqual([-5000, -5000]);
+  });
+});
+
+describe("partnershipTax: tax-year basis", () => {
+  const two = (periods: PartnershipInput["periods"], taxYear = Y, method: "days" | "months" = "days"): PartnershipInput => ({
+    taxYear,
+    method,
+    periods,
+    arrangements: [{ from: "", interestRate: 0, terms: [{ salary: 0, capital: 0, share: 50 }, { salary: 0, capital: 0, share: 50 }] }],
+    partners: [{ name: "A" }, { name: "B" }],
+  });
+  // BIM81201 example 1: accounts to 30 September; 2026-27 = £45,000 × 178/365 + £75,000 × 187/365 = £60,370.
+  // https://www.gov.uk/hmrc-internal-manuals/business-income-manual/bim81201
+  it("BIM81201 example 1: 2026/27 profit £60,370 (178 and 187 days)", () => {
+    const r = partnershipTax(
+      two([
+        { start: "2025-10-01", end: "2026-09-30", profit: 45000 },
+        { start: "2026-10-01", end: "2027-09-30", profit: 75000 },
+      ])
+    );
+    expect(r.taxYearFractions).toEqual([
+      { inYear: 178, length: 365 },
+      { inYear: 187, length: 365 },
+    ]);
+    expect(Math.round(r.firmTaxYearProfit)).toBe(60370);
+  });
+  it("BIM81201 example 2: profit then loss → £33,082 for 2026/27", () => {
+    const r = partnershipTax(
+      two([
+        { start: "2026-01-01", end: "2026-12-31", profit: 50000 },
+        { start: "2027-01-01", end: "2027-12-31", profit: -15000 },
+      ])
+    );
+    expect(Math.round(r.firmTaxYearProfit)).toBe(33082);
+  });
+  it("accounts-production/… › tax-year-apportion (31 December year end, by months): £63,000 for 2025/26", () => {
+    const r = partnershipTax(
+      two(
+        [
+          { start: "2025-01-01", end: "2025-12-31", profit: 60000 },
+          { start: "2026-01-01", end: "2026-12-31", profit: 72000 },
+        ],
+        "2025/26",
+        "months"
+      )
+    );
+    expect(r.firmTaxYearProfit).toBe(63000);
+  });
+  it("personal-tax/self-employment-trading-income › tax-year-basis (Marco, 30 September, by months): £54,000", () => {
+    const r = partnershipTax(
+      two(
+        [
+          { start: "2025-10-01", end: "2026-09-30", profit: 48000 },
+          { start: "2026-10-01", end: "2027-09-30", profit: 60000 },
+        ],
+        Y,
+        "months"
+      )
+    );
+    expect(r.firmTaxYearProfit).toBe(54000);
+  });
+  it("validation: shares, contiguity, partner numbers", () => {
+    const ok = two([{ start: "2026-04-06", end: "2027-04-05", profit: 1000 }]);
+    expect(validatePartnership(ok)).toEqual([]);
+    expect(
+      validatePartnership({
+        ...ok,
+        arrangements: [{ from: "", interestRate: 0, terms: [{ salary: 0, capital: 0, share: 50 }, { salary: 0, capital: 0, share: 40 }] }],
+      })[0]
+    ).toMatch(/90%/);
+    expect(
+      validatePartnership(
+        two([
+          { start: "2025-10-01", end: "2026-09-30", profit: 1 },
+          { start: "2026-10-02", end: "2027-09-30", profit: 1 },
+        ])
+      ).join(" ")
+    ).toMatch(/day after/);
+    expect(validatePartnership({ ...ok, partners: [{ name: "A" }] }).join(" ")).toMatch(/2 to 10/);
+  });
+});
+
+describe("transition profits (basis period reform)", () => {
+  // BIM81310 examples 19–22: https://www.gov.uk/hmrc-internal-manuals/business-income-manual/bim81310
+  const amounts = (s: ReturnType<typeof transitionSchedule>) => s.map((x) => x.amount);
+  it("BIM81310 example 19: £30,000 spread £6,000 a year", () => {
+    expect(amounts(transitionSchedule(30000))).toEqual([6000, 6000, 6000, 6000, 6000]);
+  });
+  it("BIM81310 example 20: ceasing in 2025/26 → £4,000, £4,000, £12,000", () => {
+    expect(amounts(transitionSchedule(20000, {}, "2025/26"))).toEqual([4000, 4000, 12000, 0, 0]);
+  });
+  it("BIM81310 example 21: extra £3,000 in 2025/26 → £9,000 then £4,500 and £4,500", () => {
+    expect(amounts(transitionSchedule(30000, { "2025/26": 3000 }))).toEqual([6000, 6000, 9000, 4500, 4500]);
+  });
+  it("BIM81310 example 22: two elections → £4,000, £5,200, £4,600, £3,100, £3,100", () => {
+    expect(amounts(transitionSchedule(20000, { "2024/25": 1200, "2025/26": 1000 }))).toEqual([4000, 5200, 4600, 3100, 3100]);
+  });
+  // BIM81320 examples 23 and 24: https://www.gov.uk/hmrc-internal-manuals/business-income-manual/bim81320
+  it("BIM81320 example 23: tax £1,206 including the £1,600 transition amount (losses b/f £3,000)", () => {
+    const r = selfEmployedTax({ taxYear: Y, trading: { ...profit(20000), lossesBroughtForward: 3000 }, transitionProfit: 1600 });
+    expect(r.incomeTax.tax).toBe(1206);
+  });
+  it("BIM81320 example 24: £28,632 with the allowance tapered by the transition profit", () => {
+    const r = selfEmployedTax({ taxYear: Y, trading: profit(98000), transitionProfit: 4000 });
+    expect(r.incomeTax.personalAllowance).toBe(11570);
+    expect(r.incomeTax.tax).toBe(28632);
+    expect(r.incomeTax.adjustedNetIncome).toBe(98000);
+  });
+  it("transition profit is left out of adjusted net income for the HICBC, and charged to Class 4 unless switched off", () => {
+    const r = selfEmployedTax({ taxYear: Y, trading: profit(58000), transitionProfit: 6000, childBenefit: 2300 });
+    expect(r.incomeTax.hicbc).toBe(0);
+    expect(r.class4.profits).toBe(64000);
+    expect(selfEmployedTax({ taxYear: Y, trading: profit(58000), transitionProfit: 6000, class4OnTransition: false }).class4.profits).toBe(58000);
+  });
+  it("a partner's slice for 2026/27 flows through, and the balance is taxed when they leave", () => {
+    const r = partnershipTax({
+      taxYear: Y,
+      method: "days",
+      periods: [{ start: "2026-04-06", end: "2027-04-05", profit: 100000 }],
+      arrangements: [{ from: "", interestRate: 0, terms: [{ salary: 0, capital: 0, share: 50 }, { salary: 0, capital: 0, share: 50 }] }],
+      partners: [
+        { name: "A", transitionProfitTotal: 30000 },
+        { name: "B", transitionProfitTotal: 30000, ceasedThisYear: true },
+      ],
+    });
+    expect(r.partners[0].transitionSlice).toBe(6000);
+    expect(r.partners[1].transitionSlice).toBe(12000); // £30,000 − 3 × £6,000
+    expect(r.partners[0].result.incomeTax.transitionProfit).toBe(6000);
+  });
+});
+
+describe("adjusted net income targets", () => {
+  it("profit share cut needed to keep ANI at £100,000: £10,000 from £110,000", () => {
+    const t = incomeCutForAniCap({ taxYear: Y, trading: profit(110000) }, 100000, 110000, (i, cut) => ({ ...i, trading: profit(110000 - cut) }));
+    expect(t.cut).toBe(10000);
+  });
+  it("pension needed to keep ANI at £60,000 from £70,000: £8,000 net", () => {
+    expect(pensionForAniCap({ taxYear: Y, trading: profit(70000) }, 60000).net).toBe(8000);
+  });
+  it("already met", () => {
+    expect(incomeCutForAniCap({ taxYear: Y, employment: 50000 }, 60000, 50000, (i) => i).alreadyMet).toBe(true);
+  });
+});

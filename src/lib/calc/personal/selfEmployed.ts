@@ -52,6 +52,11 @@ export interface SelfEmployedInput extends Omit<PersonalTaxInput, "trading"> {
   voluntaryClass2Weeks?: number;
   /** Payments on account already made for this year. */
   poasPaid?: number;
+  /**
+   * Charge Class 4 on the transition profit (default true). Practitioner reading of SSCBA 1992 s15 with
+   * FA 2022 Sch 1; not confirmed on GOV.UK.
+   */
+  class4OnTransition?: boolean;
 }
 
 export interface SelfEmployedResult extends CalcResult {
@@ -80,24 +85,36 @@ export function selfEmployedTax(input: SelfEmployedInput): SelfEmployedResult {
   const it = personalIncomeTax(input);
   const R = rateReader(input.taxYear);
   const profit = it.tradingProfit;
-  const c4 = class4Nic(input.taxYear, profit, input.overStatePensionAge);
+  const transition = it.transitionProfit;
+  const c4Profits = r2(profit + (input.class4OnTransition === false ? 0 : transition));
+  const c4 = class4Nic(input.taxYear, c4Profits, input.overStatePensionAge);
   for (const id of c4.rateIds) if (!R.used.includes(id)) R.used.push(id);
 
   // Class 2: treated as paid at or above the small profits threshold (no Class 2 to pay); voluntary below it.
   const spt = R.gbp("nic.class2-small-profits-threshold");
   const weekly = R.gbp("nic.class2-weekly");
-  const treatedAsPaid = profit >= spt && !input.overStatePensionAge;
+  const treatedAsPaid = c4Profits >= spt && !input.overStatePensionAge;
   const weeks = input.voluntaryClass2Weeks ?? 0;
   const voluntary = !treatedAsPaid && !input.overStatePensionAge ? r2(weeks * weekly) : 0;
 
   const working: WorkingLine[] = [...it.computationLines];
   working.push({ label: "National Insurance", amount: 0, kind: "note" });
+  if (transition) {
+    working.push({
+      label:
+        input.class4OnTransition === false
+          ? `Class 4 profits exclude the transition profit of ${gbp(transition)} (as chosen)`
+          : `Class 4 profits: trading profit ${gbp(profit)} + transition profit ${gbp(transition)} = ${gbp(c4Profits)}`,
+      amount: 0,
+      kind: "note",
+    });
+  }
   working.push(...c4.lines);
   working.push({ label: "Class 4 NIC", amount: c4.total, kind: "subtotal" });
   if (input.overStatePensionAge) {
     working.push({ label: "Class 2: not relevant over State Pension age", amount: 0, kind: "note" });
   } else if (treatedAsPaid) {
-    working.push({ label: `Class 2: profits ${gbp(profit)} at or above the small profits threshold ${gbp(spt)}, so treated as paid (nothing to pay)`, amount: 0, rateId: "nic.class2-small-profits-threshold" });
+    working.push({ label: `Class 2: profits ${gbp(c4Profits)} at or above the small profits threshold ${gbp(spt)}, so treated as paid (nothing to pay)`, amount: 0, rateId: "nic.class2-small-profits-threshold" });
   } else if (voluntary) {
     working.push({ label: `Voluntary Class 2: ${weeks} weeks × ${gbp(weekly)}`, amount: voluntary, rateId: "nic.class2-weekly" });
   } else {

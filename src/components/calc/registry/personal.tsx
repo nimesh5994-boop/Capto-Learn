@@ -2,6 +2,7 @@ import type { CalcEntry } from "./types";
 import { PersonalIncomeTaxCalc } from "../personal/PersonalIncomeTaxCalc";
 import { SelfEmployedCalc } from "../personal/SelfEmployedCalc";
 import { PropertyIncomeCalc } from "../personal/PropertyIncomeCalc";
+import { PartnershipCalc } from "../personal/PartnershipCalc";
 
 /** Calculators in this group, in the order they're listed. */
 export const entries: CalcEntry[] = [
@@ -22,5 +23,11 @@ export const entries: CalcEntry[] = [
     label: "Property income",
     summary: "Rental profit, property allowance, 20% finance cost reduction, tax on the letting",
     component: PropertyIncomeCalc,
+  },
+  {
+    id: "partnership",
+    label: "Partnership",
+    summary: "Profit allocation, notional loss reallocation, tax-year apportionment, transition profit, each partner's tax and NIC",
+    component: PartnershipCalc,
   },
 ];

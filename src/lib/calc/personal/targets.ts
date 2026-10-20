@@ -84,7 +84,7 @@ export function pensionToRestoreAllowance(input: PersonalTaxInput): PensionTarge
   const R = rateReader(input.taxYear);
   // The full allowance is due when adjusted net income is no more than the income limit (ITA 2007 s35).
   const limit = R.gbp("it.pa-taper-threshold");
-  return target(input, (r) => r.adjustedNetIncome <= limit + 0.005);
+  return target(input, (r) => r.allowanceIncome <= limit + 0.005);
 }
 
 export interface HicbcTarget extends PensionTarget {
@@ -104,4 +104,45 @@ export function pensionToRemoveHicbc(input: PersonalTaxInput): HicbcTarget {
   const base = target(input, (r) => r.hicbc === 0);
   const toThreshold = target(input, (r) => r.adjustedNetIncome <= threshold + 0.005);
   return { ...base, netToThreshold: toThreshold.net, grossToThreshold: toThreshold.gross };
+}
+
+/**
+ * Extra relief-at-source contribution (net) that keeps adjusted net income at or below `cap`.
+ * `measure` picks the measure: "allowance" includes any transition profit (personal allowance taper,
+ * BIM81320); "statutory" excludes it (ITA 2007 s58, used for the HICBC).
+ */
+export function pensionForAniCap(input: PersonalTaxInput, cap: number, measure: "allowance" | "statutory" = "statutory"): PensionTarget {
+  const get = (r: PersonalTaxResult) => (measure === "allowance" ? r.allowanceIncome : r.adjustedNetIncome);
+  return target(input, (r) => get(r) <= cap + 0.005);
+}
+
+export interface IncomeCutTarget {
+  /** Reduction in the income needed (null if not reachable by reducing it to nil). */
+  cut: number | null;
+  alreadyMet: boolean;
+  taxBefore: number;
+  taxAfter: number | null;
+}
+
+/**
+ * Reduction in one income source (applied by `apply`) needed to keep adjusted net income at or
+ * below `cap`, solved to the penny by bisection over the forward calculation.
+ */
+export function incomeCutForAniCap(
+  input: PersonalTaxInput,
+  cap: number,
+  maxCut: number,
+  apply: (input: PersonalTaxInput, cut: number) => PersonalTaxInput,
+  measure: "allowance" | "statutory" = "statutory"
+): IncomeCutTarget {
+  const get = (r: PersonalTaxResult) => (measure === "allowance" ? r.allowanceIncome : r.adjustedNetIncome);
+  const ok = (x: number) => get(personalIncomeTax(apply(input, x))) <= cap + 0.005;
+  const before = personalIncomeTax(input);
+  const cut = maxCut <= 0 ? (ok(0) ? 0 : null) : solveMinPennies(ok, maxCut);
+  return {
+    cut,
+    alreadyMet: cut === 0,
+    taxBefore: before.tax,
+    taxAfter: cut === null ? null : personalIncomeTax(apply(input, cut)).tax,
+  };
 }
