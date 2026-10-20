@@ -4,8 +4,19 @@ import { rates as rates2025 } from "./2025-26";
 
 export type { RateItem, RateSection, RateSource, TaxYearRates } from "./types";
 
+import { extra as extraPersonal } from "./extra/personal";
+import { extra as extraEmployment } from "./extra/employment";
+import { extra as extraBusiness } from "./extra/business";
+import { extra as extraCapital } from "./extra/capital";
+
+/** Adds each calculator area's extra verified sections to a year (extra/*.ts, one file per area). */
+function withExtras(y: TaxYearRates): TaxYearRates {
+  const more = [extraPersonal, extraEmployment, extraBusiness, extraCapital].flatMap((e) => e[y.taxYear] ?? []);
+  return more.length ? { ...y, sections: [...y.sections, ...more] } : y;
+}
+
 /** All tax years with verified data, newest first. */
-export const TAX_YEARS: TaxYearRates[] = [rates2026, rates2025];
+export const TAX_YEARS: TaxYearRates[] = [rates2026, rates2025].map(withExtras);
 
 export function ratesFor(taxYear: string): TaxYearRates | undefined {
   return TAX_YEARS.find((y) => y.taxYear === taxYear);
