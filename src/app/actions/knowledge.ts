@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { AccessError, authorizePlatform } from "@/lib/auth/dal";
 import { runSync } from "@/lib/kb/sync";
 import { collectBriefBatches, startBriefBatch } from "@/lib/research/briefs";
+import { rebuildCaseIndex } from "@/lib/cases";
 
 /** Starts a knowledge-base sync in the background (the page shows its progress). */
 export async function startKbSync(): Promise<{ ok: boolean; message: string }> {
@@ -54,4 +55,23 @@ export async function checkBriefs(): Promise<{ ok: boolean; message: string }> {
   const message = await collectBriefBatches();
   revalidatePath("/platform/knowledge");
   return { ok: true, message };
+}
+
+/** Rebuilds the case law index from the knowledge base (no network; takes seconds to a minute). */
+export async function rebuildCases(): Promise<{ ok: boolean; message: string }> {
+  try {
+    await authorizePlatform("platform.content.review");
+  } catch (err) {
+    if (err instanceof AccessError) return { ok: false, message: err.message };
+    throw err;
+  }
+  try {
+    const r = await rebuildCaseIndex();
+    revalidatePath("/platform/knowledge");
+    revalidatePath("/cases");
+    return { ok: true, message: `Case index rebuilt: ${r.cases.toLocaleString("en-GB")} cases from ${r.mentions.toLocaleString("en-GB")} citations in ${r.citingPages.toLocaleString("en-GB")} pages (${Math.round(r.ms / 1000)}s).` };
+  } catch (err) {
+    console.error("[case-index]", err);
+    return { ok: false, message: "The case index couldn't be rebuilt. The previous index is unchanged." };
+  }
 }

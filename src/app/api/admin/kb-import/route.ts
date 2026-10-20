@@ -2,6 +2,7 @@ import { inArray } from "drizzle-orm";
 import { getDb } from "@/lib/db/client";
 import { kbDocuments, kbPassages, topicBriefs } from "@/lib/db/schema";
 import { refreshTermStats } from "@/lib/kb/sync";
+import { rebuildCaseIndex } from "@/lib/cases";
 
 /*
  * One-off bulk import of the knowledge base (public OGL content) into a fresh production database, so a new
@@ -46,7 +47,9 @@ export async function POST(req: Request) {
   }
   if (body.op === "finish") {
     await refreshTermStats();
-    return Response.json({ ok: true, finished: true });
+    // The pushed guidance is what the case law index is built from.
+    const cases = await rebuildCaseIndex().catch((err) => (console.error("[kb-import] case index", err), null));
+    return Response.json({ ok: true, finished: true, cases });
   }
   return Response.json({ error: "unknown op" }, { status: 400 });
 }

@@ -5,6 +5,7 @@ import { renderMarkdown } from "@/lib/markdown";
 import { date } from "@/lib/format";
 import { DepthSwitch } from "./DepthSwitch";
 import { answerText, findStatuteRefs } from "@/lib/research/statuteRefs";
+import { CasesReferredTo } from "@/components/CasesReferredTo";
 import styles from "./ask.module.css";
 
 const CONFIDENCE = {
@@ -60,7 +61,8 @@ export function AnswerView({ question, answer }: { question: string; answer: Res
   for (const p of answer.points) counts[legacy ? "essentials" : levelOf(p.level)]++;
   const official = answer.sources.filter((s) => s.kind !== "lesson");
   const lessons = answer.sources.filter((s) => s.kind === "lesson");
-  const statutes = findStatuteRefs(answerText(answer));
+  const fullText = answerText(answer);
+  const statutes = findStatuteRefs(fullText);
   const ask = (suffix: string) => `/ask?q=${encodeURIComponent(`${question} — ${suffix}`)}`;
 
   return (
@@ -296,6 +298,8 @@ export function AnswerView({ question, answer }: { question: string; answer: Res
           </ul>
         </section>
       )}
+
+      <CasesReferredTo text={fullText} />
 
       {answer.relatedLessons.length > 0 && (
         <section className="card card-pad stack" style={{ gap: 8 }}>

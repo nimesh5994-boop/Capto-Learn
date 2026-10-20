@@ -105,3 +105,45 @@ describe("reportFilename", () => {
     expect(reportFilename("x".repeat(200), "pdf").length).toBe(84);
   });
 });
+
+describe("buildReport: cases referred to", () => {
+  const answer: ResearchAnswer = {
+    shortAnswer: "No: a fine is not deductible (CTA 2009 s54).",
+    points: [
+      {
+        heading: "Fines are penal",
+        text: "The courts treat fines as penal.",
+        citations: [{ sourceId: "S1", quote: "no deduction is allowed for tax purposes under the principle established in McKnight v Sheppard [1999] 71TC419", verified: true }],
+        verified: true,
+      },
+      { heading: "Status", text: "See Autoclenz Ltd v Belcher [2011] UKSC 41.", citations: [], verified: false },
+    ],
+    caveats: [],
+    followUps: [],
+    confidence: "high",
+    taxYear: null,
+    sources: [{ id: "S1", kind: "official", url: "https://www.gov.uk/hmrc-internal-manuals/business-income-manual/bim42515", title: "BIM42515", publisher: "HMRC internal manual" }],
+    relatedLessons: [],
+    model: "x",
+    generatedAt: "2026-10-10T10:00:00.000Z",
+  };
+  const meta = { docRef: "CL-ABC12345", firm: "QA Practice", preparedBy: "Jo Bloggs", url: "https://learn.chitta.cloud/ask/abc", exportedAt: new Date("2026-10-16T09:00:00Z") };
+  const blocks = buildReport("Are fines deductible?", answer, meta);
+  const heads = blocks.filter((b) => b.kind === "h3").map((b) => (b.kind === "h3" ? b.text : ""));
+
+  it("lists cases from the answer and its quotes in Appendix A, after legislation", () => {
+    expect(heads.indexOf("Cases referred to")).toBe(heads.indexOf("Legislation referred to") + 1);
+    const list = blocks[blocks.findIndex((b) => b.kind === "h3" && b.text === "Cases referred to") + 2];
+    expect(list.kind).toBe("list");
+    if (list.kind !== "list") return;
+    const text = list.items.map((runs) => runs.map((r) => r.text).join(""));
+    expect(text).toEqual(["McKnight v Sheppard (1999) 71 TC 419 · search Find Case Law (May not be on Find Case Law)", "Autoclenz Ltd v Belcher [2011] UKSC 41 · judgment"]);
+    expect(list.items[1].find((r) => r.link)?.link).toBe("https://caselaw.nationalarchives.gov.uk/uksc/2011/41");
+    expect(list.items[0][0]).toEqual({ text: "McKnight v Sheppard", italic: true });
+  });
+
+  it("leaves the section out when no case is cited", () => {
+    const plain = buildReport("Q", { ...answer, points: [], shortAnswer: "No." }, meta);
+    expect(plain.some((b) => b.kind === "h3" && b.text === "Cases referred to")).toBe(false);
+  });
+});

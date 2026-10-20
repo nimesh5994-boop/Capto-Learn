@@ -20,6 +20,15 @@ import styles from "@/components/learn/learn.module.css";
 import playerStyles from "@/components/learn/player.module.css";
 import { LessonPlayer } from "@/components/learn/LessonPlayer";
 import { lessonSteps, stepLabel } from "@/lib/learning/steps";
+import { CasesReferredTo } from "@/components/CasesReferredTo";
+import type { Block, Lesson } from "@/content/types";
+
+/** The lesson's teaching text (not its exercises or answers), for picking out the cases it cites. */
+function lessonText(lesson: Lesson): string {
+  const blocks = (bs: Block[]) =>
+    bs.flatMap((b) => (b.kind === "md" ? [b.md] : b.kind === "callout" ? [b.title ?? "", b.md] : b.kind === "table" ? [b.caption ?? "", ...b.head, ...b.rows.flat()] : [b.title ?? "", b.narrative ?? ""]));
+  return [lesson.summary, ...lesson.objectives, ...blocks(lesson.body), lesson.scenario?.narrative ?? "", ...blocks(lesson.scenario?.walkthrough ?? [])].join("\n");
+}
 
 export default async function LessonPage({ params, searchParams }: { params: Promise<{ track: string; lesson: string }>; searchParams: Promise<{ view?: string }> }) {
   const { track: trackSlug, lesson: lessonSlug } = await params;
@@ -254,6 +263,8 @@ export default async function LessonPage({ params, searchParams }: { params: Pro
           </section>
             </>
           )}
+
+          <CasesReferredTo text={lessonText(lesson)} />
 
           <section className={`card ${styles.section}`}>
             <h2 className={styles.sectionTitle} style={{ fontSize: 18 }}>

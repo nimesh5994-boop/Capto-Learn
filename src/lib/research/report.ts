@@ -6,6 +6,7 @@
 import { Lexer, type Token, type Tokens } from "marked";
 import type { ResearchAnswer } from "./types";
 import { answerText, findStatuteRefs } from "./statuteRefs";
+import { caseTitle, coverageNote, findCaseRefs } from "@/lib/cases/caseRefs";
 
 export interface Run {
   text: string;
@@ -275,12 +276,29 @@ export function buildReport(question: string, answer: ResearchAnswer, meta: Repo
     );
   }
 
-  const statutes = findStatuteRefs(answerText(answer));
+  const allText = answerText(answer);
+  const statutes = findStatuteRefs(allText);
   if (statutes.length) {
     out.push(
       { kind: "h3", text: "Legislation referred to" },
       { kind: "p", tone: "muted", runs: [{ text: "Links to legislation.gov.uk. Check the version in force for the period concerned." }] },
       { kind: "list", ordered: false, items: statutes.map((r) => [{ text: r.label, link: r.url }]) }
+    );
+  }
+  const cases = findCaseRefs(allText);
+  if (cases.length) {
+    out.push(
+      { kind: "h3", text: "Cases referred to" },
+      { kind: "p", tone: "muted", runs: [{ text: "As cited in the guidance relied on. Links open The National Archives' Find Case Law (Open Justice Licence); the judgments were not consulted for this memorandum." }] },
+      {
+        kind: "list",
+        ordered: false,
+        items: cases.map((c) => {
+          const cites = c.citations.filter((x) => x !== caseTitle(c)).join("; ");
+          const note = coverageNote(c.court, c.year, c.linkKind);
+          return [{ text: caseTitle(c), italic: !!c.name }, ...(cites ? [{ text: ` ${cites}` }] : []), { text: " · " }, { text: c.linkKind === "judgment" ? "judgment" : `search Find Case Law${note ? ` (${note})` : ""}`, link: c.url }];
+        }),
+      }
     );
   }
 

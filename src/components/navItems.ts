@@ -22,6 +22,7 @@ import {
   TrendingUp,
   Search,
   Database,
+  Scale,
   Palette,
   ShieldCheck,
   UserCheck,
@@ -41,6 +42,7 @@ export type NavKey =
   | "search"
   | "updates"
   | "rates"
+  | "cases"
   | "calculators"
   | "ask"
   | "saved"
@@ -72,6 +74,7 @@ export const NAV_ITEMS: Record<NavKey, { href: string; label: string; icon: Luci
   search: { href: "/search", label: "Guidance search", icon: Search },
   updates: { href: "/updates", label: "HMRC updates", icon: BellRing },
   rates: { href: "/rates", label: "Rates & allowances", icon: Percent },
+  cases: { href: "/cases", label: "Case law", icon: Scale },
   calculators: { href: "/calculators", label: "Calculators", icon: Calculator },
   ask: { href: "/ask", label: "Ask Capto", icon: MessageSquareQuote, exact: true },
   saved: { href: "/ask/saved", label: "Saved research", icon: Bookmark },

@@ -674,6 +674,35 @@ export const kbSyncRuns = pgTable("kb_sync_runs", {
   finishedAt: timestamp("finished_at", { withTimezone: true }),
 });
 
+/**
+ * Case law index built from our own knowledge base: every court or tribunal decision the mirrored HMRC manuals
+ * and GOV.UK guidance cite, with the pages that cite it. Rebuilt from kb_passages (rebuildCaseIndex) after a
+ * sync that changes content. Judgments themselves are never fetched: `url` is a Find Case Law link built from
+ * the citation, or a Find Case Law search link.
+ */
+export const caseRefs = pgTable(
+  "case_refs",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    /** Normalised primary citation, e.g. "[2016] ukut 69" or "43 tc 1". */
+    key: text("key").notNull(),
+    /** "X v Y", or the primary citation when no source names the case. */
+    name: text("name").notNull(),
+    citations: jsonb("citations").$type<string[]>().notNull().default([]),
+    url: text("url").notNull(),
+    linkKind: text("link_kind").$type<"judgment" | "search">().notNull(),
+    year: integer("year"),
+    /** Court code as in a neutral citation, e.g. "UKUT (TCC)" (see COURTS in lib/cases/caseRefs). */
+    court: text("court"),
+    /** Up to 50 citing pages. */
+    mentions: jsonb("mentions").$type<{ url: string; title: string }[]>().notNull().default([]),
+    /** Every citing page (may exceed the 50 listed). */
+    mentionCount: integer("mention_count").notNull().default(0),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [uniqueIndex("case_refs_key_idx").on(t.key), index("case_refs_count_idx").on(t.mentionCount)]
+);
+
 /** Shared cache of fetched official pages (public, OGL content — not firm data). */
 export const sourceCache = pgTable(
   "source_cache",

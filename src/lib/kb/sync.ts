@@ -8,6 +8,7 @@ import { fetchGovUkDocument, govUkFetch } from "@/lib/research/govuk";
 import { FULL_SYNC_EVERY_DAYS, GUIDANCE_ORGS, MANUALS } from "./collections";
 import { planSync, toPassages, type Listed } from "./rules";
 import { syncLegislation, type LegislationResult } from "./legislation";
+import { rebuildCaseIndex } from "@/lib/cases";
 
 /*
  * The sync bot. Mirrors the core set of HMRC manuals and HMRC / Companies House guidance into our own database
@@ -194,6 +195,13 @@ export async function runSync(opts: SyncOptions): Promise<string> {
     // Refresh term statistics used by search to skip ultra-common words (only when content changed).
     const [termCount] = await db.select({ n: sql<number>`count(*)::int` }).from(kbTerms);
     if (stats.added || stats.updated || stats.removed || !termCount?.n) await refreshTermStats();
+
+    // Rebuild the case law index from the guidance when the guidance changed. A failure here never fails the sync.
+    if (stats.added || stats.updated || stats.removed) {
+      await rebuildCaseIndex()
+        .then((r) => console.info(`[kb-sync] case index: ${r.cases} cases from ${r.mentions} mentions in ${r.ms}ms`))
+        .catch((err) => console.error("[kb-sync] case index", err));
+    }
 
     // Knock-on effects of changed pages: stop reusing answers built on them, and tell content reviewers.
     let libraryRetired = 0;

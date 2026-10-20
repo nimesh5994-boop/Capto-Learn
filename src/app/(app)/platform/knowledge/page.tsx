@@ -2,7 +2,7 @@ import Link from "next/link";
 import { desc, isNull, sql } from "drizzle-orm";
 import { requirePlatform } from "@/lib/auth/dal";
 import { getDb } from "@/lib/db/client";
-import { kbDocuments, kbSyncRuns } from "@/lib/db/schema";
+import { caseRefs, kbDocuments, kbSyncRuns } from "@/lib/db/schema";
 import { GUIDANCE_ORGS, LEGISLATION, MANUALS, FULL_SYNC_EVERY_DAYS } from "@/lib/kb/collections";
 import { kbStats } from "@/lib/kb/search";
 import { getLesson } from "@/content";
@@ -10,17 +10,20 @@ import { dateTime } from "@/lib/format";
 import { daysAgo } from "@/lib/time";
 import { SyncButton } from "./SyncButton";
 import { LibrarianButtons } from "./LibrarianButtons";
+import { CaseIndexButton } from "./CaseIndexButton";
 import { topicBriefs } from "@/lib/db/schema";
 import { BRIEF_TOPICS } from "@/lib/research/briefTopics";
 
 export const metadata = { title: "Knowledge base" };
+// "Rebuild case index" runs in this page's server action; give it room on Vercel.
+export const maxDuration = 300;
 
 const STATUS_PILL: Record<string, string> = { done: "pill-accepted", running: "pill-sent", partial: "pill-viewed", failed: "pill-declined" };
 
 export default async function KnowledgePage() {
   await requirePlatform("platform.content.review");
   const db = await getDb();
-  const [stats, runs, perCollection, briefs] = await Promise.all([
+  const [stats, runs, perCollection, briefs, caseIndex] = await Promise.all([
     kbStats(),
     db.select().from(kbSyncRuns).orderBy(desc(kbSyncRuns.startedAt)).limit(12),
     db
@@ -29,6 +32,10 @@ export default async function KnowledgePage() {
       .where(isNull(kbDocuments.removedAt))
       .groupBy(kbDocuments.collection),
     db.select().from(topicBriefs).orderBy(desc(topicBriefs.createdAt)),
+    db
+      .select({ cases: sql<number>`count(*)::int`, linked: sql<number>`count(*) filter (where ${caseRefs.linkKind} = 'judgment')::int`, updatedAt: sql<Date | null>`max(${caseRefs.updatedAt})` })
+      .from(caseRefs)
+      .then((r) => r[0]),
   ]);
   // Latest brief per topic decides its status.
   const latestBrief = new Map<string, (typeof briefs)[number]>();
@@ -133,6 +140,21 @@ export default async function KnowledgePage() {
             </tbody>
           </table>
         )}
+      </section>
+
+      <section className="card card-pad row between" style={{ marginBottom: 18, alignItems: "flex-start", gap: 12, flexWrap: "wrap" }}>
+        <div>
+          <h2 style={{ margin: 0 }}>Case law index</h2>
+          <p className="small muted" style={{ margin: "4px 0 0", maxWidth: 640 }}>
+            Court and tribunal decisions cited in the guidance above, shown on <Link href="/cases">Case law</Link>. Rebuilt automatically after a sync that changes content; judgments are only linked, never downloaded.
+          </p>
+          <div className="row" style={{ gap: 8, marginTop: 8, flexWrap: "wrap" }}>
+            <span className="pill">{(caseIndex?.cases ?? 0).toLocaleString("en-GB")} cases</span>
+            <span className="pill">{(caseIndex?.linked ?? 0).toLocaleString("en-GB")} with a direct judgment link</span>
+            {caseIndex?.updatedAt && <span className="pill">Built {dateTime(new Date(caseIndex.updatedAt))}</span>}
+          </div>
+        </div>
+        <CaseIndexButton />
       </section>
 
       <section className="card" style={{ marginBottom: 18 }}>
