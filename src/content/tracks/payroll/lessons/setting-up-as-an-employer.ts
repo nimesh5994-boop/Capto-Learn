@@ -133,12 +133,12 @@ Callum is 26. The company isn't connected to any other company, does no public-s
       id: "annual-cost-of-hire",
       prompt:
         "Ignore Employment Allowance for this question. A client plans to hire a 30-year-old administrator on £28,000 a year. Calculate the annual cost of salary + employer NIC + minimum employer pension (3% of qualifying earnings) for 2026/27.",
-      answer: 31892.8,
+      answer: 32102.8,
       unit: "£",
       explain:
         "Employer NIC is 15% of earnings above the £5,000 secondary threshold. The minimum employer pension is 3% of qualifying earnings — the slice between £6,240 and £50,270.",
       working:
-        "Employer NIC: (£28,000 − £5,000) × 15% = **£3,450.00**\n\nPension: (£28,000 − £6,240) × 3% = £21,760 × 3% = **£652.80**\n\nTotal: £28,000 + £3,450 + £652.80 = **£31,892.80**",
+        "Employer NIC: (£28,000 − £5,000) × 15% = **£3,450.00**\n\nPension: (£28,000 − £6,240) × 3% = £21,760 × 3% = **£652.80**\n\nTotal: £28,000 + £3,450 + £652.80 = **£32,102.80**",
     },
     {
       kind: "classify",

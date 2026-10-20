@@ -1,0 +1,25 @@
+.side { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+
+.periodTable { width: 100%; border-collapse: collapse; font-size: 13.5px; font-variant-numeric: tabular-nums; table-layout: fixed; }
+.periodTable caption { text-align: left; font-weight: 650; margin-bottom: 6px; }
+.periodTable th, .periodTable td { padding: 6px 4px; border-bottom: 1px solid var(--border); }
+.periodTable th:first-child, .periodTable td:first-child { width: 40%; text-align: left; overflow-wrap: anywhere; }
+.periodTable th:not(:first-child), .periodTable td:not(:first-child) { text-align: right; white-space: nowrap; }
+.periodTable thead th { font-size: 12px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+.rowTotal td { font-weight: 700; border-bottom: 3px double var(--border-strong); }
+.rowSubtotal td { font-weight: 650; }
+.rowEmployer td { color: var(--text-muted); }
+@media (max-width: 420px) { .periodTable { font-size: 12.5px; } }
+
+.target { display: flex; flex-direction: column; gap: 4px; }
+.targetFigure { font-family: var(--font-heading); font-size: 24px; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+.more { border-top: 1px solid var(--border); padding-top: 10px; }
+.more > summary { cursor: pointer; font-weight: 600; font-size: 14px; }
+.more[open] > summary { margin-bottom: 12px; }
+.moreBody { display: flex; flex-direction: column; gap: 16px; }
+
+.group { border: 1px solid var(--border); border-radius: 10px; padding: 12px; display: flex; flex-direction: column; gap: 12px; }
+.group legend { font-weight: 650; font-size: 14px; padding: 0 4px; }
+.row3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+@media (max-width: 520px) { .row3 { grid-template-columns: minmax(0, 1fr); } }

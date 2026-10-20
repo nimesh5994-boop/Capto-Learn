@@ -28,7 +28,7 @@ A tax code tells the payroll software **how much pay is tax-free in the year** (
       title: "Reading the code 1257L",
       md: `- **The number** is the tax-free amount with the last digit removed. 1257 means a tax-free allowance of about **£12,570** for the year, which is the standard personal allowance for 2026/27.
 - **The letter** tells you why the employee has that allowance. **L** means the standard personal allowance.
-- Software works with the number × 10 + 9, so 1257L gives **£12,579** of free pay across the year (£1,048.25 a month). That's why your calculator answer can be a few pence away from the software's.`,
+- Software works with the number × 10 + 9, so 1257L gives **£12,579** of free pay across the year (£1,048.26 a month by HMRC's table method). That's why your calculator answer can be a few pence away from the software's.`,
     },
     {
       kind: "table",

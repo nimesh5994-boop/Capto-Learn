@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-19T19:51:58.224Z",
+ "generatedAt": "2026-10-20T10:21:12.989Z",
  "lessons": {
   "accounts-production/accruals-prepayments-deferred-income": {
    "hash": "a493181e37f009d4",
@@ -6306,7 +6306,7 @@
    ]
   },
   "payroll/calculating-paye-and-nic": {
-   "hash": "0e706e48e6b1fc65",
+   "hash": "13520adc9e6b4f3a",
    "cards": [
     {
      "id": "payroll/calculating-paye-and-nic#f1",
@@ -6327,21 +6327,13 @@
     {
      "id": "payroll/calculating-paye-and-nic#f3",
      "lessonId": "payroll/calculating-paye-and-nic",
-     "front": "PAYE 2026/27: monthly free pay for code 1257L?",
-     "back": "£1,048.25 (12,579 ÷ 12)",
-     "evidence": "The free pay figure (£1,048.25 a month) comes from 12,579 ÷ 12.",
-     "taxYear": "2026/27"
-    },
-    {
-     "id": "payroll/calculating-paye-and-nic#f4",
-     "lessonId": "payroll/calculating-paye-and-nic",
      "front": "PAYE exact percentage method: how is taxable pay rounded?",
      "back": "Rounded down to the whole pound before applying rates",
      "evidence": "Rounding: Taxable pay is rounded down to the whole pound before applying rates.",
      "taxYear": "2026/27"
     },
     {
-     "id": "payroll/calculating-paye-and-nic#f5",
+     "id": "payroll/calculating-paye-and-nic#f4",
      "lessonId": "payroll/calculating-paye-and-nic",
      "front": "Net pay arrangement pension: effect on income tax and NIC?",
      "back": "Deducted before tax, but NIC is on the full gross",
@@ -6892,7 +6884,7 @@
    ]
   },
   "payroll/starters-and-tax-codes": {
-   "hash": "4f0606a7200628db",
+   "hash": "b8d6652135e368b7",
    "cards": [
     {
      "id": "payroll/starters-and-tax-codes#f1",

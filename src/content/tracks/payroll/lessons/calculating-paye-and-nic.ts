@@ -24,7 +24,7 @@ export const lesson: Lesson = {
       caption: "2026/27 figures used in this lesson (England, Wales and NI rates; category A)",
       head: ["Item", "Annual", "Monthly", "Weekly"],
       rows: [
-        ["Free pay for 1257L (software uses 12,579)", "£12,579", "£1,048.25", "£241.90"],
+        ["Free pay for 1257L (HMRC table method)", "£12,579", "£1,048.26", "£241.92"],
         ["Basic rate band (20%)", "£37,700", "£3,141.67", "£725"],
         ["Higher rate (40%) up to", "£125,140 of taxable pay", "", ""],
         ["Lower earnings limit (LEL)", "£6,708", "£559", "£129"],
@@ -81,7 +81,7 @@ Tax and NIC don't always agree on what counts:
       kind: "callout",
       tone: "tip",
       title: "Rounding",
-      md: `Taxable pay is rounded **down** to the whole pound before applying rates. NIC calculated by the exact percentage method is rounded to the nearest penny (0.5p rounds down). The free pay figure (£1,048.25 a month) comes from 12,579 ÷ 12. If your manual answer is a few pence away from the software, check these first.`,
+      md: `Taxable pay is rounded **down** to the whole pound before applying rates. NIC calculated by the exact percentage method is rounded to the nearest penny (0.5p rounds down). The free pay figure (£1,048.26 a month) comes from HMRC's tax table method, which splits the code into blocks of 500 and rounds up to the penny (roughly 12,579 ÷ 12). If your manual answer is a few pence away from the software, check these first.`,
     },
   ],
   scenario: {
@@ -95,7 +95,7 @@ Sunita asks: *"Can you check the tax and NI on these? Marcus's tax looks very hi
     walkthrough: [
       {
         kind: "md",
-        md: `**Jade: tax.** Free pay for month 1 is £1,048.25. Taxable pay = £3,000 − £1,048.25 = £1,951.75, rounded down to **£1,951**. All within the month 1 basic rate band of £3,141.67, so tax = £1,951 × 20% = **£390.20**.
+        md: `**Jade: tax.** Free pay for month 1 is £1,048.26. Taxable pay = £3,000 − £1,048.26 = £1,951.74, rounded down to **£1,951**. All within the month 1 basic rate band of £3,141.67, so tax = £1,951 × 20% = **£390.20**.
 
 **Jade: NIC.** Employee: (£3,000 − £1,048) × 8% = **£156.16**. Employer: (£3,000 − £417) × 15% = **£387.45**.
 
@@ -105,7 +105,7 @@ Sunita asks: *"Can you check the tax and NI on these? Marcus's tax looks very hi
         kind: "md",
         md: `**Marcus: pension.** 5% × £6,000 = £300, deducted **before tax** (net pay arrangement) but **not** before NIC.
 
-**Marcus: tax.** Pay for tax = £6,000 − £300 = £5,700. Taxable pay = £5,700 − £1,048.25 = £4,651.75 → **£4,651**.
+**Marcus: tax.** Pay for tax = £6,000 − £300 = £5,700. Taxable pay = £5,700 − £1,048.26 = £4,651.74 → **£4,651**.
 - £3,141.67 × 20% = £628.33
 - (£4,651 − £3,141.67) = £1,509.33 × 40% = £603.73
 - Tax = **£1,232.06**
@@ -144,12 +144,12 @@ So Marcus's tax is high because part of his pay is in the **40% band**. That's c
       kind: "numeric",
       id: "weekly-tax",
       prompt:
-        "A weekly-paid shop assistant earns £400 in week 1 of 2026/27 on code 1257L (category A, no pension). Using weekly free pay of £241.90, how much **income tax** is deducted?",
+        "A weekly-paid shop assistant earns £400 in week 1 of 2026/27 on code 1257L (category A, no pension). Using weekly free pay of £241.92, how much **income tax** is deducted?",
       answer: 31.6,
       tolerance: 0.01,
       unit: "£",
       explain: "Deduct one week's free pay, round taxable pay down to the whole pound, then apply 20%.",
-      working: "£400 − £241.90 = £158.10 → £158 × 20% = **£31.60**",
+      working: "£400 − £241.92 = £158.08 → £158 × 20% = **£31.60**",
     },
     {
       kind: "numeric",
