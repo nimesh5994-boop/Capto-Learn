@@ -13,6 +13,8 @@
 
 .layout { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 16px; align-items: start; }
 @media (max-width: 960px) { .layout { grid-template-columns: minmax(0, 1fr); } }
+/* Inside the hub, stack inputs above results whenever the calculator's own area is narrow (not just the window). */
+@container calc (max-width: 760px) { .layout { grid-template-columns: minmax(0, 1fr); } }
 
 .form { display: flex; flex-direction: column; gap: 16px; }
 .formHead { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap; }
@@ -66,7 +68,7 @@
 .hubItemActive .hubItemLabel { color: var(--primary); }
 .hubItemLabel { font-weight: 600; font-size: 14px; }
 .hubItemSummary { font-size: 12px; color: var(--text-muted); line-height: 1.35; }
-.hubMain { min-width: 0; }
+.hubMain { min-width: 0; container-type: inline-size; container-name: calc; }
 .pickerMobile { display: none; }
 @media (max-width: 860px) {
   .hub { grid-template-columns: minmax(0, 1fr); }
