@@ -81,7 +81,8 @@ describe("tax rates dataset", () => {
       });
 
       it("prefixes every id with a known section prefix", () => {
-        for (const item of items) expect(item.id).toMatch(/^(it|scot|nic|emp|cgt|iht|ct|vat|pen|ch)\.[a-z0-9-]+$/);
+        // Section prefixes, including the calculator areas' extras (sdlt, capital allowances, penalties/interest).
+        for (const item of items) expect(item.id).toMatch(/^(it|scot|nic|emp|cgt|iht|ct|vat|pen|ch|sdlt|ca|pay|int)\.[a-z0-9-]+$/);
       });
 
       it("cites an https official source for every item", () => {
