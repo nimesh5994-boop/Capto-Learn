@@ -1,0 +1,17 @@
+.rows { display: flex; flex-direction: column; gap: 12px; }
+.rowCard { border: 1px solid var(--border); border-radius: 10px; padding: 12px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.rowHead { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+.rowTitle { font-weight: 650; font-size: 14px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+.check { display: flex; gap: 8px; align-items: flex-start; font-size: 14px; }
+.check input { width: auto; margin-top: 3px; flex: none; }
+.check label { margin: 0; font-weight: 500; }
+.more { border-top: 1px solid var(--border); padding-top: 10px; }
+.more > summary { cursor: pointer; font-weight: 650; font-size: 14px; color: var(--primary); }
+.more[open] > summary { margin-bottom: 12px; }
+.moreBody { display: flex; flex-direction: column; gap: 16px; }
+.groupTitle { font-size: 14px; font-weight: 700; margin: 0; }
+.summaryTable { width: 100%; border-collapse: collapse; font-size: 13px; }
+.summaryTable th, .summaryTable td { text-align: left; padding: 5px 6px; border-bottom: 1px solid var(--border); vertical-align: top; }
+.summaryTable td.num, .summaryTable th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.tableWrap { overflow-x: auto; max-width: 100%; }
