@@ -1,16 +1,17 @@
-import { asc, eq } from "drizzle-orm";
+import { and, asc, desc, eq, gt, isNotNull, isNull } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import { getDb } from "@/lib/db/client";
-import { organizations, users } from "@/lib/db/schema";
+import { invitations, organizations, users } from "@/lib/db/schema";
 import { isPlatformAdminEmail, requireUser } from "@/lib/auth/dal";
 import { PLATFORM_ROLES, PLATFORM_ROLE_KEYS, isPlatformRole } from "@/lib/rbac";
-import { PlatformRoleSelect } from "../PlatformForms";
+import { InvitePlatformMemberForm, PlatformRoleSelect, RevokePlatformInvite } from "../PlatformForms";
+import { date } from "@/lib/format";
 
 export const metadata = { title: "Platform team" };
 
 export default async function PlatformTeamPage() {
   const ctx = await requireUser();
-  if (!ctx.isPlatformAdmin) redirect("/?denied=1");
+  if (!ctx.platformCan("platform.team.manage")) redirect("/?denied=1");
   const db = await getDb();
   const internalTeam = await db
     .select({ id: users.id, name: users.name, email: users.email, platformRole: users.platformRole, status: users.status })
@@ -18,6 +19,13 @@ export default async function PlatformTeamPage() {
     .innerJoin(organizations, eq(organizations.id, users.organizationId))
     .where(eq(organizations.kind, "internal"))
     .orderBy(asc(users.name));
+  const pending = await db
+    .select({ id: invitations.id, email: invitations.email, platformRole: invitations.platformRole, expiresAt: invitations.expiresAt, createdAt: invitations.createdAt })
+    .from(invitations)
+    .innerJoin(organizations, eq(organizations.id, invitations.organizationId))
+    .where(and(eq(organizations.kind, "internal"), isNotNull(invitations.platformRole), isNull(invitations.acceptedAt), isNull(invitations.revokedAt), gt(invitations.expiresAt, new Date())))
+    .orderBy(desc(invitations.createdAt));
+  const inviteRoles = PLATFORM_ROLE_KEYS.filter((k) => k !== "super_admin").map((k) => ({ value: k, label: PLATFORM_ROLES[k].label, description: PLATFORM_ROLES[k].description }));
 
   return (
     <div className="stack" style={{ gap: 22, maxWidth: 900 }}>
@@ -28,11 +36,33 @@ export default async function PlatformTeamPage() {
           <p className="muted">Capto staff and what each can do across every practice.</p>
         </div>
       </div>
+      <section className="card card-pad stack" style={{ gap: 12 }}>
+        <div>
+          <h2 style={{ marginBottom: 4 }}>Invite a reviewer or team member</h2>
+          <p className="small muted" style={{ margin: 0 }}>
+            They join the internal Capto workspace with this role as soon as they accept. A Content reviewer can open the Review centre, sign off lessons (after adding their qualifications in My account) and grade the accuracy benchmark — nothing else.
+          </p>
+        </div>
+        <InvitePlatformMemberForm roles={inviteRoles} />
+        {pending.length > 0 && (
+          <div className="stack" style={{ gap: 6 }}>
+            <div className="small muted">Waiting to be accepted</div>
+            {pending.map((p) => (
+              <div key={p.id} className="row between small" style={{ gap: 8, flexWrap: "wrap" }}>
+                <span>
+                  {p.email} · {p.platformRole && isPlatformRole(p.platformRole) ? PLATFORM_ROLES[p.platformRole].label : p.platformRole} · sent {date(p.createdAt)}, expires {date(p.expiresAt)}
+                </span>
+                <RevokePlatformInvite id={p.id} />
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
       <section className="card">
         <div className="card-pad" style={{ paddingBottom: 8 }}>
           <h2>Platform team</h2>
           <p className="small muted">
-            People in the internal Capto workspace and their platform role. Add colleagues from Team &amp; roles first, then give them a platform role here. Emails in PLATFORM_ADMIN_EMAILS are
+            People in the internal Capto workspace and their platform role. Invite new people above, or change an existing member&apos;s role here. Emails in PLATFORM_ADMIN_EMAILS are
             always Super admin.
           </p>
         </div>

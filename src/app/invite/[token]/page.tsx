@@ -4,6 +4,7 @@ import { and, eq, gt, isNull } from "drizzle-orm";
 import { getDb } from "@/lib/db/client";
 import { invitations, organizations } from "@/lib/db/schema";
 import { hashToken } from "@/lib/tokens";
+import { PLATFORM_ROLES, isPlatformRole } from "@/lib/rbac";
 import { acceptInvitation } from "@/app/actions/auth";
 import { AuthForm } from "@/components/AuthForm";
 import { CaptoLogo } from "@/components/CaptoLogo";
@@ -16,10 +17,12 @@ export default async function InvitePage({ params }: { params: Promise<{ token: 
   const { token } = await params;
   const db = await getDb();
   const [invite] = await db
-    .select({ email: invitations.email, firm: organizations.name })
+    .select({ email: invitations.email, firm: organizations.name, kind: organizations.kind, platformRole: invitations.platformRole })
     .from(invitations)
     .innerJoin(organizations, eq(organizations.id, invitations.organizationId))
     .where(and(eq(invitations.tokenHash, hashToken(token)), isNull(invitations.acceptedAt), isNull(invitations.revokedAt), gt(invitations.expiresAt, new Date())));
+
+  const reviewer = invite?.kind === "internal" && invite.platformRole && isPlatformRole(invite.platformRole) ? PLATFORM_ROLES[invite.platformRole] : null;
 
   return (
     <AuthShell>
@@ -28,10 +31,21 @@ export default async function InvitePage({ params }: { params: Promise<{ token: 
           <CaptoLogo size="lg" />
           {invite ? (
             <>
-              <h1>Join {invite.firm}</h1>
-              <p className="muted">
-                Set up your account for <strong>{invite.email}</strong>.
-              </p>
+              {reviewer ? (
+                <>
+                  <h1>Join the Capto Learn team</h1>
+                  <p className="muted">
+                    You&apos;ve been invited as <strong>{reviewer.label}</strong>: {reviewer.description} Set up your account for <strong>{invite.email}</strong>.
+                  </p>
+                </>
+              ) : (
+                <>
+                  <h1>Join {invite.firm}</h1>
+                  <p className="muted">
+                    Set up your account for <strong>{invite.email}</strong>.
+                  </p>
+                </>
+              )}
             </>
           ) : (
             <>

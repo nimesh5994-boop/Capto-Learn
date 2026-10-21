@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { and, eq, isNull } from "drizzle-orm";
 import * as z from "zod";
 import { getDb } from "@/lib/db/client";
-import { firmInvitations, organizations, users } from "@/lib/db/schema";
+import { firmInvitations, invitations, organizations, users } from "@/lib/db/schema";
 import { AccessError, authorizePlatform, isPlatformAdminEmail } from "@/lib/auth/dal";
 import { audit } from "@/lib/audit";
 import { PLANS, PLAN_KEYS, TRIAL_DAYS, type PlanKey } from "@/lib/plans";
@@ -161,5 +161,66 @@ export async function setPlatformRole(userId: string, role: string): Promise<Pla
       { type: "user", id: member.u.id }
     );
     return { ok: true, message: `${member.u.name} is now ${next ? PLATFORM_ROLES[next].label : "a regular workspace user"}.` };
+  });
+}
+
+const PlatformInviteSchema = z.object({
+  email: z.email({ error: "Enter a valid email address." }),
+  platformRole: z.string().refine((r) => isPlatformRole(r), { error: "Choose a platform role." }),
+});
+
+/**
+ * Invites someone straight into the internal Capto workspace with a platform role (e.g. Content reviewer), so
+ * they arrive ready to work: one step instead of "invite as staff, then grant the role".
+ */
+export async function invitePlatformMember(input: { email: string; platformRole: string }): Promise<PlatformResult> {
+  return guard(async () => {
+    const ctx = await authorizePlatform("platform.team.manage");
+    if (!ctx.isInternal) return { ok: false, error: "Platform invitations are sent from the internal Capto workspace." };
+    const p = PlatformInviteSchema.safeParse({ email: input.email.trim().toLowerCase(), platformRole: input.platformRole });
+    if (!p.success) return { ok: false, error: p.error.issues[0]?.message ?? "Check the details." };
+    const { email, platformRole } = p.data;
+    if (platformRole === "super_admin") return { ok: false, error: "Super admins are set in PLATFORM_ADMIN_EMAILS, not by invitation." };
+    const db = await getDb();
+    const [exists] = await db.select({ id: users.id, org: users.organizationId }).from(users).where(eq(users.email, email));
+    if (exists)
+      return {
+        ok: false,
+        error: exists.org === ctx.org.id ? "They're already in the Capto workspace — change their role in the list below." : "That email already has an account with a customer firm. Use a different email for the reviewer role.",
+      };
+    // Re-inviting replaces any open invitation for the same address.
+    await db.update(invitations).set({ revokedAt: new Date() }).where(and(eq(invitations.organizationId, ctx.org.id), eq(invitations.email, email), isNull(invitations.acceptedAt), isNull(invitations.revokedAt)));
+    const { token, hash } = newToken();
+    await db.insert(invitations).values({ organizationId: ctx.org.id, email, role: "staff", platformRole, tokenHash: hash, invitedBy: ctx.user.id, expiresAt: new Date(Date.now() + 7 * 86_400_000) });
+    const link = `${appUrl()}/invite/${token}`;
+    const label = PLATFORM_ROLES[platformRole as keyof typeof PLATFORM_ROLES].label;
+    const mail = await sendEmail({
+      to: email,
+      subject: `${ctx.user.name} invited you to Capto Learn as ${label}`,
+      fromName: "Capto Learn",
+      replyTo: ctx.user.email,
+      html: `<p style="font-family:sans-serif">${ctx.user.name} has invited you to join the Capto Learn team as <strong>${label}</strong>: ${PLATFORM_ROLES[platformRole as keyof typeof PLATFORM_ROLES].description}</p><p style="font-family:sans-serif"><a href="${link}">Accept the invitation</a> — the link expires in 7 days.</p>`,
+    });
+    await audit({ organizationId: ctx.org.id, userId: ctx.user.id, name: ctx.user.name }, "platform.invited", `Invited ${email} as ${label}`);
+    revalidatePath("/platform/team");
+    return mail.sent
+      ? { ok: true, message: `Invitation emailed to ${email}.`, link }
+      : { ok: true, message: "Invitation created. Email isn't set up yet — copy this link and send it to them yourself.", link };
+  });
+}
+
+/** Withdraws an open platform invitation. */
+export async function revokePlatformInvitation(id: string): Promise<PlatformResult> {
+  return guard(async () => {
+    const ctx = await authorizePlatform("platform.team.manage");
+    const db = await getDb();
+    const [r] = await db
+      .update(invitations)
+      .set({ revokedAt: new Date() })
+      .where(and(eq(invitations.id, id), eq(invitations.organizationId, ctx.org.id), isNull(invitations.acceptedAt), isNull(invitations.revokedAt)))
+      .returning({ email: invitations.email });
+    if (!r) return { ok: false, error: "Invitation not found or already used." };
+    revalidatePath("/platform/team");
+    return { ok: true, message: `Revoked the invitation for ${r.email}.` };
   });
 }

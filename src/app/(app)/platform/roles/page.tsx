@@ -6,7 +6,7 @@ export const metadata = { title: "Platform roles" };
 
 export default async function PlatformRolesPage() {
   const ctx = await requireUser();
-  if (!ctx.isPlatformAdmin) redirect("/?denied=1");
+  if (!ctx.platformCan("platform.team.manage")) redirect("/?denied=1");
   return (
     <div className="stack" style={{ gap: 22, maxWidth: 1040 }}>
       <div className="page-head" style={{ marginBottom: 0 }}>

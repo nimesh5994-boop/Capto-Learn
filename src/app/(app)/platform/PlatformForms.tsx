@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Copy } from "lucide-react";
-import { inviteFirm, revokeFirmInvite, setPlatformRole, type PlatformResult } from "@/app/actions/platform";
+import { inviteFirm, invitePlatformMember, revokeFirmInvite, revokePlatformInvitation, setPlatformRole, type PlatformResult } from "@/app/actions/platform";
 
 function Feedback({ result }: { result: PlatformResult | null }) {
   const [copied, setCopied] = useState(false);
@@ -133,5 +133,73 @@ export function PlatformRoleSelect({ userId, value, options }: { userId: string;
       </select>
       {result && !result.ok && <span className="small" style={{ color: "var(--danger)" }}>{result.error}</span>}
     </div>
+  );
+}
+
+/** Invite someone straight into the Capto team with a platform role — Content reviewer by default. */
+export function InvitePlatformMemberForm({ roles }: { roles: { value: string; label: string; description: string }[] }) {
+  const router = useRouter();
+  const [pending, startTransition] = useTransition();
+  const [result, setResult] = useState<PlatformResult | null>(null);
+  const [email, setEmail] = useState("");
+  const [role, setRole] = useState(roles.find((r) => r.value === "content_reviewer")?.value ?? roles[0]?.value ?? "");
+  const chosen = roles.find((r) => r.value === role);
+  return (
+    <form
+      className="stack"
+      style={{ gap: 10 }}
+      onSubmit={(e) => {
+        e.preventDefault();
+        startTransition(async () => {
+          const r = await invitePlatformMember({ email, platformRole: role });
+          setResult(r);
+          if (r.ok) {
+            setEmail("");
+            router.refresh();
+          }
+        });
+      }}
+    >
+      <div className="grid-2">
+        <div>
+          <label htmlFor="pm-email">Email</label>
+          <input id="pm-email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="reviewer@example.co.uk" autoComplete="off" />
+        </div>
+        <div>
+          <label htmlFor="pm-role">Role</label>
+          <select id="pm-role" value={role} onChange={(e) => setRole(e.target.value)}>
+            {roles.map((r) => (
+              <option key={r.value} value={r.value}>
+                {r.label}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+      {chosen && <p className="small muted" style={{ margin: 0 }}>{chosen.description}</p>}
+      <button className="btn btn-primary" disabled={pending} style={{ alignSelf: "flex-start" }}>
+        {pending ? "Inviting…" : "Send invitation"}
+      </button>
+      <Feedback result={result} />
+    </form>
+  );
+}
+
+export function RevokePlatformInvite({ id }: { id: string }) {
+  const router = useRouter();
+  const [pending, startTransition] = useTransition();
+  return (
+    <button
+      className="btn btn-sm btn-ghost"
+      disabled={pending}
+      onClick={() =>
+        startTransition(async () => {
+          await revokePlatformInvitation(id);
+          router.refresh();
+        })
+      }
+    >
+      Revoke
+    </button>
   );
 }

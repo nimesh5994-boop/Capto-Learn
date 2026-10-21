@@ -89,6 +89,8 @@ export const invitations = pgTable(
     email: text("email").notNull(),
     role: text("role").$type<Role>().notNull(),
     customRoleId: uuid("custom_role_id").references(() => customRoles.id, { onDelete: "set null" }),
+    /** Platform role granted on acceptance (internal Capto workspace only), e.g. "content_reviewer". */
+    platformRole: text("platform_role"),
     /** sha256 of the token in the link — the raw token is only ever shown once. */
     tokenHash: text("token_hash").notNull().unique(),
     invitedBy: uuid("invited_by").references(() => users.id, { onDelete: "set null" }),

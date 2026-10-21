@@ -11,6 +11,7 @@ import { hashPassword, verifyPassword } from "@/lib/auth/password";
 import { createSession, deleteSession } from "@/lib/auth/session";
 import { TRIAL_DAYS, planOf } from "@/lib/plans";
 import { isPlatformAdminEmail } from "@/lib/auth/dal";
+import { isPlatformRole } from "@/lib/rbac";
 import { INVITE_ONLY_MESSAGE } from "@/lib/messages";
 import { audit } from "@/lib/audit";
 import { hashToken, newToken } from "@/lib/tokens";
@@ -135,9 +136,12 @@ export async function acceptInvitation(_: FormState, formData: FormData): Promis
       .where(and(eq(invitations.id, invite.id), isNull(invitations.acceptedAt)))
       .returning({ id: invitations.id });
     if (!claimed) return null;
+    // A platform role (e.g. Content reviewer) only ever applies inside the internal Capto workspace.
+    const [org] = invite.platformRole ? await tx.select({ kind: organizations.kind }).from(organizations).where(eq(organizations.id, invite.organizationId)) : [];
+    const platformRole = invite.platformRole && org?.kind === "internal" && isPlatformRole(invite.platformRole) ? invite.platformRole : null;
     const [u] = await tx
       .insert(users)
-      .values({ organizationId: invite.organizationId, email: invite.email, name: parsed.data.name, passwordHash, role: invite.role, customRoleId: invite.customRoleId, lastLoginAt: new Date() })
+      .values({ organizationId: invite.organizationId, email: invite.email, name: parsed.data.name, passwordHash, role: invite.role, customRoleId: invite.customRoleId, platformRole, lastLoginAt: new Date() })
       .returning({ id: users.id });
     return u.id;
   });

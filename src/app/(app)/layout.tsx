@@ -36,7 +36,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   if (ctx.platformCan("platform.firms.view")) platform.push("platform.firms");
   if (ctx.platformCan("platform.firms.invite")) platform.push("platform.invitations");
   if (ctx.platformCan("platform.content.review")) platform.push("platform.knowledge", "platform.benchmark");
-  if (ctx.isPlatformAdmin) platform.push("platform.team", "platform.roles");
+  if (ctx.platformCan("platform.team.manage")) platform.push("platform.team", "platform.roles");
 
   const groups: NavGroup[] = [
     { label: "Learn", items: learn },
