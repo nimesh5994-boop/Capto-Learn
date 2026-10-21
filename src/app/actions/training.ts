@@ -10,6 +10,12 @@ import { actorOf, audit } from "@/lib/audit";
 import { getLesson, lessonsForTarget, targetTitle } from "@/content";
 import { lessonHash } from "@/lib/learning/review";
 import { CHECKLIST_KEYS, type ChecklistKey } from "@/lib/learning/reviewChecklist";
+import { sendBuiltEmail } from "@/lib/email";
+import { after } from "next/server";
+import { trainingAssignedEmail } from "@/lib/emailContent";
+import { assignmentPath } from "@/lib/reminderRules";
+import { firmBrandOf } from "@/lib/notify";
+import { appUrl } from "@/lib/url";
 
 export type ActionResult = { ok: true; message: string } | { ok: false; error: string };
 
@@ -39,16 +45,36 @@ export async function assignTraining(input: z.input<typeof AssignSchema>): Promi
     if (!lessonsForTarget(targetType, targetId).length) throw new AccessError("That course isn't available.");
     const db = await getDb();
     const members = await db
-      .select({ id: users.id })
+      .select({ id: users.id, name: users.name, email: users.email })
       .from(users)
       .where(and(eq(users.organizationId, ctx.org.id), inArray(users.id, userIds), eq(users.status, "active")));
     if (members.length !== userIds.length) throw new AccessError("Some of those people aren't active members of your firm.");
     const due = dueDate ? new Date(`${dueDate}T23:59:59Z`) : null;
-    await db.insert(assignments).values(userIds.map((userId) => ({ organizationId: ctx.org.id, userId, targetType, targetId, dueDate: due, note: note || null, assignedBy: ctx.user.id })));
+    const rows = await db
+      .insert(assignments)
+      .values(userIds.map((userId) => ({ organizationId: ctx.org.id, userId, targetType, targetId, dueDate: due, note: note || null, assignedBy: ctx.user.id })))
+      .returning({ id: assignments.id, userId: assignments.userId });
     const title = targetTitle(targetType, targetId);
     await audit(actorOf(ctx), "training.assigned", `Assigned "${title}" to ${userIds.length} ${userIds.length === 1 ? "person" : "people"}${dueDate ? `, due ${dueDate}` : ""}`, { type: "assignment", id: targetId });
+    // Everyone assigned gets an email (essential — not covered by the reminders switch). Not to yourself.
+    const lessons = lessonsForTarget(targetType, targetId).length;
+    const link = `${appUrl()}${assignmentPath(targetType, targetId)}`;
+    // Emails go out after the response, so assigning a whole team doesn't keep the manager waiting
+    // (sends are paced for Resend's rate limit). Each send is logged in the email log either way.
+    const recipients = rows.map((r) => ({ r, m: members.find((x) => x.id === r.userId) })).filter((x) => x.m && x.m.id !== ctx.user.id);
+    after(async () => {
+      for (const { r, m } of recipients) {
+        await sendBuiltEmail({
+          to: m!.email,
+          email: trainingAssignedEmail({ firm: firmBrandOf(ctx.org), name: m!.name, assignerName: ctx.user.name, title, lessons, dueDate: due, note: note || null, link }),
+          fromName: ctx.org.name,
+          replyTo: ctx.user.email,
+          log: { kind: "training_assigned", organizationId: ctx.org.id, relatedId: r.id },
+        }).catch((err) => console.error("[assign email]", err));
+      }
+    });
     revalidatePath("/team");
-    return `Assigned "${title}" to ${userIds.length} ${userIds.length === 1 ? "person" : "people"}.`;
+    return `Assigned "${title}" to ${userIds.length} ${userIds.length === 1 ? "person" : "people"}.${recipients.length ? " They'll get an email shortly." : ""}`;
   });
 }
 

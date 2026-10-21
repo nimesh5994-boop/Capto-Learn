@@ -6,17 +6,36 @@
  *  - the status shown for an invitation.
  */
 
-export const EMAIL_KINDS = ["invite", "platform_invite", "firm_invite", "password_reset", "digest", "interview", "join_request", "other"] as const;
+export const EMAIL_KINDS = [
+  "invite",
+  "platform_invite",
+  "firm_invite",
+  "welcome",
+  "password_reset",
+  "digest",
+  "training_assigned",
+  "training_reminder",
+  "course_completed",
+  "interview",
+  "join_request",
+  "register_review",
+  "other",
+] as const;
 export type EmailKind = (typeof EMAIL_KINDS)[number];
 
 export const EMAIL_KIND_LABELS: Record<EmailKind, string> = {
   invite: "Team invitation",
   platform_invite: "Platform invitation",
   firm_invite: "Firm invitation",
+  welcome: "Welcome",
   password_reset: "Password reset",
   digest: "Weekly update",
+  training_assigned: "Training assigned",
+  training_reminder: "Training reminder",
+  course_completed: "Course completed",
   interview: "Interview test",
   join_request: "Join request",
+  register_review: "Research review",
   other: "Other",
 };
 

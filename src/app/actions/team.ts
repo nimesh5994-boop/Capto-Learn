@@ -12,7 +12,9 @@ import { assertSeatAvailable } from "@/lib/entitlements";
 import { actorOf, audit } from "@/lib/audit";
 import { hashPassword, verifyPassword } from "@/lib/auth/password";
 import { newToken } from "@/lib/tokens";
-import { emailConfigured, sendEmail } from "@/lib/email";
+import { emailConfigured, sendBuiltEmail } from "@/lib/email";
+import { joinRequestDecisionEmail, passwordResetEmail, teamInviteEmail } from "@/lib/emailContent";
+import { firmBrandOf } from "@/lib/notify";
 import { appUrl } from "@/lib/url";
 import { ALL_PERMISSIONS, BUILT_IN_ROLES, BUILT_IN_ROLE_KEYS, PERMISSIONS, isBuiltInRole, permissionsFor, type Permission } from "@/lib/rbac";
 import type { FormState } from "./auth";
@@ -113,12 +115,11 @@ export async function inviteMember(input: { email: string; role: string }): Prom
 /** Emails an invitation link and words the result for the admin (with the link to copy if the email didn't go). */
 async function emailInvitation(ctx: AuthContext, inv: { id: string; email: string; label: string; token: string }, verb: "created" | "renewed"): Promise<TeamResult> {
   const link = `${appUrl()}/invite/${inv.token}`;
-  const mail = await sendEmail({
+  const mail = await sendBuiltEmail({
     to: inv.email,
-    subject: `${ctx.user.name} invited you to ${ctx.org.name} on Capto Learn`,
+    email: teamInviteEmail({ firm: firmBrandOf(ctx.org), inviterName: ctx.user.name, roleLabel: inv.label, link, expiresAt: new Date(Date.now() + INVITE_DAYS * 86_400_000) }),
     fromName: ctx.org.name,
     replyTo: ctx.user.email,
-    html: `<p style="font-family:sans-serif">${ctx.user.name} has invited you to join <strong>${ctx.org.name}</strong> on Capto Learn as <strong>${inv.label}</strong>.</p><p style="font-family:sans-serif"><a href="${link}">Accept the invitation</a> — the link expires in ${INVITE_DAYS} days.</p>`,
     log: { kind: "invite", organizationId: ctx.org.id, relatedId: inv.id },
   });
   if (mail.error) console.error(`[invite email failed] to=${inv.email}: ${mail.error}`);
@@ -219,12 +220,11 @@ export async function createResetLink(userId: string): Promise<TeamResult> {
     await db.insert(passwordResets).values({ userId: member.id, tokenHash: hash, expiresAt: new Date(Date.now() + 24 * 3_600_000) });
     const link = `${appUrl()}/reset-password?token=${token}`;
     if (emailConfigured()) {
-      const mail = await sendEmail({
+      const mail = await sendBuiltEmail({
         to: member.email,
-        subject: "Reset your Capto Learn password",
+        email: passwordResetEmail({ email: member.email, link, expiresText: "24 hours", admin: { name: ctx.user.name, firm: firmBrandOf(ctx.org) } }),
         fromName: ctx.org.name,
         replyTo: ctx.user.email,
-        html: `<p style="font-family:sans-serif">${ctx.user.name} sent you a link to set a new password for Capto Learn (${member.email}).</p><p style="font-family:sans-serif"><a href="${link}">Choose a new password</a> — the link works once and expires in 24 hours. If you weren't expecting this, you can ignore it.</p>`,
         log: { kind: "password_reset", organizationId: ctx.org.id, relatedId: member.id },
       });
       await audit(actorOf(ctx), "team.reset_link", `${mail.sent ? "Emailed" : "Created"} a password reset link for ${member.name}`, { type: "user", id: member.id });
@@ -410,9 +410,20 @@ export async function decideJoinRequest(id: string, approve: boolean): Promise<T
     const [req] = await db.select().from(joinRequests).where(and(eq(joinRequests.id, id), eq(joinRequests.organizationId, ctx.org.id), eq(joinRequests.status, "pending")));
     if (!req) return { ok: false, error: "That request has already been dealt with." };
     if (!approve) {
-      await db.update(joinRequests).set({ status: "declined", decidedByName: ctx.user.name, decidedAt: new Date() }).where(eq(joinRequests.id, id));
+      const [declined] = await db
+        .update(joinRequests)
+        .set({ status: "declined", decidedByName: ctx.user.name, decidedAt: new Date() })
+        .where(and(eq(joinRequests.id, id), eq(joinRequests.status, "pending")))
+        .returning({ id: joinRequests.id });
+      if (!declined) return { ok: false, error: "That request has already been dealt with." };
       await audit(actorOf(ctx), "team.join_declined", `Declined ${req.name} <${req.email}>`);
-      return { ok: true, message: `Declined ${req.name}.` };
+      await sendBuiltEmail({
+        to: req.email,
+        email: joinRequestDecisionEmail({ firm: firmBrandOf(ctx.org), name: req.name, approved: false, loginUrl: `${appUrl()}/login` }),
+        fromName: ctx.org.name,
+        log: { kind: "join_request", organizationId: ctx.org.id, relatedId: req.id },
+      });
+      return { ok: true, message: `Declined ${req.name}. We've let them know by email.` };
     }
     const [taken] = await db.select({ id: users.id }).from(users).where(eq(users.email, req.email));
     if (taken) return { ok: false, error: "Someone with that email already has an account." };
@@ -421,7 +432,13 @@ export async function decideJoinRequest(id: string, approve: boolean): Promise<T
     await db.insert(users).values({ organizationId: ctx.org.id, email: req.email, name: req.name, passwordHash: req.passwordHash, role });
     await db.update(joinRequests).set({ status: "approved", decidedByName: ctx.user.name, decidedAt: new Date() }).where(eq(joinRequests.id, id));
     await audit(actorOf(ctx), "team.join_approved", `Approved ${req.name} <${req.email}> via the join link`);
-    return { ok: true, message: `${req.name} can now sign in.` };
+    const mail = await sendBuiltEmail({
+      to: req.email,
+      email: joinRequestDecisionEmail({ firm: firmBrandOf(ctx.org), name: req.name, approved: true, loginUrl: `${appUrl()}/login` }),
+      fromName: ctx.org.name,
+      log: { kind: "join_request", organizationId: ctx.org.id, relatedId: req.id },
+    });
+    return { ok: true, message: `${req.name} can now sign in${mail.sent ? " — we've emailed them" : ""}.` };
   });
 }
 
@@ -432,7 +449,16 @@ export async function saveMyDigest(_: FormState, formData: FormData): Promise<Fo
     const valid = new Set(tracks().map((t) => t.slug));
     const topics = formData.getAll("topics").map(String).filter((t) => valid.has(t));
     const db = await getDb();
-    await db.update(users).set({ digestEnabled: formData.get("digestEnabled") === "on", digestTopics: topics }).where(eq(users.id, ctx.user.id));
+    await db
+      .update(users)
+      .set({
+        digestEnabled: formData.get("digestEnabled") === "on",
+        digestTopics: topics,
+        trainingRemindersEnabled: formData.get("trainingReminders") === "on",
+        // The reviewer switch is only on the form for reviewers; leave it alone for everyone else.
+        ...(formData.get("reviewerShown") === "1" ? { reviewerDigestEnabled: formData.get("reviewerDigest") === "on" } : {}),
+      })
+      .where(eq(users.id, ctx.user.id));
     revalidatePath("/account");
     return { success: "Weekly update settings saved." };
   } catch (err) {

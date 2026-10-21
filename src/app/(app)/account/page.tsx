@@ -73,13 +73,28 @@ export default async function AccountPage() {
 
       <SettingsForm
         action={saveMyDigest}
-        title="Weekly update email"
+        title="Email settings"
         description="Every Monday: saved or approved answers whose guidance has changed, lessons whose sources changed, and HMRC and Companies House updates in your topics. Nothing is sent in a quiet week."
         submitLabel="Save"
       >
         <label className="row" style={{ gap: 8, fontWeight: 500, color: "var(--text)" }}>
           <input type="checkbox" name="digestEnabled" defaultChecked={user.digestEnabled} /> Send me the weekly update
+          {(ctx.can("assignments.manage") || ctx.can("progress.view_team")) && <span className="small muted" style={{ fontWeight: 400 }}>(includes your team&apos;s overdue training)</span>}
         </label>
+        <label className="row" style={{ gap: 8, fontWeight: 500, color: "var(--text)" }}>
+          <input type="checkbox" name="trainingReminders" defaultChecked={user.trainingRemindersEnabled} /> Remind me when assigned training is due soon or overdue
+        </label>
+        {ctx.platformCan("platform.content.review") && (
+          <>
+            <input type="hidden" name="reviewerShown" value="1" />
+            <label className="row" style={{ gap: 8, fontWeight: 500, color: "var(--text)" }}>
+              <input type="checkbox" name="reviewerDigest" defaultChecked={user.reviewerDigestEnabled} /> Include the reviewer update in my Monday email (lessons with changed sources, new error reports, lessons awaiting review)
+            </label>
+          </>
+        )}
+        <p className="small muted" style={{ margin: 0 }}>
+          Emails you can&apos;t switch off: invitations, password resets, newly assigned training, join request decisions and messages about your own work (such as a reviewer asking for changes to your answer).
+        </p>
         <div className="small muted">Topics to follow (leave all unticked to follow the courses you&apos;ve studied):</div>
         <div className="grid-3">
           {tracks().map((t) => (

@@ -3,7 +3,10 @@ import { randomBytes } from "node:crypto";
 import { cookies, headers } from "next/headers";
 import { and, eq, gte, sql } from "drizzle-orm";
 import { getDb } from "@/lib/db/client";
-import { interviewTests, type InterviewTest } from "@/lib/db/schema";
+import { interviewTests, organizations, type InterviewTest } from "@/lib/db/schema";
+import { sendBuiltEmail } from "@/lib/email";
+import { interviewReceiptEmail } from "@/lib/emailContent";
+import { firmBrandOf } from "@/lib/notify";
 import { getLesson, tracks, trackLessons } from "@/content";
 import { DECLARATION, hashSecret, markInterview, pickInterviewQuestions, type IntegrityEvent, type PoolTrack } from "./rules";
 
@@ -127,7 +130,25 @@ export async function finish(row: InterviewTest, events: IntegrityEvent[]): Prom
     .set({ status: "completed", completedAt: new Date(), score: marked.score, events: [...row.events, ...events, { t: new Date().toISOString(), type: "finished" }].slice(-MAX_EVENTS) })
     .where(and(eq(interviewTests.id, row.id), eq(interviewTests.status, "started")))
     .returning();
+  // Only the call that actually closed the test sends the receipt, so it goes once (no score — that's the firm's).
+  if (done?.candidateEmail) await sendReceipt(done);
   return done ?? row;
+}
+
+async function sendReceipt(t: InterviewTest) {
+  try {
+    const db = await getDb();
+    const [org] = await db.select({ name: organizations.name, brandColor: organizations.brandColor }).from(organizations).where(eq(organizations.id, t.organizationId));
+    if (!org || !t.candidateEmail) return;
+    await sendBuiltEmail({
+      to: t.candidateEmail,
+      email: interviewReceiptEmail({ firm: firmBrandOf(org), candidateName: t.declaration?.name ?? t.candidateName }),
+      fromName: org.name,
+      log: { kind: "interview", organizationId: t.organizationId, relatedId: t.id },
+    });
+  } catch (err) {
+    console.error("[interview receipt]", err instanceof Error ? err.message : err);
+  }
 }
 
 /** Tests a firm has created this calendar month (for the plan allowance). */

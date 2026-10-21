@@ -10,7 +10,8 @@ import { audit } from "@/lib/audit";
 import { PLANS, PLAN_KEYS, TRIAL_DAYS, type PlanKey } from "@/lib/plans";
 import { PLATFORM_ROLES, isPlatformRole } from "@/lib/rbac";
 import { newToken } from "@/lib/tokens";
-import { sendEmail } from "@/lib/email";
+import { sendBuiltEmail } from "@/lib/email";
+import { firmInviteEmail, platformInviteEmail } from "@/lib/emailContent";
 import { appUrl } from "@/lib/url";
 
 export type PlatformResult = { ok: true; message: string; link?: string } | { ok: false; error: string };
@@ -119,13 +120,12 @@ export async function inviteFirm(input: { email: string; firmName: string; plan:
 
 async function emailFirmInvite(inv: { id: string; email: string; firmName: string; plan: string; token: string }, replyTo: string, verb: "created" | "renewed"): Promise<PlatformResult> {
   const link = `${appUrl()}/signup?invite=${inv.token}`;
-  const planText = inv.plan === "trial" ? ` with a ${TRIAL_DAYS}-day free trial` : PLAN_KEYS.includes(inv.plan as PlanKey) ? ` on the ${PLANS[inv.plan as PlanKey].label} plan` : "";
-  const mail = await sendEmail({
+  const planText = inv.plan === "trial" ? `${TRIAL_DAYS}-day free trial` : PLAN_KEYS.includes(inv.plan as PlanKey) ? `${PLANS[inv.plan as PlanKey].label} plan` : "As agreed";
+  const mail = await sendBuiltEmail({
     to: inv.email,
-    subject: "Your invitation to Capto Learn",
+    email: firmInviteEmail({ firmName: inv.firmName, planText, link, expiresAt: new Date(Date.now() + FIRM_INVITE_DAYS * 86_400_000) }),
     fromName: "Capto Learn",
     replyTo,
-    html: `<p style="font-family:sans-serif">You've been invited to set up <strong>${inv.firmName}</strong> on Capto Learn${planText}.</p><p style="font-family:sans-serif"><a href="${link}">Create your firm's account</a> — the link works once and expires in ${FIRM_INVITE_DAYS} days.</p>`,
     log: { kind: "firm_invite", organizationId: null, relatedId: inv.id },
   });
   return inviteResultMessage(mail, inv.email, link, verb);
@@ -244,12 +244,11 @@ async function emailPlatformInvite(ctx: { org: { id: string }; user: { name: str
   const link = `${appUrl()}/invite/${inv.token}`;
   const role = isPlatformRole(inv.platformRole) ? PLATFORM_ROLES[inv.platformRole] : null;
   const label = role?.label ?? inv.platformRole;
-  const mail = await sendEmail({
+  const mail = await sendBuiltEmail({
     to: inv.email,
-    subject: `${ctx.user.name} invited you to Capto Learn as ${label}`,
+    email: platformInviteEmail({ inviterName: ctx.user.name, roleLabel: label, roleDescription: role?.description ?? null, link, expiresAt: new Date(Date.now() + PLATFORM_INVITE_DAYS * 86_400_000) }),
     fromName: "Capto Learn",
     replyTo: ctx.user.email,
-    html: `<p style="font-family:sans-serif">${ctx.user.name} has invited you to join the Capto Learn team as <strong>${label}</strong>${role ? `: ${role.description}` : "."}</p><p style="font-family:sans-serif"><a href="${link}">Accept the invitation</a> — the link expires in ${PLATFORM_INVITE_DAYS} days.</p>`,
     log: { kind: "platform_invite", organizationId: ctx.org.id, relatedId: inv.id },
   });
   return inviteResultMessage(mail, inv.email, link, verb);

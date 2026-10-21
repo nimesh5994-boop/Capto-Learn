@@ -5,8 +5,13 @@ import { and, eq, sql } from "drizzle-orm";
 import * as z from "zod";
 import { getDb } from "@/lib/db/client";
 import { exerciseAttempts, lessonFeedback, lessonProgress } from "@/lib/db/schema";
-import { AccessError, authorize } from "@/lib/auth/dal";
-import { getLesson } from "@/content";
+import { AccessError, authorize, type AuthContext } from "@/lib/auth/dal";
+import { getLesson, getTrack } from "@/content";
+import { myProgress, trackStats } from "@/lib/learning/progress";
+import { sendBuiltEmail } from "@/lib/email";
+import { courseCompletedEmail } from "@/lib/emailContent";
+import { alreadyEmailed, firmBrandOf } from "@/lib/notify";
+import { appUrl } from "@/lib/url";
 import { mark, quizScore, QUIZ_PASS_MARK, type ExerciseResponse, type MarkResult } from "@/lib/learning/marking";
 import { seedReviewItems } from "@/lib/learning/daily";
 import { dueDate, nextBox } from "@/lib/learning/schedule";
@@ -108,6 +113,10 @@ export async function submitQuiz(lessonId: string, answers: number[]): Promise<R
     const passed = score >= QUIZ_PASS_MARK;
     const db = await getDb();
     await ensureProgress(ctx.org.id, ctx.user.id, lessonId, ref.track.slug);
+    const [before] = await db
+      .select({ status: lessonProgress.status })
+      .from(lessonProgress)
+      .where(and(eq(lessonProgress.userId, ctx.user.id), eq(lessonProgress.lessonId, lessonId)));
     await db
       .update(lessonProgress)
       .set({
@@ -123,9 +132,26 @@ export async function submitQuiz(lessonId: string, answers: number[]): Promise<R
     );
     // Add this lesson's questions to the learner's Daily 5 review deck.
     await seedReviewItems(ctx.org.id, ctx.user.id, lessonId).catch((err) => console.error("[daily5] seed", err));
+    // This pass finished the whole course? Congratulate them, with the certificate (once per person and course).
+    if (passed && before?.status !== "completed") await emailIfCourseComplete(ctx, ref.track.slug).catch((err) => console.error("[course email]", err));
     revalidatePath("/learn", "layout");
     revalidatePath("/");
     return { score, passed, questions: ref.lesson.quiz.map((q, i) => ({ correct: parsed.data[i] === q.answer, answer: q.answer, explainHtml: renderMarkdown(q.explain) })) };
+  });
+}
+
+async function emailIfCourseComplete(ctx: AuthContext, slug: string) {
+  const track = getTrack(slug);
+  if (!track) return;
+  const stats = trackStats(slug, await myProgress(ctx.user.id));
+  if (stats.total === 0 || stats.done < stats.total) return;
+  const relatedId = `${ctx.user.id}/${slug}`;
+  if (await alreadyEmailed("course_completed", relatedId)) return;
+  await sendBuiltEmail({
+    to: ctx.user.email,
+    email: courseCompletedEmail({ firm: firmBrandOf(ctx.org), name: ctx.user.name, courseTitle: track.title, lessons: stats.total, certificateUrl: `${appUrl()}/certificates/${slug}` }),
+    fromName: ctx.org.name,
+    log: { kind: "course_completed", organizationId: ctx.org.id, relatedId },
   });
 }
 

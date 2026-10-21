@@ -5,7 +5,11 @@ import { retireLearned, retireLearnedFrom } from "@/lib/search/knowledge";
 import { and, eq, isNull } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { getDb } from "@/lib/db/client";
-import { answerLibrary, researchQueries, savedResearch, type ResearchReviewStatus } from "@/lib/db/schema";
+import { answerLibrary, researchQueries, savedResearch, users, type ResearchReviewStatus } from "@/lib/db/schema";
+import { sendBuiltEmail } from "@/lib/email";
+import { registerChangesEmail } from "@/lib/emailContent";
+import { firmBrandOf } from "@/lib/notify";
+import { appUrl } from "@/lib/url";
 import { audit, actorOf } from "@/lib/audit";
 import { authorize } from "@/lib/auth/dal";
 import { retireForBadRating } from "@/lib/research/library";
@@ -87,7 +91,7 @@ export async function reviewAnswer(queryId: string, status: ResearchReviewStatus
     .update(researchQueries)
     .set(status ? { reviewStatus: status, reviewedById: ctx.user.id, reviewedByName: ctx.user.name, reviewedAt: new Date(), reviewNote: clean } : { reviewStatus: null, reviewedById: null, reviewedByName: null, reviewedAt: null, reviewNote: null })
     .where(and(eq(researchQueries.id, queryId), eq(researchQueries.organizationId, ctx.org.id)))
-    .returning({ question: researchQueries.question, answer: researchQueries.answer });
+    .returning({ question: researchQueries.question, answer: researchQueries.answer, userId: researchQueries.userId });
   if (!row?.answer) return { ok: false, error: "Only answered questions can be reviewed." };
 
   if (status === "changes") {
@@ -104,6 +108,21 @@ export async function reviewAnswer(queryId: string, status: ResearchReviewStatus
   }
   const what = status === "approved" ? "Approved" : status === "changes" ? "Asked for changes to" : "Cleared the review of";
   await audit(actorOf(ctx), "research.reviewed", `${what} the Ask Capto answer "${row.question.slice(0, 120)}"${clean ? `: ${clean.slice(0, 200)}` : ""}`, { type: "research_query", id: queryId });
+  // Tell the person who asked (unless they're the reviewer, or no longer active). The question and note only — never the answer.
+  if (status === "changes" && clean && row.userId && row.userId !== ctx.user.id) {
+    const [asker] = await db
+      .select({ name: users.name, email: users.email })
+      .from(users)
+      .where(and(eq(users.id, row.userId), eq(users.organizationId, ctx.org.id), eq(users.status, "active")));
+    if (asker)
+      await sendBuiltEmail({
+        to: asker.email,
+        email: registerChangesEmail({ firm: firmBrandOf(ctx.org), name: asker.name, reviewerName: ctx.user.name, question: row.question, note: clean, link: `${appUrl()}/ask/${queryId}` }),
+        fromName: ctx.org.name,
+        replyTo: ctx.user.email,
+        log: { kind: "register_review", organizationId: ctx.org.id, relatedId: queryId },
+      });
+  }
   revalidatePath(`/ask/${queryId}`);
   revalidatePath("/ask/register");
   return { ok: true };

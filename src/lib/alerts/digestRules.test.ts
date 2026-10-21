@@ -38,6 +38,36 @@ describe("renderDigestEmail", () => {
     expect(html).toContain("/updates?days=7");
     expect(html).toContain("Hi Jo,");
   });
+  it("renders through the branded template, with a plain-text part and a settings link", () => {
+    const { html, text } = renderDigestEmail({ ...empty, lessons: [{ id: "vat/frs", title: "Flat Rate Scheme", trackTitle: "VAT" }] }, opts);
+    expect(html.startsWith("<!doctype html>")).toBe(true);
+    expect(html).toContain("via Capto Learn");
+    expect(html).toContain("https://learn.chitta.cloud/account");
+    expect(text).toContain("Flat Rate Scheme (https://learn.chitta.cloud/learn/vat/frs)");
+    expect(text).toContain("Manage email settings: https://learn.chitta.cloud/account");
+  });
+  it("adds the managers' overdue section and the reviewer update", () => {
+    const d: Digest = {
+      ...empty,
+      overdueTeam: [{ person: "Sam Patel", title: "VAT", dueDate: "2026-10-10T23:59:59Z" }],
+      overdueTotal: 1,
+      reviewer: { sourceChanged: [{ id: "vat/frs", title: "Flat Rate Scheme", trackTitle: "VAT" }], newReports: 2, awaitingReview: 40 },
+    };
+    expect(digestIsEmpty(d)).toBe(false);
+    const { subject, html } = renderDigestEmail(d, opts);
+    expect(subject).toBe("Capto: 1 overdue training assignment in your team");
+    expect(html).toContain("Overdue training in your team (1)");
+    expect(html).toContain("Sam Patel: VAT");
+    expect(html).toContain("due 10 Oct");
+    expect(html).toContain("Reviewer update");
+    expect(html).toContain("/reviewer/lesson/vat/frs");
+    expect(html).toContain("2 new learner error reports");
+    expect(html).toContain("40 lessons still awaiting a first review");
+  });
+  it("treats an empty reviewer section and zero overdue as nothing to say", () => {
+    expect(digestIsEmpty({ ...empty, overdueTotal: 0, overdueTeam: [], reviewer: { sourceChanged: [], newReports: 0, awaitingReview: 0 } })).toBe(true);
+    expect(renderDigestEmail({ ...empty, reviewer: { sourceChanged: [], newReports: 1, awaitingReview: 0 } }, opts).subject).toBe("Capto: your reviewer update");
+  });
   it("uses a topic subject when only guidance changed", () => {
     expect(renderDigestEmail({ ...empty, guidanceTotal: 3, guidance: [] }, opts).subject).toBe("Capto: 3 updates in your topics this week");
   });

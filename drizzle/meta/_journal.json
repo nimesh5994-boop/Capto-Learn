@@ -148,6 +148,13 @@
       "when": 1792559742128,
       "tag": "0020_email_log",
       "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1792560731462,
+      "tag": "0021_email_preferences_reminders",
+      "breakpoints": true
     }
   ]
 }

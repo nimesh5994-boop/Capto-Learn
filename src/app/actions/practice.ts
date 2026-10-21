@@ -11,7 +11,9 @@ import { assertSeatAvailable } from "@/lib/entitlements";
 import { FEATURE_LABELS, type Feature } from "@/lib/plans";
 import { BUILT_IN_ROLES, BUILT_IN_ROLE_KEYS, type PlatformPermission } from "@/lib/rbac";
 import { newToken } from "@/lib/tokens";
-import { sendEmail } from "@/lib/email";
+import { sendBuiltEmail } from "@/lib/email";
+import { teamInviteEmail } from "@/lib/emailContent";
+import { firmBrandOf } from "@/lib/notify";
 import { appUrl } from "@/lib/url";
 
 /*
@@ -170,11 +172,10 @@ export async function invitePracticeUser(orgId: string, input: { email: string; 
       .returning({ id: invitations.id });
     const link = `${appUrl()}/invite/${token}`;
     const label = BUILT_IN_ROLES[input.role as keyof typeof BUILT_IN_ROLES].label;
-    const mail = await sendEmail({
+    const mail = await sendBuiltEmail({
       to: email.data,
-      subject: `You've been invited to ${org.name} on Capto Learn`,
+      email: teamInviteEmail({ firm: firmBrandOf(org), inviterName: null, roleLabel: label, link, expiresAt: new Date(Date.now() + 7 * 86_400_000) }),
       fromName: "Capto Learn",
-      html: `<p style="font-family:sans-serif">You've been added to <strong>${org.name}</strong> on Capto Learn as <strong>${label}</strong>.</p><p style="font-family:sans-serif"><a href="${link}">Accept the invitation</a> — the link expires in 7 days.</p>`,
       log: { kind: "invite", organizationId: orgId, relatedId: inv.id },
     });
     await log(orgId, ctx, "team.invited", `Invited ${email.data} as ${label}`);

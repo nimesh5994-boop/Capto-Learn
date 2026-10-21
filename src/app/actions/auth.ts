@@ -15,7 +15,9 @@ import { isPlatformRole } from "@/lib/rbac";
 import { INVITE_ONLY_MESSAGE } from "@/lib/messages";
 import { audit } from "@/lib/audit";
 import { hashToken, newToken } from "@/lib/tokens";
-import { emailConfigured, sendEmail } from "@/lib/email";
+import { emailConfigured, sendBuiltEmail } from "@/lib/email";
+import { joinRequestAdminEmail, joinRequestReceivedEmail, passwordResetEmail, welcomeEmail } from "@/lib/emailContent";
+import { activeUsersWith, firmBrandOf } from "@/lib/notify";
 import { appUrl } from "@/lib/url";
 
 export type FormState = { error?: string; success?: string } | undefined;
@@ -90,6 +92,13 @@ export async function signup(_: FormState, formData: FormData): Promise<FormStat
     "firm.created",
     firmInvite ? `Firm created from an invitation by ${firmInvite.invitedByEmail} on the ${planOf(plan).label} plan` : "Internal Capto workspace created by a platform admin"
   );
+  if (firmInvite)
+    await sendBuiltEmail({
+      to: email,
+      email: welcomeEmail({ name, firmName, appUrl: appUrl(), trialDays: plan === "trial" ? TRIAL_DAYS : null }),
+      fromName: "Capto Learn",
+      log: { kind: "welcome", organizationId: created.orgId, relatedId: created.userId },
+    });
   await createSession({ userId: created.userId, organizationId: created.orgId });
   redirect(firmInvite ? "/" : "/platform");
 }
@@ -165,11 +174,10 @@ export async function requestPasswordReset(_: FormState, formData: FormData): Pr
   const { token, hash } = newToken();
   await db.insert(passwordResets).values({ userId: user.id, tokenHash: hash, expiresAt: new Date(Date.now() + 3_600_000) });
   const url = `${appUrl()}/reset-password?token=${token}`;
-  const res = await sendEmail({
+  const res = await sendBuiltEmail({
     to: user.email,
-    subject: "Reset your Capto Learn password",
+    email: passwordResetEmail({ email: user.email, link: url, expiresText: "1 hour" }),
     fromName: "Capto Learn",
-    html: `<p style="font-family:sans-serif">Someone asked to reset the password for ${user.email}. <a href="${url}">Choose a new password</a> — the link expires in 1 hour. If this wasn't you, you can ignore this email.</p>`,
     log: { kind: "password_reset", organizationId: user.organizationId, relatedId: user.id },
   });
   if (res.error) console.error("password reset email failed", res.error);
@@ -231,10 +239,33 @@ export async function joinFirm(_: FormState, formData: FormData): Promise<FormSt
   }
 
   // Not on an approved domain: one pending request per email, refreshed if they try again.
+  // Someone retrying (or abusing the public form) within 15 minutes doesn't trigger more emails.
+  const [recent] = await db
+    .select({ id: joinRequests.id })
+    .from(joinRequests)
+    .where(and(eq(joinRequests.organizationId, org.id), eq(joinRequests.email, parsed.data.email), gt(joinRequests.createdAt, new Date(Date.now() - 15 * 60_000))))
+    .limit(1);
   await db
     .update(joinRequests)
     .set({ status: "declined", decidedByName: "Replaced by a newer request", decidedAt: new Date() })
     .where(and(eq(joinRequests.organizationId, org.id), eq(joinRequests.email, parsed.data.email), eq(joinRequests.status, "pending")));
-  await db.insert(joinRequests).values({ organizationId: org.id, name: parsed.data.name, email: parsed.data.email, passwordHash });
+  const [request] = await db.insert(joinRequests).values({ organizationId: org.id, name: parsed.data.name, email: parsed.data.email, passwordHash }).returning({ id: joinRequests.id });
+  // Tell the firm's user managers, and confirm receipt to the person asking.
+  const brand = firmBrandOf(org);
+  for (const admin of recent ? [] : await activeUsersWith(org, "team.manage")) {
+    await sendBuiltEmail({
+      to: admin.email,
+      email: joinRequestAdminEmail({ firm: brand, name: parsed.data.name, email: parsed.data.email, link: `${appUrl()}/admin/users` }),
+      fromName: `${org.name} via Capto Learn`,
+      log: { kind: "join_request", organizationId: org.id, relatedId: request.id },
+    });
+  }
+  if (!recent)
+    await sendBuiltEmail({
+      to: parsed.data.email,
+      email: joinRequestReceivedEmail({ firm: brand, name: parsed.data.name }),
+      fromName: org.name,
+      log: { kind: "join_request", organizationId: org.id, relatedId: request.id },
+    });
   return { success: `Thanks, ${parsed.data.name.split(" ")[0]} — your request has gone to ${org.name}. You'll be able to sign in with this email and password once an admin approves it.` };
 }

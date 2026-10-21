@@ -36,7 +36,7 @@ export function NewInterview({ areas, courses, firmName }: { areas: Area[]; cour
   const [minutes, setMinutes] = useState(30);
   const [days, setDays] = useState(7);
   const [error, setError] = useState<string | null>(null);
-  const [created, setCreated] = useState<{ link: string; code: string; who: string } | null>(null);
+  const [created, setCreated] = useState<{ link: string; code: string; who: string; emailedTo: string | null } | null>(null);
   const [pending, start] = useTransition();
 
   const toggle = (slug: string) => setPicked((p) => (p.includes(slug) ? p.filter((s) => s !== slug) : [...p, slug]));
@@ -45,7 +45,7 @@ export function NewInterview({ areas, courses, firmName }: { areas: Area[]; cour
       setError(null);
       const r = await createInterview({ candidateName: name, candidateEmail: email, role, tracks: picked, difficulty, questionCount: count, minutes, validDays: days });
       if (!r.ok) return setError(r.error);
-      setCreated({ link: `${window.location.origin}/interview/${r.data.token}`, code: r.data.code, who: name });
+      setCreated({ link: `${window.location.origin}/interview/${r.data.token}`, code: r.data.code, who: name, emailedTo: r.data.emailed ? email : null });
       setName("");
       setEmail("");
       setRole("");
@@ -56,6 +56,7 @@ export function NewInterview({ areas, courses, firmName }: { areas: Area[]; cour
     return (
       <div className={styles.created}>
         <h3>Test ready for {created.who}</h3>
+        {created.emailedTo && <div className="alert alert-success">We&apos;ve emailed the link to {created.emailedTo}.</div>}
         <p className="small muted" style={{ margin: 0 }}>
           Send the candidate the link, or the code to type in at {typeof window === "undefined" ? "" : window.location.host}/interview. Save the link now — for security it isn&apos;t shown again (you can make a new one from the list).
         </p>

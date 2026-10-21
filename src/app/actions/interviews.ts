@@ -11,6 +11,10 @@ import { interviewLimit } from "@/lib/plans";
 import { tracks } from "@/content";
 import { DECLARATION, hashSecret, newCredentials, type IntegrityEvent } from "@/lib/interviews/rules";
 import { answer, findByKey, finish, interviewsThisMonth, logEvents, ownsSession, start } from "@/lib/interviews/store";
+import { sendBuiltEmail } from "@/lib/email";
+import { interviewInviteEmail } from "@/lib/emailContent";
+import { firmBrandOf } from "@/lib/notify";
+import { appUrl } from "@/lib/url";
 
 type Result<T> = { ok: true; data: T } | { ok: false; error: string };
 async function guard<T>(fn: () => Promise<T>): Promise<Result<T>> {
@@ -35,7 +39,7 @@ const CreateSchema = z.object({
   validDays: z.coerce.number().int().min(1).max(30),
 });
 
-export async function createInterview(input: z.input<typeof CreateSchema>): Promise<Result<{ id: string; token: string; code: string }>> {
+export async function createInterview(input: z.input<typeof CreateSchema>): Promise<Result<{ id: string; token: string; code: string; emailed: boolean }>> {
   return guard(async () => {
     const ctx = await authorize("interviews.manage", { write: true });
     const parsed = CreateSchema.safeParse(input);
@@ -67,8 +71,27 @@ export async function createInterview(input: z.input<typeof CreateSchema>): Prom
       })
       .returning({ id: interviewTests.id });
     await audit(actorOf(ctx), "interview.created", `Created an interview test for ${parsed.data.candidateName}`, { type: "interview", id: row.id });
+    let emailed = false;
+    if (parsed.data.candidateEmail) {
+      const mail = await sendBuiltEmail({
+        to: parsed.data.candidateEmail,
+        email: interviewInviteEmail({
+          firm: firmBrandOf(ctx.org),
+          candidateName: parsed.data.candidateName,
+          role: parsed.data.role || null,
+          minutes: parsed.data.minutes,
+          questions: parsed.data.questionCount,
+          expiresAt: new Date(Date.now() + parsed.data.validDays * 86_400_000),
+          link: `${appUrl()}/interview/${token}`,
+        }),
+        fromName: ctx.org.name,
+        replyTo: ctx.user.email,
+        log: { kind: "interview", organizationId: ctx.org.id, relatedId: row.id },
+      });
+      emailed = mail.sent;
+    }
     revalidatePath("/team/interviews");
-    return { id: row.id, token, code };
+    return { id: row.id, token, code, emailed };
   });
 }
 

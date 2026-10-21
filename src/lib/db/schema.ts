@@ -66,6 +66,10 @@ export const users = pgTable("users", {
   digestEnabled: boolean("digest_enabled").notNull().default(true),
   digestTopics: jsonb("digest_topics").$type<string[]>().notNull().default([]),
   digestSentAt: timestamp("digest_sent_at", { withTimezone: true }),
+  /** Due-soon and overdue reminders for assigned training (the "you've been assigned" email always goes). */
+  trainingRemindersEnabled: boolean("training_reminders_enabled").notNull().default(true),
+  /** Content reviewers: the reviewer section of the Monday email. */
+  reviewerDigestEnabled: boolean("reviewer_digest_enabled").notNull().default(true),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
@@ -287,6 +291,9 @@ export const assignments = pgTable(
     note: text("note"),
     assignedBy: uuid("assigned_by").references(() => users.id, { onDelete: "set null" }),
     cancelledAt: timestamp("cancelled_at", { withTimezone: true }),
+    /** When the "due in a few days" / "now overdue" reminder went (each is sent once). */
+    dueSoonSentAt: timestamp("due_soon_sent_at", { withTimezone: true }),
+    overdueSentAt: timestamp("overdue_sent_at", { withTimezone: true }),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [index("assignments_org_idx").on(t.organizationId), index("assignments_user_idx").on(t.userId)]
