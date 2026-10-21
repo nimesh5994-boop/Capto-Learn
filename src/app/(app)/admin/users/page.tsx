@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { and, asc, desc, eq, gt, isNull } from "drizzle-orm";
+import { and, asc, desc, eq, gte, isNull, or } from "drizzle-orm";
 import { getDb } from "@/lib/db/client";
 import { customRoles, invitations, joinRequests, users } from "@/lib/db/schema";
 import { requireUser } from "@/lib/auth/dal";
@@ -10,6 +10,8 @@ import { BUILT_IN_ROLES, BUILT_IN_ROLE_KEYS, isBuiltInRole } from "@/lib/rbac";
 import { dateTime } from "@/lib/format";
 import { emailConfigured } from "@/lib/email";
 import { appUrl } from "@/lib/url";
+import { daysAgo, latestEmailByAddress, latestEmailByRelated } from "@/lib/emailLog";
+import { DELIVERY_LABELS, DELIVERY_PILL, EMAIL_KIND_LABELS, deliveryStatus, invitationStatus } from "@/lib/emailTracking";
 import { StaffAccess } from "./StaffAccess";
 import { TeamTable } from "./TeamTable";
 
@@ -25,8 +27,19 @@ export default async function TeamPage() {
     db
       .select()
       .from(invitations)
-      .where(and(eq(invitations.organizationId, org.id), isNull(invitations.acceptedAt), isNull(invitations.revokedAt), gt(invitations.expiresAt, new Date())))
-      .orderBy(desc(invitations.createdAt)),
+      // Everything still open (pending or expired), plus what was accepted or revoked in the last 30 days.
+      .where(
+        and(
+          eq(invitations.organizationId, org.id),
+          or(
+            and(isNull(invitations.acceptedAt), isNull(invitations.revokedAt)),
+            gte(invitations.acceptedAt, daysAgo(30)),
+            gte(invitations.revokedAt, daysAgo(30))
+          )
+        )
+      )
+      .orderBy(desc(invitations.createdAt))
+      .limit(100),
     db.select().from(customRoles).where(eq(customRoles.organizationId, org.id)).orderBy(asc(customRoles.name)),
     usage(db, org),
     db
@@ -35,6 +48,14 @@ export default async function TeamPage() {
       .where(and(eq(joinRequests.organizationId, org.id), eq(joinRequests.status, "pending")))
       .orderBy(asc(joinRequests.createdAt)),
   ]);
+  const [inviteEmails, memberEmails] = await Promise.all([
+    latestEmailByRelated(invites.map((i) => i.id)),
+    latestEmailByAddress(
+      org.id,
+      members.map((m) => m.email)
+    ),
+  ]);
+  const now = new Date();
   const plan = planOf(org.plan);
   const customEnabled = orgHasFeature(org, "customRoles");
   const roleOptions = [
@@ -83,8 +104,34 @@ export default async function TeamPage() {
             isOwner: m.role === "owner",
             active: m.status === "active",
             lastLogin: m.lastLoginAt ? dateTime(m.lastLoginAt) : "Never",
+            lastEmail: (() => {
+              const e = memberEmails.get(m.email.toLowerCase());
+              if (!e) return null;
+              const st = deliveryStatus(e);
+              return { kind: EMAIL_KIND_LABELS[e.kind] ?? e.kind, status: DELIVERY_LABELS[st], pill: DELIVERY_PILL[st], when: dateTime(e.sentAt) };
+            })(),
           }))}
-          invites={invites.map((i) => ({ id: i.id, email: i.email, roleLabel: roleName(i), expires: dateTime(i.expiresAt) }))}
+          emailReady={emailConfigured()}
+          invites={invites.map((i) => {
+            const st = invitationStatus(i, inviteEmails.get(i.id) ?? null, now);
+            return {
+              id: i.id,
+              email: i.email,
+              roleLabel: roleName(i),
+              status: st.label,
+              pill: st.pill,
+              canResend: st.canResend,
+              canRevoke: st.canRevoke,
+              when:
+                st.state === "accepted"
+                  ? `Accepted ${dateTime(i.acceptedAt)}`
+                  : st.state === "revoked"
+                    ? `Revoked ${dateTime(i.revokedAt)}`
+                    : st.state === "expired"
+                      ? `Expired ${dateTime(i.expiresAt)}`
+                      : `Expires ${dateTime(i.expiresAt)}`,
+            };
+          })}
         />
       ) : (
         <div className="alert alert-info">You can manage roles but not people. Ask an owner or admin to invite or change team members.</div>

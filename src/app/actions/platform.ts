@@ -102,25 +102,61 @@ export async function inviteFirm(input: { email: string; firmName: string; plan:
       .set({ revokedAt: new Date() })
       .where(and(eq(firmInvitations.email, email), isNull(firmInvitations.acceptedAt), isNull(firmInvitations.revokedAt)));
     const { token, hash } = newToken();
-    await db.insert(firmInvitations).values({
-      email,
-      firmName,
-      plan,
-      tokenHash: hash,
-      invitedByEmail: ctx.user.email,
-      expiresAt: new Date(Date.now() + FIRM_INVITE_DAYS * 86_400_000),
-    });
-    const link = `${appUrl()}/signup?invite=${token}`;
-    const mail = await sendEmail({
-      to: email,
-      subject: "Your invitation to Capto Learn",
-      fromName: "Capto Learn",
-      replyTo: ctx.user.email,
-      html: `<p style="font-family:sans-serif">You've been invited to set up <strong>${firmName}</strong> on Capto Learn${plan === "trial" ? ` with a ${TRIAL_DAYS}-day free trial` : ` on the ${PLANS[plan].label} plan`}.</p><p style="font-family:sans-serif"><a href="${link}">Create your firm's account</a> — the link works once and expires in ${FIRM_INVITE_DAYS} days.</p>`,
-    });
-    return mail.sent
-      ? { ok: true, message: `Invitation emailed to ${email}.`, link }
-      : { ok: true, message: "Invitation created. Email isn't set up yet — copy this signup link and send it yourself.", link };
+    const [inv] = await db
+      .insert(firmInvitations)
+      .values({
+        email,
+        firmName,
+        plan,
+        tokenHash: hash,
+        invitedByEmail: ctx.user.email,
+        expiresAt: new Date(Date.now() + FIRM_INVITE_DAYS * 86_400_000),
+      })
+      .returning({ id: firmInvitations.id });
+    return emailFirmInvite({ id: inv.id, email, firmName, plan: plan as PlanKey, token }, ctx.user.email, "created");
+  });
+}
+
+async function emailFirmInvite(inv: { id: string; email: string; firmName: string; plan: string; token: string }, replyTo: string, verb: "created" | "renewed"): Promise<PlatformResult> {
+  const link = `${appUrl()}/signup?invite=${inv.token}`;
+  const planText = inv.plan === "trial" ? ` with a ${TRIAL_DAYS}-day free trial` : PLAN_KEYS.includes(inv.plan as PlanKey) ? ` on the ${PLANS[inv.plan as PlanKey].label} plan` : "";
+  const mail = await sendEmail({
+    to: inv.email,
+    subject: "Your invitation to Capto Learn",
+    fromName: "Capto Learn",
+    replyTo,
+    html: `<p style="font-family:sans-serif">You've been invited to set up <strong>${inv.firmName}</strong> on Capto Learn${planText}.</p><p style="font-family:sans-serif"><a href="${link}">Create your firm's account</a> — the link works once and expires in ${FIRM_INVITE_DAYS} days.</p>`,
+    log: { kind: "firm_invite", organizationId: null, relatedId: inv.id },
+  });
+  return inviteResultMessage(mail, inv.email, link, verb);
+}
+
+/** Wording shared by every platform invitation send / re-send. */
+function inviteResultMessage(mail: { sent: boolean; skipped?: boolean; error?: string }, email: string, link: string, verb: "created" | "renewed"): PlatformResult {
+  const what = verb === "created" ? "Invitation created" : "New invitation link created (the old one no longer works)";
+  if (mail.sent) return { ok: true, message: `Invitation ${verb === "created" ? "emailed" : "re-sent"} to ${email}.`, link };
+  if (mail.skipped) return { ok: true, message: `${what}. Email isn't set up yet — copy this link and send it yourself.`, link };
+  return { ok: true, message: `${what}, but the email couldn't be sent (${mail.error}). Copy this link and send it yourself.`, link };
+}
+
+/** Re-sends an open or expired firm invitation with a fresh link (the old one stops working) and a new 14-day expiry. */
+export async function resendFirmInvite(id: string): Promise<PlatformResult> {
+  return guard(async () => {
+    const ctx = await authorizePlatform("platform.firms.invite");
+    const db = await getDb();
+    const [inv] = await db
+      .select()
+      .from(firmInvitations)
+      .where(and(eq(firmInvitations.id, id), isNull(firmInvitations.acceptedAt), isNull(firmInvitations.revokedAt)));
+    if (!inv) return { ok: false, error: "That invitation was already used or revoked." };
+    const [taken] = await db.select({ id: users.id }).from(users).where(eq(users.email, inv.email));
+    if (taken) return { ok: false, error: "That email already has a Capto Learn account." };
+    const { token, hash } = newToken();
+    await db
+      .update(firmInvitations)
+      .set({ tokenHash: hash, expiresAt: new Date(Date.now() + FIRM_INVITE_DAYS * 86_400_000) })
+      .where(eq(firmInvitations.id, inv.id));
+    return emailFirmInvite({ id: inv.id, email: inv.email, firmName: inv.firmName, plan: inv.plan, token }, ctx.user.email, "renewed");
   });
 }
 
@@ -131,7 +167,7 @@ export async function revokeFirmInvite(id: string): Promise<PlatformResult> {
     const [r] = await db
       .update(firmInvitations)
       .set({ revokedAt: new Date() })
-      .where(and(eq(firmInvitations.id, id), isNull(firmInvitations.acceptedAt)))
+      .where(and(eq(firmInvitations.id, id), isNull(firmInvitations.acceptedAt), isNull(firmInvitations.revokedAt)))
       .returning({ email: firmInvitations.email });
     if (!r) return { ok: false, error: "Invitation not found or already used." };
     return { ok: true, message: `Revoked the invitation for ${r.email}.` };
@@ -191,21 +227,55 @@ export async function invitePlatformMember(input: { email: string; platformRole:
     // Re-inviting replaces any open invitation for the same address.
     await db.update(invitations).set({ revokedAt: new Date() }).where(and(eq(invitations.organizationId, ctx.org.id), eq(invitations.email, email), isNull(invitations.acceptedAt), isNull(invitations.revokedAt)));
     const { token, hash } = newToken();
-    await db.insert(invitations).values({ organizationId: ctx.org.id, email, role: "staff", platformRole, tokenHash: hash, invitedBy: ctx.user.id, expiresAt: new Date(Date.now() + 7 * 86_400_000) });
-    const link = `${appUrl()}/invite/${token}`;
-    const label = PLATFORM_ROLES[platformRole as keyof typeof PLATFORM_ROLES].label;
-    const mail = await sendEmail({
-      to: email,
-      subject: `${ctx.user.name} invited you to Capto Learn as ${label}`,
-      fromName: "Capto Learn",
-      replyTo: ctx.user.email,
-      html: `<p style="font-family:sans-serif">${ctx.user.name} has invited you to join the Capto Learn team as <strong>${label}</strong>: ${PLATFORM_ROLES[platformRole as keyof typeof PLATFORM_ROLES].description}</p><p style="font-family:sans-serif"><a href="${link}">Accept the invitation</a> — the link expires in 7 days.</p>`,
-    });
-    await audit({ organizationId: ctx.org.id, userId: ctx.user.id, name: ctx.user.name }, "platform.invited", `Invited ${email} as ${label}`);
+    const [inv] = await db
+      .insert(invitations)
+      .values({ organizationId: ctx.org.id, email, role: "staff", platformRole, tokenHash: hash, invitedBy: ctx.user.id, expiresAt: new Date(Date.now() + PLATFORM_INVITE_DAYS * 86_400_000) })
+      .returning({ id: invitations.id });
+    const r = await emailPlatformInvite(ctx, { id: inv.id, email, platformRole, token }, "created");
+    await audit({ organizationId: ctx.org.id, userId: ctx.user.id, name: ctx.user.name }, "platform.invited", `Invited ${email} as ${PLATFORM_ROLES[platformRole as keyof typeof PLATFORM_ROLES].label}`);
     revalidatePath("/platform/team");
-    return mail.sent
-      ? { ok: true, message: `Invitation emailed to ${email}.`, link }
-      : { ok: true, message: "Invitation created. Email isn't set up yet — copy this link and send it to them yourself.", link };
+    return r;
+  });
+}
+
+const PLATFORM_INVITE_DAYS = 7;
+
+async function emailPlatformInvite(ctx: { org: { id: string }; user: { name: string; email: string } }, inv: { id: string; email: string; platformRole: string; token: string }, verb: "created" | "renewed"): Promise<PlatformResult> {
+  const link = `${appUrl()}/invite/${inv.token}`;
+  const role = isPlatformRole(inv.platformRole) ? PLATFORM_ROLES[inv.platformRole] : null;
+  const label = role?.label ?? inv.platformRole;
+  const mail = await sendEmail({
+    to: inv.email,
+    subject: `${ctx.user.name} invited you to Capto Learn as ${label}`,
+    fromName: "Capto Learn",
+    replyTo: ctx.user.email,
+    html: `<p style="font-family:sans-serif">${ctx.user.name} has invited you to join the Capto Learn team as <strong>${label}</strong>${role ? `: ${role.description}` : "."}</p><p style="font-family:sans-serif"><a href="${link}">Accept the invitation</a> — the link expires in ${PLATFORM_INVITE_DAYS} days.</p>`,
+    log: { kind: "platform_invite", organizationId: ctx.org.id, relatedId: inv.id },
+  });
+  return inviteResultMessage(mail, inv.email, link, verb);
+}
+
+/** Re-sends an open or expired platform invitation with a fresh link (the old one stops working) and a new 7-day expiry. */
+export async function resendPlatformInvitation(id: string): Promise<PlatformResult> {
+  return guard(async () => {
+    const ctx = await authorizePlatform("platform.team.manage");
+    const db = await getDb();
+    const [inv] = await db
+      .select()
+      .from(invitations)
+      .where(and(eq(invitations.id, id), eq(invitations.organizationId, ctx.org.id), isNull(invitations.acceptedAt), isNull(invitations.revokedAt)));
+    if (!inv || !inv.platformRole) return { ok: false, error: "That invitation was already accepted or revoked." };
+    const [exists] = await db.select({ id: users.id }).from(users).where(eq(users.email, inv.email));
+    if (exists) return { ok: false, error: "That email already has a Capto Learn account." };
+    const { token, hash } = newToken();
+    await db
+      .update(invitations)
+      .set({ tokenHash: hash, expiresAt: new Date(Date.now() + PLATFORM_INVITE_DAYS * 86_400_000) })
+      .where(eq(invitations.id, inv.id));
+    const r = await emailPlatformInvite(ctx, { id: inv.id, email: inv.email, platformRole: inv.platformRole, token }, "renewed");
+    await audit({ organizationId: ctx.org.id, userId: ctx.user.id, name: ctx.user.name }, "platform.invite_resent", `Re-sent the platform invitation for ${inv.email} (new link)`);
+    revalidatePath("/platform/team");
+    return r;
   });
 }
 

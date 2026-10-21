@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Copy } from "lucide-react";
-import { inviteFirm, invitePlatformMember, revokeFirmInvite, revokePlatformInvitation, setPlatformRole, type PlatformResult } from "@/app/actions/platform";
+import { inviteFirm, invitePlatformMember, resendFirmInvite, resendPlatformInvitation, revokeFirmInvite, revokePlatformInvitation, setPlatformRole, type PlatformResult } from "@/app/actions/platform";
 
 function Feedback({ result }: { result: PlatformResult | null }) {
   const [copied, setCopied] = useState(false);
@@ -201,5 +201,53 @@ export function RevokePlatformInvite({ id }: { id: string }) {
     >
       Revoke
     </button>
+  );
+}
+
+/**
+ * Resend / Revoke for a platform-team or firm invitation. Resend issues a fresh link (the old one stops working), so
+ * the new link is shown here to copy — links aren't stored and can't be shown later.
+ */
+export function InvitationActions({ id, type, canResend, canRevoke }: { id: string; type: "platform" | "firm"; canResend: boolean; canRevoke: boolean }) {
+  const router = useRouter();
+  const [pending, startTransition] = useTransition();
+  const [confirm, setConfirm] = useState(false);
+  const [result, setResult] = useState<PlatformResult | null>(null);
+  const run = (fn: () => Promise<PlatformResult>) =>
+    startTransition(async () => {
+      setResult(await fn());
+      setConfirm(false);
+      router.refresh();
+    });
+  return (
+    <div className="stack" style={{ gap: 6, alignItems: "flex-end" }}>
+      <span className="row" style={{ gap: 6, justifyContent: "flex-end" }}>
+        {canResend && (
+          <button className="btn btn-sm" disabled={pending} onClick={() => run(() => (type === "firm" ? resendFirmInvite(id) : resendPlatformInvitation(id)))}>
+            {pending ? "Working…" : "Resend"}
+          </button>
+        )}
+        {canRevoke &&
+          (confirm ? (
+            <>
+              <button className="btn btn-sm btn-danger" disabled={pending} onClick={() => run(() => (type === "firm" ? revokeFirmInvite(id) : revokePlatformInvitation(id)))}>
+                Confirm
+              </button>
+              <button className="btn btn-sm" onClick={() => setConfirm(false)}>
+                Cancel
+              </button>
+            </>
+          ) : (
+            <button className="btn btn-sm btn-danger" disabled={pending} onClick={() => setConfirm(true)}>
+              Revoke
+            </button>
+          ))}
+      </span>
+      {result && (
+        <div style={{ textAlign: "left", width: 340, maxWidth: "75vw" }}>
+          <Feedback result={result} />
+        </div>
+      )}
+    </div>
   );
 }

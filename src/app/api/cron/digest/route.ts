@@ -41,7 +41,7 @@ export async function GET(req: Request) {
       continue;
     }
     const { subject, html } = renderDigestEmail(digest, { name: user.name, firm: org.name, appUrl: appUrl(), color: org.brandColor });
-    const r = await sendEmail({ to: user.email, subject, html, fromName: `${org.name} via Capto Learn` });
+    const r = await sendEmail({ to: user.email, subject, html, fromName: `${org.name} via Capto Learn`, log: { kind: "digest", organizationId: org.id, relatedId: user.id } });
     if (r.sent) {
       sent++;
       await db.update(users).set({ digestSentAt: now }).where(eq(users.id, user.id));

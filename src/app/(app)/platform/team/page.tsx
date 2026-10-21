@@ -1,11 +1,13 @@
-import { and, asc, desc, eq, gt, isNotNull, isNull } from "drizzle-orm";
+import { and, asc, desc, eq, gte, isNotNull, isNull, or } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import { getDb } from "@/lib/db/client";
 import { invitations, organizations, users } from "@/lib/db/schema";
 import { isPlatformAdminEmail, requireUser } from "@/lib/auth/dal";
 import { PLATFORM_ROLES, PLATFORM_ROLE_KEYS, isPlatformRole } from "@/lib/rbac";
-import { InvitePlatformMemberForm, PlatformRoleSelect, RevokePlatformInvite } from "../PlatformForms";
+import { InvitationActions, InvitePlatformMemberForm, PlatformRoleSelect } from "../PlatformForms";
 import { date } from "@/lib/format";
+import { daysAgo, latestEmailByRelated } from "@/lib/emailLog";
+import { invitationStatus } from "@/lib/emailTracking";
 
 export const metadata = { title: "Platform team" };
 
@@ -20,11 +22,33 @@ export default async function PlatformTeamPage() {
     .where(eq(organizations.kind, "internal"))
     .orderBy(asc(users.name));
   const pending = await db
-    .select({ id: invitations.id, email: invitations.email, platformRole: invitations.platformRole, expiresAt: invitations.expiresAt, createdAt: invitations.createdAt })
+    .select({
+      id: invitations.id,
+      email: invitations.email,
+      platformRole: invitations.platformRole,
+      expiresAt: invitations.expiresAt,
+      createdAt: invitations.createdAt,
+      acceptedAt: invitations.acceptedAt,
+      revokedAt: invitations.revokedAt,
+    })
     .from(invitations)
     .innerJoin(organizations, eq(organizations.id, invitations.organizationId))
-    .where(and(eq(organizations.kind, "internal"), isNotNull(invitations.platformRole), isNull(invitations.acceptedAt), isNull(invitations.revokedAt), gt(invitations.expiresAt, new Date())))
-    .orderBy(desc(invitations.createdAt));
+    // Open (pending or expired) invitations, plus those accepted or revoked in the last 30 days.
+    .where(
+      and(
+        eq(organizations.kind, "internal"),
+        isNotNull(invitations.platformRole),
+        or(
+          and(isNull(invitations.acceptedAt), isNull(invitations.revokedAt)),
+          gte(invitations.acceptedAt, daysAgo(30)),
+          gte(invitations.revokedAt, daysAgo(30))
+        )
+      )
+    )
+    .orderBy(desc(invitations.createdAt))
+    .limit(100);
+  const inviteEmails = await latestEmailByRelated(pending.map((p) => p.id));
+  const now = new Date();
   const inviteRoles = PLATFORM_ROLE_KEYS.filter((k) => k !== "super_admin").map((k) => ({ value: k, label: PLATFORM_ROLES[k].label, description: PLATFORM_ROLES[k].description }));
 
   return (
@@ -46,15 +70,34 @@ export default async function PlatformTeamPage() {
         <InvitePlatformMemberForm roles={inviteRoles} />
         {pending.length > 0 && (
           <div className="stack" style={{ gap: 6 }}>
-            <div className="small muted">Waiting to be accepted</div>
-            {pending.map((p) => (
-              <div key={p.id} className="row between small" style={{ gap: 8, flexWrap: "wrap" }}>
-                <span>
-                  {p.email} · {p.platformRole && isPlatformRole(p.platformRole) ? PLATFORM_ROLES[p.platformRole].label : p.platformRole} · sent {date(p.createdAt)}, expires {date(p.expiresAt)}
-                </span>
-                <RevokePlatformInvite id={p.id} />
-              </div>
-            ))}
+            <div className="small muted">Invitations — open, plus accepted or revoked in the last 30 days. Resend creates a new link (the old one stops working) valid for 7 days.</div>
+            <table className="table">
+              <tbody>
+                {pending.map((p) => {
+                  const st = invitationStatus(p, inviteEmails.get(p.id) ?? null, now);
+                  return (
+                    <tr key={p.id}>
+                      <td className="small" style={{ overflowWrap: "anywhere" }}>
+                        {p.email}
+                        <div className="faint">{p.platformRole && isPlatformRole(p.platformRole) ? PLATFORM_ROLES[p.platformRole].label : p.platformRole}</div>
+                      </td>
+                      <td>
+                        <span className={`pill ${st.pill}`}>{st.label}</span>
+                      </td>
+                      <td className="small muted">
+                        Sent {date(p.createdAt)}
+                        <div className="faint">
+                          {st.state === "accepted" ? `Accepted ${date(p.acceptedAt)}` : st.state === "revoked" ? `Revoked ${date(p.revokedAt)}` : `${st.state === "expired" ? "Expired" : "Expires"} ${date(p.expiresAt)}`}
+                        </div>
+                      </td>
+                      <td className="right">
+                        {(st.canResend || st.canRevoke) && <InvitationActions id={p.id} type="platform" canResend={st.canResend} canRevoke={st.canRevoke} />}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
         )}
       </section>

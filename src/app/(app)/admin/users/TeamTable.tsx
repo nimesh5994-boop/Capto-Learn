@@ -3,13 +3,28 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Copy, UserPlus } from "lucide-react";
-import { changeMemberRole, createResetLink, inviteMember, revokeInvitation, setMemberActive, type TeamResult } from "@/app/actions/team";
+import { changeMemberRole, createResetLink, inviteMember, resendInvitation, revokeInvitation, setMemberActive, type TeamResult } from "@/app/actions/team";
 
 type RoleOption = { value: string; label: string; description: string };
-type Member = { id: string; name: string; email: string; roleValue: string; roleLabel: string; isOwner: boolean; active: boolean; lastLogin: string };
-type Invite = { id: string; email: string; roleLabel: string; expires: string };
+type LastEmail = { kind: string; status: string; pill: string; when: string } | null;
+type Member = { id: string; name: string; email: string; roleValue: string; roleLabel: string; isOwner: boolean; active: boolean; lastLogin: string; lastEmail: LastEmail };
+type Invite = { id: string; email: string; roleLabel: string; status: string; pill: string; when: string; canResend: boolean; canRevoke: boolean };
 
-export function TeamTable({ meId, meIsOwner, roleOptions, members, invites }: { meId: string; meIsOwner: boolean; roleOptions: RoleOption[]; members: Member[]; invites: Invite[] }) {
+export function TeamTable({
+  meId,
+  meIsOwner,
+  roleOptions,
+  members,
+  invites,
+  emailReady,
+}: {
+  meId: string;
+  meIsOwner: boolean;
+  roleOptions: RoleOption[];
+  members: Member[];
+  invites: Invite[];
+  emailReady: boolean;
+}) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [result, setResult] = useState<TeamResult | null>(null);
@@ -95,6 +110,7 @@ export function TeamTable({ meId, meIsOwner, roleOptions, members, invites }: { 
               <th>Name</th>
               <th>Role</th>
               <th>Last sign-in</th>
+              <th>Last email</th>
               <th className="right">Actions</th>
             </tr>
           </thead>
@@ -126,12 +142,29 @@ export function TeamTable({ meId, meIsOwner, roleOptions, members, invites }: { 
                     )}
                   </td>
                   <td className="small muted">{m.lastLogin}</td>
+                  <td className="small">
+                    {m.lastEmail ? (
+                      <>
+                        <span className={`pill ${m.lastEmail.pill}`}>{m.lastEmail.status}</span>
+                        <div className="faint" style={{ marginTop: 3 }}>
+                          {m.lastEmail.kind} · {m.lastEmail.when}
+                        </div>
+                      </>
+                    ) : (
+                      <span className="faint">—</span>
+                    )}
+                  </td>
                   <td className="right">
                     {editable && (
                       <div className="row" style={{ justifyContent: "flex-end", gap: 6 }}>
                         {m.active && (
-                          <button className="btn btn-sm" disabled={pending} onClick={() => act(() => createResetLink(m.id))}>
-                            Reset link
+                          <button
+                            className="btn btn-sm"
+                            disabled={pending}
+                            title={emailReady ? "Emails them a link to choose a new password (you can copy it too)" : "Creates a link for you to send them"}
+                            onClick={() => act(() => createResetLink(m.id))}
+                          >
+                            {emailReady ? "Send password reset link" : "Reset link"}
                           </button>
                         )}
                         {confirm === m.id ? (
@@ -165,19 +198,45 @@ export function TeamTable({ meId, meIsOwner, roleOptions, members, invites }: { 
       {invites.length > 0 && (
         <div className="card">
           <div className="card-pad" style={{ paddingBottom: 10 }}>
-            <h2>Pending invitations</h2>
+            <h2>Invitations</h2>
+            <p className="small muted" style={{ margin: "4px 0 0" }}>
+              Open invitations, plus any accepted or revoked in the last 30 days. Resend creates a new link (the old one stops working) and gives it another 7 days. Links can only be
+              copied straight after an invitation is created or re-sent — they aren&apos;t stored.
+            </p>
           </div>
           <table className="table">
             <tbody>
               {invites.map((i) => (
                 <tr key={i.id}>
-                  <td>{i.email}</td>
+                  <td style={{ overflowWrap: "anywhere" }}>{i.email}</td>
                   <td>{i.roleLabel}</td>
-                  <td className="small muted">Expires {i.expires}</td>
+                  <td>
+                    <span className={`pill ${i.pill}`}>{i.status}</span>
+                  </td>
+                  <td className="small muted">{i.when}</td>
                   <td className="right">
-                    <button className="btn btn-sm btn-danger" disabled={pending} onClick={() => act(() => revokeInvitation(i.id))}>
-                      Revoke
-                    </button>
+                    <div className="row" style={{ justifyContent: "flex-end", gap: 6 }}>
+                      {i.canResend && (
+                        <button className="btn btn-sm" disabled={pending} onClick={() => act(() => resendInvitation(i.id))}>
+                          Resend
+                        </button>
+                      )}
+                      {i.canRevoke &&
+                        (confirm === `inv:${i.id}` ? (
+                          <>
+                            <button className="btn btn-sm btn-danger" disabled={pending} onClick={() => act(() => revokeInvitation(i.id))}>
+                              Confirm
+                            </button>
+                            <button className="btn btn-sm" onClick={() => setConfirm(null)}>
+                              Cancel
+                            </button>
+                          </>
+                        ) : (
+                          <button className="btn btn-sm btn-danger" disabled={pending} onClick={() => setConfirm(`inv:${i.id}`)}>
+                            Revoke
+                          </button>
+                        ))}
+                    </div>
                   </td>
                 </tr>
               ))}

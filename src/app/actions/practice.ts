@@ -164,7 +164,10 @@ export async function invitePracticeUser(orgId: string, input: { email: string; 
       .set({ revokedAt: new Date() })
       .where(and(eq(invitations.organizationId, orgId), eq(invitations.email, email.data), isNull(invitations.acceptedAt), isNull(invitations.revokedAt)));
     const { token, hash } = newToken();
-    await db.insert(invitations).values({ organizationId: orgId, email: email.data, role: input.role as Role, tokenHash: hash, invitedBy: null, expiresAt: new Date(Date.now() + 7 * 86_400_000) });
+    const [inv] = await db
+      .insert(invitations)
+      .values({ organizationId: orgId, email: email.data, role: input.role as Role, tokenHash: hash, invitedBy: null, expiresAt: new Date(Date.now() + 7 * 86_400_000) })
+      .returning({ id: invitations.id });
     const link = `${appUrl()}/invite/${token}`;
     const label = BUILT_IN_ROLES[input.role as keyof typeof BUILT_IN_ROLES].label;
     const mail = await sendEmail({
@@ -172,6 +175,7 @@ export async function invitePracticeUser(orgId: string, input: { email: string; 
       subject: `You've been invited to ${org.name} on Capto Learn`,
       fromName: "Capto Learn",
       html: `<p style="font-family:sans-serif">You've been added to <strong>${org.name}</strong> on Capto Learn as <strong>${label}</strong>.</p><p style="font-family:sans-serif"><a href="${link}">Accept the invitation</a> — the link expires in 7 days.</p>`,
+      log: { kind: "invite", organizationId: orgId, relatedId: inv.id },
     });
     await log(orgId, ctx, "team.invited", `Invited ${email.data} as ${label}`);
     return { ok: true, message: mail.sent ? `Invitation emailed to ${email.data}.` : "Invitation created — email isn't set up yet, so copy this link to them.", link };

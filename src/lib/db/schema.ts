@@ -1,6 +1,7 @@
 import { sql } from "drizzle-orm";
 import { boolean, customType, index, integer, jsonb, numeric, pgTable, primaryKey, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
 import type { ResearchAnswer } from "@/lib/research/types";
+import type { EmailKind, SendStatus } from "@/lib/emailTracking";
 
 export type Role = "owner" | "admin" | "manager" | "staff" | "viewer";
 export type OrgStatus = "active" | "suspended";
@@ -125,6 +126,47 @@ export const passwordResets = pgTable("password_resets", {
   usedAt: timestamp("used_at", { withTimezone: true }),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
+
+/**
+ * Every outbound email attempt (sent, failed, or skipped because email isn't configured), plus what Resend's webhooks
+ * later report about it. organizationId is null for platform-level email (e.g. inviting a new firm).
+ */
+export const emailLog = pgTable(
+  "email_log",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    organizationId: uuid("organization_id").references(() => organizations.id, { onDelete: "cascade" }),
+    toEmail: text("to_email").notNull(),
+    subject: text("subject").notNull(),
+    /** See EMAIL_KINDS in lib/emailTracking.ts. */
+    kind: text("kind").$type<EmailKind>().notNull(),
+    /** What the email was about, e.g. the invitation id. */
+    relatedId: text("related_id"),
+    status: text("status").$type<SendStatus>().notNull(),
+    /** Resend's email id — the key webhook events are matched on. */
+    providerId: text("provider_id"),
+    error: text("error"),
+    sentAt: timestamp("sent_at", { withTimezone: true }).notNull().defaultNow(),
+    deliveredAt: timestamp("delivered_at", { withTimezone: true }),
+    openedAt: timestamp("opened_at", { withTimezone: true }),
+    firstClickedAt: timestamp("first_clicked_at", { withTimezone: true }),
+    bouncedAt: timestamp("bounced_at", { withTimezone: true }),
+    complainedAt: timestamp("complained_at", { withTimezone: true }),
+    delayedAt: timestamp("delayed_at", { withTimezone: true }),
+    lastEvent: text("last_event"),
+    lastEventAt: timestamp("last_event_at", { withTimezone: true }),
+    openCount: integer("open_count").notNull().default(0),
+    clickCount: integer("click_count").notNull().default(0),
+    /** Recent webhook delivery ids (svix-id), so a retried webhook isn't counted twice. Capped at 50. */
+    webhookIds: jsonb("webhook_ids").$type<string[]>().notNull().default([]),
+  },
+  (t) => [
+    index("email_log_org_sent_idx").on(t.organizationId, t.sentAt),
+    uniqueIndex("email_log_provider_idx").on(t.providerId),
+    index("email_log_related_idx").on(t.relatedId),
+    index("email_log_to_idx").on(t.toEmail),
+  ]
+);
 
 /** Firm-level audit trail of security-relevant changes (roles, team, plan, assignments). */
 export const auditLog = pgTable(
@@ -726,6 +768,7 @@ export type User = typeof users.$inferSelect;
 export type CustomRole = typeof customRoles.$inferSelect;
 export type Invitation = typeof invitations.$inferSelect;
 export type FirmInvitation = typeof firmInvitations.$inferSelect;
+export type EmailLogRow = typeof emailLog.$inferSelect;
 export type AuditEntry = typeof auditLog.$inferSelect;
 export type LessonProgress = typeof lessonProgress.$inferSelect;
 export type Assignment = typeof assignments.$inferSelect;

@@ -170,6 +170,7 @@ export async function requestPasswordReset(_: FormState, formData: FormData): Pr
     subject: "Reset your Capto Learn password",
     fromName: "Capto Learn",
     html: `<p style="font-family:sans-serif">Someone asked to reset the password for ${user.email}. <a href="${url}">Choose a new password</a> — the link expires in 1 hour. If this wasn't you, you can ignore this email.</p>`,
+    log: { kind: "password_reset", organizationId: user.organizationId, relatedId: user.id },
   });
   if (res.error) console.error("password reset email failed", res.error);
   return generic;

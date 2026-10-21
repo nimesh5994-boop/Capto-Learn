@@ -26,7 +26,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   if (can("interviews.manage")) manage.push("interviews");
 
   const practice: NavKey[] = [];
-  if (can("team.manage")) practice.push("admin.users");
+  if (can("team.manage")) practice.push("admin.users", "admin.emails");
   if (can("roles.manage")) practice.push("admin.roles");
   if (can("settings.firm")) practice.push("admin.practice", "admin.branding");
   if (can("billing.manage") && !ctx.isInternal) practice.push("admin.billing");
@@ -35,6 +35,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   const platform: NavKey[] = [];
   if (ctx.platformCan("platform.firms.view")) platform.push("platform.firms");
   if (ctx.platformCan("platform.firms.invite")) platform.push("platform.invitations");
+  if (ctx.platformCan("platform.firms.view")) platform.push("platform.emails");
   if (ctx.platformCan("platform.content.review")) platform.push("platform.knowledge", "platform.benchmark");
   if (ctx.platformCan("platform.team.manage")) platform.push("platform.team", "platform.roles");
 

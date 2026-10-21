@@ -2,7 +2,7 @@
 
 import { tracks } from "@/content";
 import { revalidatePath } from "next/cache";
-import { and, eq, ne, sql } from "drizzle-orm";
+import { and, eq, isNull, ne, sql } from "drizzle-orm";
 import * as z from "zod";
 import { getDb } from "@/lib/db/client";
 import { customRoles, invitations, joinRequests, organizations, passwordResets, users, type Role } from "@/lib/db/schema";
@@ -12,9 +12,9 @@ import { assertSeatAvailable } from "@/lib/entitlements";
 import { actorOf, audit } from "@/lib/audit";
 import { hashPassword, verifyPassword } from "@/lib/auth/password";
 import { newToken } from "@/lib/tokens";
-import { sendEmail } from "@/lib/email";
+import { emailConfigured, sendEmail } from "@/lib/email";
 import { appUrl } from "@/lib/url";
-import { ALL_PERMISSIONS, BUILT_IN_ROLES, BUILT_IN_ROLE_KEYS, PERMISSIONS, permissionsFor, type Permission } from "@/lib/rbac";
+import { ALL_PERMISSIONS, BUILT_IN_ROLES, BUILT_IN_ROLE_KEYS, PERMISSIONS, isBuiltInRole, permissionsFor, type Permission } from "@/lib/rbac";
 import type { FormState } from "./auth";
 
 export type TeamResult = { ok: true; message?: string; link?: string } | { ok: false; error: string };
@@ -92,30 +92,74 @@ export async function inviteMember(input: { email: string; role: string }): Prom
       .set({ revokedAt: new Date() })
       .where(and(eq(invitations.organizationId, ctx.org.id), eq(invitations.email, email.data), sql`${invitations.acceptedAt} is null and ${invitations.revokedAt} is null`));
     const { token, hash } = newToken();
-    await db.insert(invitations).values({
-      organizationId: ctx.org.id,
-      email: email.data,
-      role,
-      customRoleId,
-      tokenHash: hash,
-      invitedBy: ctx.user.id,
-      expiresAt: new Date(Date.now() + INVITE_DAYS * 86_400_000),
-    });
-    const link = `${appUrl()}/invite/${token}`;
-    const mail = await sendEmail({
-      to: email.data,
-      subject: `${ctx.user.name} invited you to ${ctx.org.name} on Capto Learn`,
-      fromName: ctx.org.name,
-      replyTo: ctx.user.email,
-      html: `<p style="font-family:sans-serif">${ctx.user.name} has invited you to join <strong>${ctx.org.name}</strong> on Capto Learn as <strong>${label}</strong>.</p><p style="font-family:sans-serif"><a href="${link}">Accept the invitation</a> — the link expires in ${INVITE_DAYS} days.</p>`,
-    });
+    const [inv] = await db
+      .insert(invitations)
+      .values({
+        organizationId: ctx.org.id,
+        email: email.data,
+        role,
+        customRoleId,
+        tokenHash: hash,
+        invitedBy: ctx.user.id,
+        expiresAt: new Date(Date.now() + INVITE_DAYS * 86_400_000),
+      })
+      .returning({ id: invitations.id });
+    const r = await emailInvitation(ctx, { id: inv.id, email: email.data, label, token }, "created");
     await audit(actorOf(ctx), "team.invited", `Invited ${email.data} as ${label}`);
-    if (mail.error) console.error(`[invite email failed] to=${email.data}: ${mail.error}`);
-    return mail.sent
-      ? { ok: true, message: `Invitation emailed to ${email.data}.`, link }
-      : mail.skipped
-        ? { ok: true, message: "Invitation created. Email isn't set up yet — copy this link and send it to them yourself.", link }
-        : { ok: true, message: `Invitation created, but the email couldn't be sent (${mail.error}). Copy this link and send it to them yourself.`, link };
+    return r;
+  });
+}
+
+/** Emails an invitation link and words the result for the admin (with the link to copy if the email didn't go). */
+async function emailInvitation(ctx: AuthContext, inv: { id: string; email: string; label: string; token: string }, verb: "created" | "renewed"): Promise<TeamResult> {
+  const link = `${appUrl()}/invite/${inv.token}`;
+  const mail = await sendEmail({
+    to: inv.email,
+    subject: `${ctx.user.name} invited you to ${ctx.org.name} on Capto Learn`,
+    fromName: ctx.org.name,
+    replyTo: ctx.user.email,
+    html: `<p style="font-family:sans-serif">${ctx.user.name} has invited you to join <strong>${ctx.org.name}</strong> on Capto Learn as <strong>${inv.label}</strong>.</p><p style="font-family:sans-serif"><a href="${link}">Accept the invitation</a> — the link expires in ${INVITE_DAYS} days.</p>`,
+    log: { kind: "invite", organizationId: ctx.org.id, relatedId: inv.id },
+  });
+  if (mail.error) console.error(`[invite email failed] to=${inv.email}: ${mail.error}`);
+  const what = verb === "created" ? "Invitation created" : "New invitation link created (the old one no longer works)";
+  return mail.sent
+    ? { ok: true, message: `Invitation ${verb === "created" ? "emailed" : "re-sent"} to ${inv.email}.`, link }
+    : mail.skipped
+      ? { ok: true, message: `${what}. Email isn't set up yet — copy this link and send it to them yourself.`, link }
+      : { ok: true, message: `${what}, but the email couldn't be sent (${mail.error}). Copy this link and send it to them yourself.`, link };
+}
+
+/**
+ * Re-sends an open or expired invitation: a fresh token (so the old link stops working), a new 7-day expiry and a new
+ * email. The invitation keeps its id, so its email history stays together.
+ */
+export async function resendInvitation(inviteId: string): Promise<TeamResult> {
+  return run(async () => {
+    const ctx = await authorize("team.manage", { write: true });
+    const db = await getDb();
+    const [inv] = await db
+      .select()
+      .from(invitations)
+      .where(and(eq(invitations.id, inviteId), eq(invitations.organizationId, ctx.org.id), isNull(invitations.acceptedAt), isNull(invitations.revokedAt)));
+    if (!inv) return { ok: false, error: "That invitation was already accepted or revoked." };
+    const [exists] = await db.select({ id: users.id }).from(users).where(eq(users.email, inv.email));
+    if (exists) return { ok: false, error: "That email already has a Capto Learn account." };
+    // An expired invitation no longer holds a seat, so renewing it needs one free.
+    if (inv.expiresAt.getTime() <= Date.now()) await assertSeatAvailable(db, ctx.org);
+    let label: string = isBuiltInRole(inv.role) ? BUILT_IN_ROLES[inv.role].label : inv.role;
+    if (inv.customRoleId) {
+      const [cr] = await db.select({ name: customRoles.name }).from(customRoles).where(eq(customRoles.id, inv.customRoleId));
+      if (cr) label = cr.name;
+    }
+    const { token, hash } = newToken();
+    await db
+      .update(invitations)
+      .set({ tokenHash: hash, expiresAt: new Date(Date.now() + INVITE_DAYS * 86_400_000) })
+      .where(eq(invitations.id, inv.id));
+    const r = await emailInvitation(ctx, { id: inv.id, email: inv.email, label, token }, "renewed");
+    await audit(actorOf(ctx), "team.invite_resent", `Re-sent the invitation for ${inv.email} (new link)`);
+    return r;
   });
 }
 
@@ -126,11 +170,11 @@ export async function revokeInvitation(inviteId: string): Promise<TeamResult> {
     const [inv] = await db
       .update(invitations)
       .set({ revokedAt: new Date() })
-      .where(and(eq(invitations.id, inviteId), eq(invitations.organizationId, ctx.org.id)))
+      .where(and(eq(invitations.id, inviteId), eq(invitations.organizationId, ctx.org.id), isNull(invitations.acceptedAt), isNull(invitations.revokedAt)))
       .returning({ email: invitations.email });
-    if (!inv) return { ok: false, error: "Invitation not found." };
+    if (!inv) return { ok: false, error: "Invitation not found, or already accepted or revoked." };
     await audit(actorOf(ctx), "team.invite_revoked", `Revoked the invitation for ${inv.email}`);
-    return { ok: true };
+    return { ok: true, message: `Revoked the invitation for ${inv.email} — the link no longer works.` };
   });
 }
 
@@ -161,7 +205,10 @@ export async function setMemberActive(userId: string, active: boolean): Promise<
   });
 }
 
-/** Lets an admin hand someone a reset link directly — the fallback while email isn't configured. */
+/**
+ * Creates a password reset link for someone in the firm. When email is set up it's emailed to them as well; the link
+ * is always shown to the admin too, as the fallback (e.g. if the email bounces).
+ */
 export async function createResetLink(userId: string): Promise<TeamResult> {
   return run(async () => {
     const ctx = await authorize("team.manage");
@@ -170,8 +217,22 @@ export async function createResetLink(userId: string): Promise<TeamResult> {
     const { token, hash } = newToken();
     const db = await getDb();
     await db.insert(passwordResets).values({ userId: member.id, tokenHash: hash, expiresAt: new Date(Date.now() + 24 * 3_600_000) });
+    const link = `${appUrl()}/reset-password?token=${token}`;
+    if (emailConfigured()) {
+      const mail = await sendEmail({
+        to: member.email,
+        subject: "Reset your Capto Learn password",
+        fromName: ctx.org.name,
+        replyTo: ctx.user.email,
+        html: `<p style="font-family:sans-serif">${ctx.user.name} sent you a link to set a new password for Capto Learn (${member.email}).</p><p style="font-family:sans-serif"><a href="${link}">Choose a new password</a> — the link works once and expires in 24 hours. If you weren't expecting this, you can ignore it.</p>`,
+        log: { kind: "password_reset", organizationId: ctx.org.id, relatedId: member.id },
+      });
+      await audit(actorOf(ctx), "team.reset_link", `${mail.sent ? "Emailed" : "Created"} a password reset link for ${member.name}`, { type: "user", id: member.id });
+      if (mail.sent) return { ok: true, message: `Reset link emailed to ${member.email}. It works once and expires in 24 hours — you can also copy it here.`, link };
+      return { ok: true, message: `The email couldn't be sent (${mail.error ?? "unknown error"}). Send this link to ${member.name} yourself — it works once and expires in 24 hours.`, link };
+    }
     await audit(actorOf(ctx), "team.reset_link", `Created a password reset link for ${member.name}`, { type: "user", id: member.id });
-    return { ok: true, message: `Send this link to ${member.name} — it works once and expires in 24 hours.`, link: `${appUrl()}/reset-password?token=${token}` };
+    return { ok: true, message: `Send this link to ${member.name} — it works once and expires in 24 hours.`, link };
   });
 }
 

@@ -16,6 +16,7 @@ import {
   GraduationCap,
   LayoutDashboard,
   Mail,
+  MailCheck,
   MessageSquareQuote,
   MessageCircleHeart,
   Repeat,
@@ -55,8 +56,10 @@ export type NavKey =
   | "admin.branding"
   | "admin.billing"
   | "admin.activity"
+  | "admin.emails"
   | "platform.firms"
   | "platform.invitations"
+  | "platform.emails"
   | "platform.content"
   | "platform.knowledge"
   | "platform.benchmark"
@@ -87,8 +90,10 @@ export const NAV_ITEMS: Record<NavKey, { href: string; label: string; icon: Luci
   "admin.branding": { href: "/admin/branding", label: "Branding", icon: Palette },
   "admin.billing": { href: "/admin/billing", label: "Plan & billing", icon: CreditCard },
   "admin.activity": { href: "/admin/activity", label: "Activity log", icon: Activity },
+  "admin.emails": { href: "/admin/emails", label: "Email activity", icon: MailCheck },
   "platform.firms": { href: "/platform", label: "Firms", icon: Building2, exact: true },
   "platform.invitations": { href: "/platform/invitations", label: "Firm invitations", icon: Mail },
+  "platform.emails": { href: "/platform/emails", label: "Email log", icon: MailCheck },
   "platform.content": { href: "/reviewer", label: "Review centre", icon: BookOpenCheck },
   "platform.knowledge": { href: "/platform/knowledge", label: "Knowledge base", icon: Database },
   "platform.benchmark": { href: "/platform/benchmark", label: "Accuracy benchmark", icon: Target },
