@@ -1,6 +1,7 @@
-.shell { display: grid; grid-template-columns: 232px minmax(0, 1fr); min-height: 100vh; }
-.main { padding: 32px 40px 72px; max-width: 1360px; width: 100%; min-width: 0; }
-@media (max-width: 860px) {
-  .shell { grid-template-columns: minmax(0, 1fr); }
+.shell { min-height: 100vh; }
+.body { padding-left: calc(var(--rail-w) + var(--rail-gap)); }
+.main { padding: 28px 36px 72px; max-width: 1360px; width: 100%; margin: 0 auto; min-width: 0; }
+@media (max-width: 900px) {
+  .body { padding-left: 0; }
   .main { padding: 18px 16px 48px; }
 }

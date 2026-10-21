@@ -29,6 +29,9 @@
   --font-sans: var(--font-body), -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
   --font-mono: var(--font-data), ui-monospace, "SFMono-Regular", monospace;
   --font: var(--font-sans);
+  --topbar-h: 56px;
+  --rail-w: 56px;
+  --rail-gap: 12px;
   color-scheme: light;
 }
 
@@ -85,6 +88,7 @@
 }
 
 * { box-sizing: border-box; }
+html { scroll-padding-top: calc(var(--topbar-h) + 16px); }
 html, body { margin: 0; padding: 0; }
 body {
   background: var(--bg);

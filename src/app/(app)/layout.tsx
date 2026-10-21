@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { requireUser } from "@/lib/auth/dal";
-import { Sidebar } from "@/components/Sidebar";
-import { NAV_ITEMS, type NavGroup, type NavKey } from "@/components/navItems";
+import { TopNav } from "@/components/TopNav";
+import { NAV_ITEMS, type NavKey } from "@/components/navItems";
+import { categoriesFor } from "@/lib/navGroups";
 import { CommandPalette, type PaletteItem } from "@/components/CommandPalette";
 import { allLessons, getLesson, tracks } from "@/content";
 import { LEVELS } from "@/content/types";
@@ -39,20 +40,17 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   if (ctx.platformCan("platform.content.review")) platform.push("platform.knowledge", "platform.benchmark");
   if (ctx.platformCan("platform.team.manage")) platform.push("platform.team", "platform.roles");
 
-  const groups: NavGroup[] = [
-    { label: "Learn", items: learn },
-    { label: "Research", items: research },
-    { label: "Manage", items: manage },
-    { label: "Review", items: ctx.platformCan("platform.content.review") ? ["platform.content"] : [] },
-    { label: ctx.isInternal ? "Workspace admin" : "Practice admin", items: practice },
-    { label: "Platform admin", items: platform },
-  ];
+  // "Review centre" is a platform item, gated on the content-review permission.
+  const reviewCentre: NavKey[] = ctx.platformCan("platform.content.review") ? ["platform.content"] : [];
+  const categories = categoriesFor([...learn, ...research, ...manage, ...reviewCentre, ...practice, ...platform]);
+  const adminLabel = ctx.isInternal ? "Workspace admin" : "Practice admin";
+  const categoryHint = (id: string, label: string) => (id === "admin" ? adminLabel : id === "platform" ? "Platform admin" : label);
 
   // Quick-jump index: every page this person can open, every course and every lesson.
   const SHORTCUT: Partial<Record<NavKey, string>> = { dashboard: "d", learn: "c", review: "r", flashcards: "f", progress: "p", coach: "o", search: "s", updates: "u", ask: "a", team: "t", interviews: "i", "platform.content": "v" };
   const canLearn = can("learning.view");
   const palette: PaletteItem[] = [
-    ...groups.flatMap((g) => g.items.map((k) => ({ href: NAV_ITEMS[k].href, label: NAV_ITEMS[k].label, group: "Pages" as const, hint: g.label, key: SHORTCUT[k] }))),
+    ...categories.flatMap((c) => c.keys.map((k) => ({ href: NAV_ITEMS[k].href, label: NAV_ITEMS[k].label, group: "Pages" as const, hint: categoryHint(c.id, c.label), key: SHORTCUT[k] }))),
     { href: "/account", label: "My account", group: "Pages" as const },
     ...(canLearn
       ? [
@@ -79,8 +77,9 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   return (
     <div className={styles.shell}>
-      <Sidebar firmName={ctx.isInternal ? `${org.name} · Capto internal` : org.name} userName={user.name} roleLabel={ctx.roleLabel} groups={groups} continueLesson={continueLesson} />
+      <TopNav firmName={ctx.isInternal ? `${org.name} · Capto internal` : org.name} userName={user.name} roleLabel={ctx.roleLabel} categories={categories} adminLabel={adminLabel} continueLesson={continueLesson} visibleKeys={categories.flatMap((c) => c.keys)} railOpen={false} />
       <CommandPalette items={palette} canAsk={can("research.use") && orgHasFeature(org, "research")} />
+      <div className={styles.body}>
       <main className={styles.main}>
         {state === "suspended" && (
           <div className="alert alert-error" style={{ marginBottom: 18 }}>
@@ -99,6 +98,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
         )}
         {children}
       </main>
+      </div>
     </div>
   );
 }

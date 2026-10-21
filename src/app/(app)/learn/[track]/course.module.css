@@ -377,7 +377,7 @@
 /* ── Side panel ───────────────────────────────────────────────── */
 .side {
   position: sticky;
-  top: 16px;
+  top: calc(var(--topbar-h) + 16px);
   display: flex;
   flex-direction: column;
   gap: 14px;
