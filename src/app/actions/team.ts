@@ -144,6 +144,12 @@ export async function resendInvitation(inviteId: string): Promise<TeamResult> {
       .from(invitations)
       .where(and(eq(invitations.id, inviteId), eq(invitations.organizationId, ctx.org.id), isNull(invitations.acceptedAt), isNull(invitations.revokedAt)));
     if (!inv) return { ok: false, error: "That invitation was already accepted or revoked." };
+    // A platform invitation (e.g. Content reviewer) has its own email and rules: hand it to the platform resend, so
+    // the email says what role the person is being invited into whichever page the admin pressed Resend on.
+    if (inv.platformRole) {
+      const { resendPlatformInvitation } = await import("./platform");
+      return resendPlatformInvitation(inv.id);
+    }
     const [exists] = await db.select({ id: users.id }).from(users).where(eq(users.email, inv.email));
     if (exists) return { ok: false, error: "That email already has a Capto Learn account." };
     // An expired invitation no longer holds a seat, so renewing it needs one free.
