@@ -13,6 +13,7 @@ import { latestSkillChecks, retakeDue } from "@/lib/learning/skillCheck";
 import { reviewState } from "@/lib/learning/reviewQueue";
 import { categoryOf } from "@/lib/learning/catalogue";
 import { buildDigest } from "@/lib/alerts/digest";
+import { daysAgo } from "@/lib/time";
 import { date, dateTime } from "@/lib/format";
 import { CourseGlyph } from "@/components/learn/bits";
 import styles from "./dashboard.module.css";
@@ -41,7 +42,7 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
     latestSkillChecks([user.id]),
     ctx.platformCan("platform.content.review") ? reviewState().then((s) => s.filter((i) => i.todo).length) : Promise.resolve(0),
     // What changed in the last week in the official guidance behind this person's work (same as the weekly email).
-    buildDigest({ userId: user.id, orgId: org.id, chosenTopics: user.digestTopics, canRegister: canAsk && can("research.register") }, new Date(Date.now() - 7 * 86_400_000)),
+    buildDigest({ userId: user.id, orgId: org.id, chosenTopics: user.digestTopics, canRegister: canAsk && can("research.register") }, daysAgo(7)),
   ]);
 
   const overall = overallStats(progress);
