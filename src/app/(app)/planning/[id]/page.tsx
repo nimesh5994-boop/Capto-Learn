@@ -1,11 +1,12 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { and, eq } from "drizzle-orm";
-import { AlertTriangle, CheckCircle2, FileDown, FileText, ListChecks, Scale, ShieldAlert } from "lucide-react";
+import { AlertTriangle, CheckCircle2, ListChecks, Scale, ShieldAlert } from "lucide-react";
 import { requirePermission } from "@/lib/auth/dal";
 import { getDb } from "@/lib/db/client";
 import { planningScenarios } from "@/lib/db/schema";
 import { dateTime } from "@/lib/format";
+import { PlanningExport } from "@/components/planning/PlanningExport";
 import type { IssueConfidence, PlanningReport } from "@/lib/planning/types";
 import styles from "@/components/ask/ask.module.css";
 
@@ -184,16 +185,7 @@ export default async function PlanningScenarioPage({ params }: { params: Promise
           <span className="faint">
             {dateTime(row.createdAt)} · {row.input.taxYear || "no tax year"}
           </span>
-          {row.issues.length > 0 && (
-            <>
-              <a href={`/api/planning/${row.id}/report?format=docx`} className="btn btn-sm" download>
-                <FileText size={13} /> Word
-              </a>
-              <a href={`/api/planning/${row.id}/report?format=pdf`} className="btn btn-sm" download>
-                <FileDown size={13} /> PDF
-              </a>
-            </>
-          )}
+          {row.issues.length > 0 && <PlanningExport id={row.id} />}
         </span>
       </div>
       <div className={styles.layout}>
