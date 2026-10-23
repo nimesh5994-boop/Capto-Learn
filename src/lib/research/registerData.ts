@@ -1,7 +1,8 @@
 import "server-only";
 import { and, desc, eq, gte, inArray, isNull, lt, type SQL } from "drizzle-orm";
 import { getDb } from "@/lib/db/client";
-import { researchExports, researchQueries, users } from "@/lib/db/schema";
+import { planningScenarios, researchExports, researchQueries, users } from "@/lib/db/schema";
+import { planningRef } from "@/lib/planning/memo";
 import { matchesRegister, type ReviewFilter } from "./register";
 
 export interface RegisterFilters {
@@ -56,9 +57,54 @@ export async function loadRegister(orgId: string, f: RegisterFilters) {
   const byQuery = new Map<string, typeof exports>();
   for (const e of exports) byQuery.set(e.queryId, [...(byQuery.get(e.queryId) ?? []), e]);
 
+  // Tax planning scenarios sit in the same register. Their memoranda are recorded against the scenario's first researched
+  // issue, so they are taken out of that question's own document list and shown against the scenario instead.
+  const scWhere: SQL[] = [eq(planningScenarios.organizationId, orgId)];
+  if (f.userId) scWhere.push(eq(planningScenarios.userId, f.userId));
+  if (f.from) scWhere.push(gte(planningScenarios.createdAt, f.from));
+  if (f.to) scWhere.push(lt(planningScenarios.createdAt, new Date(f.to.getTime() + 86_400_000)));
+  const scRows = await db
+    .select({
+      id: planningScenarios.id,
+      title: planningScenarios.title,
+      input: planningScenarios.input,
+      status: planningScenarios.status,
+      issues: planningScenarios.issues,
+      report: planningScenarios.report,
+      costMicros: planningScenarios.costMicros,
+      createdAt: planningScenarios.createdAt,
+      userId: planningScenarios.userId,
+      askedBy: users.name,
+    })
+    .from(planningScenarios)
+    .leftJoin(users, eq(users.id, planningScenarios.userId))
+    .where(and(...scWhere))
+    .orderBy(desc(planningScenarios.createdAt))
+    .limit(REGISTER_MAX);
+  const scRefs = scRows.map((s) => planningRef(s.id));
+  const scExports = scRefs.length ? await db.select().from(researchExports).where(and(eq(researchExports.organizationId, orgId), inArray(researchExports.docRef, scRefs))).orderBy(desc(researchExports.createdAt)) : [];
+  const scenarios = scRows
+    .map((s) => ({
+      id: s.id,
+      ref: planningRef(s.id),
+      title: s.title,
+      reference: s.input.reference ?? "",
+      taxYear: s.input.taxYear || null,
+      status: s.status,
+      confidence: s.report?.confidence ?? null,
+      issueCount: s.issues.length,
+      answeredCount: s.issues.filter((i) => i.status === "answered").length,
+      costMicros: s.costMicros,
+      createdAt: s.createdAt,
+      askedBy: s.askedBy ?? "Former member",
+      docs: scExports.filter((e) => e.docRef === planningRef(s.id)),
+    }))
+    .filter((s) => !f.q || matchesRegister(f.q, { question: `${s.title} ${s.reference}`, askedBy: s.askedBy, docRefs: [s.ref, ...s.docs.map((d) => d.docRef)] }));
+  const planningDocRefs = new Set(scRefs);
+
   const list = rows
     .map((r) => {
-      const docs = byQuery.get(r.id) ?? [];
+      const docs = (byQuery.get(r.id) ?? []).filter((d) => !planningDocRefs.has(d.docRef));
       const checked = r.answer ? [...r.answer.points, ...(r.answer.steps ?? [])] : [];
       return {
         ...r,
@@ -72,7 +118,11 @@ export async function loadRegister(orgId: string, f: RegisterFilters) {
       };
     })
     .filter((r) => !f.q || matchesRegister(f.q, { question: r.question, askedBy: r.askedBy, docRefs: r.docs.map((d) => d.docRef) }));
-  return { rows: list, documents: list.flatMap((r) => r.docs.map((d) => ({ ...d, question: r.question }))), capped: rows.length >= REGISTER_MAX };
+  const documents = [
+    ...list.flatMap((r) => r.docs.map((d) => ({ ...d, question: r.question, href: `/ask/${d.queryId}` }))),
+    ...scenarios.flatMap((s) => s.docs.map((d) => ({ ...d, question: s.title, href: `/planning/${s.id}` }))),
+  ].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+  return { rows: list, scenarios, documents, capped: rows.length >= REGISTER_MAX };
 }
 
 /** People who have asked at least one question, for the "asked by" filter. */

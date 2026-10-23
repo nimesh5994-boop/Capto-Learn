@@ -45,7 +45,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
   const rows = queryIds.length ? await db.select({ id: researchQueries.id, answer: researchQueries.answer }).from(researchQueries).where(and(eq(researchQueries.organizationId, ctx.org.id), inArray(researchQueries.id, queryIds))) : [];
   const answers = new Map<string, ResearchAnswer>(rows.flatMap((r) => (r.answer ? [[r.id, r.answer] as [string, ResearchAnswer]] : [])));
 
-  const reference = (url.searchParams.get("reference") ?? "").trim().slice(0, 120);
+  const reference = (url.searchParams.get("reference") ?? row.input.reference ?? "").trim().slice(0, 120);
   const docRef = planningRef(id);
   const blocks = buildPlanningMemo(row.title, row.input, row.report, row.issues, answers, {
     firm: ctx.org.name,

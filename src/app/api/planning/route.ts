@@ -10,6 +10,7 @@ export const maxDuration = 300;
 
 const InputSchema = z.object({
   title: z.string().trim().min(3, "Give the scenario a short title.").max(120),
+  reference: z.string().trim().max(120).default(""),
   taxYear: z.string().trim().max(12).default(""),
   facts: z.string().trim().min(40, "Describe the client's situation in a little more detail (at least a couple of sentences).").max(4000),
   objectives: z.string().trim().min(10, "Say what the client wants to achieve.").max(1500),

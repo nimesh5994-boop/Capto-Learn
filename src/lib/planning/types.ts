@@ -3,6 +3,8 @@
 /** What the adviser tells us about the client's situation. No client names: the text is sent to the AI service. */
 export interface ScenarioInput {
   title: string;
+  /** Client or matter reference, printed on the memorandum and shown in the research register. */
+  reference?: string;
   /** Tax year the plan is for, e.g. "2026/27", or "" when not year-specific. */
   taxYear: string;
   facts: string;

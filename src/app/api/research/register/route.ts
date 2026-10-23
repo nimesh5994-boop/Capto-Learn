@@ -22,7 +22,7 @@ export async function GET(req: Request) {
   }
   const sp = new URL(req.url).searchParams;
   const who = sp.get("who");
-  const { rows, documents } = await loadRegister(ctx.org.id, {
+  const { rows, scenarios, documents } = await loadRegister(ctx.org.id, {
     review: parseReviewFilter(sp.get("review") ?? undefined),
     userId: who && /^[0-9a-f-]{36}$/i.test(who) ? who : null,
     from: parseDay(sp.get("from") ?? undefined),
@@ -96,6 +96,38 @@ export async function GET(req: Request) {
   }
   style(q, "Research register — questions");
 
+  const p = wb.addWorksheet("Tax planning");
+  p.columns = [
+    { header: "Date", key: "date", width: 18, style: { numFmt: "dd/mm/yyyy hh:mm" } },
+    { header: "Document ref", key: "ref", width: 14 },
+    { header: "Scenario", key: "title", width: 60 },
+    { header: "Client / matter", key: "reference", width: 24 },
+    { header: "Prepared by", key: "by", width: 20 },
+    { header: "Tax year", key: "taxYear", width: 10 },
+    { header: "Status", key: "status", width: 16 },
+    { header: "Issues answered", key: "issues", width: 12 },
+    { header: "Confidence", key: "confidence", width: 12 },
+    { header: "Documents issued", key: "docs", width: 10 },
+    { header: "AI cost (£)", key: "cost", width: 10, style: { numFmt: "0.00" } },
+    { header: "Link", key: "link", width: 30 },
+  ];
+  for (const s of scenarios)
+    p.addRow({
+      date: s.createdAt,
+      ref: s.ref,
+      title: s.title,
+      reference: s.reference,
+      by: s.askedBy,
+      taxYear: s.taxYear ?? "",
+      status: s.status === "completed" ? "Report written" : s.status === "partial" ? "Research only" : "Failed",
+      issues: `${s.answeredCount} of ${s.issueCount}`,
+      confidence: s.confidence ?? "",
+      docs: s.docs.length,
+      cost: costPence(s.costMicros) / 100,
+      link: { text: "Open", hyperlink: `${appUrl()}/planning/${s.id}` },
+    });
+  style(p, "Research register — tax planning scenarios");
+
   const d = wb.addWorksheet("Documents issued");
   d.columns = [
     { header: "Issued", key: "date", width: 18, style: { numFmt: "dd/mm/yyyy hh:mm" } },
@@ -109,7 +141,7 @@ export async function GET(req: Request) {
   style(d, "Research register — documents issued");
 
   const buf = await wb.xlsx.writeBuffer();
-  await audit(actorOf(ctx), "research.register_exported", `Downloaded the research register (${rows.length} questions, ${documents.length} documents)`);
+  await audit(actorOf(ctx), "research.register_exported", `Downloaded the research register (${rows.length} questions, ${scenarios.length} planning scenarios, ${documents.length} documents)`);
   const day = new Date().toISOString().slice(0, 10);
   return new Response(new Uint8Array(buf as ArrayBuffer), {
     headers: {

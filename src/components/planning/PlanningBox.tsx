@@ -19,6 +19,7 @@ const EXAMPLE = {
 export function PlanningBox({ remaining }: { remaining: number | null }) {
   const router = useRouter();
   const [title, setTitle] = useState("");
+  const [reference, setReference] = useState("");
   const [taxYear, setTaxYear] = useState(YEARS[0]);
   const [facts, setFacts] = useState("");
   const [objectives, setObjectives] = useState("");
@@ -33,7 +34,7 @@ export function PlanningBox({ remaining }: { remaining: number | null }) {
     setError(null);
     setStages([]);
     try {
-      const res = await fetch("/api/planning", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ title, taxYear, facts, objectives, constraints }) });
+      const res = await fetch("/api/planning", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ title, reference, taxYear, facts, objectives, constraints }) });
       if (!res.ok || !res.body) {
         const j = (await res.json().catch(() => ({}))) as { error?: string };
         throw new Error(j.error ?? "Tax planning is unavailable right now.");
@@ -79,6 +80,12 @@ export function PlanningBox({ remaining }: { remaining: number | null }) {
           <label className="stack" style={{ gap: 4, flex: "1 1 260px" }}>
             <span className="small strong">Scenario title</span>
             <input value={title} onChange={(e) => setTitle(e.target.value)} disabled={busy} maxLength={120} placeholder="e.g. Director-shareholder exit and extraction" />
+          </label>
+          <label className="stack" style={{ gap: 4, flex: "1 1 200px" }}>
+            <span className="small strong">
+              Client / matter ref <span className="faint">(optional)</span>
+            </span>
+            <input value={reference} onChange={(e) => setReference(e.target.value)} disabled={busy} maxLength={120} placeholder="e.g. ABC-0042" />
           </label>
           <label className="stack" style={{ gap: 4 }}>
             <span className="small strong">Tax year</span>

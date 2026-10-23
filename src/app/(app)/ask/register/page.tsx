@@ -16,8 +16,8 @@ export default async function ResearchRegisterPage({ searchParams }: { searchPar
   const sp = await searchParams;
   const review = parseReviewFilter(sp.review);
   const filters = { review, userId: sp.who && /^[0-9a-f-]{36}$/i.test(sp.who) ? sp.who : null, from: parseDay(sp.from), to: parseDay(sp.to), q: (sp.q ?? "").trim().slice(0, 200) };
-  const [{ rows, documents, capped }, people] = await Promise.all([loadRegister(ctx.org.id, filters), registerPeople(ctx.org.id)]);
-  const tab = sp.tab === "documents" ? "documents" : "questions";
+  const [{ rows, scenarios, documents, capped }, people] = await Promise.all([loadRegister(ctx.org.id, filters), registerPeople(ctx.org.id)]);
+  const tab = sp.tab === "documents" ? "documents" : sp.tab === "planning" ? "planning" : "questions";
 
   const params = new URLSearchParams();
   for (const [k, v] of Object.entries({ review: review === "all" ? "" : review, who: filters.userId ?? "", from: sp.from ?? "", to: sp.to ?? "", q: filters.q })) if (v) params.set(k, v);
@@ -38,7 +38,7 @@ export default async function ResearchRegisterPage({ searchParams }: { searchPar
         <div>
           <h1>Research register</h1>
           <p className="muted" style={{ maxWidth: 800 }}>
-            Your firm&apos;s record of every Ask Capto question, how it was answered, its review and every Word or PDF document issued from it. Approve an answer to make it available to everyone in the firm and to have it reused first when a colleague asks the same thing.
+            Your firm&apos;s record of every Ask Capto question and tax planning scenario, how it was answered, its review and every Word or PDF document issued from it. Approve an answer to make it available to everyone in the firm and to have it reused first when a colleague asks the same thing.
           </p>
         </div>
         <a className="btn" href={`/api/research/register${params.toString() ? `?${params}` : ""}`} download>
@@ -51,6 +51,7 @@ export default async function ResearchRegisterPage({ searchParams }: { searchPar
         <span className="pill pill-accepted">{counts.approved} approved</span>
         <span className="pill pill-declined">{counts.changes} need changes</span>
         <span className="pill">{unreviewed} awaiting review</span>
+        <span className="pill">{scenarios.length} planning scenarios</span>
         <span className="pill">{documents.length} documents issued</span>
         <span className="pill">AI cost ≈ £{(costPence(spend) / 100).toFixed(2)}</span>
       </div>
@@ -104,13 +105,54 @@ export default async function ResearchRegisterPage({ searchParams }: { searchPar
         <Link href={link({ tab: "" })} className={`btn btn-sm${tab === "questions" ? " btn-primary" : ""}`}>
           Questions ({rows.length})
         </Link>
+        <Link href={link({ tab: "planning" })} className={`btn btn-sm${tab === "planning" ? " btn-primary" : ""}`}>
+          Tax planning ({scenarios.length})
+        </Link>
         <Link href={link({ tab: "documents" })} className={`btn btn-sm${tab === "documents" ? " btn-primary" : ""}`}>
           Documents issued ({documents.length})
         </Link>
         {capped && <span className="small muted">Showing the latest 5,000. Narrow the dates to see older ones.</span>}
       </div>
 
-      {tab === "questions" ? (
+      {tab === "planning" ? (
+        scenarios.length === 0 ? (
+          <div className="card card-pad small muted">No tax planning scenarios match these filters.</div>
+        ) : (
+          <div className="card" style={{ overflowX: "auto" }}>
+            <table className="table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Scenario</th>
+                  <th>Client / matter</th>
+                  <th>Prepared by</th>
+                  <th>Issues researched</th>
+                  <th>Confidence</th>
+                  <th>Docs</th>
+                </tr>
+              </thead>
+              <tbody>
+                {scenarios.map((s) => (
+                  <tr key={s.id}>
+                    <td style={{ whiteSpace: "nowrap" }}>{date(s.createdAt)}</td>
+                    <td style={{ minWidth: 240 }}>
+                      <Link href={`/planning/${s.id}`}>{s.title}</Link>
+                      <div className="small faint">{[s.ref, s.taxYear && `Tax year ${s.taxYear}`, s.status !== "completed" && (s.status === "partial" ? "research only, no report" : "failed")].filter(Boolean).join(" · ")}</div>
+                    </td>
+                    <td>{s.reference || "—"}</td>
+                    <td>{s.askedBy}</td>
+                    <td className="small">
+                      {s.answeredCount}/{s.issueCount}
+                    </td>
+                    <td className="small">{s.confidence ?? "—"}</td>
+                    <td className="small">{s.docs.length ? s.docs.length : "—"}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )
+      ) : tab === "questions" ? (
         rows.length === 0 ? (
           <div className="card card-pad small muted">No questions match these filters.</div>
         ) : (
@@ -178,7 +220,7 @@ export default async function ResearchRegisterPage({ searchParams }: { searchPar
                   <td style={{ whiteSpace: "nowrap" }}>{d.docRef}</td>
                   <td>{d.format === "docx" ? "Word" : "PDF"}</td>
                   <td style={{ minWidth: 240 }}>
-                    <Link href={`/ask/${d.queryId}`}>{d.question.length > 120 ? `${d.question.slice(0, 120)}…` : d.question}</Link>
+                    <Link href={d.href}>{d.question.length > 120 ? `${d.question.slice(0, 120)}…` : d.question}</Link>
                   </td>
                   <td>{d.reference || "—"}</td>
                   <td>{d.userName}</td>

@@ -4,8 +4,8 @@ import { useState } from "react";
 import { FileDown, FileText } from "lucide-react";
 
 /** Word / PDF download buttons with an optional client or matter reference, printed on the memorandum. */
-export function PlanningExport({ id }: { id: string }) {
-  const [reference, setReference] = useState("");
+export function PlanningExport({ id, initialReference = "" }: { id: string; initialReference?: string }) {
+  const [reference, setReference] = useState(initialReference);
   const href = (format: "docx" | "pdf") => `/api/planning/${id}/report?format=${format}${reference.trim() ? `&reference=${encodeURIComponent(reference.trim())}` : ""}`;
   return (
     <span className="row" style={{ gap: 6, flexWrap: "wrap" }}>
