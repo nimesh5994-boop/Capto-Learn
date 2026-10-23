@@ -170,6 +170,37 @@ export async function resendInvitation(inviteId: string): Promise<TeamResult> {
   });
 }
 
+/**
+ * Issues a fresh link for an open or expired invitation WITHOUT emailing it, so the admin can copy it and send it
+ * themselves (for example when the person's mail system is filtering the email). Links are stored only as a hash, so
+ * the earlier link stops working.
+ */
+export async function copyInvitationLink(inviteId: string): Promise<TeamResult> {
+  return run(async () => {
+    const ctx = await authorize("team.manage", { write: true });
+    const db = await getDb();
+    const [inv] = await db
+      .select()
+      .from(invitations)
+      .where(and(eq(invitations.id, inviteId), eq(invitations.organizationId, ctx.org.id), isNull(invitations.acceptedAt), isNull(invitations.revokedAt)));
+    if (!inv) return { ok: false, error: "That invitation was already accepted or revoked." };
+    if (inv.platformRole) {
+      const { newPlatformInvitationLink } = await import("./platform");
+      return newPlatformInvitationLink(inv.id);
+    }
+    const [exists] = await db.select({ id: users.id }).from(users).where(eq(users.email, inv.email));
+    if (exists) return { ok: false, error: "That email already has a Capto Learn account." };
+    if (inv.expiresAt.getTime() <= Date.now()) await assertSeatAvailable(db, ctx.org);
+    const { token, hash } = newToken();
+    await db
+      .update(invitations)
+      .set({ tokenHash: hash, expiresAt: new Date(Date.now() + INVITE_DAYS * 86_400_000) })
+      .where(eq(invitations.id, inv.id));
+    await audit(actorOf(ctx), "team.invite_link_copied", `Created a new invitation link for ${inv.email} to send manually`);
+    return { ok: true, message: `New link for ${inv.email} — copy it and send it to them yourself. The earlier link no longer works.`, link: `${appUrl()}/invite/${token}` };
+  });
+}
+
 export async function revokeInvitation(inviteId: string): Promise<TeamResult> {
   return run(async () => {
     const ctx = await authorize("team.manage");

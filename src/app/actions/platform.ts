@@ -278,6 +278,47 @@ export async function resendPlatformInvitation(id: string): Promise<PlatformResu
   });
 }
 
+/** A fresh platform-team invitation link with no email, to copy and send manually (the earlier link stops working). */
+export async function newPlatformInvitationLink(id: string): Promise<PlatformResult> {
+  return guard(async () => {
+    const ctx = await authorizePlatform("platform.team.manage");
+    const db = await getDb();
+    const [inv] = await db
+      .select()
+      .from(invitations)
+      .where(and(eq(invitations.id, id), eq(invitations.organizationId, ctx.org.id), isNull(invitations.acceptedAt), isNull(invitations.revokedAt)));
+    if (!inv || !inv.platformRole) return { ok: false, error: "That invitation was already accepted or revoked." };
+    const [exists] = await db.select({ id: users.id }).from(users).where(eq(users.email, inv.email));
+    if (exists) return { ok: false, error: "That email already has a Capto Learn account." };
+    const { token, hash } = newToken();
+    await db
+      .update(invitations)
+      .set({ tokenHash: hash, expiresAt: new Date(Date.now() + PLATFORM_INVITE_DAYS * 86_400_000) })
+      .where(eq(invitations.id, inv.id));
+    await audit({ organizationId: ctx.org.id, userId: ctx.user.id, name: ctx.user.name }, "platform.invite_link_copied", `Created a new invitation link for ${inv.email} to send manually`);
+    revalidatePath("/platform/team");
+    return { ok: true, message: `New link for ${inv.email} — copy it and send it yourself. The earlier link no longer works.`, link: `${appUrl()}/invite/${token}` };
+  });
+}
+
+/** A fresh firm invitation link with no email, to copy and send manually (the earlier link stops working). */
+export async function newFirmInvitationLink(id: string): Promise<PlatformResult> {
+  return guard(async () => {
+    await authorizePlatform("platform.firms.invite");
+    const db = await getDb();
+    const [inv] = await db.select().from(firmInvitations).where(and(eq(firmInvitations.id, id), isNull(firmInvitations.acceptedAt), isNull(firmInvitations.revokedAt)));
+    if (!inv) return { ok: false, error: "That invitation was already used or revoked." };
+    const [taken] = await db.select({ id: users.id }).from(users).where(eq(users.email, inv.email));
+    if (taken) return { ok: false, error: "That email already has a Capto Learn account." };
+    const { token, hash } = newToken();
+    await db
+      .update(firmInvitations)
+      .set({ tokenHash: hash, expiresAt: new Date(Date.now() + FIRM_INVITE_DAYS * 86_400_000) })
+      .where(eq(firmInvitations.id, inv.id));
+    return { ok: true, message: `New link for ${inv.email} — copy it and send it yourself. The earlier link no longer works.`, link: `${appUrl()}/signup?invite=${token}` };
+  });
+}
+
 /** Withdraws an open platform invitation. */
 export async function revokePlatformInvitation(id: string): Promise<PlatformResult> {
   return guard(async () => {

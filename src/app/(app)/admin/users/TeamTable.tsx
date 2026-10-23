@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Copy, UserPlus } from "lucide-react";
-import { changeMemberRole, createResetLink, inviteMember, resendInvitation, revokeInvitation, setMemberActive, type TeamResult } from "@/app/actions/team";
+import { changeMemberRole, copyInvitationLink, createResetLink, inviteMember, resendInvitation, revokeInvitation, setMemberActive, type TeamResult } from "@/app/actions/team";
 
 type RoleOption = { value: string; label: string; description: string };
 type LastEmail = { kind: string; status: string; pill: string; when: string } | null;
@@ -200,8 +200,8 @@ export function TeamTable({
           <div className="card-pad" style={{ paddingBottom: 10 }}>
             <h2>Invitations</h2>
             <p className="small muted" style={{ margin: "4px 0 0" }}>
-              Open invitations, plus any accepted or revoked in the last 30 days. Resend creates a new link (the old one stops working) and gives it another 7 days. Links can only be
-              copied straight after an invitation is created or re-sent — they aren&apos;t stored.
+              Open invitations, plus any accepted or revoked in the last 30 days. Resend emails a new link; Copy link makes a new one without emailing, to send yourself. Either way the old
+              link stops working and the invitation gets another 7 days. Links aren&apos;t stored, so Copy link always makes a fresh one.
             </p>
           </div>
           <table className="table">
@@ -219,6 +219,11 @@ export function TeamTable({
                       {i.canResend && (
                         <button className="btn btn-sm" disabled={pending} onClick={() => act(() => resendInvitation(i.id))}>
                           Resend
+                        </button>
+                      )}
+                      {i.canResend && (
+                        <button className="btn btn-sm" disabled={pending} title="Makes a new link without emailing it, so you can send it yourself. The earlier link stops working." onClick={() => act(() => copyInvitationLink(i.id))}>
+                          Copy link
                         </button>
                       )}
                       {i.canRevoke &&

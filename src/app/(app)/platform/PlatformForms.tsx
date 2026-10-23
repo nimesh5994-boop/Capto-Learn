@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Copy } from "lucide-react";
-import { inviteFirm, invitePlatformMember, resendFirmInvite, resendPlatformInvitation, revokeFirmInvite, revokePlatformInvitation, setPlatformRole, type PlatformResult } from "@/app/actions/platform";
+import { inviteFirm, invitePlatformMember, newFirmInvitationLink, newPlatformInvitationLink, resendFirmInvite, resendPlatformInvitation, revokeFirmInvite, revokePlatformInvitation, setPlatformRole, type PlatformResult } from "@/app/actions/platform";
 
 function Feedback({ result }: { result: PlatformResult | null }) {
   const [copied, setCopied] = useState(false);
@@ -225,6 +225,16 @@ export function InvitationActions({ id, type, canResend, canRevoke }: { id: stri
         {canResend && (
           <button className="btn btn-sm" disabled={pending} onClick={() => run(() => (type === "firm" ? resendFirmInvite(id) : resendPlatformInvitation(id)))}>
             {pending ? "Working…" : "Resend"}
+          </button>
+        )}
+        {canResend && (
+          <button
+            className="btn btn-sm"
+            disabled={pending}
+            title="Makes a new link without emailing it, so you can send it yourself. The earlier link stops working."
+            onClick={() => run(() => (type === "firm" ? newFirmInvitationLink(id) : newPlatformInvitationLink(id)))}
+          >
+            Copy link
           </button>
         )}
         {canRevoke &&
