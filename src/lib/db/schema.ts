@@ -1,6 +1,7 @@
 import { sql } from "drizzle-orm";
 import { boolean, customType, index, integer, jsonb, numeric, pgTable, primaryKey, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
 import type { ResearchAnswer } from "@/lib/research/types";
+import type { PlanningIssue, PlanningReport, ScenarioInput } from "@/lib/planning/types";
 import type { EmailKind, SendStatus } from "@/lib/emailTracking";
 
 export type Role = "owner" | "admin" | "manager" | "staff" | "viewer";
@@ -534,6 +535,32 @@ export const researchExports = pgTable(
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [index("research_exports_org_idx").on(t.organizationId, t.createdAt), index("research_exports_query_idx").on(t.queryId)]
+);
+
+/**
+ * Tax planning scenarios: a client situation broken into researched issues (each also a research_queries row, so it
+ * is in the register) and written up as a draft report for a qualified adviser to review.
+ */
+export const planningScenarios = pgTable(
+  "planning_scenarios",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    organizationId: uuid("organization_id").notNull().references(() => organizations.id, { onDelete: "cascade" }),
+    userId: uuid("user_id").references(() => users.id, { onDelete: "set null" }),
+    title: text("title").notNull(),
+    input: jsonb("input").$type<ScenarioInput>().notNull(),
+    status: text("status").$type<"completed" | "partial" | "failed">().notNull(),
+    issues: jsonb("issues").$type<PlanningIssue[]>().notNull().default([]),
+    report: jsonb("report").$type<PlanningReport>(),
+    error: text("error"),
+    inputTokens: integer("input_tokens").notNull().default(0),
+    outputTokens: integer("output_tokens").notNull().default(0),
+    /** Estimated Anthropic API cost of the whole scenario in millionths of a US dollar. */
+    costMicros: integer("cost_micros").notNull().default(0),
+    durationMs: integer("duration_ms"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index("planning_scenarios_org_idx").on(t.organizationId, t.createdAt)]
 );
 
 export type BenchmarkVerdict = "correct" | "partial" | "wrong";

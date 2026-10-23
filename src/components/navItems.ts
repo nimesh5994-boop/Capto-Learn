@@ -20,6 +20,7 @@ import {
   MessageSquareQuote,
   MessageCircleHeart,
   Repeat,
+  Route,
   TrendingUp,
   Search,
   Database,
@@ -46,6 +47,7 @@ export type NavKey =
   | "cases"
   | "calculators"
   | "ask"
+  | "planning"
   | "saved"
   | "register"
   | "team"
@@ -80,6 +82,7 @@ export const NAV_ITEMS: Record<NavKey, { href: string; label: string; descriptio
   cases: { href: "/cases", label: "Case law", icon: Scale, description: "Searchable tax tribunal and court decisions" },
   calculators: { href: "/calculators", label: "Calculators", icon: Calculator, description: "Income tax, payroll, corporation tax, CGT, IHT and more" },
   ask: { href: "/ask", label: "Ask Capto", icon: MessageSquareQuote, exact: true, description: "Cited answers from HMRC and GOV.UK guidance" },
+  planning: { href: "/planning", label: "Tax planning", icon: Route, description: "Work a client scenario through to options, risks and next steps" },
   saved: { href: "/ask/saved", label: "Saved research", icon: Bookmark, description: "Answers and notes you have kept for later" },
   register: { href: "/ask/register", label: "Research register", icon: ClipboardList, description: "A firm-wide record of research and conclusions" },
   team: { href: "/team", label: "Team training", icon: ClipboardCheck, exact: true, description: "Assign training and track your team's progress" },
