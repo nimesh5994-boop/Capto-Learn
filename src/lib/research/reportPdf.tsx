@@ -169,7 +169,7 @@ export async function renderPdf(blocks: Block[], brand: ReportBrand): Promise<Bu
       <Page size="A4" style={s.page}>
         {/* eslint-disable-next-line jsx-a11y/alt-text -- react-pdf's Image has no alt; the firm name is the document author */}
         {logo ? <Image src={brand.logoDataUrl!} style={fitBox(logo.width, logo.height, 150, 48)} /> : <Text style={[s.firm, { color }]}>{pdfSafe(brand.firm)}</Text>}
-        <Text style={s.kicker}>TECHNICAL RESEARCH MEMORANDUM</Text>
+        <Text style={s.kicker}>{brand.kicker ?? "TECHNICAL RESEARCH MEMORANDUM"}</Text>
         {title && <BlockView b={title} color={color} />}
         <View style={s.metaTable}>
           {meta.map((m, i) => (

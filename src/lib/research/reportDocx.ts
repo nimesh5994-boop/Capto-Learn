@@ -28,6 +28,8 @@ export interface ReportBrand {
   logoDataUrl?: string | null;
   /** Document reference for the page footer. */
   docRef?: string;
+  /** Small heading under the logo; defaults to the research memorandum. */
+  kicker?: string;
 }
 
 const MUTED = "6B6470";
@@ -81,7 +83,7 @@ export async function renderDocx(blocks: Block[], brand: ReportBrand): Promise<B
   } else {
     children.push(new Paragraph({ children: [new TextRun({ text: brand.firm, bold: true, color, size: 26 })], spacing: { after: 120 } }));
   }
-  children.push(new Paragraph({ children: [new TextRun({ text: "TECHNICAL RESEARCH MEMORANDUM", color: MUTED, size: 17, bold: true })], spacing: { after: 200 } }));
+  children.push(new Paragraph({ children: [new TextRun({ text: brand.kicker ?? "TECHNICAL RESEARCH MEMORANDUM", color: MUTED, size: 17, bold: true })], spacing: { after: 200 } }));
 
   const metaRows: TableRow[] = [];
   const flushMeta = () => {

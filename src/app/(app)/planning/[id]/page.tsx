@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { and, eq } from "drizzle-orm";
-import { AlertTriangle, CheckCircle2, ListChecks, Scale, ShieldAlert } from "lucide-react";
+import { AlertTriangle, CheckCircle2, FileDown, FileText, ListChecks, Scale, ShieldAlert } from "lucide-react";
 import { requirePermission } from "@/lib/auth/dal";
 import { getDb } from "@/lib/db/client";
 import { planningScenarios } from "@/lib/db/schema";
@@ -180,8 +180,20 @@ export default async function PlanningScenarioPage({ params }: { params: Promise
     <>
       <div className="row between small no-print" style={{ margin: "0 0 10px", gap: 8, flexWrap: "wrap" }}>
         <Link href="/planning">← Tax planning</Link>
-        <span className="faint">
-          {dateTime(row.createdAt)} · {row.input.taxYear || "no tax year"}
+        <span className="row" style={{ gap: 6 }}>
+          <span className="faint">
+            {dateTime(row.createdAt)} · {row.input.taxYear || "no tax year"}
+          </span>
+          {row.issues.length > 0 && (
+            <>
+              <a href={`/api/planning/${row.id}/report?format=docx`} className="btn btn-sm" download>
+                <FileText size={13} /> Word
+              </a>
+              <a href={`/api/planning/${row.id}/report?format=pdf`} className="btn btn-sm" download>
+                <FileDown size={13} /> PDF
+              </a>
+            </>
+          )}
         </span>
       </div>
       <div className={styles.layout}>
