@@ -7,6 +7,7 @@ import { reportFilename } from "@/lib/research/report";
 import { renderDocx } from "@/lib/research/reportDocx";
 import { renderPdf } from "@/lib/research/reportPdf";
 import type { ResearchAnswer } from "@/lib/research/types";
+import { canViewAnswer } from "@/lib/research/register";
 import { buildPlanningMemo, planningRef } from "@/lib/planning/memo";
 
 export const runtime = "nodejs";
@@ -39,7 +40,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
     .select()
     .from(planningScenarios)
     .where(and(eq(planningScenarios.id, id), eq(planningScenarios.organizationId, ctx.org.id)));
-  if (!row || (row.userId !== ctx.user.id && !ctx.can("research.register"))) return Response.json({ error: "Not found." }, { status: 404 });
+  if (!row || !canViewAnswer({ organizationId: row.organizationId, userId: row.userId, shared: false, reviewStatus: row.reviewStatus }, { orgId: ctx.org.id, userId: ctx.user.id, canRegister: ctx.can("research.register") })) return Response.json({ error: "Not found." }, { status: 404 });
 
   const queryIds = row.issues.map((i) => i.queryId).filter((q): q is string => !!q);
   const rows = queryIds.length ? await db.select({ id: researchQueries.id, answer: researchQueries.answer }).from(researchQueries).where(and(eq(researchQueries.organizationId, ctx.org.id), inArray(researchQueries.id, queryIds))) : [];
@@ -55,6 +56,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
     url: `${appUrl()}/planning/${id}`,
     createdAt: row.createdAt,
     exportedAt: new Date(),
+    review: row.reviewStatus ? { status: row.reviewStatus, by: row.reviewedByName, at: row.reviewedAt, note: row.reviewNote } : null,
   });
   const brand = { firm: ctx.org.name, color: ctx.org.brandColor, logoDataUrl: ctx.org.logoDataUrl, docRef, kicker: "TAX PLANNING MEMORANDUM" };
   const body = format === "docx" ? await renderDocx(blocks, brand) : await renderPdf(blocks, brand);

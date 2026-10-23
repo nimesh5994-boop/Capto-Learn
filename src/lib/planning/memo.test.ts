@@ -65,3 +65,22 @@ describe("planning memo", () => {
     expect(pdf.length).toBeGreaterThan(2000);
   });
 });
+
+describe("memo status line", () => {
+  it("reflects the firm's review", async () => {
+    const { statusLine } = await import("./memo");
+    expect(statusLine(null)).toContain("Draft for review");
+    expect(statusLine({ status: "approved", by: "Sam", at: "2026-10-24", note: "Checked" })).toBe("Reviewed and approved by Sam on 24 October 2026: Checked Not advice to the client until issued by a qualified adviser.");
+    expect(statusLine({ status: "changes", by: "Sam", at: null, note: "Redo I2" })).toContain("asked for changes");
+  });
+});
+
+describe("sample output", () => {
+  it.skipIf(!process.env.PLANNING_SAMPLE_DIR)("writes a sample Word and PDF for eyeballing", async () => {
+    const { writeFileSync } = await import("node:fs");
+    const blocks = buildPlanningMemo("Director-shareholder exit and extraction", input, report, issues, new Map([["q1", answer]]), { ...meta, reference: "ABC-0042", review: { status: "approved", by: "Sam Reviewer", at: "2026-10-24", note: "Checked against the sources" } });
+    const brand = { firm: "Sample Practice LLP", color: "#a01f62", docRef: meta.docRef, kicker: "TAX PLANNING MEMORANDUM" };
+    writeFileSync(`${process.env.PLANNING_SAMPLE_DIR}/sample-memo.pdf`, await renderPdf(blocks, brand));
+    writeFileSync(`${process.env.PLANNING_SAMPLE_DIR}/sample-memo.docx`, await renderDocx(blocks, brand));
+  });
+});

@@ -558,6 +558,12 @@ export const planningScenarios = pgTable(
     /** Estimated Anthropic API cost of the whole scenario in millionths of a US dollar. */
     costMicros: integer("cost_micros").notNull().default(0),
     durationMs: integer("duration_ms"),
+    /** Firm review (research register), as for answers: "approved" makes the scenario visible firm-wide; "changes" asks the preparer to follow up. */
+    reviewStatus: text("review_status").$type<ResearchReviewStatus>(),
+    reviewedById: uuid("reviewed_by_id").references(() => users.id, { onDelete: "set null" }),
+    reviewedByName: text("reviewed_by_name"),
+    reviewedAt: timestamp("reviewed_at", { withTimezone: true }),
+    reviewNote: text("review_note"),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [index("planning_scenarios_org_idx").on(t.organizationId, t.createdAt)]

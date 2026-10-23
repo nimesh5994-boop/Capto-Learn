@@ -61,6 +61,8 @@ export async function loadRegister(orgId: string, f: RegisterFilters) {
   // issue, so they are taken out of that question's own document list and shown against the scenario instead.
   const scWhere: SQL[] = [eq(planningScenarios.organizationId, orgId)];
   if (f.userId) scWhere.push(eq(planningScenarios.userId, f.userId));
+  if (f.review === "none") scWhere.push(isNull(planningScenarios.reviewStatus));
+  else if (f.review !== "all") scWhere.push(eq(planningScenarios.reviewStatus, f.review));
   if (f.from) scWhere.push(gte(planningScenarios.createdAt, f.from));
   if (f.to) scWhere.push(lt(planningScenarios.createdAt, new Date(f.to.getTime() + 86_400_000)));
   const scRows = await db
@@ -72,6 +74,10 @@ export async function loadRegister(orgId: string, f: RegisterFilters) {
       issues: planningScenarios.issues,
       report: planningScenarios.report,
       costMicros: planningScenarios.costMicros,
+      reviewStatus: planningScenarios.reviewStatus,
+      reviewedByName: planningScenarios.reviewedByName,
+      reviewedAt: planningScenarios.reviewedAt,
+      reviewNote: planningScenarios.reviewNote,
       createdAt: planningScenarios.createdAt,
       userId: planningScenarios.userId,
       askedBy: users.name,
@@ -95,6 +101,10 @@ export async function loadRegister(orgId: string, f: RegisterFilters) {
       issueCount: s.issues.length,
       answeredCount: s.issues.filter((i) => i.status === "answered").length,
       costMicros: s.costMicros,
+      reviewStatus: s.reviewStatus,
+      reviewedByName: s.reviewedByName,
+      reviewedAt: s.reviewedAt,
+      reviewNote: s.reviewNote,
       createdAt: s.createdAt,
       askedBy: s.askedBy ?? "Former member",
       docs: scExports.filter((e) => e.docRef === planningRef(s.id)),

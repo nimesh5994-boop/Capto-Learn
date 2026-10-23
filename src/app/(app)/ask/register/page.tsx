@@ -48,9 +48,9 @@ export default async function ResearchRegisterPage({ searchParams }: { searchPar
 
       <div className="row" style={{ gap: 10, flexWrap: "wrap", marginBottom: 12 }}>
         <span className="pill">{counts.total.toLocaleString("en-GB")} questions</span>
-        <span className="pill pill-accepted">{counts.approved} approved</span>
-        <span className="pill pill-declined">{counts.changes} need changes</span>
-        <span className="pill">{unreviewed} awaiting review</span>
+        <span className="pill pill-accepted">{counts.approved + scenarios.filter((s) => s.reviewStatus === "approved").length} approved</span>
+        <span className="pill pill-declined">{counts.changes + scenarios.filter((s) => s.reviewStatus === "changes").length} need changes</span>
+        <span className="pill">{unreviewed + scenarios.filter((s) => s.status === "completed" && !s.reviewStatus).length} awaiting review</span>
         <span className="pill">{scenarios.length} planning scenarios</span>
         <span className="pill">{documents.length} documents issued</span>
         <span className="pill">AI cost ≈ £{(costPence(spend) / 100).toFixed(2)}</span>
@@ -128,6 +128,7 @@ export default async function ResearchRegisterPage({ searchParams }: { searchPar
                   <th>Prepared by</th>
                   <th>Issues researched</th>
                   <th>Confidence</th>
+                  <th>Review</th>
                   <th>Docs</th>
                 </tr>
               </thead>
@@ -145,6 +146,15 @@ export default async function ResearchRegisterPage({ searchParams }: { searchPar
                       {s.answeredCount}/{s.issueCount}
                     </td>
                     <td className="small">{s.confidence ?? "—"}</td>
+                    <td>
+                      {s.reviewStatus ? <span className={`pill ${REVIEW_PILL[s.reviewStatus]}`}>{REVIEW_LABEL[s.reviewStatus]}</span> : <span className="small faint">{s.status === "completed" ? "Not reviewed" : "—"}</span>}
+                      {s.reviewedByName && (
+                        <div className="small faint">
+                          {s.reviewedByName}
+                          {s.reviewedAt ? `, ${date(s.reviewedAt)}` : ""}
+                        </div>
+                      )}
+                    </td>
                     <td className="small">{s.docs.length ? s.docs.length : "—"}</td>
                   </tr>
                 ))}

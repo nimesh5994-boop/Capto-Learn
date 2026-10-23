@@ -5,7 +5,9 @@ import { AlertTriangle, CheckCircle2, ListChecks, Scale, ShieldAlert } from "luc
 import { requirePermission } from "@/lib/auth/dal";
 import { getDb } from "@/lib/db/client";
 import { planningScenarios } from "@/lib/db/schema";
-import { dateTime } from "@/lib/format";
+import { date, dateTime } from "@/lib/format";
+import { canViewAnswer } from "@/lib/research/register";
+import { ReviewPanel } from "@/components/ask/ReviewPanel";
 import { PlanningExport } from "@/components/planning/PlanningExport";
 import type { IssueConfidence, PlanningReport } from "@/lib/planning/types";
 import styles from "@/components/ask/ask.module.css";
@@ -175,7 +177,7 @@ export default async function PlanningScenarioPage({ params }: { params: Promise
     .from(planningScenarios)
     .where(and(eq(planningScenarios.id, id), eq(planningScenarios.organizationId, ctx.org.id)));
   // A scenario is private to the person who ran it, unless they can see the firm's research register.
-  if (!row || (row.userId !== ctx.user.id && !ctx.can("research.register"))) notFound();
+  if (!row || !canViewAnswer({ organizationId: row.organizationId, userId: row.userId, shared: false, reviewStatus: row.reviewStatus }, { orgId: ctx.org.id, userId: ctx.user.id, canRegister: ctx.can("research.register") })) notFound();
 
   return (
     <>
@@ -191,6 +193,19 @@ export default async function PlanningScenarioPage({ params }: { params: Promise
       <div className={styles.layout}>
         <div className="stack" style={{ gap: 16 }}>
           <h1 className={styles.question}>{row.title}</h1>
+          {row.reviewStatus === "approved" && (
+            <div className="alert alert-info small">
+              <strong>Reviewed and approved</strong> by {row.reviewedByName ?? "a reviewer"}
+              {row.reviewedAt ? ` on ${date(row.reviewedAt)}` : ""}
+              {row.reviewNote ? `: ${row.reviewNote}` : "."}
+            </div>
+          )}
+          {row.reviewStatus === "changes" && (
+            <div className="alert alert-warning small">
+              <strong>A reviewer asked for changes</strong> ({row.reviewedByName ?? "reviewer"}
+              {row.reviewedAt ? `, ${date(row.reviewedAt)}` : ""}): {row.reviewNote}. Don&apos;t rely on this report until it is re-run or approved.
+            </div>
+          )}
           {row.error && <div className={`alert ${row.status === "failed" ? "alert-error" : "alert-warning"}`}>{row.error}</div>}
           {row.report && <Report report={row.report} />}
 
@@ -220,6 +235,9 @@ export default async function PlanningScenarioPage({ params }: { params: Promise
           </section>
         </div>
         <aside className="stack" style={{ gap: 14 }}>
+          {row.report && ctx.can("research.register") && (
+            <ReviewPanel kind="scenario" id={row.id} initial={{ status: row.reviewStatus, by: row.reviewedByName, at: row.reviewedAt?.toISOString() ?? null, note: row.reviewNote }} />
+          )}
           <div className="card card-pad stack" style={{ gap: 6 }}>
             <h3 style={{ margin: 0 }}>The situation</h3>
             <p className="small" style={{ margin: 0, whiteSpace: "pre-wrap" }}>

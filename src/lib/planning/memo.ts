@@ -17,6 +17,8 @@ export interface MemoMeta {
   url: string;
   createdAt: Date | string;
   exportedAt: Date;
+  /** The firm's review of the scenario, when there is one. */
+  review?: { status: "approved" | "changes"; by: string | null; at: Date | string | null; note: string | null } | null;
 }
 
 const LONG_DATE = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "Europe/London" });
@@ -30,6 +32,13 @@ const CONFIDENCE: Record<PlanningReport["confidence"], string> = {
   medium: "Medium: the recommendation draws on inference across sources, or an unverified point or unanswered issue sits behind it.",
   low: "Low: the research leaves material gaps. Senior review is essential before relying on this.",
 };
+
+/** The memorandum's status line: reflects the firm's recorded review. */
+export function statusLine(review: MemoMeta["review"]): string {
+  if (review?.status === "approved") return `Reviewed and approved by ${review.by ?? "a reviewer"}${review.at ? ` on ${fmtDate(review.at)}` : ""}${review.note ? `: ${review.note}` : "."} Not advice to the client until issued by a qualified adviser.`;
+  if (review?.status === "changes") return `Reviewer asked for changes${review.by ? ` (${review.by})` : ""}${review.note ? `: ${review.note}` : "."} Do not rely on this memorandum until they are made.`;
+  return "Draft for review. Not advice to the client and not to be relied on until reviewed and approved (see Review and approval).";
+}
 
 const para = (text: string, tone?: "muted" | "warning"): Block => ({ kind: "p", runs: [{ text }], tone });
 const bullets = (items: string[]): Block[] => (items.length ? [{ kind: "list", ordered: false, items: items.map((t) => [{ text: t }]) }] : []);
@@ -48,7 +57,7 @@ export function buildPlanningMemo(title: string, input: ScenarioInput, report: P
   );
   if (input.taxYear) out.push({ kind: "meta", label: "Tax year", value: input.taxYear });
   out.push(
-    { kind: "meta", label: "Status", value: "Draft for review. Not advice to the client and not to be relied on until reviewed and approved (see Review and approval)." },
+    { kind: "meta", label: "Status", value: statusLine(meta.review) },
     { kind: "meta", label: "Classification", value: "Confidential: internal working paper" }
   );
 

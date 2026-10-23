@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { ShieldCheck } from "lucide-react";
 import { reviewAnswer } from "@/app/actions/research";
+import { reviewScenario } from "@/app/actions/planning";
 
 type Status = "approved" | "changes" | null;
 
@@ -10,7 +11,7 @@ type Status = "approved" | "changes" | null;
  * Reviewer's decision for the research register. Approved answers are visible to the whole firm and reused
  * first; "needs changes" stops reuse until it's approved again.
  */
-export function ReviewPanel({ id, initial }: { id: string; initial: { status: Status; by: string | null; at: string | null; note: string | null } }) {
+export function ReviewPanel({ id, initial, kind = "answer" }: { id: string; kind?: "answer" | "scenario"; initial: { status: Status; by: string | null; at: string | null; note: string | null } }) {
   const [state, setState] = useState(initial);
   const [note, setNote] = useState(initial.note ?? "");
   const [error, setError] = useState<string | null>(null);
@@ -19,7 +20,7 @@ export function ReviewPanel({ id, initial }: { id: string; initial: { status: St
   const decide = (status: Status) =>
     start(async () => {
       setError(null);
-      const r = await reviewAnswer(id, status, note);
+      const r = kind === "scenario" ? await reviewScenario(id, status, note) : await reviewAnswer(id, status, note);
       if (!r.ok) return setError(r.error);
       setState({ status, by: status ? "you" : null, at: status ? new Date().toISOString() : null, note: status ? note.trim() || null : null });
       if (!status) setNote("");
@@ -54,7 +55,9 @@ export function ReviewPanel({ id, initial }: { id: string; initial: { status: St
           </button>
         )}
       </div>
-      <span className="small faint">Approved answers are visible to everyone in the firm and reused first when a colleague asks the same question.</span>
+      <span className="small faint">
+        {kind === "scenario" ? "Approved scenarios are visible to everyone in the firm. Review each researched issue separately too." : "Approved answers are visible to everyone in the firm and reused first when a colleague asks the same question."}
+      </span>
     </div>
   );
 }
