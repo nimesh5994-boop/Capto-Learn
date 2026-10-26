@@ -6,6 +6,7 @@
  */
 import type { Block } from "@/lib/research/report";
 import type { ResearchAnswer } from "@/lib/research/types";
+import { suggestCalculators } from "./calculators";
 import { coverageLine, type PlanningIssue, type PlanningReport, type ScenarioInput } from "./types";
 
 export interface MemoMeta {
@@ -100,7 +101,10 @@ export function buildPlanningMemo(title: string, input: ScenarioInput, report: P
     out.push({ kind: "list", ordered: true, items: [...report.informationNeeded.map((t) => [{ text: t }]), [{ text: "Check that the sources in Appendix A have not been updated since the date of research." }]] });
     if (report.assumptions.length) out.push({ kind: "h3", text: "Assumptions made" }, ...bullets(report.assumptions));
     out.push(section("Next steps"), { kind: "list", ordered: true, items: report.nextSteps.map((t) => [{ text: t }]) });
-    out.push(para("This memorandum does not calculate tax. Work out the figures for each option separately (for example with the Capto calculators) before advising.", "muted"));
+    out.push(para("This memorandum does not calculate tax. Work out the figures for each option separately before advising.", "muted"));
+    const base = meta.url.replace(/\/planning\/.*$/, "");
+    const calcs = suggestCalculators([input.facts, input.objectives, ...issues.flatMap((i) => [i.title, i.question])], input.taxYear);
+    if (calcs.length) out.push({ kind: "p", runs: [{ text: "Capto calculators that fit these issues:", bold: true }] }, { kind: "list", ordered: false, items: calcs.map((c) => [{ text: c.label, link: `${base}${c.href}` }, { text: ` — ${c.why}` }]) });
   }
 
   out.push(section("Review and approval"), para("Complete before this memorandum is relied on or its conclusions are shared with a client.", "muted"), {

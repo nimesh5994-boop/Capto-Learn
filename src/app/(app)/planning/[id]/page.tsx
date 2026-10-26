@@ -1,12 +1,13 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { and, eq } from "drizzle-orm";
-import { AlertTriangle, CheckCircle2, ListChecks, Scale, ShieldAlert } from "lucide-react";
+import { AlertTriangle, Calculator, CheckCircle2, ListChecks, Scale, ShieldAlert } from "lucide-react";
 import { requirePermission } from "@/lib/auth/dal";
 import { getDb } from "@/lib/db/client";
 import { planningScenarios } from "@/lib/db/schema";
 import { date, dateTime } from "@/lib/format";
 import { canViewAnswer } from "@/lib/research/register";
+import { suggestCalculators, type CalcSuggestion } from "@/lib/planning/calculators";
 import { ReviewPanel } from "@/components/ask/ReviewPanel";
 import { PlanningExport } from "@/components/planning/PlanningExport";
 import { coverageLine, type IssueConfidence, type PlanningReport } from "@/lib/planning/types";
@@ -46,7 +47,7 @@ function List({ items }: { items: string[] }) {
   );
 }
 
-function Report({ report, coverage }: { report: PlanningReport; coverage: string }) {
+function Report({ report, coverage, calcs }: { report: PlanningReport; coverage: string; calcs: CalcSuggestion[] }) {
   const conf = CONFIDENCE[report.confidence];
   return (
     <div className="stack" style={{ gap: 16 }}>
@@ -166,6 +167,24 @@ function Report({ report, coverage }: { report: PlanningReport; coverage: string
           ))}
         </ol>
       </section>
+
+      {calcs.length > 0 && (
+        <section className="card card-pad">
+          <h3 style={{ marginTop: 0 }} className="row">
+            <Calculator size={16} /> &nbsp;Work out the numbers
+          </h3>
+          <p className="small muted" style={{ margin: "0 0 8px" }}>
+            This report does not calculate tax. These Capto calculators fit the issues researched here: run each option through them before advising.
+          </p>
+          <ul style={{ margin: 0, paddingLeft: 20 }}>
+            {calcs.map((c) => (
+              <li key={c.id}>
+                <Link href={c.href}>{c.label}</Link> <span className="small muted">— {c.why}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
     </div>
   );
 }
@@ -213,7 +232,7 @@ export default async function PlanningScenarioPage({ params }: { params: Promise
             </div>
           )}
           {row.error && <div className={`alert ${row.status === "failed" ? "alert-error" : "alert-warning"}`}>{row.error}</div>}
-          {row.report && <Report report={row.report} coverage={coverageLine(row.issues)} />}
+          {row.report && <Report report={row.report} coverage={coverageLine(row.issues)} calcs={suggestCalculators([row.input.facts, row.input.objectives, ...row.issues.flatMap((i) => [i.title, i.question])], row.input.taxYear)} />}
 
           <section className="stack" style={{ gap: 10 }}>
             <h2 style={{ margin: 0, fontSize: 18 }}>Research behind this report</h2>

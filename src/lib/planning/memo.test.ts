@@ -101,3 +101,12 @@ describe("long documents", () => {
     expect(doc.getPageCount()).toBeGreaterThan(4);
   });
 });
+
+describe("memo calculators", () => {
+  it("lists calculators that fit the scenario, linked to the app", () => {
+    const blocks = buildPlanningMemo("T", { ...input, facts: "A company paying dividends and a salary to its director." }, report, issues, new Map(), meta);
+    const text = JSON.stringify(blocks);
+    expect(text).toContain("Capto calculators that fit these issues");
+    expect(text).toContain("https://x.test/calculators?calc=salary-dividend");
+  });
+});
