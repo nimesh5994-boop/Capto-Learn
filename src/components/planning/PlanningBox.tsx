@@ -11,7 +11,7 @@ const YEARS = ["2026/27", "2025/26", "2027/28"];
 
 export function PlanningBox({ remaining, initial }: { remaining: number | null; initial?: ScenarioInput }) {
   const router = useRouter();
-  const [title, setTitle] = useState(initial ? `${initial.title} (revised)` : "");
+  const [title, setTitle] = useState(initial ? `${initial.title.replace(/( \(revised\))+$/, "")} (revised)` : "");
   const [reference, setReference] = useState(initial?.reference ?? "");
   const [taxYear, setTaxYear] = useState(initial?.taxYear || YEARS[0]);
   const [facts, setFacts] = useState(initial?.facts ?? "");

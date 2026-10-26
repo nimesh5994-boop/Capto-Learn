@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { desc, eq, and } from "drizzle-orm";
-import { ArrowRight, BellRing, Bookmark, BookOpenCheck, CalendarClock, ChevronRight, Compass, GraduationCap, MessageSquareQuote, PlayCircle, Repeat } from "lucide-react";
+import { ArrowRight, BellRing, Bookmark, BookOpenCheck, CalendarClock, ChevronRight, Compass, GraduationCap, MessageSquareQuote, PlayCircle, Repeat, Route } from "lucide-react";
 import { requireUser } from "@/lib/auth/dal";
 import { getDb } from "@/lib/db/client";
 import { researchQueries } from "@/lib/db/schema";
@@ -136,6 +136,11 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
           {canAsk && (
             <Link href="/ask" className="btn">
               <MessageSquareQuote size={16} /> Ask Capto
+            </Link>
+          )}
+          {canAsk && (
+            <Link href="/planning" className="btn">
+              <Route size={16} /> Tax planning
             </Link>
           )}
           {canLearn && (
