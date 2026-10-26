@@ -108,7 +108,7 @@ export function PlanningBox({ remaining, initial }: { remaining: number | null; 
         </label>
         <div className={styles.askFoot}>
           <span className="small faint">
-            Researches up to 5 tax issues, each counted as an Ask Capto question
+            Researches up to 6 tax issues, each counted as an Ask Capto question
             {remaining !== null ? ` (${remaining} left this month)` : ""}. Takes 2–4 minutes.
           </span>
           <button className="btn btn-primary" disabled={!ready}>

@@ -8,7 +8,7 @@ import { MODELS } from "@/lib/research/pricing";
 
 export const SCENARIO_CEILING_PENCE = 40;
 export const SCENARIO_CEILING_MICROS = Math.round((SCENARIO_CEILING_PENCE / 100) * USD_PER_GBP * 1_000_000);
-export const MAX_ISSUES = 5;
+export const MAX_ISSUES = 6;
 /** Most one researched issue can cost: the Ask Capto per-question ceiling. */
 export const ISSUE_CEILING_MICROS = CEILING_MICROS;
 

@@ -35,7 +35,7 @@ const DecomposeSchema = z.object({
           ),
       })
     )
-    .describe("2–5 distinct issues that must be settled to choose between the sensible ways of meeting the objectives. Cover anti-avoidance for the preferred routes as its own issue when relevant."),
+    .describe("2–6 distinct issues that must be settled to choose between the sensible ways of meeting the objectives. Cover anti-avoidance for the preferred routes as its own issue when relevant."),
   missing_facts: z.array(z.string()).describe("Facts that would change the analysis but were not given."),
 });
 
@@ -44,7 +44,7 @@ Break the situation into the separate tax questions that must be answered to cho
 Each question must be answerable from HMRC manuals, GOV.UK guidance or legislation and must stand alone. Do not answer anything yourself and do not recommend anything.
 Ask what the RULES are (conditions, reliefs, rates, anti-avoidance, time limits) for ONE tax or relief at a time. Never ask for a calculation, a costing or a comparison of several routes in one question: the researcher cannot calculate, and a multi-part question produces a thin answer. Put each route or tax in its own question instead.
 All UK taxes are in scope, including inheritance tax, trusts, lifetime gifting, capital gains, stamp taxes, employee share schemes and R&D relief.
-Prefer fewer, sharper questions over many overlapping ones. Never include client names. If the situation is not a UK tax, accounting, payroll, pensions or company-law matter, mark it out of scope.`;
+Prefer fewer, sharper questions over many overlapping ones, but do not leave a major route or consequence unresearched: give each realistic route its own question, and when the facts mention moving or living abroad, emigration, non-UK assets or non-UK residents, make residence, domicile and the exit rules (including temporary non-residence) a question of their own. Never include client names. If the situation is not a UK tax, accounting, payroll, pensions or company-law matter, mark it out of scope.`;
 
 const ReportSchema = z.object({
   executive_summary: z.string().describe("3–5 sentences: the situation, the realistic options, which looks best and the main thing that could change that. Plain English."),

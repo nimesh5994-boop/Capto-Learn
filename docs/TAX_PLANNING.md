@@ -5,7 +5,7 @@ Research → Tax planning (`/planning`). A research aid for qualified staff, not
 ## What it does
 
 1. **Intake.** Title, tax year, the client's situation, objectives, constraints, optional client/matter reference. No client names: the text goes to an AI service.
-2. **Break-down.** A cheap model (Haiku) splits the situation into up to five separate tax questions, each about the *rules* for one tax or relief (never a calculation or a multi-route comparison).
+2. **Break-down.** A cheap model (Haiku) splits the situation into up to six separate tax questions, each about the *rules* for one tax or relief (never a calculation or a multi-route comparison).
 3. **Research.** Each question runs as an Ask Capto *expert* answer (HMRC manuals, GOV.UK, professional bodies; every quote checked word for word). Each answer is stored as an ordinary research answer, so it is in the research register and can be reviewed.
 4. **Write-up.** Sonnet writes the options, recommendation, anti-avoidance points, assumptions, matters to confirm and next steps from those findings **only** (it is given no sources of its own).
 5. **Checks** (`src/lib/planning/report.ts`): issue references must exist; confidence can't exceed the weakest issue; any £ amount or percentage not found in the client situation or findings is flagged under "not settled"; a coverage line states issues answered and points quote-verified.
@@ -15,7 +15,7 @@ The report **does not calculate tax**. It points to the calculators.
 
 ## Cost
 
-Capped at 40p per scenario (`budget.ts`): each issue is at most the 5p Ask Capto ceiling, plus the break-down and the write-up. Typical runs cost 16–28p and take 1–2 minutes. Each issue counts as one Ask Capto question against the firm's monthly allowance (up to five per scenario).
+Capped at 40p per scenario (`budget.ts`): each issue is at most the 5p Ask Capto ceiling, plus the break-down and the write-up. Typical runs cost 16–28p and take 1–2 minutes. Each issue counts as one Ask Capto question against the firm's monthly allowance (up to six per scenario).
 
 ## Testing
 
