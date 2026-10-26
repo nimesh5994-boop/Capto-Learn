@@ -37,7 +37,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   if (ctx.platformCan("platform.firms.view")) platform.push("platform.firms");
   if (ctx.platformCan("platform.firms.invite")) platform.push("platform.invitations");
   if (ctx.platformCan("platform.firms.view")) platform.push("platform.emails");
-  if (ctx.platformCan("platform.content.review")) platform.push("platform.knowledge", "platform.benchmark");
+  if (ctx.platformCan("platform.content.review")) platform.push("platform.knowledge", "platform.benchmark", "platform.planningQa");
   if (ctx.platformCan("platform.team.manage")) platform.push("platform.team", "platform.roles");
 
   // "Review centre" is a platform item, gated on the content-review permission.
@@ -52,6 +52,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   const palette: PaletteItem[] = [
     ...categories.flatMap((c) => c.keys.map((k) => ({ href: NAV_ITEMS[k].href, label: NAV_ITEMS[k].label, group: "Pages" as const, hint: categoryHint(c.id, c.label), key: SHORTCUT[k] }))),
     { href: "/account", label: "My account", group: "Pages" as const },
+    ...(canLearn ? [{ href: "/cpd", label: "CPD record", group: "Pages" as const, hint: "Log and download your CPD" }] : []),
     ...(canLearn
       ? [
           ...tracks().map((t) => ({ href: `/learn/${t.slug}`, label: t.title, group: "Courses" as const, hint: t.summary })),

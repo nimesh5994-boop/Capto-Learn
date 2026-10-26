@@ -106,6 +106,9 @@ export interface PlanningResult {
   report: PlanningReport | null;
   error: string | null;
   usage: { input: number; output: number; micros: number };
+  /** Set on completed runs, for scoring: figures not found in the facts or findings, and the researched text. */
+  ungrounded?: string[];
+  evidence?: string[];
 }
 
 export function situationText(input: ScenarioInput): string {
@@ -261,7 +264,8 @@ export async function runPlanning(input: ScenarioInput, opts: { organizationId: 
       report.notCovered.push(`Figures in this report that appear in neither the client situation nor the research findings: ${ungrounded.join(", ")}. They may be sums or other values worked out from the facts given (for example a total of the assets listed), or taken from elsewhere: check each against the facts and an official source before using it.`);
       if (report.confidence === "high") report.confidence = "medium";
     }
-    return { status: "completed", issues, report, error: null, usage: meter.usage };
+    const evidence = results.flatMap((r) => [r.issue.shortAnswer ?? "", ...r.points.flatMap((p) => [p.text, ...p.citations.map((c) => c.quote)]), ...r.caveats]);
+    return { status: "completed", issues, report, error: null, usage: meter.usage, ungrounded, evidence };
   } catch (err) {
     console.error("[planning]", err);
     const status = (err as { status?: number })?.status;

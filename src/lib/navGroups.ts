@@ -14,7 +14,7 @@ export const NAV_CATEGORIES: NavCategory[] = [
   { id: "tools", label: "Tools", icon: Wrench, keys: ["rates", "calculators"] },
   { id: "team", label: "Team", icon: UsersRound, keys: ["team", "interviews"] },
   { id: "admin", label: "Admin", icon: Settings, keys: ["admin.users", "admin.roles", "admin.practice", "admin.branding", "admin.billing", "admin.activity", "admin.emails"] },
-  { id: "platform", label: "Platform", icon: ShieldCheck, keys: ["platform.firms", "platform.invitations", "platform.emails", "platform.content", "platform.knowledge", "platform.benchmark", "platform.team", "platform.roles"] },
+  { id: "platform", label: "Platform", icon: ShieldCheck, keys: ["platform.firms", "platform.invitations", "platform.emails", "platform.content", "platform.knowledge", "platform.benchmark", "platform.planningQa", "platform.team", "platform.roles"] },
 ];
 
 /** The categories that have at least one visible item, in fixed order, each holding only its visible keys. */

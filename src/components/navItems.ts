@@ -24,6 +24,7 @@ import {
   TrendingUp,
   Search,
   Database,
+  FlaskConical,
   Scale,
   Palette,
   ShieldCheck,
@@ -65,6 +66,7 @@ export type NavKey =
   | "platform.content"
   | "platform.knowledge"
   | "platform.benchmark"
+  | "platform.planningQa"
   | "platform.team"
   | "platform.roles";
 
@@ -100,6 +102,7 @@ export const NAV_ITEMS: Record<NavKey, { href: string; label: string; descriptio
   "platform.content": { href: "/reviewer", label: "Review centre", icon: BookOpenCheck, description: "Review and approve lesson and course content" },
   "platform.knowledge": { href: "/platform/knowledge", label: "Knowledge base", icon: Database, description: "Source documents behind Ask Capto answers" },
   "platform.benchmark": { href: "/platform/benchmark", label: "Accuracy benchmark", icon: Target, description: "Measure the accuracy of Ask Capto answers" },
+  "platform.planningQa": { href: "/platform/planning-qa", label: "Planning QA", icon: FlaskConical, description: "Run and score the tax planning test scenarios on this site" },
   "platform.team": { href: "/platform/team", label: "Platform team", icon: ShieldCheck, description: "Capto staff with platform access" },
   "platform.roles": { href: "/platform/roles", label: "Platform roles", icon: UserCog, description: "Permissions for Capto platform staff" },
 };

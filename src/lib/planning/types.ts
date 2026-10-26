@@ -10,6 +10,8 @@ export interface ScenarioInput {
   facts: string;
   objectives: string;
   constraints: string;
+  /** Set only on the platform's QA regression runs: the automatic score (see score.ts). */
+  qa?: { starterId: string; pct: number; passed: number; total: number; failed: string[]; at: string };
 }
 
 export type IssueConfidence = "high" | "medium" | "low";
