@@ -68,6 +68,19 @@ export default async function AppLayout({ children }: { children: React.ReactNod
     if (ref) continueLesson = { href: `/learn/${ref.id}`, title: ref.lesson.title, course: ref.track.title };
   }
 
+  // Site map in the footer: the same pages this person can already reach from the top navigation, plus the CPD record and
+  // the editorial standards page.
+  const footerCols = categories
+    .filter((c) => c.id === "learn" || c.id === "research" || c.id === "tools")
+    .map((c) => ({
+      label: c.label,
+      links: [
+        ...c.keys.map((k) => ({ href: NAV_ITEMS[k].href, label: NAV_ITEMS[k].label })),
+        ...(c.id === "learn" && canLearn ? [{ href: "/cpd", label: "CPD record" }] : []),
+      ],
+    }));
+  footerCols.push({ label: "About", links: [{ href: "/editorial", label: "Editorial standards and accuracy" }, { href: "/account", label: "My account" }] });
+
   const days = trialDaysLeft(org.trialEndsAt);
   const billingLink = can("billing.manage") ? (
     <Link href="/admin/billing">Choose a plan</Link>
@@ -98,6 +111,25 @@ export default async function AppLayout({ children }: { children: React.ReactNod
         )}
         {children}
       </main>
+      <footer className={styles.footer} aria-label="Site map">
+        <div className={styles.footInner}>
+          {footerCols.map((c) => (
+            <div key={c.label} className={styles.footCol}>
+              <h4>{c.label}</h4>
+              <ul>
+                {c.links.map((l) => (
+                  <li key={l.href}>
+                    <Link href={l.href}>{l.label}</Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+        <p className={styles.footNote}>
+          Capto Learn · Capto Cloud Ltd, part of the Affinity Associates Group. Answers come from official HMRC, GOV.UK and Companies House sources and are a research aid for qualified staff, not advice to the public.
+        </p>
+      </footer>
       </div>
     </div>
   );

@@ -5,3 +5,12 @@
   .body { padding-left: 0; }
   .main { padding: 18px 16px 48px; }
 }
+
+.footer { border-top: 1px solid var(--border); margin-top: 8px; padding: 28px 36px 36px; }
+.footInner { max-width: 1360px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 24px 32px; }
+.footCol h4 { margin: 0 0 8px; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); }
+.footCol ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 5px; font-size: 13.5px; }
+.footCol a { color: var(--text); text-decoration: none; }
+.footCol a:hover { text-decoration: underline; }
+.footNote { max-width: 1360px; margin: 22px auto 0; font-size: 12.5px; color: var(--text-faint); }
+@media (max-width: 900px) { .footer { padding: 22px 16px 32px; } }
