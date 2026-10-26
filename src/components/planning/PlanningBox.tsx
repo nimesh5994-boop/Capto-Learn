@@ -4,17 +4,9 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { CheckCircle2, Loader2, Route } from "lucide-react";
 import styles from "@/components/ask/ask.module.css";
+import { STARTERS } from "@/lib/planning/starters";
 
 const YEARS = ["2026/27", "2025/26", "2027/28"];
-
-const EXAMPLE = {
-  title: "Director-shareholder exit and extraction",
-  taxYear: "2026/27",
-  facts:
-    "Sole director and 100% shareholder of a trading company (not a close investment-holding company), age 58. Company has £420,000 of retained profits in the bank, mostly not needed in the business. Director takes a salary of £12,570 and dividends of £40,000 a year. Spouse is a non-working basic-rate taxpayer with no other income.",
-  objectives: "Extract the surplus cash in the most tax-efficient way over the next three years, and keep open the option of selling the company in about five years.",
-  constraints: "Does not want to pay higher-rate tax on the whole amount in one year. No appetite for aggressive or artificial arrangements.",
-};
 
 export function PlanningBox({ remaining }: { remaining: number | null }) {
   const router = useRouter();
@@ -76,6 +68,9 @@ export function PlanningBox({ remaining }: { remaining: number | null }) {
           if (ready) void run();
         }}
       >
+        <div className="alert alert-info small">
+          <strong>Don’t type client names or other identifying details.</strong> What you write is sent to an AI service to research the tax issues. Use a reference (below) to tie the scenario to the client.
+        </div>
         <div className="row" style={{ gap: 10, flexWrap: "wrap" }}>
           <label className="stack" style={{ gap: 4, flex: "1 1 260px" }}>
             <span className="small strong">Scenario title</span>
@@ -140,20 +135,26 @@ export function PlanningBox({ remaining }: { remaining: number | null }) {
         </div>
       )}
       {!busy && !facts && (
-        <div className={styles.examples}>
-          <button
-            type="button"
-            className={styles.example}
-            onClick={() => {
-              setTitle(EXAMPLE.title);
-              setTaxYear(EXAMPLE.taxYear);
-              setFacts(EXAMPLE.facts);
-              setObjectives(EXAMPLE.objectives);
-              setConstraints(EXAMPLE.constraints);
-            }}
-          >
-            Try an example: {EXAMPLE.title}
-          </button>
+        <div className="stack" style={{ gap: 6 }}>
+          <span className="small muted">Or start from an example (invented facts), then change them to fit your client:</span>
+          <div className={styles.examples}>
+            {STARTERS.map((st) => (
+              <button
+                key={st.id}
+                type="button"
+                className={styles.example}
+                onClick={() => {
+                  setTitle(st.input.title);
+                  setTaxYear(st.input.taxYear);
+                  setFacts(st.input.facts);
+                  setObjectives(st.input.objectives);
+                  setConstraints(st.input.constraints);
+                }}
+              >
+                {st.label}
+              </button>
+            ))}
+          </div>
         </div>
       )}
     </div>
