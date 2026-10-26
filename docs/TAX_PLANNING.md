@@ -30,6 +30,8 @@ Capped at 40p per scenario (`budget.ts`): each issue is at most the 5p Ask Capto
 
   Writes `qa<N>-metrics.json` (with the score and what failed), `qa<N>.json` (full result) and `qa<N>-memo.pdf` to the folder.
 
+* **On the live site:** Platform → Planning QA (internal workspace, content-review permission) runs any starter scenario with the real knowledge base and shows its score, what failed and the cost. This is the number that matters; the local run is a development aid.
+
 **Limits of the automatic score.** It checks that the report is complete, sourced and grounded. It cannot tell whether the advice is *right*: that needs a qualified reviewer reading the memos. The local database has no copy of the HMRC knowledge base (only the live site does), so local runs use live GOV.UK search and understate real quality; run at least one scenario on the live site and compare.
 
 ## Known limits / ideas
