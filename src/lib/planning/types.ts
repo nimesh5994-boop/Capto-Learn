@@ -67,4 +67,6 @@ export interface PlanningReport {
   confidence: IssueConfidence;
   model: string;
   generatedAt: string;
+  /** Verified rates (checked against official pages on `checkedOn`) that the writer was given, for traceability. */
+  ratesPack?: { taxYear: string; checkedOn: string; items: { section: string; label: string; value: string; note?: string; source: string; url: string }[] } | null;
 }

@@ -68,7 +68,7 @@ export function findingsText(
 
 /** Every £ amount and percentage in a piece of text, as written. */
 export function extractFigures(text: string): string[] {
-  return [...text.matchAll(/£\s?\d[\d,]*(?:\.\d+)?(?:\s?(?:k|m|bn|million|billion)\b)?|\d+(?:\.\d+)?\s?(?:%|per\s?cent)/gi)].map((m) => m[0]);
+  return [...text.matchAll(/£\s?\d(?:[\d,]*\d)?(?:\.\d+)?(?:\s?(?:k|m|bn|million|billion)\b)?|\d+(?:\.\d+)?\s?(?:%|per\s?cent)/gi)].map((m) => m[0]);
 }
 
 /** Figures compare equal regardless of spacing, commas, case and "per cent" vs "%". */

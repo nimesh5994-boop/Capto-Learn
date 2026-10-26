@@ -110,3 +110,12 @@ describe("figure grounding: normalisation", () => {
     expect(ungroundedFigures(rep("A 6% charge"), ["a 16% charge"])).toEqual(["6%"]);
   });
 });
+
+describe("figure extraction in lists", () => {
+  it("does not swallow the comma after a figure in a list", () => {
+    expect(extractFigures("assets of £900,000, £450,000, and £600,000, plus £250,000.")).toEqual(["£900,000", "£450,000", "£600,000", "£250,000"]);
+  });
+  it("therefore grounds list figures that are in the situation", () => {
+    expect(ungroundedFigures(rep("Machinery £450,000 and investments £600,000."), ["machinery worth £450,000, investments of £600,000, and cash"])).toEqual([]);
+  });
+});

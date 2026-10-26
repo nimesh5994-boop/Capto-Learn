@@ -110,3 +110,14 @@ describe("memo calculators", () => {
     expect(text).toContain("https://x.test/calculators?calc=salary-dividend");
   });
 });
+
+describe("memo verified rates appendix", () => {
+  it("lists the verified rates supplied to the writer, with their sources, and renumbers the notice", () => {
+    const withPack = { ...report, ratesPack: { taxYear: "2026/27", checkedOn: "2026-10-20", items: [{ section: "Capital Gains Tax", label: "BADR rate", value: "18%", source: "GOV.UK — CGT rates", url: "https://www.gov.uk/capital-gains-tax/rates" }] } };
+    const blocks = buildPlanningMemo("T", input, withPack, issues, new Map(), meta);
+    const heads = blocks.filter((b) => b.kind === "h2").map((b) => (b as { text: string }).text);
+    expect(heads).toContain("Appendix B: Verified rates supplied to the report");
+    expect(heads.at(-1)).toBe("Appendix C: Important notice");
+    expect(JSON.stringify(blocks)).toContain("BADR rate (Capital Gains Tax)");
+  });
+});

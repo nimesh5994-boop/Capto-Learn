@@ -8,6 +8,7 @@ import { runResearch, type ResearchEvent } from "@/lib/research/engine";
 import { MODELS } from "@/lib/research/pricing";
 import type { AnswerPoint } from "@/lib/research/types";
 import { affordableIssues, DECOMPOSE_RESERVE_MICROS, MAX_ISSUES, SCENARIO_CEILING_MICROS, synthesisLimits } from "./budget";
+import { buildRatesPack, ratesPackText } from "./ratesPack";
 import { finaliseReport, findingsText, ungroundedFigures } from "./report";
 import type { PlanningIssue, PlanningReport, ScenarioInput } from "./types";
 
@@ -86,6 +87,7 @@ You are given the client's situation and a set of researched issues (ids I1, I2â
 
 Rules:
 - Use ONLY the findings supplied. Do not add rates, thresholds, dates, conditions or rules from memory, even if you are sure of them. If the findings don't settle something, put it in not_covered rather than guessing.
+- <verified_rates> lists rates, thresholds and allowances Capto has checked against official pages on the date shown. You may state them (describe them as "verified rates, checked <date>") and should prefer them to figures found only in lessons. They give figures only: the conditions of a relief, and whether it applies, still have to come from the findings.
 - Points marked [UNVERIFIED] have no confirmed source quote: do not rest a recommendation on them; list them in not_covered.
 - Cite the issues behind every option, recommendation and anti-avoidance point using their ids. Never invent an id.
 - Do not calculate tax. If a figure is needed, say what to calculate and from what, in next_steps. Only repeat figures that appear in the client situation or the findings.
@@ -210,9 +212,12 @@ export async function runPlanning(input: ScenarioInput, opts: { organizationId: 
     if (!limits) return { status: "partial", issues, report: null, error: "The research ran but there was no budget left to write the report. Each issue's answer is saved in your research register.", usage: meter.usage };
 
     opts.onStage("Writing the options, recommendation and risks from the verified findingsâ€¦");
+    // Checked figures for the scenario's tax year and topics; they share the write-up's input budget with the findings.
+    const pack = buildRatesPack(input.taxYear, [situation, ...issues.flatMap((i) => [i.title, i.question])]);
+    const packText = pack ? ratesPackText(pack) : "";
     const findings = findingsText(
       results.map((r) => ({ issue: r.issue, points: r.points.map((p) => ({ heading: p.heading, text: p.text, verified: p.verified })), caveats: r.caveats })),
-      limits.inputChars
+      Math.max(8_000, limits.inputChars - packText.length)
     );
     const res = await anthropic().beta.messages.create({
       model: MODELS.sonnet,
@@ -220,7 +225,7 @@ export async function runPlanning(input: ScenarioInput, opts: { organizationId: 
       ...FALLBACK,
       output_config: { effort: "low", format: betaZodOutputFormat(ReportSchema) },
       system: [{ type: "text", text: REPORT_SYSTEM, cache_control: { type: "ephemeral" } }],
-      messages: [{ role: "user", content: `Today is ${new Date().toISOString().slice(0, 10)}.\n\n<situation>\n${situation}\n</situation>\n\n<missing_facts>\n${plan.missing_facts.map((m) => `- ${m}`).join("\n") || "none noted"}\n</missing_facts>\n\n<findings>\n${findings}\n</findings>` }],
+      messages: [{ role: "user", content: `Today is ${new Date().toISOString().slice(0, 10)}.\n\n<situation>\n${situation}\n</situation>\n\n<missing_facts>\n${plan.missing_facts.map((m) => `- ${m}`).join("\n") || "none noted"}\n</missing_facts>\n\n<verified_rates tax_year="${pack?.taxYear ?? ""}" checked_on="${pack?.checkedOn ?? ""}">\n${packText || "none supplied for this scenario"}\n</verified_rates>\n\n<findings>\n${findings}\n</findings>` }],
     });
     meter.add(res.model, res);
     const text = res.stop_reason === "refusal" || res.stop_reason === "max_tokens" ? "" : res.content.map((b) => (b.type === "text" ? b.text : "")).join("");
@@ -250,7 +255,8 @@ export async function runPlanning(input: ScenarioInput, opts: { organizationId: 
       res.model
     );
     // The writer is told to use only figures from the situation and findings; this checks that it did.
-    const ungrounded = ungroundedFigures(report, [situation, ...results.flatMap((r) => [r.issue.shortAnswer ?? "", ...r.points.flatMap((p) => [p.text, ...p.citations.map((c) => c.quote)]), ...r.caveats])]);
+    report.ratesPack = pack;
+    const ungrounded = ungroundedFigures(report, [situation, packText, ...results.flatMap((r) => [r.issue.shortAnswer ?? "", ...r.points.flatMap((p) => [p.text, ...p.citations.map((c) => c.quote)]), ...r.caveats])]);
     if (ungrounded.length) {
       report.notCovered.push(`Figures in this report that appear in neither the client situation nor the research findings: ${ungrounded.join(", ")}. They may be sums or other values worked out from the facts given (for example a total of the assets listed), or taken from elsewhere: check each against the facts and an official source before using it.`);
       if (report.confidence === "high") report.confidence = "medium";

@@ -135,8 +135,21 @@ export function buildPlanningMemo(title: string, input: ScenarioInput, report: P
     if (a.professional) out.push({ kind: "p", tone: "muted", runs: [{ text: `Professional bodies (not verified by Capto): ${a.professional.summary}` }] });
   }
 
+  if (report?.ratesPack?.items.length) {
+    const pk = report.ratesPack;
+    out.push(
+      { kind: "h2", text: "Appendix B: Verified rates supplied to the report" },
+      para(`Capto checked each figure below against the cited official page on ${fmtDate(pk.checkedOn)}, for tax year ${pk.taxYear}. They were given to the report writer; not every figure was necessarily used. Check the source if a rate may have changed since.`, "muted"),
+      {
+        kind: "table",
+        header: [[{ text: "Figure" }], [{ text: "Value" }], [{ text: "Source" }]],
+        rows: pk.items.map((i) => [[{ text: `${i.label} (${i.section})` }], [{ text: `${i.value}${i.note ? ` — ${i.note}` : ""}` }], [{ text: i.source, link: i.url }]]),
+      }
+    );
+  }
+
   out.push(
-    { kind: "h2", text: "Appendix B: Important notice" },
+    { kind: "h2", text: `Appendix ${report?.ratesPack?.items.length ? "C" : "B"}: Important notice` },
     para(
       `This memorandum was prepared by ${meta.firm} using Ask Capto, a research tool that answers from official HMRC and GOV.UK guidance and checks each quotation against its source. The options, recommendation and risks were drafted from those findings only. It is a research aid and is not advice. A suitably qualified person must review it, applying professional judgement and the firm's quality management procedures, before it is relied on or its conclusions are given to a client. Guidance and law change, so check the sources have not been updated since the date of research.`,
       "muted"
