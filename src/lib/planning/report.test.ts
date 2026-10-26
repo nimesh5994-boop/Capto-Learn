@@ -91,9 +91,9 @@ import { coverageLine } from "./types";
 describe("coverage line", () => {
   it("counts answered issues and verified points", () => {
     const issues = [issue("I1", { verified: 5, checked: 6 }), issue("I2", { verified: 4, checked: 4 }), issue("I3", { status: "failed", confidence: null })];
-    expect(coverageLine(issues)).toBe("2 of 3 issues answered; 9 of 10 points supported by quotations verified word for word.");
+    expect(coverageLine(issues)).toBe("2 of 3 issues answered (2 high confidence); 9 of 10 points supported by quotations verified word for word.");
   });
   it("leaves out the points clause for older scenarios without counts", () => {
-    expect(coverageLine([issue("I1")])).toBe("1 of 1 issues answered.");
+    expect(coverageLine([issue("I1")])).toBe("1 of 1 issues answered (1 high confidence).");
   });
 });

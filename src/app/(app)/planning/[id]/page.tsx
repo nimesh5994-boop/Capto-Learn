@@ -190,6 +190,9 @@ export default async function PlanningScenarioPage({ params }: { params: Promise
           <span className="faint">
             {dateTime(row.createdAt)} · {row.input.taxYear || "no tax year"}
           </span>
+          <Link href={`/planning?from=${row.id}`} className="btn btn-sm" title="Opens the form with these facts so you can change something and run it again. Runs fresh research.">
+            Edit and re-run
+          </Link>
           {row.issues.length > 0 && <PlanningExport id={row.id} initialReference={row.input.reference ?? ""} />}
         </span>
       </div>

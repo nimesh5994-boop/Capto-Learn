@@ -35,7 +35,12 @@ export function coverageLine(issues: PlanningIssue[]): string {
   const answered = issues.filter((i) => i.status === "answered").length;
   const checked = issues.reduce((n, i) => n + (i.checked ?? 0), 0);
   const verified = issues.reduce((n, i) => n + (i.verified ?? 0), 0);
-  return `${answered} of ${issues.length} issues answered${checked ? `; ${verified} of ${checked} points supported by quotations verified word for word` : ""}.`;
+  const mix = (["high", "medium", "low"] as const)
+    .map((c) => [c, issues.filter((i) => i.status === "answered" && i.confidence === c).length] as const)
+    .filter(([, n]) => n > 0)
+    .map(([c, n]) => `${n} ${c}`)
+    .join(", ");
+  return `${answered} of ${issues.length} issues answered${mix ? ` (${mix} confidence)` : ""}${checked ? `; ${verified} of ${checked} points supported by quotations verified word for word` : ""}.`;
 }
 
 export interface PlanningOption {

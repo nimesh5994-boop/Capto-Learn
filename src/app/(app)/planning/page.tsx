@@ -7,12 +7,15 @@ import { planningScenarios } from "@/lib/db/schema";
 import { orgHasFeature, orgLimits } from "@/lib/plans";
 import { usage } from "@/lib/entitlements";
 import { dateTime } from "@/lib/format";
+import { canViewAnswer } from "@/lib/research/register";
+import type { ScenarioInput } from "@/lib/planning/types";
 import { PlanningBox } from "@/components/planning/PlanningBox";
 import styles from "@/components/ask/ask.module.css";
 
 export const metadata = { title: "Tax planning" };
 
-export default async function PlanningPage() {
+export default async function PlanningPage({ searchParams }: { searchParams: Promise<{ from?: string }> }) {
+  const { from } = await searchParams;
   const ctx = await requirePermission("research.use");
   if (!orgHasFeature(ctx.org, "research")) redirect("/?denied=1");
   const db = await getDb();
@@ -25,6 +28,12 @@ export default async function PlanningPage() {
       .limit(25),
     usage(db, ctx.org),
   ]);
+  // "Edit and re-run": start the form from an earlier scenario the person is allowed to see.
+  let initial: ScenarioInput | undefined;
+  if (from && /^[0-9a-f-]{36}$/i.test(from)) {
+    const [prev] = await db.select().from(planningScenarios).where(and(eq(planningScenarios.id, from), eq(planningScenarios.organizationId, ctx.org.id)));
+    if (prev && canViewAnswer({ organizationId: prev.organizationId, userId: prev.userId, shared: false, reviewStatus: prev.reviewStatus }, { orgId: ctx.org.id, userId: ctx.user.id, canRegister: ctx.can("research.register") })) initial = prev.input;
+  }
   const { maxResearchPerMonth } = orgLimits(ctx.org);
   const remaining = maxResearchPerMonth === null ? null : Math.max(0, maxResearchPerMonth - use.researchThisMonth);
 
@@ -40,7 +49,7 @@ export default async function PlanningPage() {
         </div>
       </div>
       <div className={styles.layout}>
-        <PlanningBox remaining={remaining} />
+        <PlanningBox remaining={remaining} initial={initial} />
         <aside className="stack" style={{ gap: 14 }}>
           <div className="card card-pad">
             <h3 style={{ marginTop: 0 }}>Your scenarios</h3>

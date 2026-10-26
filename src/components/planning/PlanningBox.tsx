@@ -5,17 +5,18 @@ import { useRouter } from "next/navigation";
 import { CheckCircle2, Loader2, Route } from "lucide-react";
 import styles from "@/components/ask/ask.module.css";
 import { STARTERS } from "@/lib/planning/starters";
+import type { ScenarioInput } from "@/lib/planning/types";
 
 const YEARS = ["2026/27", "2025/26", "2027/28"];
 
-export function PlanningBox({ remaining }: { remaining: number | null }) {
+export function PlanningBox({ remaining, initial }: { remaining: number | null; initial?: ScenarioInput }) {
   const router = useRouter();
-  const [title, setTitle] = useState("");
-  const [reference, setReference] = useState("");
-  const [taxYear, setTaxYear] = useState(YEARS[0]);
-  const [facts, setFacts] = useState("");
-  const [objectives, setObjectives] = useState("");
-  const [constraints, setConstraints] = useState("");
+  const [title, setTitle] = useState(initial ? `${initial.title} (revised)` : "");
+  const [reference, setReference] = useState(initial?.reference ?? "");
+  const [taxYear, setTaxYear] = useState(initial?.taxYear || YEARS[0]);
+  const [facts, setFacts] = useState(initial?.facts ?? "");
+  const [objectives, setObjectives] = useState(initial?.objectives ?? "");
+  const [constraints, setConstraints] = useState(initial?.constraints ?? "");
   const [stages, setStages] = useState<string[]>([]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
