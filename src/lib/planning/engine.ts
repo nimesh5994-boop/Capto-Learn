@@ -239,7 +239,7 @@ export async function runPlanning(input: ScenarioInput, opts: { organizationId: 
         return null;
       }
     })();
-    if (!parsed?.success) return { status: "partial", issues, report: null, error: "The research ran but the report couldn't be written. Each issue's answer is saved in your research register — try again to re-run the report.", usage: meter.usage };
+    if (!parsed?.success) return { status: "partial", issues, report: null, error: "The research ran but the report couldn't be written. Each issue's answer is saved in your research register. Use “Edit and re-run” on this scenario to try again.", usage: meter.usage };
 
     const d = parsed.data;
     const report = finaliseReport(
