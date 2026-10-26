@@ -50,3 +50,21 @@ export async function reviewScenario(id: string, status: ResearchReviewStatus | 
   revalidatePath("/ask/register");
   return { ok: true };
 }
+
+/**
+ * Deletes a tax planning scenario (its facts, report and review). The researched answers stay in the research register as
+ * ordinary answers, and documents already issued stay on the register's list. Only the person who prepared it, or a
+ * reviewer with the research register permission, may delete it.
+ */
+export async function deleteScenario(id: string): Promise<{ ok: true } | { ok: false; error: string }> {
+  const ctx = await authorize("research.use", { write: true });
+  if (!/^[0-9a-f-]{36}$/i.test(id)) return { ok: false, error: "Scenario not found." };
+  const db = await getDb();
+  const [row] = await db.select({ userId: planningScenarios.userId, title: planningScenarios.title }).from(planningScenarios).where(and(eq(planningScenarios.id, id), eq(planningScenarios.organizationId, ctx.org.id)));
+  if (!row || (row.userId !== ctx.user.id && !ctx.can("research.register"))) return { ok: false, error: "Scenario not found." };
+  await db.delete(planningScenarios).where(and(eq(planningScenarios.id, id), eq(planningScenarios.organizationId, ctx.org.id)));
+  await audit(actorOf(ctx), "planning.deleted", `Deleted the tax planning scenario "${row.title.slice(0, 120)}"`, { type: "planning_scenario", id });
+  revalidatePath("/planning");
+  revalidatePath("/ask/register");
+  return { ok: true };
+}

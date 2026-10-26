@@ -9,6 +9,7 @@ import { date, dateTime } from "@/lib/format";
 import { canViewAnswer } from "@/lib/research/register";
 import { suggestCalculators, type CalcSuggestion } from "@/lib/planning/calculators";
 import { ReviewPanel } from "@/components/ask/ReviewPanel";
+import { DeleteScenario } from "@/components/planning/DeleteScenario";
 import { PlanningExport } from "@/components/planning/PlanningExport";
 import { coverageLine, type IssueConfidence, type PlanningReport } from "@/lib/planning/types";
 import styles from "@/components/ask/ask.module.css";
@@ -281,6 +282,7 @@ export default async function PlanningScenarioPage({ params }: { params: Promise
               </>
             )}
           </div>
+          <DeleteScenario id={row.id} />
           <div className="card card-pad small faint">
             A draft for a qualified adviser to review, not advice to the client. It rests only on the guidance researched above, and the adviser remains responsible for the advice given. Figures need
             calculating separately — see the{" "}
