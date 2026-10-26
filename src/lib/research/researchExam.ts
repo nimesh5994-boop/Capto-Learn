@@ -128,7 +128,8 @@ export const RESEARCH_EXAM: ResearchCase[] = [
     id: "iht-apr-bpr-farm",
     area: "Inheritance tax",
     q: "A farmer owns owner-occupied farmland and runs the farm as a sole trade. What reliefs from inheritance tax could apply to the land and the business assets on death?",
-    must: [/agricultural property relief|APR/i, /business property relief|BPR/i, /50%|100%/],
+    // From 6 April 2026 the official names are Agricultural Relief and Business Relief (formerly APR and BPR).
+    must: [/agricultural (property )?relief|APR/i, /business (property )?relief|BPR/i, /50%|100%/],
     tier: "expert",
   },
 ];
