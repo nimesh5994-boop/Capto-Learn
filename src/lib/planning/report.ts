@@ -72,7 +72,15 @@ export function extractFigures(text: string): string[] {
 }
 
 /** Figures compare equal regardless of spacing, commas, case and "per cent" vs "%". */
-const normFigure = (s: string) => s.toLowerCase().replace(/\s?per\s?cent/g, "%").replace(/[\s,]/g, "");
+const normFigure = (s: string) =>
+  s
+    .toLowerCase()
+    .replace(/\s?per\s?cent/g, "%")
+    .replace(/(\d),(?=\d{3}\b)/g, "$1") // thousands separators only: "£12,570" -> "£12570", but "5,16%" stays two things
+    .replace(/£\s+/g, "£")
+    .replace(/(\d)\s+(%|k\b|m\b|bn\b)/g, "$1$2")
+    .replace(/(\d)\s*(million)\b/g, "$1m")
+    .replace(/(\d)\s*(billion)\b/g, "$1bn");
 
 /** All the text of a written report that a reader could take figures from. */
 export function reportText(r: PlanningReport): string {

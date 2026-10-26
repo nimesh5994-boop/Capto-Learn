@@ -97,3 +97,16 @@ describe("coverage line", () => {
     expect(coverageLine([issue("I1")])).toBe("1 of 1 issues answered (1 high confidence).");
   });
 });
+
+describe("figure grounding: normalisation", () => {
+  it("finds a figure in a comma-separated list of rates (the farm IHT case)", () => {
+    const research = "the rate of tax on the gift: 32% for 3 to 4 years, 24% for 4 to 5, 16% for 5 to 6, 8% for 6 to 7";
+    expect(ungroundedFigures(rep("Taper relief: 16% and 8%."), [research])).toEqual([]);
+  });
+  it("still treats thousands separators, spacing and per cent/million wording as the same figure", () => {
+    expect(ungroundedFigures(rep("Allowance £12,570 and 20% and £3.5m."), ["The allowance is £ 12570, the rate 20 per cent, and the price £3.5 million."])).toEqual([]);
+  });
+  it("does not accept a longer number that merely contains the figure", () => {
+    expect(ungroundedFigures(rep("A 6% charge"), ["a 16% charge"])).toEqual(["6%"]);
+  });
+});
