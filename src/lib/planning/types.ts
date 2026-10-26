@@ -25,6 +25,17 @@ export interface PlanningIssue {
   shortAnswer: string | null;
   confidence: IssueConfidence | null;
   error: string | null;
+  /** Points whose quotation was found word for word in the source, out of all points checked. Absent on older scenarios. */
+  verified?: number;
+  checked?: number;
+}
+
+/** "4 of 5 issues answered; 28 of 30 points quote-verified" — the plain-facts counterpart of the confidence label. */
+export function coverageLine(issues: PlanningIssue[]): string {
+  const answered = issues.filter((i) => i.status === "answered").length;
+  const checked = issues.reduce((n, i) => n + (i.checked ?? 0), 0);
+  const verified = issues.reduce((n, i) => n + (i.verified ?? 0), 0);
+  return `${answered} of ${issues.length} issues answered${checked ? `; ${verified} of ${checked} points supported by quotations verified word for word` : ""}.`;
 }
 
 export interface PlanningOption {

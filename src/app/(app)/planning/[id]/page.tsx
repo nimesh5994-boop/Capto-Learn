@@ -9,7 +9,7 @@ import { date, dateTime } from "@/lib/format";
 import { canViewAnswer } from "@/lib/research/register";
 import { ReviewPanel } from "@/components/ask/ReviewPanel";
 import { PlanningExport } from "@/components/planning/PlanningExport";
-import type { IssueConfidence, PlanningReport } from "@/lib/planning/types";
+import { coverageLine, type IssueConfidence, type PlanningReport } from "@/lib/planning/types";
 import styles from "@/components/ask/ask.module.css";
 
 export const metadata = { title: "Tax planning" };
@@ -46,7 +46,7 @@ function List({ items }: { items: string[] }) {
   );
 }
 
-function Report({ report }: { report: PlanningReport }) {
+function Report({ report, coverage }: { report: PlanningReport; coverage: string }) {
   const conf = CONFIDENCE[report.confidence];
   return (
     <div className="stack" style={{ gap: 16 }}>
@@ -56,6 +56,9 @@ function Report({ report }: { report: PlanningReport }) {
           <span className={`pill ${conf.cls}`}>{conf.label}</span>
         </div>
         {report.executiveSummary}
+        <div className="small muted" style={{ marginTop: 8 }}>
+          {coverage}
+        </div>
       </div>
 
       <section className="card card-pad stack" style={{ gap: 8 }}>
@@ -207,7 +210,7 @@ export default async function PlanningScenarioPage({ params }: { params: Promise
             </div>
           )}
           {row.error && <div className={`alert ${row.status === "failed" ? "alert-error" : "alert-warning"}`}>{row.error}</div>}
-          {row.report && <Report report={row.report} />}
+          {row.report && <Report report={row.report} coverage={coverageLine(row.issues)} />}
 
           <section className="stack" style={{ gap: 10 }}>
             <h2 style={{ margin: 0, fontSize: 18 }}>Research behind this report</h2>

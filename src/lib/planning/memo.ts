@@ -6,7 +6,7 @@
  */
 import type { Block } from "@/lib/research/report";
 import type { ResearchAnswer } from "@/lib/research/types";
-import type { PlanningIssue, PlanningReport, ScenarioInput } from "./types";
+import { coverageLine, type PlanningIssue, type PlanningReport, type ScenarioInput } from "./types";
 
 export interface MemoMeta {
   firm: string;
@@ -65,7 +65,7 @@ export function buildPlanningMemo(title: string, input: ScenarioInput, report: P
     out.push(section("Summary and recommendation"), para(report.executiveSummary));
     out.push({ kind: "p", runs: [{ text: `Recommendation${refs(report.recommendation.issueRefs)}: `, bold: true }, { text: report.recommendation.headline }] }, para(report.recommendation.reasoning));
     if (report.recommendation.conditions.length) out.push({ kind: "p", runs: [{ text: "This holds if:", bold: true }] }, ...bullets(report.recommendation.conditions));
-    out.push(para(`Confidence: ${CONFIDENCE[report.confidence]}`, "muted"));
+    out.push(para(`Confidence: ${CONFIDENCE[report.confidence]} ${coverageLine(issues)}`, "muted"));
   } else {
     out.push(section("Status"), para("A report could not be written for this scenario. The researched issues are set out in Appendix A.", "warning"));
   }

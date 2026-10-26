@@ -8,7 +8,7 @@ import { runResearch, type ResearchEvent } from "@/lib/research/engine";
 import { MODELS } from "@/lib/research/pricing";
 import type { AnswerPoint } from "@/lib/research/types";
 import { affordableIssues, DECOMPOSE_RESERVE_MICROS, MAX_ISSUES, SCENARIO_CEILING_MICROS, synthesisLimits } from "./budget";
-import { finaliseReport, findingsText } from "./report";
+import { finaliseReport, findingsText, ungroundedFigures } from "./report";
 import type { PlanningIssue, PlanningReport, ScenarioInput } from "./types";
 
 /*
@@ -22,7 +22,7 @@ import type { PlanningIssue, PlanningReport, ScenarioInput } from "./types";
  */
 
 const DecomposeSchema = z.object({
-  in_scope: z.boolean().describe("True if this is a UK tax, accounting, payroll, pensions or company-law planning situation."),
+  in_scope: z.boolean().describe("True if this is a UK tax, accounting, payroll, pensions or company-law planning situation, including inheritance tax, trusts, estate planning and capital taxes."),
   out_of_scope_reason: z.string().describe("If not in scope, one sentence why; otherwise empty."),
   issues: z
     .array(
@@ -42,6 +42,8 @@ const DecomposeSchema = z.object({
 const DECOMPOSE_SYSTEM = `You help a UK accountancy practice work through a tax planning situation.
 Break the situation into the separate tax questions that must be answered to choose between the realistic ways of meeting the client's objectives, within their constraints.
 Each question must be answerable from HMRC manuals, GOV.UK guidance or legislation and must stand alone. Do not answer anything yourself and do not recommend anything.
+Ask what the RULES are (conditions, reliefs, rates, anti-avoidance, time limits) for ONE tax or relief at a time. Never ask for a calculation, a costing or a comparison of several routes in one question: the researcher cannot calculate, and a multi-part question produces a thin answer. Put each route or tax in its own question instead.
+All UK taxes are in scope, including inheritance tax, trusts, lifetime gifting, capital gains, stamp taxes, employee share schemes and R&D relief.
 Prefer fewer, sharper questions over many overlapping ones. Never include client names. If the situation is not a UK tax, accounting, payroll, pensions or company-law matter, mark it out of scope.`;
 
 const ReportSchema = z.object({
@@ -68,7 +70,11 @@ const ReportSchema = z.object({
     .describe("2–4 realistic options, including 'do nothing' where that is sensible."),
   anti_avoidance: z.array(z.object({ point: z.string(), issue_refs: z.array(z.string()) })).describe("Anti-avoidance rules, penalties and time limits that the findings say bear on the options. Empty if the findings don't mention any."),
   assumptions: z.array(z.string()).describe("Facts the report assumes."),
-  information_needed: z.array(z.string()).describe("Facts to confirm with the client before acting."),
+  information_needed: z
+    .array(z.string())
+    .describe(
+      "The 5–10 most important facts to confirm with the client before acting. Consolidate overlapping points into one, include the facts listed under missing_facts that matter, never repeat a fact, and write each as a short noun phrase, not a question."
+    ),
   next_steps: z.array(z.string()).describe("Practical steps for the adviser, in order — e.g. calculations to run, clearances to consider, documents to obtain."),
   not_covered: z.array(z.string()).describe("Anything the findings did not settle, were unverified on, or that needs specialist input."),
   confidence: z.enum(["high", "medium", "low"]).describe("high = the findings directly settle every issue the recommendation rests on; medium = some inference or an unverified point; low = material gaps."),
@@ -153,6 +159,8 @@ async function researchIssue(
     shortAnswer: answer?.shortAnswer ?? null,
     confidence: answer?.confidence ?? null,
     error: final?.type === "no_sources" || final?.type === "error" ? final.message : null,
+    verified: answer ? [...answer.points, ...(answer.steps ?? [])].filter((p) => p.verified).length : 0,
+    checked: answer ? answer.points.length + (answer.steps ?? []).length : 0,
   };
   return { issue, points: answer?.points ?? [], caveats: answer?.caveats ?? [], micros: usage.micros, input: usage.input, output: usage.output };
 }
@@ -212,7 +220,7 @@ export async function runPlanning(input: ScenarioInput, opts: { organizationId: 
       ...FALLBACK,
       output_config: { effort: "low", format: betaZodOutputFormat(ReportSchema) },
       system: [{ type: "text", text: REPORT_SYSTEM, cache_control: { type: "ephemeral" } }],
-      messages: [{ role: "user", content: `Today is ${new Date().toISOString().slice(0, 10)}.\n\n<situation>\n${situation}\n</situation>\n\n<findings>\n${findings}\n</findings>` }],
+      messages: [{ role: "user", content: `Today is ${new Date().toISOString().slice(0, 10)}.\n\n<situation>\n${situation}\n</situation>\n\n<missing_facts>\n${plan.missing_facts.map((m) => `- ${m}`).join("\n") || "none noted"}\n</missing_facts>\n\n<findings>\n${findings}\n</findings>` }],
     });
     meter.add(res.model, res);
     const text = res.stop_reason === "refusal" || res.stop_reason === "max_tokens" ? "" : res.content.map((b) => (b.type === "text" ? b.text : "")).join("");
@@ -233,7 +241,7 @@ export async function runPlanning(input: ScenarioInput, opts: { organizationId: 
         options: d.options.map((o) => ({ name: o.name, summary: o.summary, suitableWhen: o.suitable_when, advantages: o.advantages, disadvantages: o.disadvantages, taxEffect: o.tax_effect, risks: o.risks, issueRefs: o.issue_refs })),
         antiAvoidance: d.anti_avoidance.map((a) => ({ point: a.point, issueRefs: a.issue_refs })),
         assumptions: d.assumptions,
-        informationNeeded: [...d.information_needed, ...plan.missing_facts.filter((m) => !d.information_needed.includes(m))],
+        informationNeeded: d.information_needed.slice(0, 10),
         nextSteps: d.next_steps,
         notCovered: d.not_covered,
         confidence: d.confidence,
@@ -241,6 +249,12 @@ export async function runPlanning(input: ScenarioInput, opts: { organizationId: 
       issues,
       res.model
     );
+    // The writer is told to use only figures from the situation and findings; this checks that it did.
+    const ungrounded = ungroundedFigures(report, [situation, ...results.flatMap((r) => [r.issue.shortAnswer ?? "", ...r.points.flatMap((p) => [p.text, ...p.citations.map((c) => c.quote)]), ...r.caveats])]);
+    if (ungrounded.length) {
+      report.notCovered.push(`Figures in this report that appear in neither the client situation nor the research findings: ${ungrounded.join(", ")}. Check each against an official source before using it.`);
+      if (report.confidence === "high") report.confidence = "medium";
+    }
     return { status: "completed", issues, report, error: null, usage: meter.usage };
   } catch (err) {
     console.error("[planning]", err);

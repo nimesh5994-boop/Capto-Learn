@@ -65,3 +65,46 @@ export function findingsText(
     })
     .join("\n\n");
 }
+
+/** Every £ amount and percentage in a piece of text, as written. */
+export function extractFigures(text: string): string[] {
+  return [...text.matchAll(/£\s?\d[\d,]*(?:\.\d+)?(?:\s?(?:k|m|bn|million|billion)\b)?|\d+(?:\.\d+)?\s?(?:%|per\s?cent)/gi)].map((m) => m[0]);
+}
+
+/** Figures compare equal regardless of spacing, commas, case and "per cent" vs "%". */
+const normFigure = (s: string) => s.toLowerCase().replace(/\s?per\s?cent/g, "%").replace(/[\s,]/g, "");
+
+/** All the text of a written report that a reader could take figures from. */
+export function reportText(r: PlanningReport): string {
+  return [
+    r.executiveSummary,
+    r.recommendation.headline,
+    r.recommendation.reasoning,
+    ...r.recommendation.conditions,
+    ...r.options.flatMap((o) => [o.name, o.summary, o.suitableWhen, o.taxEffect, ...o.advantages, ...o.disadvantages, ...o.risks]),
+    ...r.antiAvoidance.map((a) => a.point),
+    ...r.assumptions,
+    ...r.informationNeeded,
+    ...r.nextSteps,
+  ].join("\n");
+}
+
+/**
+ * Figures the report states that appear in neither the client's situation nor the researched findings. The writer is
+ * told not to use figures from memory; this is the check that it didn't. Pure, so it's unit-tested.
+ */
+export function ungroundedFigures(report: PlanningReport, groundTexts: string[]): string[] {
+  const ground = normFigure(groundTexts.join("\n"));
+  const seen = new Set<string>();
+  const out: string[] = [];
+  for (const f of extractFigures(reportText(report))) {
+    const n = normFigure(f);
+    if (seen.has(n)) continue;
+    seen.add(n);
+    // Match on a digit boundary so "£5,000" is not "found" inside "£15,000".
+    const escaped = n.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const found = new RegExp(`(^|[^\\d.])${escaped}(?!\\d)`).test(ground);
+    if (!found) out.push(f.trim());
+  }
+  return out;
+}

@@ -53,3 +53,47 @@ describe("planning report checks", () => {
     expect(t).toContain('status="no answer"');
   });
 });
+
+import { extractFigures, ungroundedFigures } from "./report";
+import type { PlanningReport } from "./types";
+
+const rep = (text: string): PlanningReport => ({
+  executiveSummary: text,
+  recommendation: { headline: "h", reasoning: "r", conditions: [], issueRefs: [] },
+  options: [],
+  antiAvoidance: [],
+  assumptions: [],
+  informationNeeded: [],
+  nextSteps: [],
+  notCovered: [],
+  confidence: "high",
+  model: "m",
+  generatedAt: "2026-10-23T00:00:00.000Z",
+});
+
+describe("figure grounding", () => {
+  it("finds pounds and percentages", () => {
+    expect(extractFigures("Pay £12,570 and 8.75% on £40k, or 20 per cent")).toEqual(["£12,570", "8.75%", "£40k", "20 per cent"]);
+  });
+  it("accepts figures that appear in the situation or findings", () => {
+    expect(ungroundedFigures(rep("Dividends of £40,000 taxed at 8.75%."), ["Takes dividends of £40,000", "the rate is 8.75 per cent"])).toEqual([]);
+  });
+  it("flags figures from nowhere", () => {
+    expect(ungroundedFigures(rep("Allowance is £500 and tax is 39.35%."), ["dividends of £40,000"])).toEqual(["£500", "39.35%"]);
+  });
+  it("does not find £5,000 inside £15,000", () => {
+    expect(ungroundedFigures(rep("A £5,000 allowance"), ["a £15,000 allowance"])).toEqual(["£5,000"]);
+  });
+});
+
+import { coverageLine } from "./types";
+
+describe("coverage line", () => {
+  it("counts answered issues and verified points", () => {
+    const issues = [issue("I1", { verified: 5, checked: 6 }), issue("I2", { verified: 4, checked: 4 }), issue("I3", { status: "failed", confidence: null })];
+    expect(coverageLine(issues)).toBe("2 of 3 issues answered; 9 of 10 points supported by quotations verified word for word.");
+  });
+  it("leaves out the points clause for older scenarios without counts", () => {
+    expect(coverageLine([issue("I1")])).toBe("1 of 1 issues answered.");
+  });
+});

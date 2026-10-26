@@ -84,3 +84,20 @@ describe("sample output", () => {
     writeFileSync(`${process.env.PLANNING_SAMPLE_DIR}/sample-memo.docx`, await renderDocx(blocks, brand));
   });
 });
+
+describe("long documents", () => {
+  it("renders a long, link- and quote-heavy memorandum with a page-numbered footer on every page", async () => {
+    const { PDFDocument } = await import("pdf-lib");
+    const many: PlanningIssue[] = Array.from({ length: 5 }, (_, i) => ({ id: `I${i + 1}`, title: `Issue ${i + 1}`, question: "Q?", queryId: `q${i + 1}`, status: "answered", shortAnswer: "A", confidence: "medium", error: null }));
+    const big = {
+      ...answer,
+      sources: Array.from({ length: 8 }, (_, k) => ({ id: `S${k + 1}`, kind: "official", url: `https://www.gov.uk/hmrc-internal-manuals/employment-income-manual/eim${10000 + k}`, title: `Source ${k + 1} with a fairly long title that wraps`, publisher: "HMRC internal manual", updatedAt: "2026-04-09" })),
+      points: Array.from({ length: 8 }, (_, k) => ({ heading: "h", text: "t", citations: [{ sourceId: `S${k + 1}`, quote: `Quotation number ${k + 1} that is of a reasonable length so that it wraps over a couple of lines in the appendix.`, verified: true }], verified: true })),
+    } as unknown as ResearchAnswer;
+    const answers = new Map(many.map((i) => [i.queryId as string, big]));
+    const blocks = buildPlanningMemo("Long one", input, report, many, answers, meta);
+    const pdf = await renderPdf(blocks, { firm: "Firm", color: "#a01f62", docRef: meta.docRef, kicker: "TAX PLANNING MEMORANDUM" });
+    const doc = await PDFDocument.load(pdf);
+    expect(doc.getPageCount()).toBeGreaterThan(4);
+  });
+});

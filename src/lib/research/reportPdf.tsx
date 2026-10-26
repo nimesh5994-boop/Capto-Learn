@@ -1,4 +1,5 @@
 import "server-only";
+import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 import { Document, Image, Link, Page, StyleSheet, Text, View, renderToBuffer } from "@react-pdf/renderer";
 import type { Block, Run } from "./report";
 import { decodeLogo, fitBox, type ReportBrand } from "./reportDocx";
@@ -32,7 +33,6 @@ const s = StyleSheet.create({
   quote: { marginLeft: 12, paddingLeft: 8, borderLeftWidth: 2, marginBottom: 6 },
   quoteText: { fontFamily: "Helvetica-Oblique", fontSize: 9 },
   quoteSrc: { fontSize: 8, marginTop: 2 },
-  footer: { position: "absolute", bottom: 24, left: 50, right: 50, fontSize: 8, color: MUTED, textAlign: "center" },
 });
 
 /** The built-in PDF fonts only cover Latin-1, so swap the few symbols answers use for safe equivalents. */
@@ -88,7 +88,9 @@ function BlockView({ b, color }: { b: Block; color: string }) {
       );
     case "p":
       return (
-        <Text style={b.tone === "muted" ? s.muted : s.p}>
+        // A line holding a link is kept whole: the renderer miscomputes the link's position when one is split across a page
+        // break (seen on long appendices, where it crashed the whole export).
+        <Text style={b.tone === "muted" ? s.muted : s.p} wrap={!b.runs.some((r) => r.link)}>
           <Runs runs={b.runs} />
         </Text>
       );
@@ -182,9 +184,23 @@ export async function renderPdf(blocks: Block[], brand: ReportBrand): Promise<Bu
         {rest.map((b, i) => (
           <BlockView key={i} b={b} color={color} />
         ))}
-        <Text style={s.footer} render={({ pageNumber, totalPages }) => `${pdfSafe(brand.firm)}${brand.docRef ? ` · ${brand.docRef}` : ""} · Confidential · Page ${pageNumber} of ${totalPages}`} fixed />
       </Page>
     </Document>
   );
-  return renderToBuffer(doc);
+  // The footer is stamped onto the finished pages rather than drawn by the renderer: its live "Page X of Y" text crashed
+  // the whole export on longer documents (the renderer computed an impossible position when a block moved to the next page).
+  return stampFooter(await renderToBuffer(doc), `${pdfSafe(brand.firm)}${brand.docRef ? ` · ${brand.docRef}` : ""} · Confidential`);
+}
+
+/** Adds "<label> · Page X of N" centred at the foot of every page. */
+export async function stampFooter(pdf: Buffer, label: string): Promise<Buffer> {
+  const doc = await PDFDocument.load(pdf);
+  const font = await doc.embedFont(StandardFonts.Helvetica);
+  const pages = doc.getPages();
+  pages.forEach((page, i) => {
+    const text = `${label} · Page ${i + 1} of ${pages.length}`;
+    const size = 8;
+    page.drawText(text, { x: (page.getWidth() - font.widthOfTextAtSize(text, size)) / 2, y: 24, size, font, color: rgb(0.42, 0.39, 0.44) });
+  });
+  return Buffer.from(await doc.save());
 }
