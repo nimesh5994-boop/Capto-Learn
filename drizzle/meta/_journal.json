@@ -169,6 +169,13 @@
       "when": 1792763690515,
       "tag": "0023_planning_scenario_review",
       "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1793016036100,
+      "tag": "0024_cpd_entries",
+      "breakpoints": true
     }
   ]
 }

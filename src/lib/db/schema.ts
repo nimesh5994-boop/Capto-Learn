@@ -569,6 +569,24 @@ export const planningScenarios = pgTable(
   (t) => [index("planning_scenarios_org_idx").on(t.organizationId, t.createdAt)]
 );
 
+/** CPD a person logged themselves (training done elsewhere, webinars, reading), alongside their completed Capto lessons. */
+export const cpdEntries = pgTable(
+  "cpd_entries",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    organizationId: uuid("organization_id").notNull().references(() => organizations.id, { onDelete: "cascade" }),
+    userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+    activityDate: timestamp("activity_date", { withTimezone: true }).notNull(),
+    title: text("title").notNull(),
+    provider: text("provider").notNull().default(""),
+    kind: text("kind").notNull(),
+    minutes: integer("minutes").notNull(),
+    reflection: text("reflection").notNull().default(""),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index("cpd_entries_user_idx").on(t.userId, t.activityDate)]
+);
+
 export type BenchmarkVerdict = "correct" | "partial" | "wrong";
 
 /**
