@@ -111,4 +111,24 @@ export const RESEARCH_EXAM: ResearchCase[] = [
     must: [/merged scheme|ERIS|enhanced R&D intensive support/i, /20%|86%|186%|credit/i],
     tier: "auto",
   },
+  // Inheritance tax and estate planning: Ask Capto once refused these as "not accountancy practice work".
+  {
+    id: "iht-transferable-nrb",
+    area: "Inheritance tax",
+    q: "A widow's late husband left everything to her, so his nil-rate band was unused. How much of it can her estate claim, and how is the claim made?",
+    must: [/transferable|unused|transfer/i, /nil.rate band/i, /100%|£325,000|spouse|civil partner/i],
+  },
+  {
+    id: "iht-pet-taper",
+    area: "Inheritance tax",
+    q: "A parent gave £400,000 to their child as a lifetime gift and dies four years later. Is inheritance tax due and does taper relief apply?",
+    must: [/seven years|7 years/i, /taper/i, /potentially exempt|PET/i],
+  },
+  {
+    id: "iht-apr-bpr-farm",
+    area: "Inheritance tax",
+    q: "A farmer owns owner-occupied farmland and runs the farm as a sole trade. What reliefs from inheritance tax could apply to the land and the business assets on death?",
+    must: [/agricultural property relief|APR/i, /business property relief|BPR/i, /50%|100%/],
+    tier: "expert",
+  },
 ];
