@@ -16,6 +16,8 @@ import { recallLearned } from "@/lib/search/knowledge";
 import { loadDocuments, rankDocuments } from "@/lib/kb/search";
 import { rankPassages, selectPassages, splitPassages, verifyQuote } from "./passages";
 import { MODELS } from "./pricing";
+import { standardsSources } from "./standards";
+import type { StandardsPage } from "./standardsRules";
 import { draftLimits, PROFESSIONAL_RESERVE_MICROS } from "./costBudget";
 import type { AnswerPoint, AnswerStep, ProfessionalNote, ResearchAnswer, ResearchSource } from "./types";
 
@@ -35,7 +37,7 @@ import type { AnswerPoint, AnswerStep, ProfessionalNote, ResearchAnswer, Researc
 
 const CACHE_TTL_MS = 7 * 86_400_000;
 const MAX_PAGES = 9;
-const PROFESSIONAL_DOMAINS = ["icaew.com", "accaglobal.com", "att.org.uk", "tax.org.uk", "frc.org.uk"];
+const PROFESSIONAL_DOMAINS = ["icaew.com", "accaglobal.com", "att.org.uk", "tax.org.uk", "frc.org.uk", "ifrs.org", "ukeb.org.uk"];
 
 export type Usage = { input: number; output: number; micros: number };
 export type Route = "instant" | "library" | "sonnet" | "opus" | "sonnet>opus";
@@ -52,9 +54,14 @@ const PlanSchema = z.object({
   in_scope: z
     .boolean()
     .describe(
-      "True if this is a UK accounting, bookkeeping, tax, payroll, pensions, company law, Companies House filing / company secretarial, AML or practice-management question — including everyday how-to questions such as posting journals, double entry, bank reconciliations, coding transactions, accruals and prepayments, year-end adjustments and preparing accounts — and tax planning and private-client matters such as inheritance tax, trusts, lifetime gifting, estate planning, capital taxes, share schemes and R&D relief."
+      "True if this is a UK accounting, bookkeeping, tax, payroll, pensions, company law, Companies House filing / company secretarial, AML or practice-management question — including everyday how-to questions such as posting journals, double entry, bank reconciliations, coding transactions, accruals and prepayments, year-end adjustments and preparing accounts, financial reporting and accounting standards (FRS 102, FRS 105, FRS 101, UK-adopted IAS and IFRS) — and tax planning and private-client matters such as inheritance tax, trusts, lifetime gifting, estate planning, capital taxes, share schemes and R&D relief."
     ),
   out_of_scope_reason: z.string().describe("If not in scope, one sentence saying why; otherwise empty."),
+  needs_professional_sources: z
+    .boolean()
+    .describe(
+      "True if a correct answer turns on a professional or accounting standard, or on practice guidance that is NOT HMRC or GOV.UK guidance: FRS 102/105/101, IAS or IFRS, SORPs, auditing standards (ISAs (UK)), the ethical standards, insolvency practice, management accounting or valuation practice, professional-body guidance. False for tax, payroll, VAT, Companies House and HMRC-compliance questions that HMRC and GOV.UK guidance answers."
+    ),
   restated_question: z.string().describe("The question restated precisely and self-contained, in UK technical terms, without client names."),
   tax_year: z.string().describe('Tax year the question is about, e.g. "2026/27", or "" if not year-specific.'),
   complexity: z
@@ -69,7 +76,7 @@ const PlanSchema = z.object({
 
 const PLAN_SYSTEM = `You plan searches for a UK accountancy research assistant used by staff in accountancy practices.
 Given a question, decide if it's in scope, grade its complexity, and write GOV.UK search queries that will find the authoritative pages.
-In scope means anything a UK accountancy practice handles: bookkeeping and accounting (journals, double entry, reconciliations, coding, accruals, prepayments, depreciation, year-end adjustments, preparing accounts — basic how-to questions from trainees are very much in scope), all UK taxes, payroll, pensions, AML and practice compliance, AND company law and Companies House matters (confirmation statements, filing accounts and late filing penalties, PSCs, officers, identity verification, strike-off, share capital). Tax planning and private-client work is squarely in scope: inheritance tax (nil-rate bands, reliefs, lifetime gifts, trusts, wills and estate or succession planning as they bear on tax), capital gains and stamp taxes, personal and family tax planning, property taxes, employee share schemes, R&D relief, residence and domicile, and charities. Never mark a question out of scope because it is "planning", "private client", "estate planning" or something a specialist would usually advise on; answer the tax question and let the caveats say where specialist input is needed. Only mark a question out of scope if it is clearly unrelated to UK tax, accounting, payroll, pensions, company law or practice work (for example a recipe, or a non-UK jurisdiction).
+In scope means anything a UK accountancy practice handles: bookkeeping and accounting (journals, double entry, reconciliations, coding, accruals, prepayments, depreciation, year-end adjustments, preparing accounts — basic how-to questions from trainees are very much in scope), all UK taxes, payroll, pensions, AML and practice compliance, AND company law and Companies House matters (confirmation statements, filing accounts and late filing penalties, PSCs, officers, identity verification, strike-off, share capital). Anything a UK accountant or accountancy practice does or advises on is in scope: also audit and assurance, ethics and independence, insolvency and restructuring, management accounting, budgeting and forecasting, business valuations, due diligence, tax planning, and running and growing a practice. When in doubt, treat the question as in scope and answer it. For questions that turn on a professional or accounting standard rather than HMRC guidance, set needs_professional_sources to true so the standard-setters' and professional bodies' own pages are searched. Financial reporting and accounting standards are squarely in scope: FRS 102 (including section 1A), FRS 105, FRS 101, UK-adopted international accounting standards (IAS and IFRS), the Companies Act accounts rules, and how to apply them (leases, revenue, fixed assets and depreciation, deferred tax, provisions, going concern, related parties, disclosure and choosing the reporting framework). Tax planning and private-client work is squarely in scope: inheritance tax (nil-rate bands, reliefs, lifetime gifts, trusts, wills and estate or succession planning as they bear on tax), capital gains and stamp taxes, personal and family tax planning, property taxes, employee share schemes, R&D relief, residence and domicile, and charities. Never mark a question out of scope because it is "planning", "private client", "estate planning" or something a specialist would usually advise on; answer the tax question and let the caveats say where specialist input is needed. Only mark a question out of scope if it is clearly unrelated to UK tax, accounting, payroll, pensions, company law or practice work (for example a recipe, or a non-UK jurisdiction).
 For pure bookkeeping questions the answer will mostly come from Capto's own lessons; still write searches that might find related HMRC guidance (e.g. "business records", "accruals basis").
 Use HMRC's own vocabulary (e.g. "loans to participators" not "director loan tax"; "input tax" not "claiming VAT back";
 "off-payroll working" for IR35). Always include at least one 'manuals' search and one 'guidance' search. For questions
@@ -77,7 +84,7 @@ about current rates or thresholds include a guidance search naming the tax year 
 If answering needs a tax charge, penalty or relief to be calculated, include a search for the rate itself (e.g. "rate of tax section 455 loans to participators", "fuel scale charge rates").`;
 
 const CitationSchema = z.object({
-  source_id: z.string().describe('e.g. "S2" or "L1"'),
+  source_id: z.string().describe('e.g. "S2", "P1" or "L1"'),
   quote: z.string().describe("Copied EXACTLY, character for character, from that source's passage. 10–60 words. Use ... to skip words."),
 });
 
@@ -116,7 +123,7 @@ export const AnswerSchema = z.object({
 // Kept stable and above the 512-token minimum so it is served from the prompt cache on every question.
 export const ANSWER_SYSTEM = `You are Ask Capto, the research assistant inside Capto Learn, used by staff at UK accountancy practices — from trainees to tax managers.
 
-You answer ONLY from the source passages supplied with each question. Official sources (ids S1, S2…) are HMRC internal manuals and GOV.UK guidance. Capto Learn lessons (ids L1, L2…) are the platform's own training material.
+You answer ONLY from the source passages supplied with each question. Official sources (ids S1, S2…) are HMRC internal manuals and GOV.UK guidance. Standard-setter and professional-body extracts (ids P1, P2…) come from the FRC, IFRS Foundation, UKEB, ICAEW, ACCA, AAT, CIMA and similar bodies' own pages: they are authoritative for what an accounting, auditing or ethics standard or professional guidance says, but they are short extracts, so say plainly where they don't cover a point. Capto Learn lessons (ids L1, L2…) are the platform's own training material.
 
 Evidence rules:
 - Every factual statement — especially rates, thresholds, dates, percentages, conditions and exceptions — must be supported by a quote from a supplied passage. Do not use figures or rules from memory, even if you're confident; if the passages don't contain something, say it isn't covered in the sources found and put it in caveats.
@@ -300,7 +307,7 @@ async function lessonSources(queryText: string, max = 2): Promise<{ id: string; 
 }
 
 /** Step 2: sources for a planned question — official knowledge base first, live GOV.UK as a fallback, plus our best-matching lessons. */
-export async function gatherSources(question: string, plan: Plan, onStage: (m: string) => void = () => {}, sourceChars = 32_000): Promise<Gathered | "no_pages" | "no_passages"> {
+export async function gatherSources(question: string, plan: Plan, onStage: (m: string) => void = () => {}, sourceChars = 32_000, standards: StandardsPage[] = []): Promise<Gathered | "no_pages" | "no_passages"> {
   const today = new Date().toISOString().slice(0, 10);
   const searches = plan.searches.slice(0, 5);
   onStage("Searching Capto's stored copy of HMRC and Companies House guidance…");
@@ -322,13 +329,18 @@ export async function gatherSources(question: string, plan: Plan, onStage: (m: s
   }
   const queryText = [question, plan.restated_question, ...searches.map((s) => s.query)].join(" ");
   const lessons = await lessonSources(`${question} ${plan.restated_question}`);
-  if (!pages.length && !lessons.length) return "no_pages";
-  onStage(`Reading ${pages.length} official page${pages.length === 1 ? "" : "s"}${lessons.length ? ` and ${lessons.length} Capto lesson${lessons.length === 1 ? "" : "s"}` : ""}…`);
+  if (!pages.length && !lessons.length && !standards.length) return "no_pages";
+  onStage(`Reading ${pages.length} official page${pages.length === 1 ? "" : "s"}${standards.length ? `, ${standards.length} standard-setter or professional-body page${standards.length === 1 ? "" : "s"}` : ""}${lessons.length ? ` and ${lessons.length} Capto lesson${lessons.length === 1 ? "" : "s"}` : ""}…`);
   const sources: ResearchSource[] = [
     ...pages.map((p, i) => ({ id: `S${i + 1}`, kind: "official" as const, url: p.url, title: p.title, publisher: p.publisher, updatedAt: p.updatedAt })),
+    ...standards.map((p, i) => ({ id: `P${i + 1}`, kind: "professional" as const, url: p.url, title: p.title, publisher: "Standard-setter or professional body · extracts from a live search", updatedAt: null })),
     ...lessons.map((l, i) => ({ id: `L${i + 1}`, kind: "lesson" as const, url: `/learn/${l.id}`, title: l.title, publisher: l.reviewed ? "Capto Learn lesson · reviewed" : "Capto Learn lesson · AI draft, not yet reviewed", updatedAt: null })),
   ];
-  const textById = new Map<string, string>([...pages.map((p, i) => [`S${i + 1}`, p.text] as [string, string]), ...lessons.map((l, i) => [`L${i + 1}`, l.text] as [string, string])]);
+  const textById = new Map<string, string>([
+    ...pages.map((p, i) => [`S${i + 1}`, p.text] as [string, string]),
+    ...standards.map((p, i) => [`P${i + 1}`, p.text] as [string, string]),
+    ...lessons.map((l, i) => [`L${i + 1}`, l.text] as [string, string]),
+  ]);
   const passages = selectPassages(rankPassages([...textById].map(([sourceId, text]) => ({ sourceId, text })), queryText), sourceChars);
   if (!passages.length) return "no_passages";
   const sourceBlock = sources
@@ -443,9 +455,24 @@ export async function* runResearch(question: string, opts: { professional: boole
       }
     }
 
+    // Questions that turn on an accounting or professional standard, not HMRC guidance: one live search of the
+    // standard-setters' and professional bodies' own pages supplies sources (extracts, quote-checked like the rest).
+    let standards: StandardsPage[] = [];
+    let standardsTried = false;
+    if (plan.needs_professional_sources) {
+      standardsTried = true;
+      yield { type: "stage", message: "Searching the standard-setters' and professional bodies' own pages…" };
+      standards = await standardsSources(plan.restated_question, meter).catch((err) => {
+        console.error("[research] standards search failed", err);
+        return [] as StandardsPage[];
+      });
+    }
+
     // Cost ceiling: work out, before spending, how much source text and answer length fit under 5p in total.
-    const wantProfessional = opts.professional || tier === "expert";
-    const limits = draftLimits(MODELS.sonnet, meter.usage.micros, wantProfessional ? PROFESSIONAL_RESERVE_MICROS : 0);
+    // The professional-bodies note is skipped when the standard-setters' pages are already sources.
+    const wantProfessional = (opts.professional || tier === "expert") && !standardsTried;
+    const reserve = wantProfessional ? PROFESSIONAL_RESERVE_MICROS : 0;
+    let limits = draftLimits(MODELS.sonnet, meter.usage.micros, reserve);
     if (!limits) {
       yield { type: "error", message: "Ask Capto couldn't answer this within the per-question cost limit. Try a shorter, more specific question.", usage: meter.usage };
       return;
@@ -453,7 +480,22 @@ export async function* runResearch(question: string, opts: { professional: boole
     const professional = wantProfessional ? professionalNote(plan.restated_question, meter).catch(() => null) : Promise.resolve(null);
 
     const stages: string[] = [];
-    const gathered = await gatherSources(question, plan, (m) => stages.push(m), limits.sourceChars);
+    let gathered = await gatherSources(question, plan, (m) => stages.push(m), limits.sourceChars, standards);
+    // Capto's own sources found nothing: before giving up, try the standard-setters' and professional bodies' pages once.
+    if ((gathered === "no_pages" || gathered === "no_passages") && !standardsTried) {
+      standardsTried = true;
+      stages.push("Capto's own sources don't cover this — searching the standard-setters' and professional bodies' own pages…");
+      standards = await standardsSources(plan.restated_question, meter).catch(() => [] as StandardsPage[]);
+      if (standards.length) {
+        limits = draftLimits(MODELS.sonnet, meter.usage.micros, reserve);
+        if (!limits) {
+          for (const m of stages) yield { type: "stage", message: m };
+          yield { type: "error", message: "Ask Capto couldn't answer this within the per-question cost limit. Try a shorter, more specific question.", usage: meter.usage };
+          return;
+        }
+        gathered = await gatherSources(question, plan, (m) => stages.push(m), limits.sourceChars, standards);
+      }
+    }
     for (const m of stages) yield { type: "stage", message: m };
     lap("gathered sources");
     if (gathered === "no_pages") {

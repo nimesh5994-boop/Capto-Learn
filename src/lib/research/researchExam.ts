@@ -111,6 +111,26 @@ export const RESEARCH_EXAM: ResearchCase[] = [
     must: [/merged scheme|ERIS|enhanced R&D intensive support/i, /20%|86%|186%|credit/i],
     tier: "auto",
   },
+  // Accounting standards and wider professional questions: once refused as "not tax", and not answerable from HMRC guidance
+  // alone, so they use the standard-setters' and professional bodies' pages.
+  {
+    id: "ias16-revaluation",
+    area: "Financial reporting",
+    q: "Under IAS 16, can a company that reports under UK-adopted international accounting standards revalue its property, plant and equipment, and how often?",
+    must: [/revaluation model/i, /fair value/i, /IAS 16/i],
+  },
+  {
+    id: "frs102-lessee-lease",
+    area: "Financial reporting",
+    q: "Under FRS 102, how should a company account for a lease that it is a lessee of?",
+    must: [/right.of.use/i, /lease liabilit/i, /1 January 2026/i],
+  },
+  {
+    id: "cvl-vs-mvl",
+    area: "Insolvency",
+    q: "What is the difference between a creditors' voluntary liquidation and a members' voluntary liquidation, and who decides each?",
+    must: [/declaration of solvency/i, /creditors/i, /insolvent|cannot pay|unable to pay|can't pay/i],
+  },
   // Inheritance tax and estate planning: Ask Capto once refused these as "not accountancy practice work".
   {
     id: "iht-transferable-nrb",
