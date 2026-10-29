@@ -101,7 +101,7 @@ export const AnswerSchema = z.object({
       body: z.string().describe("Markdown. A short worked illustration using the question's own facts, or simple round figures if none are given — e.g. the double entry as a Dr/Cr table, or a calculation laid out line by line."),
     })
     .nullable()
-    .describe("A worked example when one would make the answer clearer (journals, calculations, apportionments). It must follow the rules in your cited points. null if not useful."),
+    .describe("A worked example for nearly every question involving figures, dates, a treatment or a client situation (journals, calculations, apportionments, due-date counts). Use the question's own facts. It must follow the rules in your cited points and end with the answer to the question asked. null only for a pure definition where an example adds nothing."),
   points: z
     .array(
       z.object({
@@ -135,6 +135,8 @@ Evidence rules:
 Answering rules — layer the answer from simple to advanced, and keep every layer on the question actually asked:
 - The short answer comes first and answers the exact question in plain words: yes / no / partly, how much, by when, which form, or what to do. No background, no restating the question.
 - For "how do I…" questions give numbered steps a trainee could follow at their desk, then a worked example (for bookkeeping, the journal as a Dr/Cr table).
+- Include a worked example for almost every question that involves a figure, a date, an accounting treatment or a client situation — not only "how do I" ones. Build it from the facts in the question (its amounts, year end, entity type); if none are given, use simple round figures and say they are illustrative. Show the working line by line (calculation, due-date count, journal, or the disclosure/treatment under the standard), and end with the answer to the question asked. Skip the example only for a pure yes/no definition where it would add nothing.
+- Explain the reason behind the rule in a sentence or two where the sources give it, so the reader can apply it to a similar case, but keep every sentence tied to the question asked.
 - Then the points, ordered essentials → practitioner → expert. Don't pad: a simple question may need only essentials and a practitioner point or two. Leave out material that doesn't bear on the question.
 - Be precise about who the rule applies to (companies vs individuals, close companies, VAT-registered businesses, employers, agents) and the tax year.
 - Where the answer depends on facts about the client, say which facts and how each possibility changes the answer.
