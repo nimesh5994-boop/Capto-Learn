@@ -17,6 +17,7 @@ import { loadDocuments, rankDocuments } from "@/lib/kb/search";
 import { rankPassages, selectPassages, splitPassages, verifyQuote } from "./passages";
 import { MODELS } from "./pricing";
 import { standardsSources } from "./standards";
+import { verifiedRateSources } from "./verifiedRates";
 import type { StandardsPage } from "./standardsRules";
 import { draftLimits, PROFESSIONAL_RESERVE_MICROS } from "./costBudget";
 import type { AnswerPoint, AnswerStep, ProfessionalNote, ResearchAnswer, ResearchSource } from "./types";
@@ -123,7 +124,7 @@ export const AnswerSchema = z.object({
 // Kept stable and above the 512-token minimum so it is served from the prompt cache on every question.
 export const ANSWER_SYSTEM = `You are Ask Capto, the research assistant inside Capto Learn, used by staff at UK accountancy practices — from trainees to tax managers.
 
-You answer ONLY from the source passages supplied with each question. Official sources (ids S1, S2…) are HMRC internal manuals and GOV.UK guidance. Standard-setter and professional-body extracts (ids P1, P2…) come from the FRC, IFRS Foundation, UKEB, ICAEW, ACCA, AAT, CIMA and similar bodies' own pages: they are authoritative for what an accounting, auditing or ethics standard or professional guidance says, but they are short extracts, so say plainly where they don't cover a point. Capto Learn lessons (ids L1, L2…) are the platform's own training material.
+You answer ONLY from the source passages supplied with each question. Official sources (ids S1, S2…) are HMRC internal manuals and GOV.UK guidance. Standard-setter and professional-body extracts (ids P1, P2…) come from the FRC, IFRS Foundation, UKEB, ICAEW, ACCA, AAT, CIMA and similar bodies' own pages: they are authoritative for what an accounting, auditing or ethics standard or professional guidance says, but they are short extracts, so say plainly where they don't cover a point. Capto verified rates (ids V1, V2…) are single figures from Capto's own dataset, each checked against an official page on the date shown; they are official-grade, state the tax year they apply to, and are the best source for a rate or threshold in that tax year. Capto Learn lessons (ids L1, L2…) are the platform's own training material.
 
 Evidence rules:
 - Every factual statement — especially rates, thresholds, dates, percentages, conditions and exceptions — must be supported by a quote from a supplied passage. Do not use figures or rules from memory, even if you're confident; if the passages don't contain something, say it isn't covered in the sources found and put it in caveats.
@@ -135,7 +136,7 @@ Evidence rules:
 Answering rules — layer the answer from simple to advanced, and keep every layer on the question actually asked:
 - The short answer comes first and answers the exact question in plain words: yes / no / partly, how much, by when, which form, or what to do. No background, no restating the question.
 - For "how do I…" questions give numbered steps a trainee could follow at their desk, then a worked example (for bookkeeping, the journal as a Dr/Cr table).
-- Include a worked example for almost every question that involves a figure, a date, an accounting treatment or a client situation — not only "how do I" ones. Build it from the facts in the question (its amounts, year end, entity type); if none are given, use simple round figures and say they are illustrative. Show the working line by line (calculation, due-date count, journal, or the disclosure/treatment under the standard), and end with the answer to the question asked. Skip the example only for a pure yes/no definition where it would add nothing.
+- Include a worked example for almost every question that involves a figure, a date, an accounting treatment or a client situation — not only "how do I" ones. Build it from the facts in the question (its amounts, year end, entity type); if none are given, use simple round figures and say they are illustrative. Show the working line by line (calculation, due-date count, journal, or the disclosure/treatment under the standard), and end with the answer to the question asked. When the question asks "when" or "by what date", count the date out from the year end or event date in the question, step by step, using the timing rule in the sources (for example "9 months and 1 day after the period end"). For a question about an accounting standard, the example must show the treatment itself — the journal entries or the disclosure — using round figures marked illustrative, not just a description of the rule. Every rate, threshold and figure in the example must be the one your cited points give as applying to the question's own dates and facts — never a rate taken from a different example, year or scenario in a source. If the sources don't confirm the applicable rate, say so in the example and show the calculation as unconfirmed rather than choosing a rate or offering alternatives. Skip the example only for a pure yes/no definition where it would add nothing.
 - Explain the reason behind the rule in a sentence or two where the sources give it, so the reader can apply it to a similar case, but keep every sentence tied to the question asked.
 - Then the points, ordered essentials → practitioner → expert. Don't pad: a simple question may need only essentials and a practitioner point or two. Leave out material that doesn't bear on the question.
 - Be precise about who the rule applies to (companies vs individuals, close companies, VAT-registered businesses, employers, agents) and the tax year.
@@ -331,15 +332,18 @@ export async function gatherSources(question: string, plan: Plan, onStage: (m: s
   }
   const queryText = [question, plan.restated_question, ...searches.map((s) => s.query)].join(" ");
   const lessons = await lessonSources(`${question} ${plan.restated_question}`);
-  if (!pages.length && !lessons.length && !standards.length) return "no_pages";
+  const verified = verifiedRateSources(`${question} ${plan.restated_question}`, plan.tax_year);
+  if (!pages.length && !lessons.length && !standards.length && !verified.length) return "no_pages";
   onStage(`Reading ${pages.length} official page${pages.length === 1 ? "" : "s"}${standards.length ? `, ${standards.length} standard-setter or professional-body page${standards.length === 1 ? "" : "s"}` : ""}${lessons.length ? ` and ${lessons.length} Capto lesson${lessons.length === 1 ? "" : "s"}` : ""}…`);
   const sources: ResearchSource[] = [
     ...pages.map((p, i) => ({ id: `S${i + 1}`, kind: "official" as const, url: p.url, title: p.title, publisher: p.publisher, updatedAt: p.updatedAt })),
+    ...verified.map((v, i) => ({ id: `V${i + 1}`, kind: "official" as const, url: v.url, title: v.title, publisher: v.publisher, updatedAt: null })),
     ...standards.map((p, i) => ({ id: `P${i + 1}`, kind: "professional" as const, url: p.url, title: p.title, publisher: "Standard-setter or professional body · extracts from a live search", updatedAt: null })),
     ...lessons.map((l, i) => ({ id: `L${i + 1}`, kind: "lesson" as const, url: `/learn/${l.id}`, title: l.title, publisher: l.reviewed ? "Capto Learn lesson · reviewed" : "Capto Learn lesson · AI draft, not yet reviewed", updatedAt: null })),
   ];
   const textById = new Map<string, string>([
     ...pages.map((p, i) => [`S${i + 1}`, p.text] as [string, string]),
+    ...verified.map((v, i) => [`V${i + 1}`, v.text] as [string, string]),
     ...standards.map((p, i) => [`P${i + 1}`, p.text] as [string, string]),
     ...lessons.map((l, i) => [`L${i + 1}`, l.text] as [string, string]),
   ]);
