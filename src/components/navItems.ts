@@ -2,6 +2,7 @@
 import {
   Activity,
   BellRing,
+  CalendarDays,
   Target,
   Calculator,
   Percent,
@@ -44,6 +45,7 @@ export type NavKey =
   | "skillsCheck"
   | "search"
   | "updates"
+  | "events"
   | "rates"
   | "cases"
   | "calculators"
@@ -80,6 +82,7 @@ export const NAV_ITEMS: Record<NavKey, { href: string; label: string; descriptio
   coach: { href: "/coach", label: "My coach", icon: MessageCircleHeart, description: "Personal guidance on what to study next" },
   search: { href: "/search", label: "Guidance search", icon: Search, description: "Search HMRC and GOV.UK guidance by topic" },
   updates: { href: "/updates", label: "HMRC updates", icon: BellRing, description: "Recent HMRC and legislation changes that affect you" },
+  events: { href: "/events", label: "Events", icon: CalendarDays, description: "Budgets and major changes: what they mean for accountants and clients" },
   rates: { href: "/rates", label: "Rates & allowances", icon: Percent, description: "Verified tax rates and allowances by year" },
   cases: { href: "/cases", label: "Case law", icon: Scale, description: "Searchable tax tribunal and court decisions" },
   calculators: { href: "/calculators", label: "Calculators", icon: Calculator, description: "Income tax, payroll, corporation tax, CGT, IHT and more" },

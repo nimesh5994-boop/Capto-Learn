@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { desc, eq, and } from "drizzle-orm";
-import { ArrowRight, BellRing, Bookmark, BookOpenCheck, CalendarClock, ChevronRight, Compass, GraduationCap, MessageSquareQuote, PlayCircle, Repeat, Route } from "lucide-react";
+import { ArrowRight, BellRing, Bookmark, CalendarDays, BookOpenCheck, CalendarClock, ChevronRight, Compass, GraduationCap, MessageSquareQuote, PlayCircle, Repeat, Route } from "lucide-react";
 import { requireUser } from "@/lib/auth/dal";
 import { getDb } from "@/lib/db/client";
 import { researchQueries } from "@/lib/db/schema";
@@ -16,6 +16,7 @@ import { buildDigest } from "@/lib/alerts/digest";
 import { daysAgo } from "@/lib/time";
 import { date, dateTime } from "@/lib/format";
 import { CourseGlyph } from "@/components/learn/bits";
+import { isFeatured, latestEvent } from "@/content/events";
 import styles from "./dashboard.module.css";
 
 export const metadata = { title: "Dashboard" };
@@ -156,6 +157,30 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
           You don&apos;t have access to that page. Ask an admin in your firm if you need it.
         </div>
       )}
+
+      {(() => {
+        const ev = latestEvent();
+        if (!ev || !isFeatured(ev)) return null;
+        return (
+          <Link href={`/events/${ev.slug}`} className="card card-pad" style={{ display: "block", marginBottom: 18, textDecoration: "none", color: "inherit" }}>
+            <div className="row" style={{ gap: 8, alignItems: "center", marginBottom: 6 }}>
+              <span className="pill pill-accepted">
+                <CalendarDays size={12} /> New event
+              </span>
+              <span className="small muted">{date(ev.date)}</span>
+            </div>
+            <strong style={{ fontSize: 17 }}>{ev.title}: what it means for you and your clients</strong>
+            <ul style={{ margin: "8px 0", paddingLeft: 18 }}>
+              {ev.headlines.slice(0, 3).map((h) => (
+                <li key={h}>{h}</li>
+              ))}
+            </ul>
+            <span className="small">
+              Read the summary <ChevronRight size={13} style={{ verticalAlign: "-2px" }} />
+            </span>
+          </Link>
+        );
+      })()}
 
       <div className={styles.top}>
         {canLearn &&

@@ -10,7 +10,7 @@ export type NavCategory = { id: NavCategoryId; label: string; keys: NavKey[]; ic
 
 export const NAV_CATEGORIES: NavCategory[] = [
   { id: "learn", label: "Learn", icon: GraduationCap, keys: ["dashboard", "learn", "review", "flashcards", "skillsCheck", "progress", "coach"] },
-  { id: "research", label: "Research", icon: BookMarked, keys: ["search", "ask", "planning", "saved", "cases", "updates", "register"] },
+  { id: "research", label: "Research", icon: BookMarked, keys: ["search", "ask", "planning", "saved", "cases", "updates", "events", "register"] },
   { id: "tools", label: "Tools", icon: Wrench, keys: ["rates", "calculators"] },
   { id: "team", label: "Team", icon: UsersRound, keys: ["team", "interviews"] },
   { id: "admin", label: "Admin", icon: Settings, keys: ["admin.users", "admin.roles", "admin.practice", "admin.branding", "admin.billing", "admin.activity", "admin.emails"] },
